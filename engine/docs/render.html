@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine v2 Render Glossary</title>
+  <link rel="stylesheet" href="glossary.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header" id="top">
+      <h1>Engine v2 – render</h1>
+      <p class="summary">GPU-driven rendering pipeline: meshes, materials, passes, Forward+/clustered lighting, shadows, and post-processing.</p>
+      <p class="path">Path: <code>engine/render/*</code></p>
+    </header>
+
+    <nav aria-label="Render glossary table of contents">
+      <h2>Contents</h2>
+      <p class="note">Flat list of core rendering concepts.</p>
+      <ul>
+        <li><a href="#term-mesh">Mesh</a></li>
+        <li><a href="#term-material">Material</a></li>
+        <li><a href="#term-material-descriptor">Material descriptor</a></li>
+        <li><a href="#term-pbr-material">PBR material</a></li>
+        <li><a href="#term-render-pass">Render pass</a></li>
+        <li><a href="#term-depth-prepass">Depth prepass</a></li>
+        <li><a href="#term-forward-plus">Forward+ lighting</a></li>
+        <li><a href="#term-light-buffer">Light buffer</a></li>
+        <li><a href="#term-shadow-map">Shadow map</a></li>
+        <li><a href="#term-postfx-pass">Post-processing pass</a></li>
+        <li><a href="#term-hdr-pipeline">HDR pipeline</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2 class="section-title">Rendering pipeline concepts</h2>
+      <p class="section-intro">The render layer builds on core/framegraph to draw ECS-renderable entities with PBR lighting and postfx.</p>
+      <div class="term-list">
+        <article class="term" id="term-mesh">
+          <h3>Mesh</h3>
+          <p><strong class="label">Definition</strong> CPU representation of geometry that references GPU vertex/index buffers, material id, and bounds.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const mesh = new Mesh({
+  vertexBuffer: vb,
+  indexBuffer: ib,
+  indexCount: 36,
+  materialId: 'cube_pbr',
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-material">Material</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-material">
+          <h3>Material</h3>
+          <p><strong class="label">Definition</strong> Logical description of how a surface is shaded: references shaders, textures, samplers, and uniform parameters.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const mat = materialSystem.create({
+  id: 'cube_pbr',
+  shaderId: 'pbr',
+  textures: { baseColor: 'albedo.png' },
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-material-descriptor">Material descriptor</a>, <a href="#term-pbr-material">PBR material</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-material-descriptor">
+          <h3>Material descriptor</h3>
+          <p><strong class="label">Definition</strong> Data object describing the parameters, textures, and sampler bindings for a material, used to build bind group layouts.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const desc = {
+  params: ['baseColor', 'metallic', 'roughness'],
+  textures: ['baseColorTex', 'normalTex'],
+};
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-material">Material</a>, <a href="#term-hdr-pipeline">HDR pipeline</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-pbr-material">
+          <h3>PBR material</h3>
+          <p><strong class="label">Definition</strong> Physically based shading material using baseColor, metalness, roughness, normal, and environment lighting parameters.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const sphereMat = materialSystem.create({
+  id: 'test_sphere',
+  shaderId: 'pbr',
+  params: { roughness: 0.3, metallic: 1.0 },
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-light-buffer">Light buffer</a>, <a href="#term-shadow-map">Shadow map</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-render-pass">
+          <h3>Render pass</h3>
+          <p><strong class="label">Definition</strong> Framegraph node that writes to one or more color/depth attachments, issuing draw calls for a subset of the scene.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>fg.addRenderPass('geometry', (pass) =&gt; {
+  pass.write(colorTex);
+  pass.write(depthTex);
+  pass.execute((encoder, views) =&gt; {
+    // draw visible meshes here
+  });
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-depth-prepass">Depth prepass</a>, <a href="#term-postfx-pass">Post-processing pass</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-depth-prepass">
+          <h3>Depth prepass</h3>
+          <p><strong class="label">Definition</strong> Pass that fills a depth buffer before main shading, improving overdraw performance and enabling effects like SSAO.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>fg.addRenderPass('depth-prepass', (pass) =&gt; {
+  pass.write(depthTex, { loadOp: 'clear' });
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-forward-plus">Forward+ lighting</a>, <a href="#term-shadow-map">Shadow map</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-forward-plus">
+          <h3>Forward+ lighting</h3>
+          <p><strong class="label">Definition</strong> Lighting technique where a compute pass builds per-cluster light lists, then a forward pass shades using those lists.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>// Pseudocode
+fg.addComputePass('build-light-lists', ...);
+fg.addRenderPass('forward-plus', ...);
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-light-buffer">Light buffer</a>, <a href="#term-hdr-pipeline">HDR pipeline</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-light-buffer">
+          <h3>Light buffer</h3>
+          <p><strong class="label">Definition</strong> Structured/storage buffer storing per-light data used by clustered/Forward+ passes and PBR shaders.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const lightBuffer = GpuBuffer.createStorage(
+  device,
+  lightArray,
+  'lights-ssbo',
+);
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-forward-plus">Forward+ lighting</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-shadow-map">
+          <h3>Shadow map</h3>
+          <p><strong class="label">Definition</strong> Depth-only texture rendered from the lights point of view, sampled in the lighting pass for basic shadowing.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>// Depth-only render pass for directional light
+fg.addRenderPass('shadow-map', (pass) =&gt; {
+  pass.write(shadowDepthTex, { loadOp: 'clear' });
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-depth-prepass">Depth prepass</a>, <a href="#term-pbr-material">PBR material</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-postfx-pass">
+          <h3>Post-processing pass</h3>
+          <p><strong class="label">Definition</strong> Pass that takes the main color buffer as input and applies effects like tonemapping, bloom, vignette, or debug overlays.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>fg.addRenderPass('postfx', (pass) =&gt; {
+  pass.read(colorTex);
+  pass.write(ldrColorTex);
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-hdr-pipeline">HDR pipeline</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-hdr-pipeline">
+          <h3>HDR pipeline</h3>
+          <p><strong class="label">Definition</strong> Rendering path that keeps lighting in a high-dynamic-range color buffer, then tonemaps to display format in post-processing.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>// Render to HDR, then tonemap to 8-bit surface
+const hdrTex = fg.createTexture({ format: 'rgba16float' });
+const ldrTex = fg.createTexture({ format: 'bgra8unorm' });
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-postfx-pass">Post-processing pass</a>, <a href="#term-material">Material</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

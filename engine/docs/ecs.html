@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine v2 ECS Glossary</title>
+  <link rel="stylesheet" href="glossary.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header" id="top">
+      <h1>Engine v2 – ecs</h1>
+      <p class="summary">Entity-component-system v2: entities, components, worlds, systems, queries, and core gameplay data.</p>
+      <p class="path">Path: <code>engine/ecs/*</code></p>
+    </header>
+
+    <nav aria-label="ECS glossary table of contents">
+      <h2>Contents</h2>
+      <p class="note">Terms are flat, matching how ECS concepts compose.</p>
+      <ul>
+        <li><a href="#term-entity">Entity</a></li>
+        <li><a href="#term-component">Component</a></li>
+        <li><a href="#term-system">System</a></li>
+        <li><a href="#term-world">World</a></li>
+        <li><a href="#term-query">Query</a></li>
+        <li><a href="#term-archetype">Archetype storage</a></li>
+        <li><a href="#term-transform">Transform</a></li>
+        <li><a href="#term-renderable">Renderable</a></li>
+        <li><a href="#term-camera">Camera</a></li>
+        <li><a href="#term-physicsbody">PhysicsBody</a></li>
+        <li><a href="#term-playerinput">PlayerInput</a></li>
+        <li><a href="#term-netreplicated">NetReplicated</a></li>
+        <li><a href="#term-system-scheduler">System scheduler</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2 class="section-title">ECS v2 concepts</h2>
+      <p class="section-intro">Lightweight, data-oriented ECS where worlds own entities, components are plain data, and systems are pure logic.</p>
+      <div class="term-list">
+        <article class="term" id="term-entity">
+          <h3>Entity</h3>
+          <p><strong class="label">Definition</strong> Integer ID representing any thing in the world (player, NPC, projectile, prop, light, zone marker).</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const world = createWorld();
+const player = world.createEntity();
+console.log('New entity', player);
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-component">Component</a>, <a href="#term-world">World</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-component">
+          <h3>Component</h3>
+          <p><strong class="label">Definition</strong> Plain data object attached to entities. No methods, serializable, and versioned for schema migration.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>// Transform component shape
+const Transform = {
+  position: { x: 0, y: 0, z: 0 },
+  rotation: { x: 0, y: 0, z: 0 },
+  scale:    { x: 1, y: 1, z: 1 },
+};
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-transform">Transform</a>, <a href="#term-renderable">Renderable</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-system">
+          <h3>System</h3>
+          <p><strong class="label">Definition</strong> Function that runs every tick for entities matching a query, reading/writing component data to implement gameplay rules.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>function MovementSystem(world, dt) {
+  for (const e of world.query(['Transform', 'PhysicsBody'])) {
+    const t = world.get(e, 'Transform');
+    const p = world.get(e, 'PhysicsBody');
+    t.position.x += p.linearVel.x * dt;
+  }
+}
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-query">Query</a>, <a href="#term-system-scheduler">System scheduler</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-world">
+          <h3>World</h3>
+          <p><strong class="label">Definition</strong> Container that owns an entity registry, component storage, and the ordered list of systems to run each tick.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const world = new World();
+world.addSystem(MovementSystem, { phase: 'physics' });
+world.update(dt);
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-entity">Entity</a>, <a href="#term-system-scheduler">System scheduler</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-query">
+          <h3>Query</h3>
+          <p><strong class="label">Definition</strong> Filter over component sets (withAll/withAny/without) used by systems to iterate matching entities efficiently.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const renderQuery = world.createQuery()
+  .withAll('Transform', 'Renderable')
+  .without('NetReplicated');
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-archetype">Archetype storage</a>, <a href="#term-system">System</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-archetype">
+          <h3>Archetype storage</h3>
+          <p><strong class="label">Definition</strong> Data layout that groups entities by their exact component set, giving cache-friendly tight loops for queries.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const key = ['Transform', 'Renderable'].sort().join('|');
+const archetype = storage.getOrCreate(key);
+archetype.add(entityId, { Transform, Renderable });
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-query">Query</a>, <a href="#term-world">World</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-transform">
+          <h3>Transform</h3>
+          <p><strong class="label">Definition</strong> Spatial component with position, rotation, and scale in world space, used by render, physics, and AI.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addComponent(player, 'Transform', {
+  position: { x: 0, y: 1.8, z: 0 },
+  rotation: { x: 0, y: 0, z: 0 },
+  scale:    { x: 1, y: 1, z: 1 },
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-renderable">Renderable</a>, <a href="#term-camera">Camera</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-renderable">
+          <h3>Renderable</h3>
+          <p><strong class="label">Definition</strong> Component that links an entity to a mesh, material, and optional render layer/mask flags.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addComponent(player, 'Renderable', {
+  meshId: 'player_mesh',
+  materialId: 'player_pbr',
+  layer: 'characters',
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-transform">Transform</a>, <a href="#term-camera">Camera</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-camera">
+          <h3>Camera</h3>
+          <p><strong class="label">Definition</strong> Component describing projection (FOV, near/far, aspect) and exposure, combined with Transform to build view/projection matrices.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addComponent(cam, 'Camera', {
+  fov: 60,
+  near: 0.1,
+  far:  500,
+  mode: 'perspective',
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-renderable">Renderable</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-physicsbody">
+          <h3>PhysicsBody</h3>
+          <p><strong class="label">Definition</strong> Component that connects an entity to the physics backend, storing body handle, velocities, and simulation mode.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addComponent(e, 'PhysicsBody', {
+  bodyHandle: null,
+  linearVel:  { x: 0, y: 0, z: 0 },
+  angularVel: { x: 0, y: 0, z: 0 },
+  simMode: 'dynamic',
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-transform">Transform</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-playerinput">
+          <h3>PlayerInput</h3>
+          <p><strong class="label">Definition</strong> Component mirroring Source-style <code>CUserCmd</code>: tick, movement axes, look delta, and button bitmask for prediction.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addComponent(player, 'PlayerInput', {
+  tick: 0,
+  move: { x: 0, y: 0 },
+  look: { x: 0, y: 0 },
+  buttons: 0,
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-netreplicated">NetReplicated</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-netreplicated">
+          <h3>NetReplicated</h3>
+          <p><strong class="label">Definition</strong> Component marking entities whose state is synchronized over the network, with netId, channel, interest mask, and dirty flags.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addComponent(player, 'NetReplicated', {
+  netId: 1,
+  channel: 'players',
+  interestMask: 0xffffffff,
+  dirtyFlags: 0,
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-playerinput">PlayerInput</a>, <a href="#term-system-scheduler">System scheduler</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-system-scheduler">
+          <h3>System scheduler</h3>
+          <p><strong class="label">Definition</strong> ECS mechanism that orders systems into phases (pre-physics, physics, render, late) and resolves declared dependencies.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>world.addSystem(InputSystem,   { phase: 'pre-physics' });
+world.addSystem(PhysicsSystem, { phase: 'physics' });
+world.addSystem(RenderSystem,  { phase: 'render' });
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-system">System</a>, <a href="#term-world">World</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

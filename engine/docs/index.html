@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine v2 Glossary Index</title>
+  <link rel="stylesheet" href="glossary.css">
+</head>
+<body>
+  <div class="page">
+    <header class="site-header" id="top">
+      <h1>Engine v2 – glossary index</h1>
+      <p class="summary">Module-level glossary pages aligned with the Engine v2 folder structure.</p>
+      <p class="path">Root: <code>engine/docs/*</code></p>
+    </header>
+
+    <nav aria-label="Glossary index navigation">
+      <h2>Modules</h2>
+      <p class="note">Open a module to see flat terms for that part of the engine.</p>
+      <ul>
+        <li><a href="core.html">core – runtime &amp; GPU</a></li>
+        <li><a href="ecs.html">ecs – ECS v2</a></li>
+        <li><a href="render.html">render – rendering pipeline</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2 class="section-title">How to use this glossary</h2>
+      <p class="section-intro">Each module page is a standalone static HTML document with its own table of contents and examples. Host this directory as static files and browse from <code>index.html</code>.</p>
+      <div class="term-list">
+        <article class="term">
+          <h3>Navigation tips</h3>
+          <p><strong class="label">Per-module pages</strong> Open, for example, <code>core.html</code> to see all terms related to <code>engine/core/*</code>. Use your browser search to jump to specific keywords.</p>
+          <p><strong class="label">Cross-links</strong> Many entries link between modules (e.g., ECS components referenced from netcode pages) so you can follow data flow across the engine.</p>
+        </article>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
