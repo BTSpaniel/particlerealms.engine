@@ -5,8 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Engine v2 Core Glossary</title>
   <link rel="stylesheet" href="glossary.css">
+  <style>
+    :root {
+      --accent: #38bdf8;
+      --fg-muted: #94a3b8;
+      --fg: #e2e8f0;
+      --border: #334155;
+      --bg-tertiary: #1a1f2e;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, #1e293b, #1a1f2e);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 32px;
+      z-index: 1000;
+    }
+
+    .top-nav h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.5px;
+    }
+
+    .top-nav nav {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .top-nav .nav-link {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--fg-muted);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .nav-link:hover {
+      color: var(--fg);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .top-nav .nav-link.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .page {
+      margin-top: 60px !important;
+    }
+
+    /* Override glossary.css nav to not conflict */
+    .page > nav {
+      position: sticky;
+      top: 70px;
+      z-index: 100;
+    }
+  </style>
 </head>
 <body>
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <h1>Engine v2 – Documentation</h1>
+    <nav>
+      <a href="../../" class="nav-link">← Back to Hub</a>
+      <a href="index.html" class="nav-link">Overview</a>
+      <a href="core.html" class="nav-link active">Core</a>
+      <a href="ecs.html" class="nav-link">ECS</a>
+      <a href="render.html" class="nav-link">Render</a>
+      <a href="sim.html" class="nav-link">Sim</a>
+    </nav>
+  </div>
+
   <div class="page">
     <header class="site-header" id="top">
       <h1>Engine v2 – core</h1>

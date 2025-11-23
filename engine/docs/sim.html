@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine v2 Simulation Glossary</title>
+  <link rel="stylesheet" href="glossary.css">
+  <style>
+    :root {
+      --accent: #38bdf8;
+      --fg-muted: #94a3b8;
+      --fg: #e2e8f0;
+      --border: #334155;
+      --bg-tertiary: #1a1f2e;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, #1e293b, #1a1f2e);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 32px;
+      z-index: 1000;
+    }
+
+    .top-nav h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.5px;
+    }
+
+    .top-nav nav {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .top-nav .nav-link {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--fg-muted);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .nav-link:hover {
+      color: var(--fg);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .top-nav .nav-link.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .page {
+      margin-top: 60px !important;
+    }
+
+    /* Override glossary.css nav to not conflict */
+    .page > nav {
+      position: sticky;
+      top: 70px;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <h1>Engine v2 – Documentation</h1>
+    <nav>
+      <a href="../../" class="nav-link">← Back to Hub</a>
+      <a href="index.html" class="nav-link">Overview</a>
+      <a href="core.html" class="nav-link">Core</a>
+      <a href="ecs.html" class="nav-link">ECS</a>
+      <a href="render.html" class="nav-link">Render</a>
+      <a href="sim.html" class="nav-link active">Sim</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <header class="site-header" id="top">
+      <h1>Engine v2 – sim</h1>
+      <p class="summary">Simulation systems: physics, particles, fluids, cloth, world/terrain, and AI/navigation.</p>
+      <p class="path">Path: <code>engine/sim/*</code></p>
+    </header>
+
+    <nav aria-label="Simulation glossary table of contents">
+      <h2>Contents</h2>
+      <p class="note">High-level concepts for Phase 4 simulation systems.</p>
+      <ul>
+        <li><a href="#term-physics">Physics integration</a></li>
+        <li><a href="#term-particles">GPU particles</a></li>
+        <li><a href="#term-fluids">Fluids</a></li>
+        <li><a href="#term-cloth">Cloth</a></li>
+        <li><a href="#term-world-sim">World / terrain sim</a></li>
+        <li><a href="#term-ai-nav">AI &amp; navigation</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2 class="section-title">Phase 4 – Simulation Systems</h2>
+      <p class="section-intro">All simulation systems sit on top of ECS v2 and the core runtime. They expose data-first worlds (sim worlds) and ECS systems that keep simulation in sync with entities and rendering.</p>
+
+      <div class="term-list">
+        <article class="term" id="term-physics">
+          <h3>Physics integration</h3>
+          <p><strong class="label">Definition</strong> CPU physics backend (e.g. PhysX-style world) wrapped by <code>engine/sim/physics</code> and driven by the <code>PhysicsSystem</code> ECS system.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { registerPhysicsSystem } from "engine/ecs/systems/PhysicsSystem.js";
+
+registerPhysicsSystem(world, {
+  phase: "physics",
+  updateKind: "tick",
+});</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>PhysicsBody</code> component, <code>Collider</code> component, <code>world.physicsWorld</code>.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-particles">
+          <h3>GPU particles</h3>
+          <p><strong class="label">Definition</strong> Compute-driven particle simulation world (<code>ParticleSimWorld</code>) with ECS systems for emitters, GPU buffers, and debug rendering.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { registerParticleSystem } from "engine/ecs/systems/ParticleSystem.js";
+
+registerParticleSystem(world, {
+  phase: "postPhysics",
+  updateKind: "tick",
+});</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>ParticleEmitter</code> component, <code>ParticleFxApi</code>, particle debug passes.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-fluids">
+          <h3>Fluids</h3>
+          <p><strong class="label">Definition</strong> 3D grid-based fluid simulation (<code>FluidSimWorld</code>) using WebGPU compute for advection/pressure and ECS-driven volumes/sources.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { registerFluidSystem } from "engine/ecs/systems/FluidSystem.js";
+
+registerFluidSystem(world, {
+  phase: "postPhysics",
+  updateKind: "tick",
+  resolutionScale: 0.5,
+});</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>FluidVolume</code>, <code>FluidSource</code>, <code>world.fluidWorld</code>, fluid debug passes.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-cloth">
+          <h3>Cloth</h3>
+          <p><strong class="label">Definition</strong> CPU mass-spring cloth simulation world (<code>ClothSimWorld</code>) with ECS <code>ClothSystem</code> and debug render passes for visualizing deformed meshes.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { registerClothSystem } from "engine/ecs/systems/ClothSystem.js";
+
+registerClothSystem(world, {
+  phase: "postPhysics",
+  updateKind: "tick",
+  maxDelta: 0.05,
+  structuralIterations: 2,
+});</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>Cloth</code> component, <code>world.clothWorld</code>, cloth debug controller/pass.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-world-sim">
+          <h3>World / terrain simulation</h3>
+          <p><strong class="label">Definition</strong> World-level simulation (<code>WorldSim</code>) that tracks time-of-day, weather, and terrain heightfields (single or chunked tiles), integrated via <code>WorldSystem</code>.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { registerWorldSystem } from "engine/ecs/systems/WorldSystem.js";
+
+registerWorldSystem(world, {
+  phase: "postPhysics",
+  updateKind: "tick",
+  dayLengthSeconds: 600,
+  terrain: { type: "chunked_heightfield" },
+});</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>world.worldSim</code>, <code>sampleTerrainHeight</code>, world persistence helpers and inspectors.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-ai-nav">
+          <h3>AI &amp; navigation</h3>
+          <p><strong class="label">Definition</strong> Navigation and simple AI stack: nav grids baked from terrain, A* pathfinding services, NavAgent ECS system, perception events, and blackboards.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { registerNavAgentSystem } from "engine/ecs/systems/NavAgentSystem.js";
+import { registerPerceptionSystem } from "engine/ecs/systems/PerceptionSystem.js";
+
+registerNavAgentSystem(world, { phase: "postPhysics" });
+registerPerceptionSystem(world, { phase: "postPhysics", radius: 10 });</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>NavAgent</code> component, <code>NavGrid</code>, <code>NavWorld</code>, <code>findPathInNavWorld</code>, AI blackboard helpers.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

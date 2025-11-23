@@ -3,38 +3,219 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Engine v2 Glossary Index</title>
+  <title>Engine v2 – Documentation</title>
   <link rel="stylesheet" href="glossary.css">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-panel: #1e293b;
+      --bg-secondary: #0f172a;
+      --bg-tertiary: #1a1f2e;
+      --border: #334155;
+      --border-light: #475569;
+      --fg: #e2e8f0;
+      --fg-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.13);
+      --accent-strong: #0ea5e9;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg) !important;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, #1e293b, #1a1f2e);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 32px;
+      z-index: 1000;
+    }
+
+    .top-nav h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.5px;
+    }
+
+    .top-nav nav {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .top-nav .nav-link {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--fg-muted);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .nav-link:hover {
+      color: var(--fg);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .top-nav .nav-link.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .page {
+      margin-top: 60px !important;
+    }
+
+    /* Footer */
+    footer {
+      height: 40px;
+      background: linear-gradient(to bottom, #1a1f2e, #0f172a);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 12px;
+      color: var(--fg-muted);
+      margin-top: 40px;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      margin-left: 16px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        height: auto;
+        padding: 12px 16px;
+        gap: 12px;
+      }
+
+      .top-nav h1 {
+        font-size: 16px;
+      }
+
+      .top-nav nav {
+        width: 100%;
+        gap: 4px;
+      }
+
+      .top-nav .nav-link {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <h1>Engine v2 – Documentation</h1>
+    <nav>
+      <a href="../../" class="nav-link">← Back to Hub</a>
+      <a href="./" class="nav-link active">Overview</a>
+      <a href="core.html" class="nav-link">Core</a>
+      <a href="ecs.html" class="nav-link">ECS</a>
+      <a href="render.html" class="nav-link">Render</a>
+      <a href="sim.html" class="nav-link">Sim</a>
+    </nav>
+  </div>
+
   <div class="page">
     <header class="site-header" id="top">
-      <h1>Engine v2 – glossary index</h1>
-      <p class="summary">Module-level glossary pages aligned with the Engine v2 folder structure.</p>
+      <h1>Engine v2 – Documentation</h1>
+      <p class="summary">Complete reference for Engine v2 modules and systems.</p>
       <p class="path">Root: <code>engine/docs/*</code></p>
     </header>
 
-    <nav aria-label="Glossary index navigation">
+    <nav aria-label="Documentation navigation">
       <h2>Modules</h2>
-      <p class="note">Open a module to see flat terms for that part of the engine.</p>
+      <p class="note">Select a module to view detailed glossary and API reference.</p>
       <ul>
         <li><a href="core.html">core – runtime &amp; GPU</a></li>
         <li><a href="ecs.html">ecs – ECS v2</a></li>
         <li><a href="render.html">render – rendering pipeline</a></li>
+        <li><a href="sim.html">sim – simulation systems</a></li>
       </ul>
     </nav>
 
     <main>
-      <h2 class="section-title">How to use this glossary</h2>
-      <p class="section-intro">Each module page is a standalone static HTML document with its own table of contents and examples. Host this directory as static files and browse from <code>index.html</code>.</p>
+      <h2 class="section-title">Quick Demo</h2>
+      <p class="section-intro">See Engine v2 in action with interactive demos for each phase.</p>
+      
+      <div class="term-list">
+        <article class="term" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%); border: 1px solid rgba(56, 189, 248, 0.3); padding: 24px; border-radius: 8px;">
+          <h3>🎮 Try the Tests</h3>
+          <p>The best way to understand Engine v2 is to see it running. Visit the <strong><a href="../../tests/">Test Suite</a></strong> to interact with live demonstrations of each phase:</p>
+          <ul style="margin: 12px 0; padding-left: 20px;">
+            <li><strong>Phase 1:</strong> WebGPU rendering - GPU device, buffers, shaders</li>
+            <li><strong>Phase 2:</strong> ECS v2 - Entity spawning, components, systems</li>
+            <li><strong>Phase 3:</strong> Rendering + ECS - 3D scene with camera control</li>
+          </ul>
+          <p style="margin-top: 16px;"><a href="../../tests/" style="display: inline-block; padding: 8px 16px; background: #38bdf8; color: #000; text-decoration: none; border-radius: 4px; font-weight: 600;">Open Test Suite →</a></p>
+        </article>
+      </div>
+
+      <h2 class="section-title">Documentation Modules</h2>
+      <p class="section-intro">Engine v2 is organized into three main phases, each with its own documentation module. Start with Core for GPU fundamentals, then explore ECS for entity systems, and finally Render for the graphics pipeline.</p>
+      
       <div class="term-list">
         <article class="term">
-          <h3>Navigation tips</h3>
-          <p><strong class="label">Per-module pages</strong> Open, for example, <code>core.html</code> to see all terms related to <code>engine/core/*</code>. Use your browser search to jump to specific keywords.</p>
-          <p><strong class="label">Cross-links</strong> Many entries link between modules (e.g., ECS components referenced from netcode pages) so you can follow data flow across the engine.</p>
+          <h3>Phase 1: Core (GPU &amp; Runtime)</h3>
+          <p>Foundation layer covering GPU device management, buffer allocation, shader compilation, and the main event loop. Essential for understanding how the engine communicates with WebGPU.</p>
+          <p><a href="core.html">→ View Core Documentation</a></p>
+        </article>
+
+        <article class="term">
+          <h3>Phase 2: ECS v2 (Entity Component System)</h3>
+          <p>High-performance entity component system with worlds, entities, components, queries, and systems. Provides the architecture for game logic and simulation.</p>
+          <p><a href="ecs.html">→ View ECS Documentation</a></p>
+        </article>
+
+        <article class="term">
+          <h3>Phase 3: Render (Graphics Pipeline)</h3>
+          <p>3D rendering pipeline with materials, meshes, cameras, and render passes. Integrates with ECS for entity-driven rendering.</p>
+          <p><a href="render.html">→ View Render Documentation</a></p>
+        </article>
+
+        <article class="term">
+          <h3>Navigation Tips</h3>
+          <p><strong class="label">Per-module pages:</strong> Each module has its own standalone documentation with table of contents and examples. Use your browser search (Ctrl+F) to jump to specific keywords.</p>
+          <p><strong class="label">Cross-links:</strong> Many entries link between modules to show how systems interact. Follow these links to understand data flow across the engine.</p>
         </article>
       </div>
     </main>
   </div>
+
+  <footer>
+    <span>Engine v2 Documentation</span>
+  </footer>
 </body>
 </html>
