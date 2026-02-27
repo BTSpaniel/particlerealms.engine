@@ -247,7 +247,7 @@ Output goes to `release/` with compressed runtime and static site.
 
 ## License
 
-All rights reserved. This project is not open source.
+All rights reserved. This project is not open source Yet?.
 
 ---
 
