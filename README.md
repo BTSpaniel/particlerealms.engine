@@ -1,6 +1,7 @@
 # Particle Engine v0.8.0
 
 **A pure WebGPU game engine — 1,308 source files, 552K lines of code, zero dependencies.**
+[![PhysX]([https://img.shields.io/badge/WebGPU-Native-10b981?style=flat-square)](https://www.w3.org/TR/webgpu/](https://github.com/fabmax/PhysX))
 
 [![Engine v0.8.0-alpha](https://img.shields.io/badge/Engine-v0.8.0--alpha-38bdf8?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
 [![Editor v0.6.0-alpha](https://img.shields.io/badge/Editor-v0.6.0--alpha-a78bfa?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
