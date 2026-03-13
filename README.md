@@ -7,7 +7,7 @@
 [![Engine v0.8.0-alpha](https://img.shields.io/badge/Engine-v0.8.0--alpha-38bdf8?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
 [![Editor v0.6.0-alpha](https://img.shields.io/badge/Editor-v0.6.0--alpha-a78bfa?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
 [![WebGPU Native](https://img.shields.io/badge/WebGPU-Native-10b981?style=flat-square)](https://www.w3.org/TR/webgpu/)
-[![PhysX WASM](https://img.shields.io/badge/PhysX-WASM-blue?style=flat-square)](https://github.com/fabmax/physx-js)
+[![PhysX WASM](https://img.shields.io/badge/PhysX-WASM-blue?style=flat-square)]([https://github.com/fabmax/physx-js](https://github.com/fabmax/PhysX))
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-f59e0b?style=flat-square)](#)
 
 > Engine started **Nov 17, 2025** · Editor started **Dec 3, 2025** · ~3 months of active development
