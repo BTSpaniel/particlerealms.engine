@@ -1,14 +1,13 @@
-# Particle Engine v0.8.0
-https://particlerealms.online/
+# Particle Engine v0.8.1
+
 **A pure WebGPU game engine — 1,308 source files, 552K lines of code, zero dependencies.**
 
-
-
-[![Engine v0.8.0-alpha](https://img.shields.io/badge/Engine-v0.8.0--alpha-38bdf8?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
+[![Engine v0.8.1-alpha](https://img.shields.io/badge/Engine-v0.8.1--alpha-38bdf8?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
 [![Editor v0.6.0-alpha](https://img.shields.io/badge/Editor-v0.6.0--alpha-a78bfa?style=flat-square)](https://github.com/BTSpaniel/ParticleEngine)
-[![WebGPU Native](https://img.shields.io/badge/WebGPU-Native-10b981?style=flat-square)](https://www.w3.org/TR/webgpu/)
-[![PhysX](https://img.shields.io/badge/PhysX-WASM-blue?style=flat-square)](https://github.com/fabmax/physx-js)
+[![WebGPU](https://img.shields.io/badge/WebGPU-Native-10b981?style=flat-square)](https://www.w3.org/TR/webgpu/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-f59e0b?style=flat-square)](#)
+
+**🌐 Live: [particlerealms.online](https://particlerealms.online/)**
 
 > Engine started **Nov 17, 2025** · Editor started **Dec 3, 2025** · ~3 months of active development
 
@@ -116,6 +115,14 @@ Particle Engine is a from-scratch WebGPU game engine with an ECS architecture, G
 - **Ed25519 signatures** — cryptographic action verification
 - **Collab** — real-time multi-user editing (25 files)
 
+### WebGPU OS
+A browser-based desktop environment built on the engine, served live at [particlerealms.online](https://particlerealms.online/):
+- **Microkernel** — process table, app registry, sandboxed encrypted per-app storage (OPFS + IndexedDB), permissions, package/patch managers
+- **Windowing** — Plauna DOM panels with drag/resize/maximize, plus a **GPU-native compositor** that renders live windows as 3D quads with per-window textures and input forwarding
+- **Immersive Exposé** — middle-click parallax view; per-window adaptive-FPS live capture (HTML-in-Canvas → extension → Element Capture → native)
+- **App ecosystem** — 33 built-in apps + a mod/patch bus, all compiled into the single platform bundle
+- **Frame Unblocker extension** — optional MV3 extension that strips iframe-blocking headers so the browser app can embed any site
+
 ---
 
 ## Editor (v0.6.0-alpha)
@@ -132,19 +139,24 @@ Full visual editor running in the browser:
 
 ## Playground
 
-12 interactive GPU compute demos:
-- **Particle Storm** — 100M adaptive-quality particles
+17 interactive GPU compute demos:
+- **Particle Storm** — 134M adaptive-quality particles with benchmark
 - **N-Body Gravity** — 4K bodies with O(N²) GPU gravity
 - **Reaction-Diffusion** — Gray-Scott 512² compute
 - **SDF Raymarcher** — real-time sphere tracing + AO
-- **PBR Lighting** — metallic sphere with orbiting lights
-- **Mandelbrot** — GPU fractal explorer
-- **Fluid Sim** — Navier-Stokes 512² compute
-- **Thermal Sim** — heat diffusion + convection
-- **Ant Colony** — emergent GPU swarm behavior
-- **Boids** — classic flocking with spatial hash
-- **Verlet Cloth** — GPU position-based dynamics
-- **Runtime Info** — engine manifest and build stats
+- **PBR Lighting** — path-traced metallic sphere, GGX VNDF
+- **Mandelbrot** — GPU fractal explorer + Julia mode
+- **SPH Fluid** — 4K–12K 3D smoothed particle hydrodynamics
+- **Boids Ecosystem** — 20K agents, colonies, elders, war chains
+- **Wave Terrain** — infinite raymarched terrain, click wave sources
+- **Ant Colony** — 50K ants, dual pheromone grids, emergent foraging highways
+- **Sandbox 2D** — 512² falling sand (sand, water, fire, stone, oil, smoke, steam)
+- **Water Bottle** — 3D raymarched glass bottle with sloshing liquid
+- **Sandbox 3D** — 100K billboard particles, 3D falling sand with materials
+- **Galaxy** — 500K stars, spiral arms, Keplerian orbits
+- **Curl Noise** — 200K particles in 3D noise field
+- **Thermal** — 300K particles, GPU phase transitions
+- **Runtime Info** — animated stats + music
 
 ---
 
@@ -219,7 +231,7 @@ The bundler (`bundle_engine.py`) walks the ES module dependency graph and produc
 # Clone
 git clone https://github.com/BTSpaniel/ParticleEngine.git
 cd ParticleEngine
-git checkout v0.8.0-dev
+git checkout v0.8.1-dev
 
 # Serve locally (any static server works)
 python -m http.server 8000 -d tests
@@ -233,10 +245,10 @@ No install, no build step. Open the landing page to see the live particle sandbo
 ### Build Release Bundle
 
 ```bash
-python bundle_engine.py --entry engine/EngineEditorBootstrap.js --eager --production
+python bundle_engine.py --target engine --production --release --no-cache
 ```
 
-Output goes to `release/` with compressed runtime and static site.
+Output goes to `release/` with compressed runtime assets, a curated docs site, and an engine SDK package.
 
 ---
 
@@ -250,7 +262,7 @@ Output goes to `release/` with compressed runtime and static site.
 
 ## License
 
-All rights reserved. This project is not open source Yet?.
+All rights reserved. This project is not open source.
 
 ---
 
