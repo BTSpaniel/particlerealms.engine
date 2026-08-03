@@ -232,18 +232,18 @@ release/                  # Generated runtimes and self-contained site ZIPs
 
 ### Bundled Runtime
 
-The latest verified `platform` build walked 2,847 modules with zero skipped and produced:
+The latest verified `platform` build walked 2,848 modules with zero skipped and produced:
 
 | Stage | Size |
 |-------|------|
-| Source graph | 41.53 MB |
-| Minified runtime | 32.61 MB |
-| Gzip | 7.84 MB |
-| Brotli | 7.11 MB |
-| **Zstandard** | **6.98 MB** |
-| Self-contained site ZIP | 81.29 MB / 680 entries |
+| Source graph | 41.54 MB |
+| Minified runtime | 32.69 MB |
+| Gzip | 7.86 MB |
+| Brotli | 7.12 MB |
+| **Zstandard** | **7.00 MB** |
+| Self-contained site ZIP | 89.17 MB / 687 entries |
 
-The release contract also validates 78 cross-subsystem sidecars, 35 WebGPU OS runtime/PWA assets, 56 canonical-starter Engine dependencies, 253 Playground module edges, 97 Academy module edges, and byte parity between staged files and archive members.
+The release contract also validates 78 cross-subsystem sidecars, 37 WebGPU OS runtime/PWA assets, 56 canonical-starter Engine dependencies, 253 Playground module edges, 98 Academy module edges, and byte parity between staged files and archive members.
 
 ---
 
