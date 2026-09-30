@@ -304,6 +304,16 @@ python MD/tools/validate_docs.py
 
 ## Third-party physics runtime
 
+### Standalone PhysX PE
+
+[PhysX PE](https://github.com/BTSpaniel/Physx) is the separately distributed
+PhysX 5.11 browser runtime with Blast, WebGPU Flow and Rust SIMD bridges.
+Its [compiled WASM, JavaScript loader, declarations and complete runtime ZIP](https://github.com/BTSpaniel/Physx/releases/tag/v5.11.0-alpha.2)
+have a dedicated release and build guide. Original PhysX PE additions are MIT;
+NVIDIA, fabmax and other upstream components retain their licenses and credits.
+
+### Bundled runtime provenance
+
 Particle Realms' browser PhysX integration uses the prebuilt [`physx-js-webidl` v2.7.3 release](https://github.com/fabmax/physx-js-webidl/releases/tag/v2.7.3) by Max Thiele (`fabmax`). That project provides JavaScript/WebAssembly bindings for NVIDIA PhysX 5.6.1.
 
 The published [`physx-js-webidl.wasm`](https://github.com/BTSpaniel/particlerealms.engine/blob/main/physx-js-webidl.wasm) is an unmodified copy of the binary from [fabmax/physx-js-webidl](https://github.com/fabmax/physx-js-webidl). The vendored runtime used by the Engine lives at [`engine/sim/physics/physx-js-webidl.wasm`](engine/sim/physics/physx-js-webidl.wasm) and is deployed by the platform bundler where the browser and Editor can resolve it.
