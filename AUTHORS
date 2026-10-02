@@ -1,0 +1,10 @@
+# Authors
+
+This file lists the authors and copyright holders of this project — the
+WebGPU OS stack (engine, editor, Plauna, AGI, and the WebGPU OS shell).
+
+Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+  Creator, architect, and sole author of the entire stack.
+
+---
+See LICENSE for licensing terms and NOTICE.md for third-party attributions.

@@ -1,0 +1,13 @@
+Source-Available Alpha License Notice
+
+Copyright (c) 2026 Jake Wehmeier (BTSpaniel). All rights reserved.
+
+This repository and its release artifacts are provided as a public source-available alpha for review, evaluation, documentation, testing, and non-production experimentation.
+
+You may view, download, run, and modify the code for personal evaluation and internal testing. You may not redistribute, sublicense, sell, host as a competing service, or use this software in commercial production without written permission from the copyright holder.
+
+Third-party components retain their own licenses. See NOTICE.md for third-party notices.
+
+This alpha is provided as-is, without warranty of any kind, express or implied. The author is not liable for damages or losses arising from use of the software.
+
+In source file headers, this license is referenced by the SPDX identifier: LicenseRef-ParticleRealms-Alpha
