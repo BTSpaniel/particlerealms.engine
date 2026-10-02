@@ -45,7 +45,7 @@ python serve.py 9002
 
 Open <http://127.0.0.1:9002/>. Windows users can also run `launch.bat --port 9002`. The default Template port is 8000.
 
-Choose **WebGPU OS**, **Plauna Showcase**, or **Blank Canvas**. Blank Canvas reveals your application host after runtime verification; your app creates its canvas and owns the frame loop and cleanup. See the included `README.md` for its boot contracts. Use an SDK for canonical source imports or self-contained rebuilding.
+Choose **WebGPU OS**, **Plauna Showcase**, or **Blank Canvas**. The OS opens its packaged entry inside the service-worker scope. Blank Canvas reveals your application host after runtime verification; your app creates its canvas and owns the frame loop and cleanup. See the included `README.md` for its boot contracts. Use an SDK for canonical source imports or self-contained rebuilding.
 
 ## Source modules and compiled APIs
 
