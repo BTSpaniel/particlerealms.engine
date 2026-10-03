@@ -37,6 +37,7 @@ STANDARD_REPORTS = {
 }
 REQUIRED_REPORT_NAMES = frozenset(STANDARD_REPORTS)
 CANDIDATE_REPORT_NAMES = frozenset({'candidate', 'candidate-cpu', 'candidate-parser'})
+INDIVIDUAL_COLLECTIONS = frozenset({'tests', 'cases', 'checks', 'rows', 'corpus', 'oracles'})
 
 
 def standard_errors(name: str, report: dict) -> list[str]:
@@ -72,8 +73,135 @@ def valid_identity(value, *, directory: bool, manifest: bool = False) -> bool:
     return not manifest or isinstance(value.get('manifestSha256'), str) and bool(re.fullmatch(r'[0-9a-f]{64}', value['manifestSha256']))
 
 
-def evidence_errors(report: dict) -> list[str]:
+def individual_identity(row):
+    if not isinstance(row, dict):
+        return None
+    primary = next((row[name] for name in ('id', 'caseId', 'name') if name in row), None)
+    if not isinstance(primary, str) or not primary:
+        return None
+    qualifiers = []
+    for name in ('mode', 'mount', 'package', 'fixture', 'iteration', 'cycle'):
+        if name in row:
+            value = row[name]
+            if value is not None and type(value) not in (str, int):
+                return None
+            qualifiers.append((name, value))
+    return (primary, *qualifiers)
+
+
+def exact_case_errors(report):
+    """Required schemas retain independently selected, exact case inventories."""
+    schema = report.get('schema')
+    if schema not in {'particle-sdk-parser-validation/v1', 'particle-sdk-public-cpu-results/v1'}:
+        return []
+    expected = report.get('expectedIdentities')
+    if not isinstance(expected, dict):
+        return ['Required report lacks its independently selected case inventory']
     errors = []
+
+    def compare(label, actual, admitted):
+        if (not isinstance(admitted, list) or not admitted or any(value is None for value in admitted)
+                or len(admitted) != len(set(admitted))):
+            errors.append(label + ': expected case identities are absent, invalid or duplicated')
+        elif any(value is None for value in actual) or len(actual) != len(admitted) or set(actual) != set(admitted):
+            errors.append(label + ': executed case identities differ from selected inventory')
+
+    if schema == 'particle-sdk-parser-validation/v1':
+        for name in ('tests', 'corpus'):
+            rows, names = report.get(name), expected.get(name)
+            if not isinstance(rows, list):
+                errors.append(name + ': individual evidence is missing')
+                continue
+            actual = [row.get('name') if isinstance(row, dict) and isinstance(row.get('name'), str) else None for row in rows]
+            admitted = [value if isinstance(value, str) and value else None for value in names] if isinstance(names, list) else names
+            compare(name, actual, admitted)
+            if name == 'corpus' and any(
+                    not isinstance(row, dict) or any(
+                        not isinstance(row.get(field), dict)
+                        or str(row[field].get('status', '')).upper() not in {'PASS', 'PASSED'}
+                        for field in ('sourceGrammar', 'browserGrammar')) for row in rows):
+                errors.append('corpus: original and canonical browser grammar evidence is missing or incomplete')
+        rows, names = report.get('oracles'), expected.get('oracles')
+        def oracle_identity(row):
+            if (not isinstance(row, dict) or not isinstance(row.get('name'), str) or not row['name']
+                    or row.get('mode') not in ('source', 'emitted', 'minified')):
+                return None
+            return (row['name'], row['mode'])
+        if not isinstance(rows, list):
+            errors.append('oracles: individual evidence is missing')
+        else:
+            compare('oracles', [oracle_identity(row) for row in rows],
+                    [oracle_identity(row) for row in names] if isinstance(names, list) else names)
+        if (not isinstance(report.get('corpus'), list) or type(report.get('corpusCount')) is not int
+                or report.get('corpusCount') != len(report['corpus'])):
+            errors.append('corpusCount differs from individual corpus evidence')
+    else:
+        admitted_rows = expected.get('cpuCases')
+        def cpu_identity(row):
+            keys = ('mount', 'mode', 'suite', 'id')
+            if not isinstance(row, dict) or any(not isinstance(row.get(name), str) or not row[name] for name in keys):
+                return None
+            return tuple(row[name] for name in keys)
+        actual, variants, groups = [], [], []
+        mounts = report.get('mounts')
+        if not isinstance(mounts, list):
+            return ['CPU mount evidence is missing']
+        for mount in mounts:
+            if not isinstance(mount, dict) or not isinstance(mount.get('suites'), list):
+                errors.append('CPU suite evidence is missing')
+                continue
+            if str(mount.get('status', '')).upper() not in {'PASS', 'PASSED'}:
+                errors.append('CPU hosting/runtime variant is not complete and passing')
+            if (not isinstance(mount.get('mount'), str) or not mount['mount']
+                    or not isinstance(mount.get('mode'), str) or not mount['mode']):
+                errors.append('CPU hosting/runtime variant identity is invalid')
+                continue
+            variant = (mount['mount'], mount['mode'])
+            variants.append(variant)
+            for suite in mount['suites']:
+                if not isinstance(suite, dict) or not isinstance(suite.get('cases'), list):
+                    errors.append('CPU individual case evidence is missing')
+                    continue
+                if not isinstance(suite.get('id'), str) or not suite['id']:
+                    errors.append('CPU suite identity is invalid')
+                    continue
+                cleanup = suite.get('cleanup')
+                if (str(suite.get('status', '')).upper() not in {'PASS', 'PASSED'}
+                        or not isinstance(cleanup, dict)
+                        or str(cleanup.get('status', '')).upper() not in {'PASS', 'PASSED'}):
+                    errors.append('CPU suite completion or cleanup is unconfirmed')
+                if any(not isinstance(row, dict) or not isinstance(row.get('checks'), list)
+                       or not row['checks'] for row in suite['cases']):
+                    errors.append('CPU case has zero individual assertion evidence')
+                groups.append((*variant, suite['id']))
+                actual.extend(cpu_identity({'mount': variant[0], 'mode': variant[1], 'suite': suite.get('id'),
+                                            'id': row.get('id') if isinstance(row, dict) else None}) for row in suite['cases'])
+        admitted = [cpu_identity(row) for row in admitted_rows] if isinstance(admitted_rows, list) else admitted_rows
+        compare('CPU cases', actual, admitted)
+        if isinstance(admitted, list) and admitted and all(value is not None for value in admitted):
+            expected_variants = {value[:2] for value in admitted}
+            expected_groups = {value[:3] for value in admitted}
+            if (len(variants) != len(set(variants)) or set(variants) != expected_variants
+                    or expected_variants != {('/', 'source'), ('/', 'compiled'), ('/ci-nested/', 'source'), ('/ci-nested/', 'compiled')}):
+                errors.append('CPU hosting/runtime variants are missing or duplicated')
+            if len(groups) != len(set(groups)) or set(groups) != expected_groups:
+                errors.append('CPU suite groups are missing or duplicated')
+            profile = report.get('profile', {})
+            if (not isinstance(profile, dict)
+                    or any(type(profile.get(name)) is not int or profile[name] < 1
+                           for name in ('expectedCasesPerMode', 'expectedSuites')) or any(
+                    sum(value[:2] == variant for value in admitted) != profile.get('expectedCasesPerMode')
+                    or len({value[2] for value in admitted if value[:2] == variant}) != profile.get('expectedSuites')
+                    for variant in expected_variants)):
+                errors.append('CPU profile counts differ from selected identities')
+            if (type(report.get('expectedTests')) is not int or report.get('expectedTests') != len(admitted)
+                    or type(report.get('testsRun')) is not int or report.get('testsRun') != len(actual)):
+                errors.append('CPU expected/executed counts differ from individual evidence')
+    return errors
+
+
+def evidence_errors(report: dict) -> list[str]:
+    errors = exact_case_errors(report)
     if str(report.get('status', '')).upper() not in {'PASS', 'PASSED'}:
         errors.append('Top-level evidence is not passing')
     for name in ('testsRun', 'executedCount', 'testCount', 'totalCount'):
@@ -89,7 +217,7 @@ def evidence_errors(report: dict) -> list[str]:
         if isinstance(value, dict):
             # Context and historical inputs describe identity, not executed work.
             for name, child in value.items():
-                if name in {'context', 'identityVerification', 'baseline', 'historical'}:
+                if name in {'context', 'identityVerification', 'baseline', 'historical', 'expectedIdentities'}:
                     continue
                 if name == 'gpuSuite' and report.get('webgpu') == 'off' and isinstance(child, dict) and child.get('status') == 'NOT_RUN':
                     continue
@@ -107,12 +235,17 @@ def evidence_errors(report: dict) -> list[str]:
                     positive = positive or child > 0
                     if child < 0:
                         errors.append(location + ' is negative')
-                if name in {'tests', 'cases', 'checks', 'rows'} and isinstance(child, list):
+                if name in INDIVIDUAL_COLLECTIONS and isinstance(child, list):
                     completed = [row for row in child if isinstance(row, dict)
                                  and (str(row.get('status', '')).upper() in {'PASS', 'PASSED'} or row.get('passed') is True)]
                     positive = positive or bool(completed)
                     if len(completed) != len(child):
                         errors.append(location + ' contains incomplete or failing individual evidence')
+                    identities = [individual_identity(row) for row in child]
+                    if any(identity is None for identity in identities):
+                        errors.append(location + ' lacks stable individual case identities')
+                    elif len(identities) != len(set(identities)):
+                        errors.append(location + ' contains duplicate individual case identities')
                 visit(child, location)
             for selected in ('selectedCount', 'expectedCount'):
                 if selected in value and 'executedCount' in value and value[selected] != value['executedCount']:

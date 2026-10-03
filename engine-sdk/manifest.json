@@ -1846,7 +1846,7 @@
       "packages": []
     },
     "officialPackageAssets": [],
-    "sdkBuildInputsSha256": "7733391482d2f136fd742a4f6b444c38f5a9137cfc6eec19c55595bbe78fcc75",
+    "sdkBuildInputsSha256": "cc1085af84907b378f195ddd70dd9677ccaaa3b802d42efd8353fa0afd079db0",
     "buildTools": {
       "python": "3.12.7",
       "minifier": "rjsmin",
@@ -3371,14 +3371,14 @@
     "provenance": {
       "path": "particle-engine.provenance.json",
       "predicate_type": "https://slsa.dev/provenance/v1",
-      "sha256": "92f0b3f3dbff076af737e8bd4d94ddec39c02da4152cc08c615b19a460c9e310"
+      "sha256": "46535842e08635dc4edae46efc5e9128985281298509dc9c0964dfc0dc9e4378"
     }
   },
   "publicEntrypoints": {
     "engine/EngineBootstrap.js": "PE",
     "plauna/index.js": "Plauna"
   },
-  "buildInputsSha256": "7733391482d2f136fd742a4f6b444c38f5a9137cfc6eec19c55595bbe78fcc75",
+  "buildInputsSha256": "cc1085af84907b378f195ddd70dd9677ccaaa3b802d42efd8353fa0afd079db0",
   "tools": {
     "python": "3.12.7",
     "minifier": "rjsmin",
@@ -3771,8 +3771,8 @@
       "sha256": "4907adfeedcd1465a69e5d984f50656508d6cf75eef3aa6954045061e76f73b3"
     },
     "bundler/parser.py": {
-      "bytes": 57464,
-      "sha256": "d5bc78cfcf08d28e1ddef684ea0a2a1fd026a94613bcfa22ad881a49a24df1be"
+      "bytes": 57768,
+      "sha256": "8828fb47338c85f5994e9a138ea8dd765b9c2a13ba05b62f0cf1165bac680159"
     },
     "bundler/physics.py": {
       "bytes": 89072,
@@ -3795,8 +3795,8 @@
       "sha256": "8ab988925993aba4ad8e2e119102e6105924a922dd2f6f6ebddc52aa625fdd4a"
     },
     "bundler/scan_import_paths.py": {
-      "bytes": 8338,
-      "sha256": "005af30acbabcfdf8d9b7d9c9e3a78a223ca686d84dafd90322e0615a224bf32"
+      "bytes": 8423,
+      "sha256": "a3118c4e35708c44db62339a83b2c0120cf6d8c4012efc38de33000597b4878c"
     },
     "bundler/sdk.py": {
       "bytes": 34534,
@@ -3971,8 +3971,8 @@
       "sha256": "60bc6044d43ec05062811e90cb45be20a071d3832c793ac2a3e71ea9b9fe9e80"
     },
     "bundler/tests/test_parser.py": {
-      "bytes": 9534,
-      "sha256": "072461d1c130a0b58dbe232fe326e87446fd453b4ec55978da06d21a333b02be"
+      "bytes": 13437,
+      "sha256": "b80c87ad403ed894ff12a121ff8b28ee385cd7574c05851dcc565e5fc38cc84e"
     },
     "bundler/tests/test_parser_registry.py": {
       "bytes": 6126,
@@ -4047,8 +4047,8 @@
       "sha256": "ed81e22c347d8c556d402ff544f903be165cda90ee406fa6bf91f143fd5db225"
     },
     "bundler/tests/test_semantic_oracles.py": {
-      "bytes": 7039,
-      "sha256": "433d2caa6552b038758bf2ffa5be93d3645e69cca7371e38de854003dec97795"
+      "bytes": 8500,
+      "sha256": "9341c6e8de7f7dcbe07bd78ba9a63710dae2211538af4944b062c2b786d7f30c"
     },
     "bundler/tests/test_shared_ocr_graph.py": {
       "bytes": 1516,
@@ -4116,7 +4116,7 @@
     },
     "dist/particle-engine.manifest.json": {
       "bytes": 153607,
-      "sha256": "90e25ce0f4610d597dd4b307a559db16552e1cd262b0ca39bebddb786a83ae39"
+      "sha256": "d74acfaf8dd2904a325aaa804642cb25f7690682b3d0c572bd3f46caa6296eff"
     },
     "dist/particle-engine.min.js": {
       "bytes": 19823005,
@@ -4144,7 +4144,7 @@
     },
     "dist/particle-engine.provenance.json": {
       "bytes": 2707,
-      "sha256": "92f0b3f3dbff076af737e8bd4d94ddec39c02da4152cc08c615b19a460c9e310"
+      "sha256": "46535842e08635dc4edae46efc5e9128985281298509dc9c0964dfc0dc9e4378"
     },
     "dist/physx-pe.wasm": {
       "bytes": 6948292,
@@ -30443,8 +30443,8 @@
       "sha256": "19ff0c2f3b04713f20342e3e13f64a5c5aac5fe094f23d7a7e7e60a725b6531b"
     },
     "sdk/tests/test_rebuild_network.py": {
-      "bytes": 12805,
-      "sha256": "d829a0973f7549f21ebafda5e5caaacb8632f3edf228da07a44a1da6e742e5a1"
+      "bytes": 12959,
+      "sha256": "7f98d0acd59db60e51b06e9ddd96ce4809f056d2dc527c1f9e35dde6e2f48a13"
     },
     "sdk/tests/test_server.py": {
       "bytes": 3403,
@@ -30455,8 +30455,8 @@
       "sha256": "e981bff9e3732fca732718492693ef3ae7f6a16b8b016391d2f1450a2d406808"
     },
     "sdk-build.json": {
-      "bytes": 1312588,
-      "sha256": "94db4fb827d2639d4ab499c66a4380451b4cd4e2feb5866d91c32a366819a580"
+      "bytes": 1312590,
+      "sha256": "a99898bf0ef09647881ede4ed700b2af5a855a8f2e5e415f8a73e5d2685defa3"
     },
     "sdk-check.js": {
       "bytes": 2531,
@@ -32146,7 +32146,7 @@
   },
   "metrics": {
     "files": 7183,
-    "bytes": 309330398,
+    "bytes": 309336307,
     "duplicateBytes": 60288382
   }
 }

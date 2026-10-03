@@ -12,6 +12,19 @@ import sdk_tests
 
 
 class PublicBrowserReportingTests(unittest.TestCase):
+    def test_expected_inventory_selects_case_ids_per_mode_before_execution(self):
+        profile = {'mounts': ['/', '/ci-nested/'], 'modes': ['source', 'compiled'],
+                   'suites': [{'id': 'rig', 'expectedCases': {'source': ['rig:source-api'],
+                                                          'compiled': ['rig:compiled-api']}}]}
+        self.assertEqual(sdk_tests.expected_case_identities(profile), [
+            {'mount': '/', 'mode': 'source', 'suite': 'rig', 'id': 'rig:source-api'},
+            {'mount': '/', 'mode': 'compiled', 'suite': 'rig', 'id': 'rig:compiled-api'},
+            {'mount': '/ci-nested/', 'mode': 'source', 'suite': 'rig', 'id': 'rig:source-api'},
+            {'mount': '/ci-nested/', 'mode': 'compiled', 'suite': 'rig', 'id': 'rig:compiled-api'}])
+        profile['suites'][0]['expectedCases'].pop('compiled')
+        with self.assertRaises(KeyError):
+            sdk_tests.expected_case_identities(profile)
+
     def test_unavailable_module_records_every_required_case_as_unexecuted(self):
         suite = {'id': 'rig-public', 'expectedCases': {'compiled': ['rig-public:identity', 'rig-public:finite-step']}}
         observed = sdk_tests.missing_cases(suite, 'compiled', 'Missing compiled export')

@@ -9,6 +9,8 @@ small tokenizer skips those contexts so only real source imports are
 returned as graph edges.
 """
 
+from .parser import _CodeToken, _decode_js_string_token
+
 
 def scan_import_paths(source):
     """Extract static and dynamic import paths from a JavaScript source.
@@ -106,10 +108,9 @@ def scan_import_paths(source):
         if c == '.':
             return ('DOT', c, idx + 1)
         if c == "'" or c == '"':
-            q = c
-            start = idx + 1
-            end = _skip_string(idx, q)
-            return ('STR', source[start:end - 1], end)
+            end = _skip_string(idx, c)
+            token = _CodeToken('string', None, idx, end)
+            return ('STR', _decode_js_string_token(source, token), end)
         if c == '`':
             start = idx + 1
             end = _skip_template(idx)

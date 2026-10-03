@@ -39,6 +39,20 @@ FIXTURES = (
     ("comments-strings-and-export-lookalikes", {
         "engine/main.js": "// import value from './missing.js';\nconst text=\"export default class Fake {}\"; const object={return:24}; export const result=[text,object.return/2/3,typeof /import.*fake/];",
     }, ["export default class Fake {}", 4, "object"]),
+    ("escaped-import-reexport-and-dynamic-specifiers", {
+        "engine/main.js": (
+            r"import DefaultValue, { base, allValue } from '.\x2fbridge.js'; "
+            r"import * as namespace from '.\/\uD83D\uDE80.js'; "
+            "import './si\\\r\nde.js'; "
+            r"export const result = (async()=>{const lazy=await import('./\u{000006c}azy.js');"
+            "return [DefaultValue,base,allValue,namespace.extra,lazy.answer,globalThis.__ESCAPED_SIDE__];})();"
+        ),
+        "engine/bridge.js": r"export { default, value as base } from '.\u002fdep.js'; export * from '.\/dep.js';",
+        "engine/dep.js": "export default 5; export const value=7; export const allValue=11;",
+        "engine/🚀.js": "export const extra=13;",
+        "engine/lazy.js": "export const answer=17;",
+        "engine/side.js": "globalThis.__ESCAPED_SIDE__=19;",
+    }, [5, 7, 11, 13, 17, 19]),
 )
 
 
@@ -73,14 +87,16 @@ class ModuleSemanticOracleTests(unittest.TestCase):
                 for path, source in sources.items():
                     destination = root / path
                     destination.parent.mkdir(parents=True, exist_ok=True)
-                    destination.write_text(source, encoding="utf-8")
+                    # Keep the served fixture bytes identical to the recorded
+                    # source, including explicit JavaScript CRLF continuations.
+                    destination.write_text(source, encoding="utf-8", newline="\n")
                 (root / "index.html").write_text('<!doctype html><link rel="icon" href="data:,">', encoding="utf-8")
                 graph = ModuleGraph(root)
                 graph.walk(root / "engine/main.js")
                 bundle = build_bundle(graph, root, entry_ids=["engine/main.js"])
                 minified = minify_source(bundle)
-                (root / "emitted.js").write_text(bundle, encoding="utf-8")
-                (root / "minified.js").write_text(minified, encoding="utf-8")
+                (root / "emitted.js").write_text(bundle, encoding="utf-8", newline="\n")
+                (root / "minified.js").write_text(minified, encoding="utf-8", newline="\n")
                 server = SDKHTTPServer(("127.0.0.1", 0), partial(QuietHandler, directory=str(root)))
                 thread = threading.Thread(target=server.serve_forever, daemon=True)
                 thread.start()
@@ -115,12 +131,17 @@ class ModuleSemanticOracleTests(unittest.TestCase):
                     thread.join(timeout=10)
                     self.assertFalse(thread.is_alive(), "Oracle HTTP server did not stop")
 
+class BrowserSyntaxNegativeOracleTests(unittest.TestCase):
     def test_real_browser_rejects_malformed_emitted_code(self):
         from bundler.browser_syntax import assert_browser_classic_script_syntax
         from bundler.parser import ParseError
         for source in ("const value = ;", "__e.__default = class Demo {} function helper() {}", "const value = `unterminated;"):
-            with self.subTest(source=source), self.assertRaises(ParseError):
-                assert_browser_classic_script_syntax(source, label="negative-oracle.js")
+            with self.subTest(source=source):
+                with self.assertRaises(ParseError) as rejected:
+                    assert_browser_classic_script_syntax(source, label="negative-oracle.js")
+                self.assertRegex(str(rejected.exception),
+                                 r"failed final browser syntax validation: FAIL SyntaxError\b",
+                                 "Malformed source must fail in Chromium's parser, not in browser infrastructure")
 
 
 if __name__ == "__main__":

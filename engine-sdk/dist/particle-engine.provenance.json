@@ -35,7 +35,7 @@
         "moduleCount": 1775,
         "fileInventorySha256": "2f361a589993f603b8761ffad7e7f996d223b594fb5ecf7ffc55d05c7b377e41",
         "officialPackageInventorySha256": "ff320c9300a9d0e860be8d26851b2866950d7ae6b52131a1c0dc23b4665c047f",
-        "sdkBuildInputsSha256": "7733391482d2f136fd742a4f6b444c38f5a9137cfc6eec19c55595bbe78fcc75",
+        "sdkBuildInputsSha256": "cc1085af84907b378f195ddd70dd9677ccaaa3b802d42efd8353fa0afd079db0",
         "buildTools": {
           "python": "3.12.7",
           "minifier": "rjsmin",

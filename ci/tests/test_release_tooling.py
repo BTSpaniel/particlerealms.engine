@@ -19,6 +19,7 @@ CI = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(CI))
 from aggregate import CANDIDATE_REPORT_NAMES, REQUIRED_REPORT_NAMES, STANDARD_REPORTS, aggregate
 from report_context import canonical_digest, capture, digest
+from ci.tests.test_aggregate import passing_cpu_report, passing_report
 
 spec = importlib.util.spec_from_file_location('sdk_release_tooling', CI.parent / 'tools/release.py')
 release = importlib.util.module_from_spec(spec)
@@ -29,7 +30,7 @@ class ReleaseToolingTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix='sdk-release-validation-')
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
+        self.root = Path(temporary.name).resolve()
         environment = patch.dict(os.environ, {'GITHUB_REPOSITORY': release.REPOSITORY,
             'GITHUB_WORKFLOW': 'Fixture CI', 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '1',
             'GITHUB_JOB': 'fixture', 'GITHUB_SHA': ''})
@@ -102,11 +103,12 @@ class ReleaseToolingTests(unittest.TestCase):
         base_context, candidate_context = capture(self.root), capture(self.root, candidate=candidate)
         self.child_path.parent.mkdir(parents=True, exist_ok=True)
         children, sources = {}, {}
-        for name, (field, schema) in STANDARD_REPORTS.items():
+        for name in STANDARD_REPORTS:
             context = deepcopy(candidate_context if name in CANDIDATE_REPORT_NAMES else base_context)
-            child = {'status': 'PASS', field: schema, 'checks': [{'name': 'Local fixture acceptance', 'status': 'PASS'}],
-                     'context': context, 'testedPackage': deepcopy(context['candidate'] or context['sdk']),
-                     'identityVerification': {'status': 'PASS', 'changes': [], 'context': deepcopy(context)}}
+            context['job'] = name
+            child = passing_cpu_report() if name in {'cpu', 'candidate-cpu'} else passing_report(name)
+            child.update(context=context, testedPackage=deepcopy(context['candidate'] or context['sdk']),
+                         identityVerification={'status': 'PASS', 'changes': [], 'context': deepcopy(context)})
             if name in {'browser-off', 'browser-software'}:
                 child.update(webgpu=name.removeprefix('browser-'),
                              gpuSuite={'status': 'NOT_RUN' if name == 'browser-off' else 'PASS'})

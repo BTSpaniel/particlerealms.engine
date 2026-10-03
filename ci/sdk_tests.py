@@ -55,6 +55,13 @@ def missing_cases(suite, mode, error):
                   for identity in suite['expectedCases'][mode]], 'cleanup': {'status': 'not_confirmed'}}
 
 
+def expected_case_identities(profile):
+    """Select every required identity from the validated immutable profile."""
+    return [{'mount': mount, 'mode': mode, 'suite': suite['id'], 'id': identity}
+            for mount in profile['mounts'] for mode in profile['modes']
+            for suite in profile['suites'] for identity in suite['expectedCases'][mode]]
+
+
 def button_contracts(page, base, mode, suite, contracts):
     """Reuse all seven original Python assertion methods, including real input."""
     controller = contracts.PublicButtonContracts()
@@ -226,6 +233,7 @@ def main(argv=None):
         report['testedPackage'] = report['context']['candidate'] or report['context']['sdk']
         support = load_module('public_sdk_tests_support', sdk / 'sdk/public_tests.py')
         profile = support.validate_public_profile(sdk)
+        report['expectedIdentities'] = {'cpuCases': expected_case_identities(profile)}
         report['profile'] = {'sha256': hashlib.sha256((sdk / 'sdk/public_tests/profile.json').read_bytes()).hexdigest(),
             'expectedSuites': len(profile['suites']), 'expectedCasesPerMode': profile['expectedCasesPerMode'],
             'assertionOriginsSha256': profile['assertionOriginsSha256']}

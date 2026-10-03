@@ -54,7 +54,8 @@ class SDKOfflineNetworkTests(TestCase):
 
     def test_real_tcp_socketpair_exchanges_bytes_and_restores_scope(self):
         self.isolated('''
-            for family in (None, socket.AF_INET):
+            families = (None, socket.AF_INET) if os.name == 'nt' else (None, socket.AF_UNIX)
+            for family in families:
                 pair = socket.socketpair() if family is None else socket.socketpair(family)
                 with pair[0] as left, pair[1] as right:
                     left.sendall(b'sdk-self-pipe')
@@ -132,7 +133,8 @@ class SDKOfflineNetworkTests(TestCase):
             pairs, errors = [], []
             def make_pair():
                 try:
-                    pairs.append(socket.socketpair(socket.AF_INET))
+                    family = socket.AF_INET if os.name == 'nt' else socket.AF_UNIX
+                    pairs.append(socket.socketpair(family))
                 except BaseException as error:
                     errors.append(error)
             worker = threading.Thread(target=make_pair)

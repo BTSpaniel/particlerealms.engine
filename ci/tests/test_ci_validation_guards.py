@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import run_python_tests
 import run_with_context
+import parser_tests
 
 
 class JunitInfrastructureTests(unittest.TestCase):
@@ -37,6 +38,24 @@ class JunitInfrastructureTests(unittest.TestCase):
                 self.assertEqual(suite.attrib['errors'], '1')
                 self.assertEqual(len(suite.findall('testcase/error')), 1)
                 self.assertEqual(json.loads(output.read_text())['status'], 'FAIL')
+
+
+class ParserOutputBoundaryTests(unittest.TestCase):
+    def test_baseline_and_candidate_outputs_are_rejected_before_reading_inputs(self):
+        with tempfile.TemporaryDirectory(prefix='sdk-parser-output-') as temporary:
+            candidate = Path(temporary).resolve() / 'candidate'
+            candidate.mkdir()
+            for sdk in (parser_tests.ROOT / 'engine-sdk', candidate):
+                output = sdk / 'parse-only-output-must-not-exist.json'
+                with self.subTest(sdk=sdk), redirect_stderr(io.StringIO()) as diagnostic:
+                    with patch.object(parser_tests, 'capture') as read_inputs:
+                        with self.assertRaises(SystemExit) as rejected:
+                            parser_tests.main(['--sdk', str(sdk), '--output', str(output)])
+                    self.assertEqual(rejected.exception.code, 2)
+                    self.assertIn('--output must be outside the tested SDK', diagnostic.getvalue())
+                    read_inputs.assert_not_called()
+                    self.assertFalse(output.exists())
+            self.assertEqual(list(candidate.iterdir()), [])
 
 
 class ActualPytestCollectionTests(unittest.TestCase):
@@ -111,7 +130,7 @@ class FreshEvidenceWrapperTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix='sdk-fresh-evidence-')
         self.addCleanup(self.temporary.cleanup)
-        self.root = Path(self.temporary.name)
+        self.root = Path(self.temporary.name).resolve()
         self.output = self.root / 'test-results/check.json'
         self.output.parent.mkdir()
         self.addCleanup(patch.stopall)

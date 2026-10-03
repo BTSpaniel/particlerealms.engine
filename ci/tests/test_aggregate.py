@@ -31,7 +31,162 @@ def passing_report(job='test'):
     if job in STANDARD_REPORTS:
         field, value = STANDARD_REPORTS[job]
         report[field] = value
+    if job in {'parser', 'candidate-parser'}:
+        expected = {'tests': ['parser.tests.first', 'parser.tests.second'],
+                    'corpus': ['engine/public.js', 'plauna/public.js'],
+                    'oracles': [{'name': 'nested-regex', 'mode': mode}
+                                for mode in ('source', 'emitted', 'minified')]}
+        report.update(expectedIdentities=expected, testsRun=2, corpusCount=2,
+                      tests=[{'name': name, 'status': 'PASS'} for name in expected['tests']],
+                      corpus=[{'name': name, 'status': 'PASS', 'sourceGrammar': {'status': 'PASS'},
+                               'browserGrammar': {'status': 'PASS'}} for name in expected['corpus']],
+                      oracles=[{**row, 'status': 'PASS'} for row in expected['oracles']])
     return report
+
+
+def passing_cpu_report():
+    report = passing_report('cpu')
+    expected, observed = [], []
+    for mount in ('/', '/ci-nested/'):
+        for mode in ('source', 'compiled'):
+            suites = []
+            for suite in ('json', 'persistence'):
+                cases = []
+                for identity in ('case:first', 'case:second'):
+                    expected.append({'mount': mount, 'mode': mode, 'suite': suite, 'id': identity})
+                    cases.append({'id': identity, 'status': 'PASS',
+                                  'checks': [{'name': 'assertion completed', 'passed': True}]})
+                suites.append({'id': suite, 'status': 'PASS', 'cases': cases,
+                               'cleanup': {'status': 'passed'}})
+            observed.append({'mount': mount, 'mode': mode, 'status': 'PASS', 'suites': suites})
+    report.update(expectedIdentities={'cpuCases': expected}, mounts=observed,
+                  profile={'expectedCasesPerMode': 4, 'expectedSuites': 2}, expectedTests=16, testsRun=16)
+    return report
+
+
+class IndividualCaseAdmissionTests(unittest.TestCase):
+    def assert_failed(self, report, message):
+        result = aggregate({'required': report})
+        self.assertEqual(result['status'], 'FAIL')
+        self.assertIn(message, ' '.join(result['errors']))
+
+    def test_generic_duplicate_checks_tests_rows_and_cases_are_rejected(self):
+        for collection in ('checks', 'tests', 'rows', 'cases'):
+            report = passing_report()
+            report[collection] = [{'name': 'one actual case', 'status': 'PASS'}] * 2
+            with self.subTest(collection=collection):
+                self.assert_failed(report, 'duplicate individual case identities')
+
+    def test_missing_or_unhashable_generic_case_identity_fails_without_crashing(self):
+        for row in ({'status': 'PASS'}, {'name': 'case', 'mode': [], 'status': 'PASS'},
+                    {'id': False, 'name': 'case', 'status': 'PASS'}):
+            report = passing_report()
+            report['checks'] = [row]
+            with self.subTest(row=row):
+                self.assert_failed(report, 'stable individual case identities')
+
+    def test_parser_exact_inventory_and_each_oracle_runtime_mode_pass(self):
+        report = passing_report('parser')
+        self.assertEqual(aggregate({'parser': report})['status'], 'PASS')
+
+    def test_parser_missing_or_substituted_cases_and_changed_counts_are_rejected(self):
+        for collection in ('tests', 'corpus', 'oracles'):
+            for mutation in ('remove', 'substitute', 'duplicate'):
+                report = passing_report('parser')
+                if mutation == 'remove':
+                    report[collection].pop()
+                elif mutation == 'substitute':
+                    report[collection][0]['name'] = 'different case with a passing label'
+                else:
+                    report[collection].append(deepcopy(report[collection][0]))
+                with self.subTest(collection=collection, mutation=mutation):
+                    self.assert_failed(report, 'case identities')
+        report = passing_report('parser')
+        report['corpusCount'] = 999
+        self.assert_failed(report, 'corpusCount')
+
+    def test_missing_duplicate_or_invalid_selected_parser_inventory_fails(self):
+        for mutation in ('absent', 'duplicate', 'invalid'):
+            report = passing_report('parser')
+            if mutation == 'absent':
+                report.pop('expectedIdentities')
+            elif mutation == 'duplicate':
+                report['expectedIdentities']['tests'].append('parser.tests.first')
+            else:
+                report['expectedIdentities']['oracles'][0]['mode'] = 'unexecuted'
+            with self.subTest(mutation=mutation):
+                self.assert_failed(report, 'inventory' if mutation == 'absent' else 'expected case identities')
+
+    def test_parser_missing_or_failed_original_and_canonical_grammar_fails(self):
+        for field in ('sourceGrammar', 'browserGrammar'):
+            for mutation in ('absent', 'failed', 'empty'):
+                report = passing_report('parser')
+                if mutation == 'absent':
+                    report['corpus'][0].pop(field)
+                else:
+                    report['corpus'][0][field] = {} if mutation == 'empty' else {'status': 'FAIL'}
+                with self.subTest(field=field, mutation=mutation):
+                    self.assert_failed(report, 'browser grammar evidence is missing or incomplete')
+
+    def test_cpu_repeated_ids_in_distinct_suite_mode_mount_groups_pass(self):
+        report = passing_cpu_report()
+        self.assertEqual(aggregate({'cpu': report})['status'], 'PASS')
+
+    def test_cpu_missing_case_even_with_adjusted_counts_fails_selected_inventory(self):
+        report = passing_cpu_report()
+        report['mounts'][0]['suites'][0]['cases'].pop()
+        report['testsRun'] -= 1
+        report['expectedTests'] -= 1
+        self.assert_failed(report, 'executed case identities differ')
+
+    def test_cpu_missing_or_duplicated_mount_and_suite_groups_fail(self):
+        for mutation in ('missing-mount', 'duplicate-mount', 'missing-suite', 'duplicate-suite'):
+            report = passing_cpu_report()
+            if mutation == 'missing-mount':
+                report['mounts'].pop()
+            elif mutation == 'duplicate-mount':
+                report['mounts'][1] = deepcopy(report['mounts'][0])
+            elif mutation == 'missing-suite':
+                report['mounts'][0]['suites'].pop()
+            else:
+                report['mounts'][0]['suites'][1] = deepcopy(report['mounts'][0]['suites'][0])
+            with self.subTest(mutation=mutation):
+                self.assert_failed(report, 'case identities')
+
+    def test_cpu_duplicate_case_and_assertions_fail(self):
+        for collection in ('cases', 'checks'):
+            report = passing_cpu_report()
+            suite = report['mounts'][0]['suites'][0]
+            rows = suite['cases'] if collection == 'cases' else suite['cases'][0]['checks']
+            rows.append(deepcopy(rows[0]))
+            with self.subTest(collection=collection):
+                self.assert_failed(report, 'duplicate individual case identities')
+
+    def test_cpu_zero_assertions_missing_cleanup_and_missing_inventory_fail(self):
+        for mutation in ('zero-assertions', 'missing-cleanup', 'missing-inventory'):
+            report = passing_cpu_report()
+            suite = report['mounts'][0]['suites'][0]
+            if mutation == 'zero-assertions':
+                suite['cases'][0]['checks'] = []
+            elif mutation == 'missing-cleanup':
+                suite.pop('cleanup')
+            else:
+                report.pop('expectedIdentities')
+            with self.subTest(mutation=mutation):
+                self.assert_failed(report, {'zero-assertions': 'zero individual assertion',
+                    'missing-cleanup': 'cleanup is unconfirmed', 'missing-inventory': 'selected case inventory'}[mutation])
+
+    def test_cpu_invalid_mount_suite_and_count_fields_fail_without_crashing(self):
+        for mutation in ('mount', 'mode', 'suite', 'count'):
+            report = passing_cpu_report()
+            if mutation == 'suite':
+                report['mounts'][0]['suites'][0]['id'] = []
+            elif mutation == 'count':
+                report['profile']['expectedSuites'] = True
+            else:
+                report['mounts'][0][mutation] = {'invalid': 'identity'}
+            with self.subTest(mutation=mutation):
+                self.assert_failed(report, 'identity is invalid' if mutation != 'count' else 'profile counts')
 
 
 class AggregateTests(unittest.TestCase):

@@ -126,8 +126,8 @@
       "sha256": "4907adfeedcd1465a69e5d984f50656508d6cf75eef3aa6954045061e76f73b3"
     },
     "bundler/parser.py": {
-      "bytes": 57464,
-      "sha256": "d5bc78cfcf08d28e1ddef684ea0a2a1fd026a94613bcfa22ad881a49a24df1be"
+      "bytes": 57768,
+      "sha256": "8828fb47338c85f5994e9a138ea8dd765b9c2a13ba05b62f0cf1165bac680159"
     },
     "bundler/physics.py": {
       "bytes": 89072,
@@ -150,8 +150,8 @@
       "sha256": "8ab988925993aba4ad8e2e119102e6105924a922dd2f6f6ebddc52aa625fdd4a"
     },
     "bundler/scan_import_paths.py": {
-      "bytes": 8338,
-      "sha256": "005af30acbabcfdf8d9b7d9c9e3a78a223ca686d84dafd90322e0615a224bf32"
+      "bytes": 8423,
+      "sha256": "a3118c4e35708c44db62339a83b2c0120cf6d8c4012efc38de33000597b4878c"
     },
     "bundler/sdk.py": {
       "bytes": 34534,
@@ -326,8 +326,8 @@
       "sha256": "60bc6044d43ec05062811e90cb45be20a071d3832c793ac2a3e71ea9b9fe9e80"
     },
     "bundler/tests/test_parser.py": {
-      "bytes": 9534,
-      "sha256": "072461d1c130a0b58dbe232fe326e87446fd453b4ec55978da06d21a333b02be"
+      "bytes": 13437,
+      "sha256": "b80c87ad403ed894ff12a121ff8b28ee385cd7574c05851dcc565e5fc38cc84e"
     },
     "bundler/tests/test_parser_registry.py": {
       "bytes": 6126,
@@ -402,8 +402,8 @@
       "sha256": "ed81e22c347d8c556d402ff544f903be165cda90ee406fa6bf91f143fd5db225"
     },
     "bundler/tests/test_semantic_oracles.py": {
-      "bytes": 7039,
-      "sha256": "433d2caa6552b038758bf2ffa5be93d3645e69cca7371e38de854003dec97795"
+      "bytes": 8500,
+      "sha256": "9341c6e8de7f7dcbe07bd78ba9a63710dae2211538af4944b062c2b786d7f30c"
     },
     "bundler/tests/test_shared_ocr_graph.py": {
       "bytes": 1516,
@@ -2222,8 +2222,8 @@
       "sha256": "19ff0c2f3b04713f20342e3e13f64a5c5aac5fe094f23d7a7e7e60a725b6531b"
     },
     "sdk/tests/test_rebuild_network.py": {
-      "bytes": 12805,
-      "sha256": "d829a0973f7549f21ebafda5e5caaacb8632f3edf228da07a44a1da6e742e5a1"
+      "bytes": 12959,
+      "sha256": "7f98d0acd59db60e51b06e9ddd96ce4809f056d2dc527c1f9e35dde6e2f48a13"
     },
     "sdk/tests/test_server.py": {
       "bytes": 3403,
@@ -2258,7 +2258,7 @@
       "sha256": "c46655e8a94afc45338d4cb2b840475f88e5012d524509916e505079c00bfa39"
     }
   },
-  "inputSha256": "91dddaaf81ecd66409d442c1cfa1269d78548468fe0d626303bbbe1276925824",
+  "inputSha256": "f367d085c685557c38f0a70148fef125ad7b63f9f4a673e268ac6befdee3854b",
   "inputs": {
     "AUTHORS": {
       "bytes": 355,
@@ -17773,8 +17773,8 @@
       "sha256": "4907adfeedcd1465a69e5d984f50656508d6cf75eef3aa6954045061e76f73b3"
     },
     "bundler/parser.py": {
-      "bytes": 57464,
-      "sha256": "d5bc78cfcf08d28e1ddef684ea0a2a1fd026a94613bcfa22ad881a49a24df1be"
+      "bytes": 57768,
+      "sha256": "8828fb47338c85f5994e9a138ea8dd765b9c2a13ba05b62f0cf1165bac680159"
     },
     "bundler/physics.py": {
       "bytes": 89072,
@@ -17797,8 +17797,8 @@
       "sha256": "8ab988925993aba4ad8e2e119102e6105924a922dd2f6f6ebddc52aa625fdd4a"
     },
     "bundler/scan_import_paths.py": {
-      "bytes": 8338,
-      "sha256": "005af30acbabcfdf8d9b7d9c9e3a78a223ca686d84dafd90322e0615a224bf32"
+      "bytes": 8423,
+      "sha256": "a3118c4e35708c44db62339a83b2c0120cf6d8c4012efc38de33000597b4878c"
     },
     "bundler/sdk.py": {
       "bytes": 34534,
@@ -17973,8 +17973,8 @@
       "sha256": "60bc6044d43ec05062811e90cb45be20a071d3832c793ac2a3e71ea9b9fe9e80"
     },
     "bundler/tests/test_parser.py": {
-      "bytes": 9534,
-      "sha256": "072461d1c130a0b58dbe232fe326e87446fd453b4ec55978da06d21a333b02be"
+      "bytes": 13437,
+      "sha256": "b80c87ad403ed894ff12a121ff8b28ee385cd7574c05851dcc565e5fc38cc84e"
     },
     "bundler/tests/test_parser_registry.py": {
       "bytes": 6126,
@@ -18049,8 +18049,8 @@
       "sha256": "ed81e22c347d8c556d402ff544f903be165cda90ee406fa6bf91f143fd5db225"
     },
     "bundler/tests/test_semantic_oracles.py": {
-      "bytes": 7039,
-      "sha256": "433d2caa6552b038758bf2ffa5be93d3645e69cca7371e38de854003dec97795"
+      "bytes": 8500,
+      "sha256": "9341c6e8de7f7dcbe07bd78ba9a63710dae2211538af4944b062c2b786d7f30c"
     },
     "bundler/tests/test_shared_ocr_graph.py": {
       "bytes": 1516,
@@ -29113,8 +29113,8 @@
       "sha256": "19ff0c2f3b04713f20342e3e13f64a5c5aac5fe094f23d7a7e7e60a725b6531b"
     },
     "sdk/tests/test_rebuild_network.py": {
-      "bytes": 12805,
-      "sha256": "d829a0973f7549f21ebafda5e5caaacb8632f3edf228da07a44a1da6e742e5a1"
+      "bytes": 12959,
+      "sha256": "7f98d0acd59db60e51b06e9ddd96ce4809f056d2dc527c1f9e35dde6e2f48a13"
     },
     "sdk/tests/test_server.py": {
       "bytes": 3403,

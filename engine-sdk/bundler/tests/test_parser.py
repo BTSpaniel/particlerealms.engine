@@ -7,6 +7,7 @@
 import unittest
 
 from bundler.parser import ParseError, parse_module
+from bundler.scan_import_paths import scan_import_paths
 
 
 class TestParser(unittest.TestCase):
@@ -194,6 +195,72 @@ class TestParser(unittest.TestCase):
         ):
             with self.subTest(source=source), self.assertRaises(ParseError):
                 parse_module(source)
+
+    def test_escaped_specifiers_decode_in_every_dependency_form(self):
+        literals = (
+            (r"'.\x2fdep.js'", "./dep.js"),
+            (r"'./\u0064ep.js'", "./dep.js"),
+            (r"'.\u{2F}dep.js'", "./dep.js"),
+            (r"'.\u{000002f}dep.js'", "./dep.js"),
+            (r"'.\/dep.js'", "./dep.js"),
+            (r"'./it\'s.js'", "./it's.js"),
+            (r"'./\uD83D\uDE80.js'", "./🚀.js"),
+            (r"'./\u{1F680}.js'", "./🚀.js"),
+            (r"'./\z.js'", "./z.js"),
+        )
+        statements = (
+            "import {literal}", "import value from {literal}",
+            "import {{ value as local }} from {literal}", "import * as api from {literal}",
+            "import main, {{ value }} from {literal}", "import main, * as api from {literal}",
+            "export {{ value as publicValue }} from {literal}", "export * from {literal}",
+            "export * as api from {literal}", "const promise = import({literal})",
+        )
+        for literal, expected in literals:
+            for statement in statements:
+                with self.subTest(literal=literal, statement=statement):
+                    source = statement.format(literal=literal) + ";"
+                    imports, exports = parse_module(source)
+                    dependencies = [item for item in (*imports, *exports) if item.spec]
+                    self.assertEqual([item.spec for item in dependencies], [expected])
+                    self.assertEqual(scan_import_paths(source), {expected})
+                    for item in dependencies:
+                        self.assertEqual(source[item.start:item.end], item.source)
+                        self.assertIn(literal, item.source)
+
+    def test_specifier_line_continuations_match_javascript_values(self):
+        for newline in ("\n", "\r", "\r\n", "\u2028", "\u2029"):
+            for template in ("import value from {literal};", "export * from {literal};", "const promise = import({literal});"):
+                with self.subTest(newline=repr(newline), template=template):
+                    literal = '"./de\\' + newline + 'p.js"'
+                    source = template.format(literal=literal)
+                    imports, exports = parse_module(source)
+                    self.assertEqual([item.spec for item in (*imports, *exports) if item.spec], ["./dep.js"])
+                    self.assertEqual(scan_import_paths(source), {"./dep.js"})
+
+    def test_invalid_specifier_escapes_fail_both_dependency_readers(self):
+        literals = (
+            r"'./\x.js'", r"'./\xGG.js'", r"'./\u12.js'", r"'./\uZZZZ.js'",
+            r"'./\u{}.js'", r"'./\u{xyz}.js'", r"'./\u{110000}.js'",
+            r"'./\1.js'", r"'./\8.js'", r"'./\09.js'", "'./dep.js",
+            "'./de\np.js'", "'./de\rp.js'",
+        )
+        for literal in literals:
+            for template in ("import value from {literal};", "export * from {literal};", "const promise = import({literal});"):
+                source = template.format(literal=literal)
+                for reader in (parse_module, scan_import_paths):
+                    with self.subTest(literal=literal, template=template, reader=reader.__name__):
+                        with self.assertRaisesRegex(ParseError, "Malformed|Unterminated|Out-of-range"):
+                            reader(source)
+
+    def test_external_specifier_schemes_are_decoded_without_changing_identity(self):
+        source = (
+            r'import Value from "data\x3atext/javascript,export default 7";'
+            r'const promise = import("https\u003a//example.invalid/module.js");'
+        )
+        expected = {"data:text/javascript,export default 7", "https://example.invalid/module.js"}
+        imports, _ = parse_module(source)
+        self.assertEqual({item.spec for item in imports}, expected)
+        self.assertEqual(scan_import_paths(source), expected)
 
 
 if __name__ == '__main__':

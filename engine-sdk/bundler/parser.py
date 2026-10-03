@@ -209,12 +209,16 @@ class _Scanner:
         while self.pos < self.length:
             ch = self.source[self.pos]
             if ch == "\\":
-                self.pos += 2
+                self.pos += 1
+                if self.peek() == "\r" and self.peek(1) == "\n":
+                    self.pos += 2
+                else:
+                    self.pos += 1
                 continue
             if ch == quote:
                 self.pos += 1
                 return True
-            if ch == "\n":
+            if ch in "\r\n":
                 raise ParseError(f"Unterminated string literal at byte {self.token_start}")
             self.pos += 1
         raise ParseError(f"Unterminated string literal at byte {self.token_start}")
@@ -680,7 +684,7 @@ def find_template_literal_regions(source: str):
 
 
 def _decode_js_string_token(source: str, token: _CodeToken) -> str:
-    """Decode a quoted registry key without evaluating JavaScript."""
+    """Decode a quoted strict JavaScript string without evaluating its source."""
     literal = source[token.start:token.end]
     if len(literal) < 2 or literal[0] not in "'\"" or literal[-1] != literal[0]:
         raise ParseError(f"Malformed registry string key at byte {token.start}")
@@ -700,6 +704,8 @@ def _decode_js_string_token(source: str, token: _CodeToken) -> str:
     while index < limit:
         ch = literal[index]
         if ch != "\\":
+            if ch in "\r\n":
+                raise ParseError(f"Unterminated string literal at byte {token.start}")
             value.append(ch)
             index += 1
             continue
@@ -708,7 +714,7 @@ def _decode_js_string_token(source: str, token: _CodeToken) -> str:
         if index >= limit:
             raise ParseError(f"Malformed registry string escape at byte {token.start}")
         escaped = literal[index]
-        if escaped == "\r" or escaped == "\n":
+        if escaped in _LINE_TERMINATORS:
             if escaped == "\r" and index + 1 < limit and literal[index + 1] == "\n":
                 index += 1
             index += 1
@@ -724,7 +730,7 @@ def _decode_js_string_token(source: str, token: _CodeToken) -> str:
             if index + 1 < limit and literal[index + 1] == "{":
                 closing = literal.find("}", index + 2, limit)
                 digits = literal[index + 2:closing] if closing >= 0 else ""
-                if not digits or not re.fullmatch(r"[0-9A-Fa-f]{1,6}", digits):
+                if not digits or not re.fullmatch(r"[0-9A-Fa-f]+", digits):
                     raise ParseError(f"Malformed Unicode registry key escape at byte {token.start}")
                 codepoint = int(digits, 16)
                 if codepoint > 0x10FFFF:
@@ -739,9 +745,13 @@ def _decode_js_string_token(source: str, token: _CodeToken) -> str:
             index += 5
             continue
 
+        if escaped in "123456789" or (escaped == "0" and index + 1 < limit and literal[index + 1] in "0123456789"):
+            raise ParseError(f"Malformed strict string decimal escape at byte {token.start}")
         value.append(escapes.get(escaped, escaped))
         index += 1
-    return "".join(value)
+    # JavaScript strings use UTF-16 code units. Adjacent surrogate escapes and
+    # one code-point escape must identify the same filesystem/URL specifier.
+    return "".join(value).encode("utf-16-le", "surrogatepass").decode("utf-16-le", "surrogatepass")
 
 
 def _delimiter_matches(tokens: Sequence[_CodeToken]):
@@ -1381,24 +1391,10 @@ def _read_string_literal(scanner: _Scanner) -> str:
     quote = scanner.source[scanner.pos]
     if quote not in "'\"":
         raise ParseError(f"Expected string quote, got {quote}")
-    scanner.pos += 1
-    value = []
-    while scanner.pos < scanner.length:
-        ch = scanner.source[scanner.pos]
-        if ch == "\\":
-            scanner.pos += 1
-            if scanner.pos < scanner.length:
-                value.append(scanner.source[scanner.pos])
-            scanner.pos += 1
-            continue
-        if ch == quote:
-            scanner.pos += 1
-            return "".join(value)
-        if ch == "\n":
-            raise ParseError("Unterminated string literal")
-        value.append(ch)
-        scanner.pos += 1
-    raise ParseError("Unterminated string literal")
+    start = scanner.pos
+    scanner.token_start = start
+    scanner._match_string()
+    return _decode_js_string_token(scanner.source, _CodeToken("string", None, start, scanner.pos))
 
 
 def _skip_balanced_parentheses(scanner: _Scanner):
