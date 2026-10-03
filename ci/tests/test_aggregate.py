@@ -14,8 +14,9 @@ from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from aggregate import STANDARD_REPORTS, aggregate, write_junit
-from report_context import SCHEMA, capture
+from aggregate import CANDIDATE_REPORT_NAMES, STANDARD_REPORTS, aggregate, write_junit
+import report_context
+from report_context import SCHEMA, capture, inventory
 
 
 def passing_report(job='test'):
@@ -289,7 +290,7 @@ class HostedAggregateCliTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix='sdk-hosted-aggregate-')
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
+        self.root = Path(temporary.name).resolve()
         self.results = self.root / 'test-results'
         for name, text in {'.gitignore': '/test-results/\n', 'ci/recipe.py': 'value = 1\n',
                            'engine-sdk/manifest.json': '{}', 'engine-sdk/code.js': 'export const value = 1;',
@@ -297,8 +298,8 @@ class HostedAggregateCliTests(unittest.TestCase):
             path = self.root / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text, encoding='utf-8')
-        for name in ('aggregate.py', 'report_context.py'):
-            shutil.copyfile(Path(__file__).resolve().parents[1] / name, self.root / 'ci' / name)
+        for source in (Path(__file__).resolve().parents[1] / 'aggregate.py', Path(report_context.__file__)):
+            shutil.copyfile(source, self.root / 'ci' / source.name)
         for arguments in (('init', '-q'), ('config', 'user.name', 'Local CI fixture'),
                           ('config', 'user.email', 'ci-fixture@example.invalid'), ('add', '.'),
                           ('commit', '-qm', 'Actual hosted aggregate fixture')):
@@ -308,6 +309,8 @@ class HostedAggregateCliTests(unittest.TestCase):
                                 GITHUB_WORKFLOW='CI', GITHUB_RUN_ID='100', GITHUB_RUN_ATTEMPT='1',
                                 GITHUB_JOB='aggregate')
         self.results.mkdir()
+        self.candidate = self.results / 'rebuilt-sdk'
+        shutil.copytree(self.root / 'engine-sdk', self.candidate)
 
     def git(self, *arguments):
         return subprocess.run(['git', *arguments], cwd=self.root, check=True, capture_output=True,
@@ -317,16 +320,23 @@ class HostedAggregateCliTests(unittest.TestCase):
         with patch.dict(os.environ, self.environment, clear=True):
             return capture(self.root)
 
-    def run_cli(self, context, *, environment=None):
+    def run_cli(self, context, *, environment=None, names=None, expected_commit=True, substitute=None):
         arguments = [sys.executable, '-B', str(self.root / 'ci/aggregate.py'),
-                     '--expected-commit', self.git('rev-parse', 'HEAD'),
                      '--output', str(self.results / 'aggregate.json')]
-        for name in ('first', 'second'):
-            child = passing_report(name)
+        if expected_commit:
+            arguments.extend(['--expected-commit', self.git('rev-parse', 'HEAD')])
+        for name in STANDARD_REPORTS if names is None else names:
+            fixture = substitute.get(name, name) if substitute else name
+            child = passing_cpu_report() if fixture in {'cpu', 'candidate-cpu'} else passing_report(fixture)
             child['context'] = deepcopy(context)
             child['context']['job'] = name
-            child['testedPackage'] = deepcopy(context['sdk'])
+            if name in CANDIDATE_REPORT_NAMES:
+                child['context']['candidate'] = inventory(self.candidate)
+            child['testedPackage'] = deepcopy(child['context']['candidate'] or context['sdk'])
             child['identityVerification']['context'] = deepcopy(child['context'])
+            if fixture in {'browser-off', 'browser-software'}:
+                child.update(webgpu=fixture.removeprefix('browser-'),
+                             gpuSuite={'status': 'NOT_RUN' if fixture == 'browser-off' else 'PASS'})
             path = self.results / (name + '.json')
             path.write_text(json.dumps(child), encoding='utf-8')
             arguments.extend(['--report', name + '=' + str(path)])
@@ -335,12 +345,50 @@ class HostedAggregateCliTests(unittest.TestCase):
         self.assertIn(result.returncode, (0, 1), result.stderr)
         return result.returncode, json.loads((self.results / 'aggregate.json').read_text(encoding='utf-8'))
 
-    def test_current_hosted_checkout_and_custom_report_names_pass(self):
+    def test_current_hosted_checkout_and_complete_standard_reports_pass(self):
         context = self.current_context()
         code, report = self.run_cli(context)
         self.assertEqual(code, 0)
         self.assertEqual(report['status'], 'PASS')
         self.assertEqual(report['aggregationContext'], context)
+        self.assertEqual(report['requiredCount'], 12)
+        self.assertEqual(report['executedCount'], 12)
+        self.assertEqual(report['candidate'], inventory(self.candidate))
+
+    def test_hosted_and_expected_commit_gates_require_each_standard_report(self):
+        context = self.current_context()
+        local = {name: value for name, value in self.environment.items() if not name.startswith('GITHUB_')}
+        for environment in (self.environment, local):
+            for missing in STANDARD_REPORTS:
+                names = [name for name in STANDARD_REPORTS if name != missing]
+                with self.subTest(hosted='GITHUB_RUN_ID' in environment, missing=missing):
+                    code, report = self.run_cli(context, environment=environment, names=names)
+                    self.assertEqual(code, 1)
+                    self.assertEqual(report['requiredCount'], 12)
+                    self.assertIn(missing + ': Required report is missing', report['errors'])
+
+    def test_hosted_gate_without_expected_commit_cannot_admit_custom_subset(self):
+        code, report = self.run_cli(self.current_context(), names=('first', 'second'), expected_commit=False)
+        self.assertEqual(code, 1)
+        self.assertEqual(report['requiredCount'], 12)
+        self.assertEqual(report['executedCount'], 0)
+
+    def test_standard_report_substitution_fails_complete_hosted_cli(self):
+        for replaced, fixture in (('cpu', 'distribution'), ('parser', 'windows'),
+                                  ('browser-software', 'browser-off')):
+            with self.subTest(replaced=replaced):
+                code, report = self.run_cli(self.current_context(), substitute={replaced: fixture})
+                self.assertEqual(code, 1)
+                row = next(item for item in report['reports'] if item['name'] == replaced)
+                self.assertTrue(row['errors'])
+
+    def test_real_dirty_checkout_cannot_qualify_hosted_evidence(self):
+        (self.root / 'untracked.txt').write_text('actual dirty checkout', encoding='utf-8')
+        context = self.current_context()
+        self.assertFalse(context['workingTreeClean'])
+        code, report = self.run_cli(context)
+        self.assertEqual(code, 1)
+        self.assertIn('dirty or unverified working tree', ' '.join(report['errors']))
 
     def test_consistent_prior_attempt_run_and_requested_commit_fail(self):
         old = self.current_context()
@@ -379,7 +427,7 @@ class HostedAggregateCliTests(unittest.TestCase):
         context = passing_report()['context']
         environment = {name: value for name, value in self.environment.items() if not name.startswith('GITHUB_')}
         context['commit'] = self.git('rev-parse', 'HEAD')
-        code, report = self.run_cli(context, environment=environment)
+        code, report = self.run_cli(context, environment=environment, names=('first', 'second'), expected_commit=False)
         self.assertEqual(code, 0)
         self.assertNotIn('aggregationContext', report)
 

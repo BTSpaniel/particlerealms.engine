@@ -352,11 +352,13 @@ def main(argv=None):
             sources[name] = {'path': str(path), 'artifactPath': os.path.relpath(path.resolve(), args.output.parent.resolve()).replace('\\', '/'), 'sha256': digest(path)}
         except (OSError, ValueError) as error:
             reports[name] = {'status': 'FAIL', 'error': str(error)} if path.exists() else None
-    report = aggregate(reports)
+    hosted = os.environ.get('GITHUB_RUN_ID', 'local') != 'local'
+    required = sorted(REQUIRED_REPORT_NAMES) if hosted or args.expected_commit else None
+    report = aggregate(reports, required=required)
     if args.expected_commit and (report.get('context') or {}).get('commit') != args.expected_commit:
         report['status'] = 'FAIL'
         report['errors'].append('Aggregate commit differs from the expected checked-out CI commit')
-    if os.environ.get('GITHUB_RUN_ID', 'local') != 'local':
+    if hosted:
         # Agreement among children alone also admits an entirely stale artifact set.
         # Bind hosted evidence to this aggregation attempt and the actual checkout bytes.
         try:
