@@ -224,6 +224,10 @@ def main(argv=None):
             ci_modules.append(path.stem)
             ci_sources[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
             selected.addTests(loader.loadTestsFromName(path.stem))
+    # CI guard tests bind the shared passive observer's actual implementation
+    # as well as their own test bytes. Counts remain actual unittest discovery.
+    for path in (ROOT / "ci/network_trace.py",):
+        ci_sources[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
     expected = selected.countTestCases()
     result = unittest.TextTestRunner(verbosity=2, resultclass=RecordedResult).run(selected)
     tests = list(result.records.values())

@@ -26,6 +26,7 @@ from urllib.parse import parse_qsl, unquote, urlsplit
 import zipfile
 
 from sdk_scenarios import playground_case, selection_case
+from network_trace import BrowserSocketTrace
 
 # Dynamic loading of the delivered HTTP server must not add SDK cache files.
 sys.dont_write_bytecode = True
@@ -76,61 +77,6 @@ def observe_package_network(context, origin, diagnostics):
     def observe_page(page):
         page.on('websocket', lambda socket: diagnostics['externalRequests'].append(socket.url)
             if external('http' + socket.url[2:]) else None)
-        # Startup sockets can race Playwright's worker Network.enable call.
-        # Attach at worker startup, enable Network, then resume it. Observe
-        # recursively created workers too; the denying proxy remains the
-        # transport boundary. No worker code or WebSocket API is replaced.
-        # https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-setAutoAttach
-        # https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-webSocketCreated
-        session = context.new_cdp_session(page)
-        sequence = 0
-        attach = {'autoAttach': True, 'waitForDebuggerOnStart': True, 'flatten': False}
-
-        def send_child(path, method, params=None):
-            nonlocal sequence
-            sequence += 1
-            message = {'id': sequence, 'method': method, 'params': params or {}}
-            for identifier in reversed(path[1:]):
-                sequence += 1
-                message = {'id': sequence, 'method': 'Target.sendMessageToTarget',
-                           'params': {'sessionId': identifier, 'message': json.dumps(message)}}
-            session.send('Target.sendMessageToTarget', {'sessionId': path[0],
-                'message': json.dumps(message)})
-
-        def attached(event, parent=()):
-            path = (*parent, event['sessionId'])
-            send_child(path, 'Network.enable')
-            send_child(path, 'Target.setAutoAttach', attach)
-            send_child(path, 'Runtime.runIfWaitingForDebugger')
-
-        sockets = {}
-
-        def received(event, parent=()):
-            path = (*parent, event['sessionId'])
-            message = json.loads(event['message'])
-            if message.get('error'):
-                diagnostics.setdefault('observationErrors', []).append(message['error'])
-            elif message.get('method') == 'Target.attachedToTarget':
-                attached(message['params'], path)
-            elif message.get('method') == 'Target.receivedMessageFromTarget':
-                received(message['params'], path)
-            elif message.get('method') == 'Network.webSocketCreated':
-                url = message['params']['url']
-                sockets[(*path, message['params']['requestId'])] = url
-                if external('http' + url[2:]):
-                    diagnostics['externalRequests'].append(url)
-            elif message.get('method', '').startswith('Network.webSocket'):
-                params = message['params']
-                # Another debugger may resume the worker before Network.enable
-                # completes. Fail closed if a socket event has no observed URL;
-                # never classify that attempt as browser maintenance traffic.
-                if (*path, params['requestId']) not in sockets:
-                    diagnostics.setdefault('unattributedWorkerSockets', []).append(
-                        {'requestId': params['requestId'], 'event': message['method']})
-
-        session.on('Target.attachedToTarget', attached)
-        session.on('Target.receivedMessageFromTarget', received)
-        session.send('Target.setAutoAttach', attach)
 
     context.route('**/*', admit)
     context.route_web_socket('**/*', admit_web_socket)
@@ -243,7 +189,11 @@ class ContainedProxy(BaseHTTPRequestHandler):
 
     def _deny(self, destination):
         self.server.blocked.append(destination)
-        self.send_error(403, 'CI blocks external network access')
+        try:
+            self.send_error(403, 'CI blocks external network access')
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+            # Denied browser probes may close their socket before reading 403.
+            pass
 
     def do_GET(self):
         parsed = urlsplit(self.path)
@@ -308,6 +258,8 @@ def network_boundary_probe(browser):
     # makes accidental forwarding observable instead of serving extra content.
     origin = 'http://127.0.0.1:1'
     with contained_proxy(origin) as (proxy_url, proxy):
+        trace = BrowserSocketTrace(browser)
+        trace.start()
         context = browser.new_context(service_workers='block',
             proxy={'server': proxy_url, 'bypass': '<-loopback>'})
         try:
@@ -319,35 +271,37 @@ def network_boundary_probe(browser):
                 fetch(expected[0]).catch(() => {});
                 const socket = new WebSocket(expected[2]); socket.onerror = () => {};
                 const script = `fetch(${JSON.stringify(expected[1])}).catch(() => {});
-                    const socket = new WebSocket(${JSON.stringify(expected[3])}); socket.onerror = () => {};`;
+                    const socket = new WebSocket(${JSON.stringify(expected[3])}); socket.onerror = () => {};
+                    postMessage('requests-created');`;
                 globalThis.__boundaryWorkerUrl = URL.createObjectURL(new Blob([script], {type:'text/javascript'}));
                 globalThis.__boundaryWorker = new Worker(__boundaryWorkerUrl);
+                __boundaryWorker.onmessage = () => { globalThis.__boundaryWorkerRequested = true; };
             }''', expected)
             deadline = time.monotonic() + 5
             def observed():
                 requests = result['diagnostics']['externalRequests']
                 return (set(expected[:3]).issubset(requests) and
-                        (expected[3] in requests or result['diagnostics'].get('unattributedWorkerSockets')))
+                        page.evaluate('globalThis.__boundaryWorkerRequested === true'))
 
             while not observed() and time.monotonic() < deadline:
                 page.wait_for_timeout(50)
-            result['missingObservations'] = sorted(set(expected) - set(result['diagnostics']['externalRequests']))
-            if result['diagnostics'].get('unattributedWorkerSockets'):
-                result['missingObservations'] = [url for url in result['missingObservations'] if url != expected[3]]
-                result['workerSocketObservation'] = 'Unattributed worker socket events are retained as application failures'
             page.evaluate('''() => {
                 __boundaryWorker.terminate(); URL.revokeObjectURL(__boundaryWorkerUrl);
                 delete globalThis.__boundaryWorker; delete globalThis.__boundaryWorkerUrl;
             }''')
-            if result['missingObservations']:
-                raise AssertionError('Application network attempts were not observed: ' + str(result['missingObservations']))
-            if result['diagnostics'].get('observationErrors'):
-                raise AssertionError('Worker network observer failed: ' + str(result['diagnostics']['observationErrors']))
             result['status'] = 'PASS'
         except Exception as error:
             result.update(status='FAIL', error=str(error))
         finally:
             context.close()
+            try:
+                result['socketTrace'] = trace.finish()
+                result['diagnostics']['externalRequests'].extend(result['socketTrace']['urls'])
+            except Exception as error:
+                result.update(status='FAIL', error='Browser socket trace failed: ' + str(error))
+        result['missingObservations'] = sorted(set(expected) - set(result['diagnostics']['externalRequests']))
+        if result['missingObservations']:
+            result.update(status='FAIL', error='Application network attempts were not observed: ' + str(result['missingObservations']))
         result['networkContainment'] = {'proxyBlocked': list(proxy.blocked),
             **classify_proxy_denials(proxy.blocked, result['diagnostics']['externalRequests']),
             'forwarded': proxy.forwarded, 'proxyFailures': list(proxy.failures)}
@@ -583,16 +537,16 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
                 result['softwareSuite'] = 'FAIL'
         finally:
             result['requests'] = requests
-            result['networkContainment'] = {'proxyBlocked': list(proxy.blocked),
-                **classify_proxy_denials(proxy.blocked, diagnostics['externalRequests']),
-                'proxyFailures': list(proxy.failures), 'forwarded': proxy.forwarded,
-                'serviceWorkers': 'blocked', 'onlyOrigin': origin}
             try:
                 page.screenshot(path=str(images / f'last-{package}-{mount.strip("/") or "root"}.png'))
             except Exception as capture_error:
                 result['screenshotError'] = str(capture_error)
             context.close()
-            if any(diagnostics.values()):
+            denied = classify_proxy_denials(proxy.blocked, diagnostics['externalRequests'])
+            result['networkContainment'] = {'proxyBlocked': list(proxy.blocked), **denied,
+                'proxyFailures': list(proxy.failures), 'forwarded': proxy.forwarded,
+                'serviceWorkers': 'blocked', 'onlyOrigin': origin}
+            if any(diagnostics.values()) or proxy.failures or denied['unexpectedProxyDenied']:
                 result.update(status='FAIL', error='Unexpected browser diagnostics after disposal: ' + json.dumps(diagnostics))
             (images / f'{package}-{mount.strip("/") or "root"}.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     return result
@@ -618,6 +572,7 @@ def main(argv=None):
         'exampleRunner': sdk / 'examples/runner.js', 'playground': sdk / 'examples/playground.js',
         'selectionRegression': sdk / 'examples/selection-regression.js',
         'docExtractor': sdk / 'sdk/doc_snippets.py',
+        'networkTrace': Path(__file__).with_name('network_trace.py'),
         'docRunner': sdk / 'examples/docs-snippets.js', 'docPage': sdk / 'examples/docs-snippets.html',
         'engineDoc': sdk / 'MD/guides/sdk-distribution.md', 'plaunaDoc': sdk / 'MD/plauna/getting-started.md',
     }
@@ -672,9 +627,22 @@ def main(argv=None):
                                                       ('template', template, receipt['runtime']['integrity'])):
                         for mount in ('/', '/ci-nested/'):
                             print(f'[browser-ci] {package} {mount} {args.webgpu}', flush=True)
-                            result = smoke_mount(browser, package, root, mount, server_module, integrity,
-                                                 args.webgpu == 'software', images, doc_examples)
-                            report['mounts'].append(result)
+                            socket_trace = BrowserSocketTrace(browser).start()
+                            try:
+                                result = smoke_mount(browser, package, root, mount, server_module, integrity,
+                                                     args.webgpu == 'software', images, doc_examples)
+                                report['mounts'].append(result)
+                            finally:
+                                trace_report = socket_trace.finish()
+                            result['socketTrace'] = trace_report
+                            origin = result['networkContainment']['onlyOrigin']
+                            external_sockets = [url for url in trace_report['urls']
+                                if not ('http' + url[2:]).startswith(origin + '/')]
+                            if external_sockets:
+                                result['diagnostics']['externalRequests'].extend(external_sockets)
+                                result.update(status='FAIL', error='External browser/worker sockets: ' + json.dumps(external_sockets))
+                            (images / f'{package}-{mount.strip("/") or "root"}.json').write_text(
+                                json.dumps(result, indent=2) + '\n', encoding='utf-8')
                             if result['status'] != 'PASS':
                                 raise AssertionError(result['error'])
                 finally:

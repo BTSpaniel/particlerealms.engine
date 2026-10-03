@@ -18,6 +18,7 @@ from browser_smoke import (OFFLINE_BROWSER_ARGS, SOFTWARE_ARGS, classify_proxy_d
                            contained_proxy, network_boundary_probe, observe_package_network, package_server,
                            require_case, shipped_example)
 from sdk_scenarios import endurance_case, selection_case, playground_case
+from network_trace import BrowserSocketTrace
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -44,7 +45,7 @@ def main(argv=None):
     images = args.output.with_suffix('')
     images.mkdir(exist_ok=True)
     started = time.monotonic()
-    paths = [Path(__file__), ROOT / 'ci/sdk_scenarios.py', ROOT / 'ci/browser_smoke.py',
+    paths = [Path(__file__), ROOT / 'ci/sdk_scenarios.py', ROOT / 'ci/browser_smoke.py', ROOT / 'ci/network_trace.py',
              sdk / 'manifest.json', sdk / 'serve_sdk.py', sdk / 'examples/playground.js',
              sdk / 'examples/selection-regression.js', sdk / 'examples/runner.js', sdk / 'examples/scenarios.js']
     report = {'schema': 'particle-sdk-endurance/v1', 'status': 'RUNNING', 'mode': args.mode,
@@ -75,10 +76,12 @@ def main(argv=None):
             browser = playwright.chromium.launch(headless=True, channel='chromium' if args.browser is None else None,
                 executable_path=str(args.browser) if args.browser else None, proxy={'server': proxy_url, 'bypass': '<-loopback>'}, args=arguments)
             report.update(browserVersion=browser.version, launchArgs=arguments)
+            socket_trace = None
             try:
                 report['networkBoundaryProbe'] = network_boundary_probe(browser)
                 if report['networkBoundaryProbe']['status'] != 'PASS':
                     raise AssertionError('Network boundary probe failed: ' + json.dumps(report['networkBoundaryProbe']))
+                socket_trace = BrowserSocketTrace(browser).start()
                 context = browser.new_context(service_workers='block', viewport={'width': 1100, 'height': 850})
                 observe_package_network(context, origin, diagnostics)
                 page = context.new_page()
@@ -128,7 +131,13 @@ def main(argv=None):
                     finally:
                         context.close()
             finally:
-                browser.close()
+                try:
+                    if socket_trace is not None:
+                        report['socketTrace'] = socket_trace.finish()
+                        diagnostics['externalRequests'].extend(url for url in report['socketTrace']['urls']
+                            if not ('http' + url[2:]).startswith(origin + '/'))
+                finally:
+                    browser.close()
                 report['networkContainment']['forwarded'] = proxy.forwarded
                 report['networkContainment'].update(classify_proxy_denials(proxy.blocked, diagnostics['externalRequests']))
             diagnostics['externalRequests'].extend(report['networkContainment']['unexpectedProxyDenied'])

@@ -42,6 +42,8 @@ python -B ci/browser_smoke.py --webgpu software --output test-results/browser-so
 
 On Linux, `python -m playwright install --with-deps chromium` also installs the browser's system libraries. To use an already installed Chromium locally, pass `--browser PATH`. Test servers bind only to localhost, isolate the SDK/Template serving roots, and reject application requests to outside origins. Generated reports stay in ignored `test-results/`; tests do not edit the inventoried SDK files.
 
+Browser jobs verify blocked page and worker network attempts. Passive browser-wide socket tracing catches requests made before a worker debugger attaches; reports retain socket URLs and counts, and incomplete traces fail validation.
+
 ## Reading results
 
 - The README badge is the current `main` workflow result, not a static “passing” image.
