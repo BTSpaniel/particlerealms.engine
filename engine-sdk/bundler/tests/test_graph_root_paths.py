@@ -32,7 +32,16 @@ class GraphRootPathTests(unittest.TestCase):
         self.assertEqual(graph.mod_id(str(self.root / 'generated.js')), 'generated.js')
 
     def test_relative_root_uses_physical_identity(self):
-        self.check_root(os.path.relpath(self.root))
+        previous = Path.cwd()
+        try:
+            # CI can put the checkout and temporary files on different drives.
+            # Resolve an actual relative root from its own parent in either case.
+            os.chdir(self.root.parent)
+            relative = os.path.relpath(self.root)
+            self.assertFalse(Path(relative).is_absolute())
+            self.check_root(relative)
+        finally:
+            os.chdir(previous)
 
     def test_symlink_root_uses_physical_identity(self):
         alias = self.root.parent / 'alias'

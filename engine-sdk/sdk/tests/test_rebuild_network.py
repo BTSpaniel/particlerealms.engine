@@ -14,6 +14,34 @@ sys.path.insert(0, str(ROOT))
 from sdk.rebuild_acceptance import _OFFLINE_BOOTSTRAP
 
 
+def spawned_network_and_compression_probe(payload):
+    """Run actual codec work and socket rejection inside a spawned worker."""
+    import hashlib
+    import os
+    import socket
+    from bundler.compress import compress_gzip
+
+    denied = []
+    with socket.socket() as tcp, socket.socket(type=socket.SOCK_DGRAM) as udp:
+        operations = (
+            ('DNS', lambda: socket.getaddrinfo('localhost', 9)),
+            ('TCP', lambda: tcp.connect(('127.0.0.1', 9))),
+            ('UDP', lambda: udp.sendto(b'sdk-offline-probe', ('127.0.0.1', 9))),
+        )
+        for name, operation in operations:
+            try:
+                operation()
+            except RuntimeError as error:
+                if 'Python network access is blocked' not in str(error):
+                    raise
+                denied.append(name)
+            else:
+                raise AssertionError(name + ' escaped the spawned worker guard')
+    guard = socket.socket.connect.__globals__['_guard_source']
+    return {'pid': os.getpid(), 'denied': denied, 'compressed': compress_gzip(payload, 6),
+            'guardSha256': hashlib.sha256(guard.encode('utf-8')).hexdigest()}
+
+
 class SDKOfflineNetworkTests(TestCase):
     def isolated(self, code, *, before='', timeout=30):
         completed = subprocess.run(
@@ -194,6 +222,29 @@ print('CHILD PASS')
                 assert result.returncode == 0, result.stderr
                 assert 'CHILD PASS' in result.stdout
             ''')
+
+    def test_spawned_process_pool_blocks_network_and_preserves_compression(self):
+        output = self.isolated('''
+            import gzip, hashlib, multiprocessing, os, sys
+            from concurrent.futures import ProcessPoolExecutor
+            sys.path.insert(0, os.getcwd())
+            from bundler.compress import compress_gzip
+            from sdk.tests.test_rebuild_network import spawned_network_and_compression_probe
+            payload = bytes(range(256)) * 1024
+            with ProcessPoolExecutor(max_workers=2, mp_context=multiprocessing.get_context('spawn')) as pool:
+                probes = [pool.submit(spawned_network_and_compression_probe, payload) for _ in range(2)]
+                compressed = pool.submit(compress_gzip, payload, 6).result(timeout=20)
+                results = [probe.result(timeout=20) for probe in probes]
+            expected = compress_gzip(payload, 6)
+            assert compressed == expected and gzip.decompress(compressed) == payload
+            for result in results:
+                assert result['pid'] != os.getpid(), 'Compression did not use a spawned process'
+                assert result['denied'] == ['DNS', 'TCP', 'UDP'], result
+                assert result['compressed'] == expected
+                assert result['guardSha256'] == hashlib.sha256(_guard_source.encode('utf-8')).hexdigest()
+            print('PASS spawned process compression; DNS/TCP/UDP blocked in workers')
+        ''', timeout=45)
+        self.assertIn('PASS spawned process compression', output)
 
     def test_native_tool_and_shell_spawns_are_blocked(self):
         self.isolated('''

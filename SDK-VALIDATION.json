@@ -12,9 +12,9 @@
     "profile": "engine",
     "distribution": "ordinary Git files under engine-sdk/",
     "version": "0.8.1",
-    "sdkReceiptSha256": "86eb6ef29cfff9563a7fd42570c665019ee7c20fb29e77d7ab2dafc8ffc98af7",
+    "sdkReceiptSha256": "4503b7e7be39b712dab3cc7266627537aae6da75f5cc7ed0365123d7feaa730b",
     "files": 7165,
-    "bytes": 310369224,
+    "bytes": 310375133,
     "publicEntrypoints": {
       "engine/EngineBootstrap.js": "PE",
       "plauna/index.js": "Plauna"
@@ -32,10 +32,10 @@
       "provenance": {
         "path": "particle-engine.provenance.json",
         "predicate_type": "https://slsa.dev/provenance/v1",
-        "sha256": "e6482741750e39b3c1b0e1f35c63bcdc856677eeb778d93401badcdfa8971e05"
+        "sha256": "b2b7115ba3c29e7b9b7d070ffd0ace43b7d2c13679d82867b59d8ca2c790f0a3"
       }
     },
-    "buildInputsSha256": "ef4b0904601ecdcaa7e481f8d6d17eb8fc4e605113c215ac3fe436782701dcc0",
+    "buildInputsSha256": "b7b927989161d47f7e74b61a2b689a932b38c663d31f181f4eec38604f8e0dcb",
     "tools": {
       "python": "3.12.7",
       "minifier": "rjsmin",

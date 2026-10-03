@@ -8,7 +8,7 @@ updated: 2026-10-03
 
 # SDK Distribution and Rebuilding
 
-The base Engine SDK release supplies the Engine runtime and Plauna UI for browser applications. The Platform SDK adds the Editor, AGI, and WebGPU OS public entry points. Each SDK includes canonical sources, verified runtime assets, runnable examples, documentation, and Python rebuild tools. The repository's default Engine target remains Engine-only; selecting `--include-plauna` builds the base release with UI. Read `manifest.json` for the exact entry points and subsystem flags of an extracted package. (Source: `release_targets.json`, `bundler/config.py`, and `bundler/sdk.py`.)
+The public Engine SDK release supplies the Engine runtime and Plauna UI for browser applications. The Platform SDK is a locally produced packaging profile that adds the Editor, AGI, and WebGPU OS public entry points. The public compiled Platform download is `Template.zip`. Each SDK profile includes canonical sources, verified runtime assets, runnable examples, documentation, and Python rebuild tools. The full development repository's default Engine target remains Engine-only; selecting `--include-plauna` builds the base release with UI. Read `manifest.json` for the exact entry points and subsystem flags of a package. (Source: `release_targets.json`, `bundler/config.py`, and `bundler/sdk.py`.)
 
 ## Get and serve the SDK
 
@@ -107,10 +107,10 @@ Rebuild preflight verifies these Python, package, and compressor identities befo
 
 ```bash
 python -m pip install -r requirements-sdk.txt
-python bundle_engine.py --sdk-rebuild
+python bundle_engine.py --sdk-rebuild --sdk-no-archive
 ```
 
-The SDK descriptor selects the profile, pinned minifier, verified native assets, and supplied public signed packages. Intermediate runtime artifacts are written under `build/runtime`; the complete rebuilt distribution is written under `build/engine-sdk` or `build/platform-sdk`. Rebuild mode rejects conflicting output and consumer-sync options before writing artifacts. Source: `bundler/cli.py` and `bundler/sdk.py`.
+The SDK descriptor selects the profile, pinned minifier, verified native assets, and supplied public signed packages. Intermediate runtime artifacts are written under `build/runtime`; the complete rebuilt distribution is written under `build/engine-sdk` or `build/platform-sdk`. `--sdk-no-archive` produces the SDK directory without a separate SDK ZIP. Rebuild mode rejects conflicting output and consumer-sync options before writing artifacts. Source: `bundler/cli.py` and `bundler/sdk.py`.
 
 This workflow rebuilds the JavaScript runtime. It verifies and reuses supplied native WebAssembly binaries. Recompiling PhysX, Blast, Flow, or Rust kernels requires their separate native toolchains and is outside the default SDK rebuild.
 
@@ -119,17 +119,17 @@ Private signing keys are not included or required. Existing signed packages rema
 For a Platform SDK change to signed-owner sources, obtain a complete replacement public registry from an authorized publisher outside the extracted SDK. The registry must have a current valid signature from an admitted root, verified payloads, and owner identities matching the changed sources. Preserve the exact supplied JSON or JavaScript assignment bytes, save them as `replacement-official-packages.json`, and supply that file explicitly:
 
 ```bash
-python bundle_engine.py --sdk-rebuild --no-cache --production --sdk-packages replacement-official-packages.json
+python bundle_engine.py --sdk-rebuild --sdk-no-archive --no-cache --production --sdk-packages replacement-official-packages.json
 ```
 
 `--sdk-packages` is available only for Platform rebuilding; Engine rebuilding rejects it. The original shipped registry remains untouched. Inline package containers are supported. A `containerRef` may resolve only to an existing verified sidecar under the local SDK root or `dist/`; it does not look beside an external replacement registry. This procedure supplies public signed bytes without private keys, signing, fallback refresh, trust overrides, or downloads.
 
-For a new SDK build from the repository, select the target explicitly:
+To produce a new SDK from the **full development repository**, select the target explicitly. These producer commands require that repository's complete inputs; they are not setup commands for the public `particlerealms.engine` checkout. Use `--sdk-rebuild` above when working from the public SDK:
 
 ```bash
-python bundle_engine.py --target engine --sdk-only
-python bundle_engine.py --target engine --include-plauna --sdk-only --production
-python bundle_engine.py --target platform --sdk-only --production
+python bundle_engine.py --target engine --sdk-only --sdk-no-archive
+python bundle_engine.py --target engine --include-plauna --sdk-only --sdk-no-archive --production
+python bundle_engine.py --target platform --sdk-only --sdk-no-archive --production
 ```
 
 Platform SDK packaging reuses the existing engine-demo runtime kit contract. It requires a production runtime named `particle-platform`, eager initialization, and the canonical Platform entry set: `engine/EngineEditorBootstrap.js`, `agi/index.js`, `plauna/index.js`, `webgpu-os/index.js`, and the generated OS content registry. Selecting `--target platform` supplies the name, eager mode, subsystem flags, and entry points; add `--production` as shown. Keep these target settings when packaging the SDK. The kit validator checks the candidate runtime, verified loader, manifest, and native PhysX bytes before publication. Source: `release_targets.json`, `bundler/config.py`, and `bundler/site.py` `_validate_engine_demo_runtime_kit()`.

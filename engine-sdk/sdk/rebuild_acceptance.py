@@ -118,6 +118,10 @@ sys.addaudithook(network_audit)
 # Git are unavailable in this isolated rebuild; docs already handle no Git.
 _popen = subprocess.Popen
 
+def guarded_python_source(program):
+    return ('_guard_source = ' + repr(_guard_source) + '\\n' + _guard_source
+            + '\\n' + program)
+
 def guarded_command(command, kwargs):
     from pathlib import Path
     if kwargs.get('shell') or not isinstance(command, (list, tuple)) or len(command) < 2:
@@ -139,11 +143,10 @@ def guarded_command(command, kwargs):
         raise PermissionError('SDK acceptance: child Python must name a script')
     script = str(Path(command[1]).resolve())
     arguments = [script, *map(str, command[2:])]
-    bootstrap = ('_guard_source = ' + repr(_guard_source) + '\\n' + _guard_source
-                 + '\\nimport runpy; sys.argv = ' + repr(arguments)
-                 + '; sys.path.insert(0, ' + repr(str(Path(script).parent)) + ')'
-                 + '; runpy.run_path(' + repr(script) + ', run_name="__main__")')
-    return [sys.executable, '-I', '-c', bootstrap]
+    program = ('import runpy; sys.argv = ' + repr(arguments)
+               + '; sys.path.insert(0, ' + repr(str(Path(script).parent)) + ')'
+               + '; runpy.run_path(' + repr(script) + ', run_name="__main__")')
+    return [sys.executable, '-I', '-c', guarded_python_source(program)]
 
 class OfflinePopen(_popen):
     # Preserve the Popen class contract: Windows asyncio subclasses it for
@@ -152,6 +155,28 @@ class OfflinePopen(_popen):
         super().__init__(guarded_command(command, kwargs), *args, **kwargs)
 
 subprocess.Popen = OfflinePopen
+
+# Windows multiprocessing starts fresh interpreters with _winapi.CreateProcess,
+# bypassing subprocess.Popen. Preserve its spawn protocol and normal process
+# compression, but install this same guard before a worker imports build code.
+import multiprocessing.spawn as _spawn
+_spawn_command_line = _spawn.get_command_line
+
+def guarded_spawn_command_line(**kwargs):
+    import base64
+    command = _spawn_command_line(**kwargs)
+    if '-c' not in command or command[-1] != '--multiprocessing-fork':
+        raise PermissionError('SDK acceptance: unsupported unguarded multiprocessing spawn')
+    source_index = command.index('-c') + 1
+    # multiprocessing's Windows launcher adds quotes without escaping quotes
+    # inside the program. Encode the complete bootstrap so its source survives
+    # that command line byte-for-byte, including child-subprocess handling.
+    program = guarded_python_source(command[source_index]).encode('utf-8')
+    encoded = base64.b64encode(program).decode('ascii')
+    command[source_index] = "import base64; exec(base64.b64decode('" + encoded + "'))"
+    return command
+
+_spawn.get_command_line = guarded_spawn_command_line
 '''
 
 _OFFLINE_BOOTSTRAP = '_guard_source = ' + repr(_OFFLINE_NETWORK) + '\n' + _OFFLINE_NETWORK

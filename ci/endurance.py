@@ -12,10 +12,11 @@ from pathlib import Path
 import subprocess
 import sys
 import time
-from urllib.parse import urlsplit
 
 sys.dont_write_bytecode = True
-from browser_smoke import SOFTWARE_ARGS, package_server, contained_proxy, require_case, shipped_example
+from browser_smoke import (OFFLINE_BROWSER_ARGS, SOFTWARE_ARGS, classify_proxy_denials,
+                           contained_proxy, network_boundary_probe, observe_package_network, package_server,
+                           require_case, shipped_example)
 from sdk_scenarios import endurance_case, selection_case, playground_case
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,24 +71,16 @@ def main(argv=None):
             # Retain partial network evidence even when startup or a case fails.
             report['requests'] = requests
             report['networkContainment'] = {'blocked': proxy.blocked, 'failures': proxy.failures, 'onlyOrigin': origin}
-            arguments = ['--enable-automation', '--proxy-bypass-list=<-loopback>', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', '--disable-features=AutofillServerCommunication,OptimizationHints,MediaRouter,Translate', *SOFTWARE_ARGS]
+            arguments = [*OFFLINE_BROWSER_ARGS, *SOFTWARE_ARGS]
             browser = playwright.chromium.launch(headless=True, channel='chromium' if args.browser is None else None,
                 executable_path=str(args.browser) if args.browser else None, proxy={'server': proxy_url, 'bypass': '<-loopback>'}, args=arguments)
             report.update(browserVersion=browser.version, launchArgs=arguments)
             try:
+                report['networkBoundaryProbe'] = network_boundary_probe(browser)
+                if report['networkBoundaryProbe']['status'] != 'PASS':
+                    raise AssertionError('Network boundary probe failed: ' + json.dumps(report['networkBoundaryProbe']))
                 context = browser.new_context(service_workers='block', viewport={'width': 1100, 'height': 850})
-                def admit(route):
-                    url = route.request.url
-                    if url.startswith(origin + '/') or urlsplit(url).scheme in ('blob', 'data'):
-                        route.continue_()
-                    else:
-                        diagnostics['externalRequests'].append(url)
-                        route.abort()
-                context.route('**/*', admit)
-                context.on('request', lambda request: diagnostics['externalRequests'].append(request.url)
-                    if not request.url.startswith(origin + '/') and urlsplit(request.url).scheme not in ('blob', 'data') else None)
-                context.on('response', lambda response: diagnostics['httpErrors'].append({'url': response.url, 'status': response.status})
-                    if response.status >= 400 else None)
+                observe_package_network(context, origin, diagnostics)
                 page = context.new_page()
                 page.set_default_timeout(90000)
                 page.on('pageerror', lambda error: diagnostics['pageErrors'].append(str(error)))
@@ -137,8 +130,8 @@ def main(argv=None):
             finally:
                 browser.close()
                 report['networkContainment']['forwarded'] = proxy.forwarded
-                report['networkContainment']['browserBackgroundDenied'] = [url for url in proxy.blocked if url == 'www.google.com:443']
-            diagnostics['externalRequests'].extend(url for url in proxy.blocked if url != 'www.google.com:443')
+                report['networkContainment'].update(classify_proxy_denials(proxy.blocked, diagnostics['externalRequests']))
+            diagnostics['externalRequests'].extend(report['networkContainment']['unexpectedProxyDenied'])
             if proxy.failures or any(diagnostics.values()):
                 raise AssertionError('Unexpected endurance diagnostics: ' + json.dumps(
                     {**diagnostics, 'proxyFailures': proxy.failures}))

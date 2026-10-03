@@ -1836,7 +1836,7 @@
     "packages": []
   },
   "officialPackageAssets": [],
-  "sdkBuildInputsSha256": "ef4b0904601ecdcaa7e481f8d6d17eb8fc4e605113c215ac3fe436782701dcc0",
+  "sdkBuildInputsSha256": "b7b927989161d47f7e74b61a2b689a932b38c663d31f181f4eec38604f8e0dcb",
   "buildTools": {
     "python": "3.12.7",
     "minifier": "rjsmin",
@@ -3361,6 +3361,6 @@
   "provenance": {
     "path": "particle-engine.provenance.json",
     "predicate_type": "https://slsa.dev/provenance/v1",
-    "sha256": "e6482741750e39b3c1b0e1f35c63bcdc856677eeb778d93401badcdfa8971e05"
+    "sha256": "b2b7115ba3c29e7b9b7d070ffd0ace43b7d2c13679d82867b59d8ca2c790f0a3"
   }
 }

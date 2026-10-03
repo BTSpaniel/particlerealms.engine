@@ -76,6 +76,7 @@ SELECTORS = (
         "test_real_asyncio_self_pipe_runs_and_closes",
         "test_real_tcp_socketpair_exchanges_bytes_and_restores_scope",
         "test_socketpair_failure_restores_permission",
+        "test_spawned_process_pool_blocks_network_and_preserves_compression",
     )),
     *("bundler.tests.test_sdk_rebuild.SDKRebuildTests." + name for name in (
         "test_missing_editable_source_is_rejected",

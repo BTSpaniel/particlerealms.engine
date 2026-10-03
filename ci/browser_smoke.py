@@ -22,7 +22,7 @@ import sys
 import tempfile
 import threading
 import time
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qsl, unquote, urlsplit
 import zipfile
 
 from sdk_scenarios import playground_case, selection_case
@@ -33,6 +33,95 @@ ROOT = Path(__file__).resolve().parents[1]
 SOFTWARE_ARGS = ['--enable-unsafe-webgpu', '--enable-features=Vulkan,WebGPUDeveloperFeatures',
                  '--use-gl=angle', '--use-angle=swiftshader', '--use-vulkan=swiftshader',
                  '--disable-vulkan-surface']
+# Browser services must not compete with the package under test. These switches
+# reduce attempts; the denying proxy remains the actual network boundary.
+# https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
+# https://chromium.googlesource.com/chromium/src/+/25e84d9ef2ae6b698d42ef95600ce1f86a95d409/components/network_time/network_time_tracker.cc
+OFFLINE_BROWSER_ARGS = [
+    '--enable-automation', '--disable-background-networking',
+    '--disable-component-update', '--disable-domain-reliability', '--disable-sync',
+    '--metrics-recording-only', '--no-first-run', '--proxy-bypass-list=<-loopback>',
+    '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1',
+    '--disable-features=AutofillServerCommunication,OptimizationHints,MediaRouter,Translate,NetworkTimeServiceQuerying',
+]
+
+
+def observe_package_network(context, origin, diagnostics):
+    """Observe page and worker requests without any external-host exceptions."""
+    def external(url):
+        return not url.startswith(origin + '/') and urlsplit(url).scheme not in ('blob', 'data')
+
+    def admit(route):
+        if external(route.request.url):
+            diagnostics['externalRequests'].append(route.request.url)
+            route.abort('blockedbyclient')
+        else:
+            route.continue_()
+
+    def admit_web_socket(route):
+        # WebSocket handshakes do not use context.route(). Never connect an
+        # external socket, even when its host is a known browser-service host.
+        url = route.url
+        http_url = 'http' + url[2:] if url.startswith(('ws://', 'wss://')) else url
+        if external(http_url):
+            diagnostics['externalRequests'].append(url)
+            route.close(code=1008, reason='CI blocks external network access')
+        else:
+            route.connect_to_server()
+
+    def observe_page(page):
+        # Chromium also reports dedicated-worker handshakes on their owning
+        # page. Observe those attempts even when frame script routing cannot
+        # intercept them; the proxy still denies every external connection.
+        page.on('websocket', lambda socket: diagnostics['externalRequests'].append(socket.url)
+            if external('http' + socket.url[2:]) else None)
+
+    context.route('**/*', admit)
+    context.route_web_socket('**/*', admit_web_socket)
+    context.on('page', observe_page)
+    for page in context.pages:
+        observe_page(page)
+    context.on('request', lambda request: diagnostics['externalRequests'].append(request.url)
+        if external(request.url) else None)
+    context.on('response', lambda response: diagnostics['httpErrors'].append(
+        {'url': response.url, 'status': response.status}) if response.status >= 400 else None)
+
+
+def classify_proxy_denials(blocked, application_requests):
+    """Classify denied browser maintenance probes, never permit a connection.
+
+    Only exact destinations observed in Chromium CI are recognized. A matching
+    page/worker request overrides this classification even if its route was
+    aborted before reaching the proxy. Unknown destinations remain failures.
+    """
+    def authority(destination):
+        try:
+            parsed = urlsplit(destination if '://' in destination else 'https://' + destination)
+            return parsed.hostname, parsed.port or (443 if parsed.scheme in ('https', 'wss') else 80)
+        except ValueError:
+            return None
+
+    observed = {authority(url) for url in application_requests}
+    background, unexpected = [], []
+    known_connect = {'www.google.com:443', 'update.googleapis.com:443',
+                     'accounts.google.com:443', 'android.clients.google.com:443'}
+    for destination in blocked:
+        known = destination in known_connect
+        if not known:
+            try:
+                parsed = urlsplit(destination)
+                query = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
+                known = (parsed.scheme == 'http' and parsed.netloc == 'clients2.google.com'
+                    and parsed.path == '/time/1/current' and not parsed.fragment
+                    and sorted(key for key, _ in query) == ['cup2hreq', 'cup2key']
+                    and all(value for _, value in query))
+            except ValueError:
+                known = False
+        if known and authority(destination) not in observed:
+            background.append(destination)
+        else:
+            unexpected.append(destination)
+    return {'browserBackgroundDenied': background, 'unexpectedProxyDenied': unexpected}
 
 
 def contained_path(root, raw_path, mount):
@@ -142,6 +231,63 @@ def contained_proxy(origin):
         server.shutdown()
         server.server_close()
         thread.join(timeout=5)
+
+
+def network_boundary_probe(browser):
+    """Prove real page/worker HTTP and sockets cannot hide as browser traffic.
+
+    Intentional denied requests use their own context, proxy and diagnostics,
+    so they cannot be mistaken for requests made by the distributed application.
+    This CPU-only check neither imports the SDK nor requests a GPU device.
+    """
+    expected = [
+        'https://update.googleapis.com/page-boundary-probe',
+        'https://update.googleapis.com/worker-boundary-probe',
+        'wss://accounts.google.com/page-boundary-probe',
+        'wss://android.clients.google.com/worker-boundary-probe',
+    ]
+    result = {'status': 'RUNNING', 'expectedDeniedApplicationRequests': expected,
+              'diagnostics': {'externalRequests': [], 'httpErrors': []}}
+    # No local HTTP request is needed. This reserved unserved endpoint also
+    # makes accidental forwarding observable instead of serving extra content.
+    origin = 'http://127.0.0.1:1'
+    with contained_proxy(origin) as (proxy_url, proxy):
+        context = browser.new_context(service_workers='block',
+            proxy={'server': proxy_url, 'bypass': '<-loopback>'})
+        try:
+            observe_package_network(context, origin, result['diagnostics'])
+            page = context.new_page()
+            page.set_default_timeout(10000)
+            page.set_content('<!doctype html><title>CI network boundary probe</title>')
+            page.evaluate('''expected => {
+                fetch(expected[0]).catch(() => {});
+                const socket = new WebSocket(expected[2]); socket.onerror = () => {};
+                const script = `fetch(${JSON.stringify(expected[1])}).catch(() => {});
+                    const socket = new WebSocket(${JSON.stringify(expected[3])}); socket.onerror = () => {};`;
+                globalThis.__boundaryWorkerUrl = URL.createObjectURL(new Blob([script], {type:'text/javascript'}));
+                globalThis.__boundaryWorker = new Worker(__boundaryWorkerUrl);
+            }''', expected)
+            deadline = time.monotonic() + 5
+            while not set(expected).issubset(result['diagnostics']['externalRequests']) and time.monotonic() < deadline:
+                page.wait_for_timeout(50)
+            result['missingObservations'] = sorted(set(expected) - set(result['diagnostics']['externalRequests']))
+            page.evaluate('''() => {
+                __boundaryWorker.terminate(); URL.revokeObjectURL(__boundaryWorkerUrl);
+                delete globalThis.__boundaryWorker; delete globalThis.__boundaryWorkerUrl;
+            }''')
+            if result['missingObservations']:
+                raise AssertionError('Application network attempts were not observed: ' + str(result['missingObservations']))
+            result['status'] = 'PASS'
+        except Exception as error:
+            result.update(status='FAIL', error=str(error))
+        finally:
+            context.close()
+        result['networkContainment'] = {'proxyBlocked': list(proxy.blocked),
+            **classify_proxy_denials(proxy.blocked, result['diagnostics']['externalRequests']),
+            'forwarded': proxy.forwarded, 'proxyFailures': list(proxy.failures)}
+        if proxy.forwarded or proxy.failures:
+            result.update(status='FAIL', error='Boundary probe forwarded a request or failed its proxy')
+    return result
 
 
 def extract_template(archive, destination):
@@ -283,19 +429,7 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
         context = browser.new_context(service_workers='block', viewport={'width': 1000, 'height': 800},
                                       proxy={'server': proxy_url, 'bypass': '<-loopback>'})
 
-        def admit(route):
-            url = route.request.url
-            if url.startswith(origin + '/') or urlsplit(url).scheme in ('blob', 'data'):
-                route.continue_()
-            else:
-                diagnostics['externalRequests'].append(url)
-                route.abort('blockedbyclient')
-
-        context.route('**/*', admit)
-        context.on('request', lambda request: diagnostics['externalRequests'].append(request.url)
-            if not request.url.startswith(origin + '/') and urlsplit(request.url).scheme not in ('blob', 'data') else None)
-        context.on('response', lambda response: diagnostics['httpErrors'].append({'url': response.url, 'status': response.status})
-            if response.status >= 400 else None)
+        observe_package_network(context, origin, diagnostics)
         page = context.new_page()
         page.set_default_timeout(90000)
         page.on('pageerror', lambda error: diagnostics['pageErrors'].append(str(error)))
@@ -370,12 +504,9 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
                 raise AssertionError('Real native PhysX WASM was not served successfully')
             result['nativeWasmRequests'] = native
             page.screenshot(path=str(images / f'{package}-{mount.strip("/") or "root"}.png'))
-            # Installed branded Chrome search-engine CONNECT probes are denied,
-            # recorded raw, and separated from requests observed in this context.
-            # No product/worker request is excluded, including this exact host.
-            background = [url for url in proxy.blocked if url == 'www.google.com:443']
-            diagnostics['externalRequests'].extend(url for url in proxy.blocked if url not in background)
-            result['networkContainment'] = {'proxyBlocked': list(proxy.blocked), 'browserBackgroundDenied': background,
+            denied = classify_proxy_denials(proxy.blocked, diagnostics['externalRequests'])
+            diagnostics['externalRequests'].extend(denied['unexpectedProxyDenied'])
+            result['networkContainment'] = {'proxyBlocked': list(proxy.blocked), **denied,
                 'proxyFailures': proxy.failures, 'forwarded': proxy.forwarded, 'serviceWorkers': 'blocked', 'onlyOrigin': origin}
             if proxy.failures or any(diagnostics.values()):
                 raise AssertionError('Unexpected browser diagnostics: ' + json.dumps(diagnostics))
@@ -387,7 +518,7 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
         finally:
             result['requests'] = requests
             result['networkContainment'] = {'proxyBlocked': list(proxy.blocked),
-                'browserBackgroundDenied': [url for url in proxy.blocked if url == 'www.google.com:443'],
+                **classify_proxy_denials(proxy.blocked, diagnostics['externalRequests']),
                 'proxyFailures': list(proxy.failures), 'forwarded': proxy.forwarded,
                 'serviceWorkers': 'blocked', 'onlyOrigin': origin}
             try:
@@ -451,8 +582,7 @@ def main(argv=None):
         with tempfile.TemporaryDirectory(prefix='particle-sdk-ci-template-') as temporary:
             template, receipt = extract_template(ROOT / 'Template.zip', Path(temporary))
             from playwright.sync_api import sync_playwright
-            launch_args = ['--enable-automation', '--proxy-bypass-list=<-loopback>', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1',
-                           '--disable-features=AutofillServerCommunication,OptimizationHints,MediaRouter,Translate']
+            launch_args = list(OFFLINE_BROWSER_ARGS)
             if args.webgpu == 'software':
                 launch_args.extend(SOFTWARE_ARGS)
             with sync_playwright() as playwright:
@@ -462,6 +592,9 @@ def main(argv=None):
                     proxy={'server': 'http://per-context'}, args=launch_args)
                 report['browserVersion'], report['launchArgs'] = browser.version, launch_args
                 try:
+                    report['networkBoundaryProbe'] = network_boundary_probe(browser)
+                    if report['networkBoundaryProbe']['status'] != 'PASS':
+                        raise AssertionError('Network boundary probe failed: ' + json.dumps(report['networkBoundaryProbe']))
                     browser_session = browser.new_browser_cdp_session()
                     try:
                         report['browserCommandLine'] = browser_session.send('Browser.getBrowserCommandLine')['arguments']
