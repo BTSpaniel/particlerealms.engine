@@ -17,7 +17,9 @@
 
 Software WebGPU checks establish functional behavior, not hardware frame rates or complete device compatibility. Full OS, Editor, AGI, native Flow and hardware release acceptance remain recorded in the versioned release validation. This workflow does not relabel those historical results as new CI runs and does not rebuild native binaries or publish releases.
 
-The strict SDK verifier also checks its recorded Python and native compression versions. Its Windows job uses the release baseline rather than bypassing those checks on a different environment. CI installs dependencies explicitly before tests; application development still requires no Node/npm setup.
+The strict SDK verifier also checks its recorded Python and native compression versions. Its Windows job uses the release baseline and the runner's canonical temporary directory. CI installs dependencies explicitly before tests; application development still requires no Node/npm setup.
+
+Browser tooling is pinned to Playwright 1.63.0 and its Chromium build. The harness selects [Chromium's full headless mode](https://playwright.dev/python/docs/browsers#chromium-new-headless-mode); software jobs explicitly select the [SwiftShader Vulkan driver](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/gpu/swiftshader.md). Each report records the actual browser version, launch arguments and adapter identity.
 
 ## Run locally
 

@@ -3,8 +3,8 @@
 """Exercise the distributed SDK and extracted Template without repository fallback.
 
 CPU smoke and software WebGPU are separate scopes. The latter executes the
-unchanged shipped examples using the SwiftShader flags from PhysX PE's
-tools/flow_gpu_probe.py; neither scope qualifies production GPU hardware/Flow.
+unchanged shipped examples using Chromium's SwiftShader Vulkan driver;
+neither scope qualifies production GPU hardware/Flow.
 """
 from __future__ import annotations
 
@@ -29,7 +29,8 @@ import zipfile
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 SOFTWARE_ARGS = ['--enable-unsafe-webgpu', '--enable-features=Vulkan,WebGPUDeveloperFeatures',
-                 '--use-angle=swiftshader', '--disable-vulkan-surface']
+                 '--use-gl=angle', '--use-angle=swiftshader', '--use-vulkan=swiftshader',
+                 '--disable-vulkan-surface']
 
 
 def contained_path(root, raw_path, mount):
@@ -419,6 +420,7 @@ def main(argv=None):
                 launch_args.extend(SOFTWARE_ARGS)
             with sync_playwright() as playwright:
                 browser = playwright.chromium.launch(headless=True,
+                    channel='chromium' if args.browser is None else None,
                     executable_path=str(args.browser) if args.browser else None,
                     proxy={'server': 'http://per-context'}, args=launch_args)
                 report['browserVersion'], report['launchArgs'] = browser.version, launch_args

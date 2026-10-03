@@ -26,6 +26,10 @@ jobs:
     name: Package integrity and Python tests
     runs-on: windows-2022
     timeout-minutes: 20
+    env:
+      # Use the runner's canonical path instead of its legacy 8.3 user TEMP alias.
+      TEMP: ${{ runner.temp }}
+      TMP: ${{ runner.temp }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -77,6 +81,8 @@ jobs:
       - name: Install pinned Chromium and system libraries
         run: python -m playwright install --with-deps chromium
       - name: Exercise source and compiled browser APIs
+        env:
+          DEBUG: pw:browser
         run: python -B ci/browser_smoke.py --webgpu ${{ matrix.webgpu }} --output test-results/browser-${{ matrix.webgpu }}.json
       - name: Publish job summary
         if: always()
