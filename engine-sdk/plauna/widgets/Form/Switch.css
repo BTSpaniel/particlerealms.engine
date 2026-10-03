@@ -1,0 +1,162 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Switch Component Styles
+ * Modular CSS for Switch form control
+ */
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch__input {
+  appearance: none;
+  width: 44px;
+  height: 24px;
+  min-width: 44px;
+  min-height: 24px;
+  border: none;
+  border-radius: var(--border-radius-full);
+  background: var(--border-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+  position: relative;
+}
+
+.switch__input::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: all var(--transition-fast);
+}
+
+.switch__input:hover:not(:disabled) {
+  background: var(--border-dark);
+}
+
+.switch__input:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.switch__input:checked {
+  background: var(--color-primary-500);
+}
+
+.switch__input:checked::before {
+  left: 22px;
+}
+
+.switch__input:disabled {
+  background: var(--border-medium);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Label */
+.switch__label {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin: 0;
+}
+
+.switch:has(.switch__input:disabled) .switch__label {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* Description */
+.switch__description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: var(--spacing-xs);
+  margin-left: 52px;
+}
+
+/* Size Variants */
+.switch--sm .switch__input {
+  width: 36px;
+  height: 20px;
+  min-width: 36px;
+  min-height: 20px;
+}
+
+.switch--sm .switch__input::before {
+  width: 16px;
+  height: 16px;
+  top: 2px;
+  left: 2px;
+}
+
+.switch--sm .switch__input:checked::before {
+  left: 18px;
+}
+
+.switch--sm .switch__label {
+  font-size: var(--font-size-sm);
+}
+
+.switch--lg .switch__input {
+  width: 52px;
+  height: 28px;
+  min-width: 52px;
+  min-height: 28px;
+}
+
+.switch--lg .switch__input::before {
+  width: 24px;
+  height: 24px;
+  top: 2px;
+  left: 2px;
+}
+
+.switch--lg .switch__input:checked::before {
+  left: 26px;
+}
+
+.switch--lg .switch__label {
+  font-size: var(--font-size-lg);
+}
+
+/* Color Variants */
+.switch--primary .switch__input:checked {
+  background: var(--color-primary-500);
+}
+
+.switch--success .switch__input:checked {
+  background: var(--color-success);
+}
+
+.switch--warning .switch__input:checked {
+  background: var(--color-warning);
+}
+
+.switch--error .switch__input:checked {
+  background: var(--color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .switch {
+    gap: var(--spacing-sm);
+  }
+
+  .switch__label {
+    font-size: var(--font-size-sm);
+  }
+}

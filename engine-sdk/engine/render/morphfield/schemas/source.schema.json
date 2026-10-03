@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/source.schema.json",
+  "title": "MorphField R2 canonical Nexel source",
+  "description": "The nine semantic source kinds admitted by the R2 compiler. Certificates and execution-family selections are compiler-owned and are deliberately absent.",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "oneOf": [
+    { "$ref": "#/$defs/sphere" },
+    { "$ref": "#/$defs/box" },
+    { "$ref": "#/$defs/capsule" },
+    { "$ref": "#/$defs/csg" },
+    { "$ref": "#/$defs/sampledField" },
+    { "$ref": "#/$defs/sparseResidual" },
+    { "$ref": "#/$defs/orientedSamples" },
+    { "$ref": "#/$defs/indexedSurface" },
+    { "$ref": "#/$defs/medium" }
+  ],
+  "$defs": {
+    "sphere": {
+      "type": "object",
+      "required": ["kind", "radius", "transform"],
+      "properties": {
+        "kind": { "const": "sphere" },
+        "radius": {
+          "allOf": [
+            { "$ref": "common.schema.json#/$defs/finiteF32" },
+            { "minimum": 1e-7 }
+          ]
+        },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "box": {
+      "type": "object",
+      "required": ["kind", "halfExtents", "transform"],
+      "properties": {
+        "kind": { "const": "box" },
+        "halfExtents": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "allOf": [
+                { "$ref": "common.schema.json#/$defs/finiteF32" },
+                { "minimum": 1e-7 }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "common.schema.json#/$defs/finiteF32" },
+                { "minimum": 1e-7 }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "common.schema.json#/$defs/finiteF32" },
+                { "minimum": 1e-7 }
+              ]
+            }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "capsule": {
+      "type": "object",
+      "required": ["kind", "radius", "halfHeight", "transform"],
+      "properties": {
+        "kind": { "const": "capsule" },
+        "radius": {
+          "allOf": [
+            { "$ref": "common.schema.json#/$defs/finiteF32" },
+            { "minimum": 1e-7 }
+          ]
+        },
+        "halfHeight": { "$ref": "common.schema.json#/$defs/nonNegativeF32" },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "analyticSource": {
+      "oneOf": [
+        { "$ref": "#/$defs/sphere" },
+        { "$ref": "#/$defs/box" },
+        { "$ref": "#/$defs/capsule" },
+        { "$ref": "#/$defs/csg" }
+      ]
+    },
+    "csg": {
+      "type": "object",
+      "required": ["kind", "operation", "children", "transform"],
+      "properties": {
+        "kind": { "const": "csg" },
+        "operation": { "enum": ["union", "intersection", "difference"] },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/analyticSource" }
+        },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "operation": { "const": "difference" } }, "required": ["operation"] },
+          "then": { "properties": { "children": { "maxItems": 2 } } }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "gridDimensions": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "integer", "minimum": 2, "maximum": 2048 },
+        { "type": "integer", "minimum": 2, "maximum": 2048 },
+        { "type": "integer", "minimum": 2, "maximum": 2048 }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "sampledField": {
+      "type": "object",
+      "required": ["kind", "bounds", "dimensions", "values", "transform"],
+      "properties": {
+        "kind": { "const": "sampled-field" },
+        "bounds": { "$ref": "common.schema.json#/$defs/bounds" },
+        "dimensions": { "$ref": "#/$defs/gridDimensions" },
+        "values": {
+          "type": "array",
+          "maxItems": 16777216,
+          "items": { "$ref": "common.schema.json#/$defs/finiteF32" }
+        },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "sparseResidual": {
+      "type": "object",
+      "required": ["kind", "bounds", "dimensions", "values", "base", "transform"],
+      "properties": {
+        "kind": { "const": "sparse-residual" },
+        "bounds": { "$ref": "common.schema.json#/$defs/bounds" },
+        "dimensions": { "$ref": "#/$defs/gridDimensions" },
+        "values": {
+          "type": "array",
+          "maxItems": 16777216,
+          "items": { "$ref": "common.schema.json#/$defs/finiteF32" }
+        },
+        "base": { "$ref": "#/$defs/analyticSource" },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "orientedSample": {
+      "type": "object",
+      "required": ["position", "normal", "radii", "weight"],
+      "properties": {
+        "position": { "$ref": "common.schema.json#/$defs/vec3" },
+        "normal": { "$ref": "common.schema.json#/$defs/vec3" },
+        "radii": { "$ref": "common.schema.json#/$defs/positiveVec3" },
+        "weight": { "$ref": "common.schema.json#/$defs/positiveF32" }
+      },
+      "additionalProperties": false
+    },
+    "orientedSamples": {
+      "type": "object",
+      "required": ["kind", "samples", "isoValue", "transform"],
+      "properties": {
+        "kind": { "const": "oriented-samples" },
+        "samples": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5000000,
+          "items": { "$ref": "#/$defs/orientedSample" }
+        },
+        "isoValue": { "$ref": "common.schema.json#/$defs/nonNegativeF32" },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "indexedSurface": {
+      "type": "object",
+      "required": ["kind", "positions", "indices", "closed", "transform"],
+      "properties": {
+        "kind": { "const": "indexed-surface" },
+        "positions": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 45000000,
+          "items": { "$ref": "common.schema.json#/$defs/finiteF32" }
+        },
+        "indices": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 15000000,
+          "items": { "type": "integer", "minimum": 0 }
+        },
+        "closed": { "type": "boolean" },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    },
+    "medium": {
+      "type": "object",
+      "required": ["kind", "bounds", "density", "extinction", "emission", "transform"],
+      "properties": {
+        "kind": { "const": "medium" },
+        "bounds": { "$ref": "common.schema.json#/$defs/bounds" },
+        "density": { "$ref": "common.schema.json#/$defs/nonNegativeF32" },
+        "extinction": { "$ref": "common.schema.json#/$defs/nonNegativeF32" },
+        "emission": { "$ref": "common.schema.json#/$defs/nonNegativeVec3" },
+        "transform": { "$ref": "common.schema.json#/$defs/transform" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

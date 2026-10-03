@@ -1,0 +1,138 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Status Component Styles
+ * Modular CSS for Status feedback widget
+ */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.status__indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Status Types */
+.status--success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #047857;
+}
+
+.status--success .status__indicator {
+  background: var(--color-success);
+}
+
+[data-theme="night"] .status--success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.status--error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+}
+
+.status--error .status__indicator {
+  background: var(--color-error);
+}
+
+[data-theme="night"] .status--error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.status--warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #92400e;
+}
+
+.status--warning .status__indicator {
+  background: var(--color-warning);
+}
+
+[data-theme="night"] .status--warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.status--info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+}
+
+.status--info .status__indicator {
+  background: var(--color-info);
+}
+
+[data-theme="night"] .status--info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.status--pending {
+  background: rgba(148, 163, 184, 0.1);
+  color: #475569;
+}
+
+.status--pending .status__indicator {
+  background: var(--text-secondary);
+}
+
+[data-theme="night"] .status--pending {
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+}
+
+/* Size Variants */
+.status--sm {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.status--sm .status__indicator {
+  width: 6px;
+  height: 6px;
+}
+
+.status--md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.status--lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-md);
+}
+
+.status--lg .status__indicator {
+  width: 10px;
+  height: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .status--lg {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .status--lg .status__indicator {
+    width: 8px;
+    height: 8px;
+  }
+}

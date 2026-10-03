@@ -1,0 +1,11 @@
+/* CSS entry resource */
+body {
+  background: #f0f0f0;
+  color: #222;
+  font-family: system-ui, sans-serif;
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+}

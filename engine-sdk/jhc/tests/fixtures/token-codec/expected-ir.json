@@ -1,0 +1,100 @@
+{
+  "header": {
+    "major": 1,
+    "minor": 0,
+    "flags": 0,
+    "dictionaryVersion": 0,
+    "languageProfile": 0
+  },
+  "manifest": {
+    "applicationId": "test.token-codec",
+    "applicationVersion": "1.0.0",
+    "blockmap": {
+      "builtAt": "2026-01-01T00:00:00Z",
+      "files": {
+        "files/app.js": "b593a52268e6fc1d3542d4b65f0d0e643127b2ca622b62ea3cc7ac1227308f41",
+        "files/index.html": "6115e9a531ea397e4220e59c2a2714d9b0f721825f730c5f3c251d74afaed588",
+        "files/style.css": "4b7bcecf315a2fecdaa7a1f71cd1fb240f83f27ecbceb7d3e336f2ff4550a289"
+      },
+      "format": "blockmap-v1",
+      "packageId": "test.token-codec",
+      "version": "1.0.0"
+    },
+    "container": "jhc-1.0",
+    "entry": "files/index.html",
+    "format": "jhc-1.0",
+    "name": "Token Codec App",
+    "publisher": "fixtures",
+    "requiredFeatures": 0,
+    "resources": [
+      {
+        "decodedLength": 140,
+        "hash": "b593a52268e6fc1d3542d4b65f0d0e643127b2ca622b62ea3cc7ac1227308f41",
+        "id": 0,
+        "mime": "application/octet-stream",
+        "path": "files/app.js",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 260,
+        "hash": "6115e9a531ea397e4220e59c2a2714d9b0f721825f730c5f3c251d74afaed588",
+        "id": 1,
+        "mime": "application/octet-stream",
+        "path": "files/index.html",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 90,
+        "hash": "4b7bcecf315a2fecdaa7a1f71cd1fb240f83f27ecbceb7d3e336f2ff4550a289",
+        "id": 2,
+        "mime": "application/octet-stream",
+        "path": "files/style.css",
+        "representation": "raw"
+      }
+    ]
+  },
+  "directory": [
+    {
+      "sectionType": 0,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 48,
+      "storedLength": 1149,
+      "decodedLength": 1149
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 1,
+      "storedOffset": 1485,
+      "storedLength": 132,
+      "decodedLength": 140
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 1,
+      "codec": 1,
+      "storedOffset": 1617,
+      "storedLength": 247,
+      "decodedLength": 260
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 2,
+      "codec": 1,
+      "storedOffset": 1864,
+      "storedLength": 84,
+      "decodedLength": 90
+    }
+  ],
+  "resourcePaths": [
+    "files/app.js",
+    "files/index.html",
+    "files/style.css"
+  ],
+  "rootHash": "fea9d247e1bfae6951d5cb37b7ada5a9801583d702f7d04df6a60b1078d96af3"
+}

@@ -1,0 +1,1770 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Plauna CSS Styles
+ * Extends existing editor theme system
+ */
+
+/* =============================================================================
+ * PLAUNA ROOT CONTAINER
+ * ============================================================================= */
+
+.plauna-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text-primary, #e4e4e7);
+    background: var(--bg-primary, #0a0a0f);
+}
+
+.plauna-root--transparent {
+    background: transparent !important;
+}
+
+/* =============================================================================
+ * WORKBENCH LAYOUT
+ * ============================================================================= */
+
+.plauna-workbench {
+    display: grid;
+    grid-template-areas:
+        "left center right"
+        "bottom bottom bottom";
+    grid-template-columns: 280px 1fr 280px;
+    grid-template-rows: 1fr auto;
+    width: 100%;
+    height: 100%;
+    gap: 1px;
+    background: var(--border-subtle, #1a1a28);
+}
+
+.plauna-zone {
+    background: var(--bg-secondary, #0f0f17);
+    overflow: hidden;
+    position: relative;
+}
+
+.plauna-zone--left {
+    grid-area: left;
+}
+
+.plauna-zone--center {
+    grid-area: center;
+}
+
+.plauna-zone--right {
+    grid-area: right;
+}
+
+.plauna-zone--bottom {
+    grid-area: bottom;
+    min-height: 200px;
+    max-height: 400px;
+}
+
+.plauna-zone--overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1200;
+}
+
+/* =============================================================================
+ * MODAL & OVERLAY SYSTEM
+ * ============================================================================= */
+
+.plauna-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    pointer-events: auto;
+}
+
+.plauna-modal--hidden {
+    display: none;
+    pointer-events: none;
+}
+
+.plauna-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 1199;
+    pointer-events: auto;
+}
+
+.plauna-modal-panel {
+    position: relative;
+    z-index: 1201;
+    background: var(--bg-primary, #0a0a0f);
+    border: 1px solid var(--border-medium, #2a2a3a);
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: plauna-modal-enter 200ms ease-out;
+}
+
+@keyframes plauna-modal-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.plauna-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-subtle, #1a1a28);
+    background: var(--bg-secondary, #0f0f17);
+}
+
+.plauna-modal-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #e4e4e7);
+}
+
+.plauna-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary, #d1d5db);
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 150ms ease;
+}
+
+.plauna-modal-close:hover {
+    background: var(--bg-tertiary, #171723);
+    color: var(--text-primary, #e4e4e7);
+}
+
+.plauna-modal-content {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+    color: var(--text-primary, #e4e4e7);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Dropdown & Popover z-index */
+.plauna-dropdown {
+    position: fixed;
+    z-index: 1100;
+    background: var(--bg-primary, #0a0a0f);
+    border: 1px solid var(--border-medium, #2a2a3a);
+    border-radius: 6px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.plauna-popover {
+    position: fixed;
+    z-index: 1100;
+    background: var(--bg-primary, #0a0a0f);
+    border: 1px solid var(--border-medium, #2a2a3a);
+    border-radius: 6px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip z-index */
+.plauna-tooltip {
+    position: fixed;
+    z-index: 1400;
+    background: var(--bg-tertiary, #171723);
+    color: var(--text-primary, #e4e4e7);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+/* =============================================================================
+ * PANEL SYSTEM (extends existing editor panels)
+ * ============================================================================= */
+
+.plauna-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-tertiary, #171723);
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.plauna-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg-quaternary, #1f1f2e);
+    border-bottom: 1px solid var(--border-subtle, #1a1a28);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted, #9ca3af);
+    user-select: none;
+}
+
+.plauna-panel-content {
+    flex: 1;
+    overflow: auto;
+    padding: 12px;
+}
+
+/* =============================================================================
+ * TAB SYSTEM (enhanced version of existing tabs)
+ * ============================================================================= */
+
+.plauna-tabs {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.plauna-tab-bar {
+    display: flex;
+    background: var(--bg-quaternary, #1f1f2e);
+    border-bottom: 1px solid var(--border-subtle, #1a1a28);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.plauna-tab-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.plauna-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted, #9ca3af);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    position: relative;
+}
+
+.plauna-tab:hover {
+    color: var(--text-secondary, #d1d5db);
+    background: var(--bg-tertiary, #171723);
+}
+
+.plauna-tab--active {
+    color: var(--accent-primary, #6b8afd);
+    border-bottom-color: var(--accent-primary, #6b8afd);
+    background: var(--bg-secondary, #0f0f17);
+}
+
+.plauna-tab--dirty::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--accent-warning, #f59e0b);
+    border-radius: 50%;
+    position: absolute;
+    top: 8px;
+    right: 6px;
+}
+
+.plauna-tab-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    color: var(--text-muted, #9ca3af);
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.plauna-tab:hover .plauna-tab-close {
+    display: flex;
+}
+
+.plauna-tab-close:hover {
+    background: var(--bg-tertiary, #171723);
+    color: var(--text-primary, #e4e4e7);
+}
+
+.plauna-tab-content {
+    flex: 1;
+    overflow: auto;
+    background: var(--bg-secondary, #0f0f17);
+}
+
+/* =============================================================================
+ * SPLITTER SYSTEM
+ * ============================================================================= */
+
+.plauna-splitter {
+    background: var(--border-subtle, #1a1a28);
+    cursor: col-resize;
+    position: relative;
+    z-index: 10;
+}
+
+.plauna-splitter--horizontal {
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+}
+
+.plauna-splitter--vertical {
+    width: 100%;
+    height: 4px;
+    cursor: row-resize;
+}
+
+.plauna-splitter:hover {
+    background: var(--accent-primary, #6b8afd);
+}
+
+.plauna-splitter::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 20px;
+    background: var(--text-muted, #9ca3af);
+    border-radius: 1px;
+    opacity: 0.5;
+}
+
+.plauna-splitter--vertical::before {
+    width: 20px;
+    height: 2px;
+}
+
+/* =============================================================================
+ * SURFACE RENDERING
+ * ============================================================================= */
+
+.plauna-surface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.plauna-surface--interactive {
+    pointer-events: auto;
+}
+
+.plauna-surface-viewport {
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* =============================================================================
+ * TEXT MEASUREMENT HELPERS
+ * ============================================================================= */
+
+[data-measure-text] {
+    position: relative;
+}
+
+[data-text-measured] {
+    /* Applied after measurement */
+    opacity: 1;
+}
+
+.plauna-text-measurement {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    visibility: hidden;
+    white-space: pre;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+/* =============================================================================
+ * VIRTUAL SCROLLING
+ * ============================================================================= */
+
+.plauna-virtual-scroll {
+    position: relative;
+    overflow: auto;
+}
+
+.plauna-virtual-content {
+    position: relative;
+}
+
+.plauna-virtual-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+/* =============================================================================
+ * GPU TEXT OVERLAYS
+ * ============================================================================= */
+
+.plauna-gpu-text {
+    position: absolute;
+    pointer-events: none;
+    transform-origin: top left;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* =============================================================================
+ * ADVANCED LAYOUT COMPONENTS
+ * ============================================================================= */
+
+.plauna-section {
+    margin-bottom: 16px;
+}
+
+.plauna-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg-quaternary, #1f1f2e);
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text-secondary, #d1d5db);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.plauna-section-header:hover {
+    background: var(--bg-tertiary, #171723);
+}
+
+.plauna-section-content {
+    padding: 12px;
+    background: var(--bg-tertiary, #171723);
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+.plauna-section--collapsed .plauna-section-content {
+    display: none;
+}
+
+.plauna-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.plauna-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.plauna-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.plauna-field-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted, #9ca3af);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.plauna-field-input {
+    padding: 6px 8px;
+    background: var(--bg-quaternary, #1f1f2e);
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 4px;
+    color: var(--text-primary, #e4e4e7);
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.plauna-field-input:focus {
+    outline: none;
+    border-color: var(--accent-primary, #6b8afd);
+    background: var(--bg-secondary, #0f0f17);
+}
+
+/* =============================================================================
+ * WORKSPACE SPECIFIC STYLES
+ * ============================================================================= */
+
+.plauna-workspace-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: var(--bg-quaternary, #1f1f2e);
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 4px;
+    color: var(--text-secondary, #d1d5db);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.plauna-workspace-tab:hover {
+    background: var(--bg-tertiary, #171723);
+    color: var(--text-primary, #e4e4e7);
+}
+
+.plauna-workspace-tab--active {
+    background: var(--accent-primary, #6b8afd);
+    border-color: var(--accent-primary, #6b8afd);
+    color: white;
+}
+
+/* =============================================================================
+ * ANIMATIONS AND TRANSITIONS
+ * ============================================================================= */
+
+@keyframes plauna-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes plauna-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.plauna-animate-fade-in {
+    animation: plauna-fade-in 0.2s ease-out;
+}
+
+.plauna-animate-slide-in {
+    animation: plauna-slide-in 0.2s ease-out;
+}
+
+/* =============================================================================
+ * RESPONSIVE ADAPTATIONS
+ * ============================================================================= */
+
+@media (max-width: 1200px) {
+    .plauna-workbench {
+        grid-template-columns: 240px 1fr 240px;
+    }
+}
+
+@media (max-width: 900px) {
+    .plauna-workbench {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "center"
+            "left"
+            "right"
+            "bottom";
+    }
+    
+    .plauna-zone--left,
+    .plauna-zone--right {
+        min-height: 200px;
+    }
+}
+
+/* =============================================================================
+ * THEME INTEGRATION (extends existing CSS variables)
+ * ============================================================================= */
+
+:root {
+    --plauna-bg-primary: var(--bg-primary, #0a0a0f);
+    --plauna-bg-secondary: var(--bg-secondary, #0f0f17);
+    --plauna-bg-tertiary: var(--bg-tertiary, #171723);
+    --plauna-bg-quaternary: var(--bg-quaternary, #1f1f2e);
+    
+    --plauna-text-primary: var(--text-primary, #e4e4e7);
+    --plauna-text-secondary: var(--text-secondary, #d1d5db);
+    --plauna-text-muted: var(--text-muted, #9ca3af);
+    
+    --plauna-accent-primary: var(--accent-primary, #6b8afd);
+    --plauna-accent-secondary: var(--accent-secondary, #a78bfa);
+    --plauna-accent-warning: var(--accent-warning, #f59e0b);
+    --plauna-accent-error: var(--accent-error, #ef4444);
+    
+    --plauna-border-subtle: var(--border-subtle, #1a1a28);
+    --plauna-border-medium: var(--border-medium, #2a2a3a);
+}
+
+/* =============================================================================
+ * PLAUNA LAB PAGE
+ * ============================================================================= */
+
+html.plauna-lab-page,
+body.plauna-lab-page {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    background: #07111d;
+}
+
+.plauna-lab-page #root {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.plauna-lab {
+    position: relative;
+    min-height: 100vh;
+}
+
+.plauna-lab__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
+        radial-gradient(circle at 80% 82%, rgba(245, 158, 11, 0.16), transparent 26%),
+        linear-gradient(180deg, #08101d 0%, #0d1527 45%, #111827 100%);
+}
+
+.plauna-lab__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.plauna-lab__surface {
+    position: relative;
+    z-index: 100;
+}
+
+.plauna-lab__app {
+    position: relative;
+    min-height: 100vh;
+}
+
+.plauna-shell--lab {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto;
+    gap: 28px;
+    justify-items: center;
+    padding: 42px 32px 220px;
+    background: linear-gradient(180deg, rgba(8, 13, 24, 0.2), rgba(8, 13, 24, 0.06));
+}
+
+.plauna-shell__header,
+.plauna-shell__toolbar,
+.plauna-shell__metrics,
+.plauna-shell__main,
+.plauna-shell__footer {
+    width: min(1480px, calc(100vw - 64px));
+}
+
+.plauna-shell__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.plauna-shell__copy {
+    max-width: 780px;
+}
+
+.plauna-shell__copy h1 {
+    margin: 0;
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: var(--plauna-text-primary);
+    text-wrap: balance;
+}
+
+.plauna-shell__copy p {
+    margin: 14px 0 0;
+    max-width: 48ch;
+    color: var(--plauna-text-muted);
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.plauna-shell__badge,
+.plauna-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(56, 189, 248, 0.28);
+    background: rgba(56, 189, 248, 0.08);
+    color: #7ed7ff;
+    font: 600 11px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(12px);
+}
+
+.plauna-chip {
+    padding: 5px 9px;
+    border-color: rgba(148, 163, 184, 0.16);
+    background: rgba(148, 163, 184, 0.08);
+    color: var(--plauna-text-muted);
+}
+
+.plauna-shell__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.plauna-toolbar__divider {
+    display: inline-block;
+    width: 1px;
+    height: 22px;
+    background: rgba(99, 116, 141, 0.32);
+    margin: 0 4px;
+    align-self: center;
+    flex-shrink: 0;
+}
+
+.plauna-shell__toolbar {
+    align-items: center;
+}
+
+.plauna-shell__toolbar button,
+.plauna-design-card__actions button {
+    appearance: none;
+    border: 1px solid rgba(99, 116, 141, 0.56);
+    background: rgba(15, 23, 42, 0.44);
+    color: var(--plauna-text-primary);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font: 600 12px "Segoe UI", system-ui, sans-serif;
+    cursor: pointer;
+    transition: border-color 0.16s ease, transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.plauna-shell__toolbar button:hover,
+.plauna-design-card__actions button:hover {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    transform: translateY(-1px);
+}
+
+.plauna-btn--theme-active {
+    border-color: rgba(56, 189, 248, 0.72) !important;
+    background: rgba(56, 189, 248, 0.18) !important;
+    color: #7ed7ff !important;
+}
+
+.plauna-btn--active {
+    border-color: rgba(16, 185, 129, 0.72) !important;
+    background: rgba(16, 185, 129, 0.14) !important;
+    color: #6ee7b7 !important;
+    position: relative;
+}
+
+.plauna-btn--active::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: plauna-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes plauna-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.plauna-shell__metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+}
+
+.plauna-metric {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.34);
+    border: 1px solid rgba(99, 116, 141, 0.34);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.plauna-metric__label {
+    font: 600 10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: #7c8ca2;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.plauna-metric__value {
+    margin-top: 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--plauna-text-primary);
+}
+
+.plauna-metric__detail {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--plauna-text-muted);
+}
+
+.plauna-shell__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+.plauna-stage {
+    position: relative;
+    min-height: 760px;
+    border-radius: 28px;
+    border: 1px solid rgba(106, 125, 153, 0.28);
+    background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.1), transparent 40%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.3), rgba(15, 23, 42, 0.42));
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 24px 60px rgba(0, 0, 0, 0.16);
+}
+
+.plauna-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.plauna-stage__ui {
+    position: absolute;
+    inset: 16px;
+    pointer-events: none;
+}
+
+.plauna-stage__outline {
+    position: absolute;
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    background: rgba(15, 23, 42, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    transition:
+        left 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        top 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 220ms ease,
+        border-color 220ms ease,
+        background 220ms ease;
+}
+
+.plauna-stage__outline[data-tone="accent"] {
+    border-color: rgba(56, 189, 248, 0.22);
+    background: rgba(56, 189, 248, 0.05);
+}
+
+.plauna-stage__outline[data-tone="warning"] {
+    border-color: rgba(245, 158, 11, 0.22);
+    background: rgba(245, 158, 11, 0.05);
+}
+
+.plauna-stage__outline[data-tone="success"] {
+    border-color: rgba(16, 185, 129, 0.22);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.plauna-stage__label {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font: 600 10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--plauna-text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.plauna-stage__particles {
+    position: absolute;
+    inset: 0;
+}
+
+.plauna-stage__particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.75);
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.22);
+    will-change: transform, opacity, background-color;
+}
+
+.plauna-stage__particle[data-tone="accent"] {
+    background: rgba(56, 189, 248, 0.92);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+}
+
+.plauna-stage__particle[data-tone="warning"] {
+    background: rgba(245, 158, 11, 0.92);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+}
+
+.plauna-stage__particle[data-tone="success"] {
+    background: rgba(16, 185, 129, 0.92);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+}
+
+.plauna-stage__caption {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(2, 6, 23, 0.66);
+    border: 1px solid rgba(71, 85, 105, 0.72);
+    font: 600 10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--plauna-text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.plauna-design-grid {
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 24px;
+}
+
+.plauna-design-card {
+    display: grid;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(106, 125, 153, 0.28);
+    background: rgba(8, 15, 28, 0.34);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+.plauna-design-card[data-theme="editor"] {
+    background: linear-gradient(180deg, rgba(11, 18, 32, 0.42), rgba(15, 23, 42, 0.28));
+}
+
+.plauna-design-card[data-theme="command"] {
+    background: linear-gradient(180deg, rgba(28, 18, 10, 0.42), rgba(20, 20, 20, 0.28));
+}
+
+.plauna-design-card[data-theme="cards"] {
+    background: linear-gradient(180deg, rgba(8, 25, 22, 0.42), rgba(9, 17, 27, 0.28));
+}
+
+.plauna-design-card h2 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.plauna-design-card p {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--plauna-text-muted);
+}
+
+.plauna-design-card__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--plauna-text-muted);
+}
+
+.plauna-shell__footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    color: var(--plauna-text-muted);
+    font-size: 12px;
+}
+
+.plauna-lab-console {
+    position: fixed;
+    left: 50%;
+    bottom: 12px;
+    width: min(1440px, calc(100vw - 64px));
+    transform: translateX(-50%) translateY(calc(100% + 18px)) scale(0.985);
+    opacity: 0;
+    filter: blur(10px);
+    z-index: 20;
+    padding-top: 26px;
+    border: 1px solid rgba(99, 116, 141, 0.46);
+    border-radius: 22px;
+    background: rgba(15, 23, 42, 0.38);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+    transition:
+        transform 170ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 140ms ease,
+        filter 140ms ease,
+        background 140ms ease,
+        box-shadow 140ms ease,
+        border-color 140ms ease;
+}
+
+.plauna-lab-console::before {
+    content: "Console";
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    font: 600 10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(226, 232, 240, 0.84);
+}
+
+.plauna-lab-console.is-peeking,
+.plauna-lab-console:hover,
+.plauna-lab-console[data-console-peek="1"] {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+    background: rgba(15, 23, 42, 0.92);
+    border-color: rgba(56, 189, 248, 0.34);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+}
+
+.plauna-lab-console > div:first-child {
+    border-top: 1px solid rgba(31, 41, 55, 0.9);
+    border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    background: rgba(2, 6, 23, 0.9) !important;
+    border-radius: 22px 22px 0 0;
+}
+
+.plauna-lab-console #status {
+    min-height: 148px;
+    max-height: 220px;
+    overflow: auto;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+@media (max-width: 1180px) {
+    .plauna-shell__main {
+        grid-template-columns: 1fr;
+    }
+
+    .plauna-design-grid {
+        position: static;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .plauna-pretext-demo__body,
+    .plauna-wgallery__row {
+        grid-template-columns: 1fr;
+    }
+
+    .plauna-pretext-panel,
+    .plauna-widget-gallery {
+        width: calc(100vw - 36px);
+    }
+}
+
+@media (max-width: 900px) {
+    .plauna-shell--lab {
+        padding: 28px 18px 220px;
+    }
+
+    .plauna-shell__header {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .plauna-shell__copy {
+        margin: 0 auto;
+    }
+
+    .plauna-shell__metrics,
+    .plauna-design-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .plauna-shell__header,
+    .plauna-shell__toolbar,
+    .plauna-shell__metrics,
+    .plauna-shell__main,
+    .plauna-shell__footer {
+        width: calc(100vw - 36px);
+    }
+
+    .plauna-stage {
+        min-height: 560px;
+    }
+
+    .plauna-lab-console {
+        width: calc(100vw - 36px);
+    }
+}
+
+/* =============================================================================
+ * PRETEXT LIVE DEMO PANEL
+ * ============================================================================= */
+
+.plauna-pretext-panel,
+.plauna-widget-gallery {
+    width: min(1480px, calc(100vw - 64px));
+    margin: 0 auto;
+}
+
+.plauna-pretext-demo {
+    border-radius: 24px;
+    border: 1px solid rgba(106, 125, 153, 0.28);
+    background: rgba(8, 15, 28, 0.34);
+    backdrop-filter: blur(18px);
+    padding: 24px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+.plauna-pretext-demo__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.plauna-pretext-demo__body {
+    display: grid;
+    grid-template-columns: minmax(360px, 1.15fr) minmax(420px, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.plauna-pretext-demo__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.plauna-pretext-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font: 600 11px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--plauna-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.plauna-pretext-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.plauna-pretext-textarea {
+    resize: vertical;
+    min-height: 72px;
+    padding: 10px 12px;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(99, 116, 141, 0.36);
+    border-radius: 10px;
+    color: var(--plauna-text-primary);
+    font: 400 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    line-height: 1.55;
+    transition: border-color 0.16s ease;
+}
+
+.plauna-pretext-textarea:focus {
+    outline: none;
+    border-color: rgba(56, 189, 248, 0.5);
+}
+
+.plauna-pretext-select {
+    padding: 7px 10px;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(99, 116, 141, 0.36);
+    border-radius: 8px;
+    color: var(--plauna-text-primary);
+    font: 500 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    cursor: pointer;
+    transition: border-color 0.16s ease;
+}
+
+.plauna-pretext-select:focus {
+    outline: none;
+    border-color: rgba(56, 189, 248, 0.5);
+}
+
+.plauna-pretext-demo__output {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.plauna-pretext-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.plauna-pretext-metric {
+    min-width: 0;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.48);
+    border: 1px solid rgba(99, 116, 141, 0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.plauna-pretext-metric__label {
+    font: 600 9px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--plauna-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.plauna-pretext-metric__value {
+    font: 700 22px "Segoe UI", system-ui, sans-serif;
+    color: var(--plauna-text-primary);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.plauna-pretext-ruler {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.plauna-pretext-ruler__track {
+    position: relative;
+    height: 32px;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid rgba(99, 116, 141, 0.28);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: width 0.22s ease;
+}
+
+.plauna-pretext-ruler__text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.22), rgba(56, 189, 248, 0.08));
+    border-right: 2px solid rgba(56, 189, 248, 0.6);
+    transition: width 0.22s ease;
+}
+
+.plauna-pretext-ruler__label {
+    font: 500 11px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--plauna-text-muted);
+    letter-spacing: 0.04em;
+}
+
+.plauna-pretext-preview {
+    min-height: 92px;
+    max-width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid rgba(99, 116, 141, 0.22);
+    color: var(--plauna-text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+}
+
+.plauna-pretext-preview-stage {
+    position: relative;
+    min-height: 120px;
+    max-width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid rgba(99, 116, 141, 0.22);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.plauna-pretext-preview-lines,
+.plauna-pretext-preview-particles {
+    position: absolute;
+    inset: 0;
+}
+
+.plauna-pretext-preview-lines {
+    pointer-events: none;
+}
+
+.plauna-pretext-preview-particles {
+    pointer-events: none;
+}
+
+.plauna-pretext-line {
+    position: absolute;
+    color: var(--plauna-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    border-radius: 6px;
+}
+
+.plauna-pretext-particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.92);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.34);
+    will-change: transform, opacity;
+}
+
+/* =============================================================================
+ * MODERN BUTTON STYLES
+ * ============================================================================= */
+
+.plauna-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 200ms ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.plauna-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.plauna-btn--primary {
+    background: linear-gradient(135deg, #6b8afd 0%, #5a7ae8 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(107, 138, 253, 0.3);
+}
+
+.plauna-btn--primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(107, 138, 253, 0.4);
+}
+
+.plauna-btn--secondary {
+    background: var(--bg-tertiary, #171723);
+    color: var(--text-primary, #e4e4e7);
+    border: 1px solid var(--border-medium, #2a2a3a);
+}
+
+.plauna-btn--secondary:hover:not(:disabled) {
+    background: var(--bg-quaternary, #1f1f2e);
+    border-color: var(--accent-primary, #6b8afd);
+}
+
+.plauna-btn--ghost {
+    background: transparent;
+    color: var(--text-primary, #e4e4e7);
+    border: 1px solid transparent;
+}
+
+.plauna-btn--ghost:hover:not(:disabled) {
+    background: var(--bg-tertiary, #171723);
+    border-color: var(--border-subtle, #1a1a28);
+}
+
+/* =============================================================================
+ * MODERN INPUT STYLES
+ * ============================================================================= */
+
+.plauna-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plauna-input__field {
+    padding: 10px 12px;
+    border: 1px solid var(--border-medium, #2a2a3a);
+    border-radius: 6px;
+    background: var(--bg-secondary, #0f0f17);
+    color: var(--text-primary, #e4e4e7);
+    font-size: 14px;
+    transition: all 200ms ease;
+}
+
+.plauna-input__field:hover:not(:disabled) {
+    border-color: var(--border-bright, #3a3a4a);
+}
+
+.plauna-input__field:focus {
+    outline: none;
+    border-color: var(--accent-primary, #6b8afd);
+    box-shadow: 0 0 0 3px rgba(107, 138, 253, 0.1);
+}
+
+.plauna-input__field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.plauna-input__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary, #d1d5db);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.plauna-input__helper {
+    font-size: 12px;
+    color: var(--text-muted, #9ca3af);
+}
+
+.plauna-input__error {
+    font-size: 12px;
+    color: var(--error, #ef4444);
+}
+
+/* =============================================================================
+ * MODERN CARD STYLES
+ * ============================================================================= */
+
+.plauna-card {
+    background: var(--bg-secondary, #0f0f17);
+    border: 1px solid var(--border-subtle, #1a1a28);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 200ms ease;
+}
+
+.plauna-card:hover {
+    border-color: var(--border-medium, #2a2a3a);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.plauna-card__header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-subtle, #1a1a28);
+    background: var(--bg-tertiary, #171723);
+}
+
+.plauna-card__body {
+    padding: 16px;
+}
+
+.plauna-card__footer {
+    padding: 16px;
+    border-top: 1px solid var(--border-subtle, #1a1a28);
+    background: var(--bg-tertiary, #171723);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* =============================================================================
+ * MODERN BADGE STYLES
+ * ============================================================================= */
+
+.plauna-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.plauna-badge--primary {
+    background: rgba(107, 138, 253, 0.15);
+    color: #6b8afd;
+}
+
+.plauna-badge--success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.plauna-badge--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.plauna-badge--error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* =============================================================================
+ * WIDGET GALLERY STRIP
+ * ============================================================================= */
+
+.plauna-wgallery {
+    position: relative;
+    z-index: 500;
+    border-radius: 24px;
+    border: 1px solid rgba(106, 125, 153, 0.28);
+    background: rgba(8, 15, 28, 0.34);
+    backdrop-filter: blur(18px);
+    padding: 24px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+.plauna-wgallery__header {
+    margin-bottom: 20px;
+}
+
+.plauna-wgallery__row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.plauna-wgallery__group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.plauna-wgallery__label {
+    font: 600 10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--plauna-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.plauna-wgallery__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Demo buttons */
+.plauna-demo-btn {
+    appearance: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font: 600 12px "Segoe UI", system-ui, sans-serif;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.plauna-demo-btn:not(:disabled):hover {
+    transform: translateY(-1px);
+}
+
+.plauna-demo-btn:disabled {
+    opacity: 0.38;
+    cursor: default;
+}
+
+.plauna-demo-btn--primary {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: rgba(56, 189, 248, 0.48);
+    color: #7ed7ff;
+}
+
+.plauna-demo-btn--primary:not(:disabled):hover {
+    background: rgba(56, 189, 248, 0.28);
+    box-shadow: 0 4px 16px rgba(56, 189, 248, 0.18);
+}
+
+.plauna-demo-btn--secondary {
+    background: rgba(148, 163, 184, 0.1);
+    border-color: rgba(148, 163, 184, 0.28);
+    color: var(--plauna-text-secondary);
+}
+
+.plauna-demo-btn--secondary:not(:disabled):hover {
+    background: rgba(148, 163, 184, 0.18);
+}
+
+.plauna-demo-btn--ghost {
+    background: transparent;
+    border-color: rgba(99, 116, 141, 0.36);
+    color: var(--plauna-text-muted);
+}
+
+.plauna-demo-btn--ghost:not(:disabled):hover {
+    background: rgba(99, 116, 141, 0.12);
+    color: var(--plauna-text-secondary);
+}
+
+/* Demo badges */
+.plauna-demo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font: 600 11px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.03em;
+    border: 1px solid transparent;
+}
+
+.plauna-demo-badge--info {
+    background: rgba(59, 130, 246, 0.14);
+    border-color: rgba(59, 130, 246, 0.36);
+    color: #93c5fd;
+}
+
+.plauna-demo-badge--success {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.36);
+    color: #6ee7b7;
+}
+
+.plauna-demo-badge--warning {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: rgba(245, 158, 11, 0.36);
+    color: #fcd34d;
+}
+
+.plauna-demo-badge--error {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.36);
+    color: #fca5a5;
+}
+
+.plauna-demo-badge--default {
+    background: rgba(56, 189, 248, 0.14);
+    border-color: rgba(56, 189, 248, 0.36);
+    color: #93c5fd;
+}
+
+.plauna-demo-badge--dot {
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    padding: 0;
+    background: #ef4444;
+    border-color: transparent;
+    border-radius: 50%;
+}
+
+/* Demo input */
+.plauna-demo-input {
+    padding: 8px 12px;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(99, 116, 141, 0.36);
+    border-radius: 10px;
+    color: var(--plauna-text-primary);
+    font: 400 13px "Segoe UI", system-ui, sans-serif;
+    min-width: 160px;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.plauna-demo-input:focus {
+    outline: none;
+    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+.plauna-demo-input:disabled {
+    opacity: 0.38;
+    cursor: default;
+}

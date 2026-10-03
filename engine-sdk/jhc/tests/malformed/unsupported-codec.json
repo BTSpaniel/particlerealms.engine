@@ -1,0 +1,6 @@
+{
+  "name": "unsupported-codec",
+  "expectedCode": 122,
+  "expectedMessageFragment": "Unsupported codec",
+  "size": 571
+}

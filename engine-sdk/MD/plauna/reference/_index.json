@@ -1,0 +1,3468 @@
+[
+  {
+    "schemaVersion": 1,
+    "title": "boot",
+    "path": "plauna/reference/boot.md",
+    "source": "plauna/boot.js",
+    "import": "/plauna/boot.js",
+    "sourceHash": "d31c2e44005687827c650d109af0c4537f69ccd82d1141fcdeed63534897d78b",
+    "summary": "============================================================================ PLAUNA ENGINE BOOTSTRAP ============================================================================ PlaunaDevShell is the main entry point for the Plauna UI system. It: 1. Initializes the rendering pipeline (WidgetRenderer, DOMRenderer) 2. Loads and applies themes from plauna/themes/{id}/theme.json 3. Sets up the workspace system for virtual desktops (optional GPU panels) 4. Injects base CSS for the widget gallery/showcase 5. Provides a public API for theme switching and widget rendering ARCHITECTURE FLOW: - PlaunaDevShell.boot(root, options) → PlaunaDevShell instance - _init() → loads styles, theme, workspace manager - ThemeLoader applies CSS variables to :root - WidgetRenderer converts UINode trees to DOM - WorkspaceManager (optional) handles GPU-accelerated panels USAGE: const shell = await PlaunaDevShell.boot(document.body, { logger: console }); shell.setTheme('dark'); const element = shell.render(myUINode); document.body.appendChild(element); THEME SYSTEM: - Themes live in plauna/themes/{id}/theme.json - Themes can extend other themes via \"extends\": \"parent\" - CSS variables are written to <style data-plauna-theme=\"1\"> tags - Per-session overrides can be applied via applyOverrides() WORKSPACE SYSTEM (OPTIONAL): - Requires gpuDevice option for WebGPU support - Creates virtual desktop layers for multi-panel layouts - Supports DOM panels and GPU panels (WebGPU textures) - Managed by WorkspaceManager class",
+    "exports": [
+      {
+        "name": "PlaunaDevShell",
+        "kind": "class",
+        "signature": "class PlaunaDevShell",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "console/PlaunaConsole",
+    "path": "plauna/reference/console/PlaunaConsole.md",
+    "source": "plauna/console/PlaunaConsole.js",
+    "import": "/plauna/console/PlaunaConsole.js",
+    "sourceHash": "d070c3f2d9b3cc92382af993554f65fc4bd7425bec674bf37f4acc2cc86a287e",
+    "summary": "PlaunaConsole - Main console system for Plauna Integrates HtmlConsole with Plauna-specific features and debugging capabilities",
+    "exports": [
+      {
+        "name": "createPlaunaConsole",
+        "kind": "function",
+        "signature": "createPlaunaConsole(options = {})",
+        "summary": ""
+      },
+      {
+        "name": "getPlaunaConsole",
+        "kind": "function",
+        "signature": "getPlaunaConsole()",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaConsole",
+        "kind": "constant",
+        "signature": "PlaunaConsole",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/BindingEngine",
+    "path": "plauna/reference/core/BindingEngine.md",
+    "source": "plauna/core/BindingEngine.js",
+    "import": "/plauna/core/BindingEngine.js",
+    "sourceHash": "84a41e35c48b8c31f4d13ec4b96ea21d53ab8d9748dd1ebb44dd39a6d15ec606",
+    "summary": "Lifecycle-safe StateStore -> UINode bindings and UINode -> intent dispatch. Two-way bindings never promote local UI values into authoritative state.",
+    "exports": [
+      {
+        "name": "BindingEngine",
+        "kind": "class",
+        "signature": "class BindingEngine",
+        "summary": "Lifecycle-safe StateStore -> UINode bindings and UINode -> intent dispatch. Two-way bindings never promote local UI values into authoritative state."
+      },
+      {
+        "name": "BindingUtils",
+        "kind": "constant",
+        "signature": "BindingUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/DOMRenderer",
+    "path": "plauna/reference/core/DOMRenderer.md",
+    "source": "plauna/core/DOMRenderer.js",
+    "import": "/plauna/core/DOMRenderer.js",
+    "sourceHash": "baa0a98fc60b7e6b42dc3f78b1c776b6b50d478911019906e04e377413b17b20",
+    "summary": "============================================================================ DOMRenderer - Visual Tree to DOM Renderer ============================================================================ DOMRenderer connects Plauna's retained-mode UINode system to the browser DOM. It takes a VisualTree (rooted UINode tree) and renders it to actual DOM elements. DIFFERENCES FROM WidgetRenderer: - WidgetRenderer: Converts single UINode widgets to DOM (used by widgets themselves) - DOMRenderer: Renders entire visual tree from game/engine to DOM (used by PlaunaApp) RENDERING FLOW: 1. render(visualTree) - Entry point, renders entire tree to container 2. renderNode(node) - Recursively renders node and all children 3. createDOMElement(node) - Creates DOM element based on node type 4. Applies styles, attributes, and content 5. Updates mapping tables for bidirectional lookup MAPPING TABLES: - nodeToDOM: Map<UINode, HTMLElement> - UINode → DOM element - domToNode: Map<HTMLElement, UINode> - DOM element → UINode (reverse lookup) - renderedNodes: Set<UINode> - Track which nodes have been rendered ELEMENT TYPE HANDLING: - 'text': Renders as <div> with text content - 'button': <button> element - 'input': <input> element with type, value, placeholder, validation attributes - 'image': <img> element with src, alt - 'svg': SVG namespace elements for graphics - Other: <div> as fallback DIRTY FLAG PROCESSING: - DIRTY.STYLE: Re-apply inline styles to DOM - DIRTY.LAYOUT: Re-compute position/size - DIRTY.PAINT: Re-render entire node - DIRTY.TEXT: Update text content - DIRTY.CHILDREN: Re-render child subtree UPDATE MECHANISM: - updateNode(node): Incrementally updates a single node based on dirty flags - updateDOMElement(element, node): Applies node properties to DOM element - processStyleDirty(nodes): Batch updates for style changes TEXT SERVICE: - Optional textService for internationalization - If provided, wraps text content through translation layer",
+    "exports": [
+      {
+        "name": "DOMRenderer",
+        "kind": "class",
+        "signature": "class DOMRenderer",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/DirtyGraph",
+    "path": "plauna/reference/core/DirtyGraph.md",
+    "source": "plauna/core/DirtyGraph.js",
+    "import": "/plauna/core/DirtyGraph.js",
+    "sourceHash": "b7219d3bb232d8a74435db239bad02690060bf219da33bd28e93329d00c81301",
+    "summary": "DirtyGraph - Optimized dirty flag propagation and update scheduling. Dirty flag management pattern: - Efficient dirty flag propagation for large UI trees - Categorizes dirty flags by type (STYLE, LAYOUT, PAINT, etc.) - Batch processing of dirty nodes - Performance tracking for propagation timing Propagation rules: - LAYOUT dirtiness propagates to parent - PAINT dirtiness propagates to parent if node affects parent's paint - CHILDREN dirtiness propagates to descendants - STYLE dirtiness propagates to descendants if style affects them Architecture: - dirtyNodes: Set of all dirty nodes - dirtySets: Map of flag → Set of nodes (categorized by flag type) - propagationQueue: Queue for deferred propagations - isProcessing: Flag to prevent re-entrant propagation",
+    "exports": [
+      {
+        "name": "DirtyGraph",
+        "kind": "class",
+        "signature": "class DirtyGraph",
+        "summary": ""
+      },
+      {
+        "name": "DirtyFlags",
+        "kind": "constant",
+        "signature": "DirtyFlags",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/ModuleTester",
+    "path": "plauna/reference/core/ModuleTester.md",
+    "source": "plauna/core/ModuleTester.js",
+    "import": "/plauna/core/ModuleTester.js",
+    "sourceHash": "cd14bad87d5e35c23aaac9bf7879fcb1c695f58417d42c0d5b1a9216b57339c1",
+    "summary": "PlaunaModuleTester - Smoke-test runner for modules/widgets. Module testing pattern: - Verifies module registration and instantiation - Exposes widget properties for console diagnostics - Summarizes complex values for readable output - Tracks widget registry and available widgets Testing features: - Module registration verification - Widget instantiation testing - Property exposure and summarization - Value normalization for comparison Helper functions: - summarizeValue(): Human-readable value summaries - normalizeComparableValue(): Normalize values for comparison - isPlainObject(): Check if value is plain object",
+    "exports": [
+      {
+        "name": "PlaunaModuleTester",
+        "kind": "class",
+        "signature": "class PlaunaModuleTester",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/StateStore",
+    "path": "plauna/reference/core/StateStore.md",
+    "source": "plauna/core/StateStore.js",
+    "import": "/plauna/core/StateStore.js",
+    "sourceHash": "d9c02b06768a78d2cd3508ca0002f3540d762714191b06ccf7262580aec83b98",
+    "summary": "Observable projection store used by Plauna bindings. The store is intentionally authority-neutral: networked UI writes arrive as projections, while user actions leave through BindingEngine intent handlers.",
+    "exports": [
+      {
+        "name": "StateStore",
+        "kind": "class",
+        "signature": "class StateStore",
+        "summary": ""
+      },
+      {
+        "name": "createStore",
+        "kind": "function",
+        "signature": "createStore(initialState = {}, options = {})",
+        "summary": ""
+      },
+      {
+        "name": "useStore",
+        "kind": "function",
+        "signature": "useStore(store, path, defaultValue)",
+        "summary": "Framework-neutral compatibility helper. The third tuple item subscribes to future values; no React global or hidden lifecycle is required."
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/UINode",
+    "path": "plauna/reference/core/UINode.md",
+    "source": "plauna/core/UINode.js",
+    "import": "/plauna/core/UINode.js",
+    "sourceHash": "7a6bbb78ba49c9db51262eb5cd32373711fdd14a414ca5f83159da87150607ea",
+    "summary": "============================================================================ UINode - Retained Visual Tree Node ============================================================================ UINode is the base class for all UI nodes in Plauna's retained visual tree. It represents a node in a virtual DOM-like tree that can be rendered to actual DOM. KEY CONCEPTS: - Retained Mode: The tree persists in memory and is incrementally updated - Dirty Flags: Bits that track what parts of the node need re-rendering - Layout Box: Computed layout metrics (position, size, margins, padding) - Event Handlers: Map of event types to handler functions - Accessibility: ARIA attributes and role information DIRTY FLAGS (bitmask): - STYLE: CSS styles changed → re-apply styles to DOM - LAYOUT: Position/size changed → re-compute layout - PAINT: Visual appearance changed → re-render to DOM - TEXT: Text content changed → update text nodes - ACCESSIBILITY: ARIA attributes changed → update DOM attributes - CHILDREN: Child nodes added/removed → re-render subtree - FOCUS: Focus state changed → update focus ring NODE STATE (bitmask): - VISIBLE: Node is visible - FOCUSED: Node has keyboard focus - HOVERED: Mouse is over the node - ACTIVE: Node is being pressed/clicked - DISABLED: Node is disabled - FOCUSABLE: Node can receive focus - CHECKED: Checkbox/radio is checked - SELECTED: Option is selected - LOADING: Node is in loading/processing state - ERROR: Node is in error/validation failure state INPUT FLAGS (bitmask): - POINTER_CAPTURE: Node captures pointer events - KEYBOARD_CAPTURE: Node captures keyboard events - DRAG_TARGET: Node is a drag target - DROP_TARGET: Node is a drop target - SCROLLABLE: Node can be scrolled RENDER FLAGS (bitmask): - CLIPS_CONTENT: Children outside bounds are clipped - OPAQUE: Node is fully opaque (optimization hint) - REQUIRES_LAYER: Needs separate compositing layer - TRANSFORM_CHANGED: Transform property changed - OPACITY_CHANGED: Opacity property changed TREE STRUCTURE: - parent: Reference to parent UINode - children: Array of child UINodes - firstChild/lastChild: Linked list pointers for fast traversal - nextSibling/previousSibling: Linked list pointers for siblings LAYOUT BOX: - x, y: Position relative to parent - width, height: Computed size - minX, minY, maxX, maxY: Computed bounds - paddingLeft, paddingTop, paddingRight, paddingBottom: Padding - marginLeft, marginTop, marginRight, marginBottom: Margin - borderLeft, borderTop, borderRight, borderBottom: Border width",
+    "exports": [
+      {
+        "name": "UINode",
+        "kind": "class",
+        "signature": "class UINode",
+        "summary": ""
+      },
+      {
+        "name": "DIRTY",
+        "kind": "constant",
+        "signature": "DIRTY",
+        "summary": "UINode - Retained visual tree node. UINode pattern: - Base class for all UI nodes in Plauna's retained visual tree - Virtual DOM-like tree that persists in memory - Incrementally updated via dirty flags - Supports tree structure (parent/children/siblings) - Event handling and accessibility support Key concepts: - Dirty flags: Track what needs re-rendering - Layout box: Computed layout metrics - Event handlers: Map of event types to functions - Accessibility: ARIA attributes and role information"
+      },
+      {
+        "name": "NODE_STATE",
+        "kind": "constant",
+        "signature": "NODE_STATE",
+        "summary": ""
+      },
+      {
+        "name": "INPUT_FLAGS",
+        "kind": "constant",
+        "signature": "INPUT_FLAGS",
+        "summary": ""
+      },
+      {
+        "name": "RENDER_FLAGS",
+        "kind": "constant",
+        "signature": "RENDER_FLAGS",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/VisualTree",
+    "path": "plauna/reference/core/VisualTree.md",
+    "source": "plauna/core/VisualTree.js",
+    "import": "/plauna/core/VisualTree.js",
+    "sourceHash": "40a304f28cba2cfd252ad92daebb8301147a991c2a93ac1cd0c3d704e2ec53f7",
+    "summary": "VisualTree - Manages the retained visual tree and dirty propagation. Visual tree management pattern: - Manages UINode hierarchy with root node - Dirty flag management and propagation - Update scheduling with requestAnimationFrame - Performance tracking for update timing - Callback hooks for layout, paint, accessibility updates Features: - setRoot(): Change root node (marks subtree dirty) - markDirty(): Mark node as dirty (schedules update) - markSubtreeDirty(): Mark entire subtree as dirty - update(): Main update loop (processes dirty nodes) Update queues: - layoutQueue: Nodes needing layout recalculation - paintQueue: Nodes needing paint updates - textQueue: Nodes needing text content updates - accessibilityQueue: Nodes needing ARIA updates Architecture: - root: Root UINode of the tree - dirtyNodes: Set of all dirty nodes - isUpdating: Flag to prevent re-entrant updates - updateScheduled: Flag for RAF scheduling",
+    "exports": [
+      {
+        "name": "VisualTree",
+        "kind": "class",
+        "signature": "class VisualTree",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/app",
+    "path": "plauna/reference/core/app.md",
+    "source": "plauna/core/app.js",
+    "import": "/plauna/core/app.js",
+    "sourceHash": "bae702f0346df2ba67a6953608438487ac21f9fe11133838d9cc68d773333993",
+    "summary": "============================================================================ PlaunaApp - Main Plauna Application Class ============================================================================ PlaunaApp is the main application class that integrates Plauna UI with the Particle Engine. It manages the visual tree, rendering, events, and development tools. CORE COMPONENTS: - VisualTree: Retained-mode UI tree (UINode hierarchy) - DOMRenderer: Renders visual tree to DOM elements - PlaunaEventSystem: Event handling and dispatching - ThemeManager: Theme management and CSS variable application - TransitionEngine: Animation and transition system - PlaunaTextService: Text internationalization (pretext) - PlaunaSurfaceManager: Surface/layer management - PlaunaGPUBridge: GPU integration bridge - PlaunaRegistry: Component registry DEVELOPMENT TOOLS: - TreeInspector: Visual tree inspector for debugging - StyleInspector: Style inspector for debugging - HotReload: Hot module replacement for development - PlaunaModuleTester: Module testing framework - PlaunaSmartContextMenu: Context-aware right-click menu INTEGRATION WITH PARTICLE ENGINE: - Uses ECS World from engine/ecs/world/World.js - Integrates with GPU via PlaunaGPUBridge - Uses PlaunaSurfaceManager for surface management - Text engine integration (pretext or custom) INITIALIZATION FLOW: 1. createPlaunaApp(options) - Factory function 2. PlaunaApp constructor - Sets up core components 3. initialize() - Initializes all subsystems 4. mount() - Mounts to root DOM element OPTIONS: - root: Required DOM element to mount to - getVGPU: Function to get VGPU instance - engine: Particle engine instance - editor: Editor instance (optional) - useCSS: Enable CSS injection (default: true) - textEngine: Text engine to use ('pretext' or custom) - enableModuleTester: Enable module tester (default: true) - enableSmartContextMenu: Enable smart context menu (default: true) PUBLIC API: - mount(): Mount app to root element - destroy(): Cleanup and destroy app - addComponent(): Add component to registry - getComponent(): Get component from registry - visualTree: Access visual tree instance - renderer: Access DOM renderer instance - eventSystem: Access event system instance - themeManager: Access theme manager instance LIFECYCLE: - Created via createPlaunaApp() factory - Must call mount() to display UI - Call destroy() to cleanup USAGE: const app = await createPlaunaApp({ root: document.body, getVGPU: () => vgpuInstance, engine: particleEngine }); await app.mount(); // ... use app app.destroy();",
+    "exports": [
+      {
+        "name": "PlaunaApp",
+        "kind": "class",
+        "signature": "class PlaunaApp",
+        "summary": "PlaunaApp - Main Plauna application class. Application architecture: - Integrates Plauna UI with Particle Engine - Manages visual tree, rendering, events, and development tools - Provides public API for component registration and access Core systems: - uiWorld: ECS World for UI entities - textService: Internationalization service - surfaceManager: Surface/layer management - gpuBridge: GPU integration bridge - registry: Component registry - events: Event system Retained-mode systems: - visualTree: UINode hierarchy - domRenderer: DOM renderer - themeManager: Theme management - transitionEngine: Animation system Development tools: - treeInspector: Visual tree inspector - styleInspector: Style inspector - hotReload: Hot module replacement - moduleTester: Module testing framework - smartContextMenu: Context-aware menu"
+      },
+      {
+        "name": "createPlaunaApp",
+        "kind": "function",
+        "signature": "async createPlaunaApp(options = {})",
+        "summary": "PlaunaApp factory function. Application factory pattern: - Creates PlaunaApp instance with provided options - Initializes core components (visual tree, renderer, events) - Sets up development tools if enabled - Returns ready-to-use app instance"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/events",
+    "path": "plauna/reference/core/events.md",
+    "source": "plauna/core/events.js",
+    "import": "/plauna/core/events.js",
+    "sourceHash": "75143ae4ff97520c4e94170d5d0ade390fac3be45053d9a9305e62891a88754c",
+    "summary": "PlaunaEventSystem - Event system for Plauna. Event bus pattern: - Simple publish-subscribe event system - Follows existing engine/ editor patterns - Supports multiple listeners per event - Returns unsubscribe function for cleanup - Error handling for faulty event handlers Features: - on(): Subscribe to event with callback - off(): Unsubscribe from event - emit(): Dispatch event to all listeners - once(): Subscribe for single event occurrence - removeAllListeners(): Clean up listeners",
+    "exports": [
+      {
+        "name": "PlaunaEventSystem",
+        "kind": "class",
+        "signature": "class PlaunaEventSystem",
+        "summary": "PlaunaEventSystem - Event system for Plauna. Event bus pattern: - Simple publish-subscribe event system - Follows existing engine/ editor patterns - Supports multiple listeners per event - Returns unsubscribe function for cleanup - Error handling for faulty event handlers Features: - on(): Subscribe to event with callback - off(): Unsubscribe from event - emit(): Dispatch event to all listeners - once(): Subscribe for single event occurrence - removeAllListeners(): Clean up listeners"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "core/registry",
+    "path": "plauna/reference/core/registry.md",
+    "source": "plauna/core/registry.js",
+    "import": "/plauna/core/registry.js",
+    "sourceHash": "faf0559658c98b905f93f3a4305ef28d04d456c05dcb8f57a18c60fa01d82b92",
+    "summary": "PlaunaRegistry - Registry for views, surfaces, and templates. Registry pattern: - Centralized registration system for UI components - Follows existing engine registry patterns - Supports views, surfaces, templates, and factories - Warns on duplicate registrations (overwrites) - Provides getters for retrieving registered items Registry types: - views: UI view configurations with render mode, size, closability - surfaces: Surface definitions for GPU rendering (viewport, texture) - templates: Reusable template configurations - factories: Factory functions for component instantiation",
+    "exports": [
+      {
+        "name": "PlaunaRegistry",
+        "kind": "class",
+        "signature": "class PlaunaRegistry",
+        "summary": "PlaunaRegistry - Registry for views, surfaces, and templates. Registry pattern: - Centralized registration system for UI components - Follows existing engine registry patterns - Supports views, surfaces, templates, and factories - Warns on duplicate registrations (overwrites) - Provides getters for retrieving registered items Registry types: - views: UI view configurations with render mode, size, closability - surfaces: Surface definitions for GPU rendering (viewport, texture) - templates: Reusable template configurations - factories: Factory functions for component instantiation"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "ecs/components",
+    "path": "plauna/reference/ecs/components.md",
+    "source": "plauna/ecs/components.js",
+    "import": "/plauna/ecs/components.js",
+    "sourceHash": "bf7d44078da0290a44c0d714514657ccca31fa082475beb4ad80150a96a4e6fb",
+    "summary": "Plauna ECS Components Follow existing engine component registration patterns.",
+    "exports": [
+      {
+        "name": "UIRoot",
+        "kind": "constant",
+        "signature": "UIRoot",
+        "summary": ""
+      },
+      {
+        "name": "UIWorkspace",
+        "kind": "constant",
+        "signature": "UIWorkspace",
+        "summary": ""
+      },
+      {
+        "name": "UIZone",
+        "kind": "constant",
+        "signature": "UIZone",
+        "summary": ""
+      },
+      {
+        "name": "UIGroup",
+        "kind": "constant",
+        "signature": "UIGroup",
+        "summary": ""
+      },
+      {
+        "name": "UIView",
+        "kind": "constant",
+        "signature": "UIView",
+        "summary": ""
+      },
+      {
+        "name": "UILayout",
+        "kind": "constant",
+        "signature": "UILayout",
+        "summary": ""
+      },
+      {
+        "name": "UIAnchor",
+        "kind": "constant",
+        "signature": "UIAnchor",
+        "summary": ""
+      },
+      {
+        "name": "UISurface",
+        "kind": "constant",
+        "signature": "UISurface",
+        "summary": ""
+      },
+      {
+        "name": "UIShape",
+        "kind": "constant",
+        "signature": "UIShape",
+        "summary": ""
+      },
+      {
+        "name": "UIWarp",
+        "kind": "constant",
+        "signature": "UIWarp",
+        "summary": ""
+      },
+      {
+        "name": "UIBinding",
+        "kind": "constant",
+        "signature": "UIBinding",
+        "summary": ""
+      },
+      {
+        "name": "UIState",
+        "kind": "constant",
+        "signature": "UIState",
+        "summary": ""
+      },
+      {
+        "name": "UIInput",
+        "kind": "constant",
+        "signature": "UIInput",
+        "summary": ""
+      },
+      {
+        "name": "UIText",
+        "kind": "constant",
+        "signature": "UIText",
+        "summary": ""
+      },
+      {
+        "name": "UITextLayout",
+        "kind": "constant",
+        "signature": "UITextLayout",
+        "summary": ""
+      },
+      {
+        "name": "UIPanel",
+        "kind": "constant",
+        "signature": "UIPanel",
+        "summary": ""
+      },
+      {
+        "name": "UITab",
+        "kind": "constant",
+        "signature": "UITab",
+        "summary": ""
+      },
+      {
+        "name": "UISplit",
+        "kind": "constant",
+        "signature": "UISplit",
+        "summary": ""
+      },
+      {
+        "name": "UINest",
+        "kind": "constant",
+        "signature": "UINest",
+        "summary": ""
+      },
+      {
+        "name": "UIFoodSource",
+        "kind": "constant",
+        "signature": "UIFoodSource",
+        "summary": ""
+      },
+      {
+        "name": "UIGPUResource",
+        "kind": "constant",
+        "signature": "UIGPUResource",
+        "summary": ""
+      },
+      {
+        "name": "UIAtlas",
+        "kind": "constant",
+        "signature": "UIAtlas",
+        "summary": ""
+      },
+      {
+        "name": "UIGlyph",
+        "kind": "constant",
+        "signature": "UIGlyph",
+        "summary": ""
+      },
+      {
+        "name": "UIDockLayout",
+        "kind": "constant",
+        "signature": "UIDockLayout",
+        "summary": ""
+      },
+      {
+        "name": "UIFloatingWindow",
+        "kind": "constant",
+        "signature": "UIFloatingWindow",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "editor/HotReload",
+    "path": "plauna/reference/editor/HotReload.md",
+    "source": "plauna/editor/HotReload.js",
+    "import": "/plauna/editor/HotReload.js",
+    "sourceHash": "f505c2bc929f7eef1742eaf3d10624a42d875d060e7f4c8f5484bf3e35b059c4",
+    "summary": "HotReload - Live development tool for Plauna Provides hot module replacement and live style updates with robust validation",
+    "exports": [
+      {
+        "name": "HotReload",
+        "kind": "class",
+        "signature": "class HotReload",
+        "summary": ""
+      },
+      {
+        "name": "plaunaHotReloadTextHash",
+        "kind": "function",
+        "signature": "plaunaHotReloadTextHash(text)",
+        "summary": ""
+      },
+      {
+        "name": "HotReloadUtils",
+        "kind": "constant",
+        "signature": "HotReloadUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "editor/StyleInspector",
+    "path": "plauna/reference/editor/StyleInspector.md",
+    "source": "plauna/editor/StyleInspector.js",
+    "import": "/plauna/editor/StyleInspector.js",
+    "sourceHash": "75a8b3f32567678c8f74951062310a9d047c66cb54e6b171c45500c70ce923bb",
+    "summary": "StyleInspector - Live style debugging tool for Plauna Provides real-time style inspection and editing capabilities",
+    "exports": [
+      {
+        "name": "StyleInspector",
+        "kind": "class",
+        "signature": "class StyleInspector",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "editor/TreeInspector",
+    "path": "plauna/reference/editor/TreeInspector.md",
+    "source": "plauna/editor/TreeInspector.js",
+    "import": "/plauna/editor/TreeInspector.js",
+    "sourceHash": "8fcd8150e36600245e13fb15e6bfce1b6fc46cf3d8666ff17eec4bbad4d730eb",
+    "summary": "TreeInspector - Visual tree inspector for Plauna Provides debugging and inspection of the UI visual tree",
+    "exports": [
+      {
+        "name": "TreeInspector",
+        "kind": "class",
+        "signature": "class TreeInspector",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "index",
+    "path": "plauna/reference/index.md",
+    "source": "plauna/index.js",
+    "import": "/plauna/index.js",
+    "sourceHash": "353156a52d0d71b18737eda0e86d82bb5376c4e5dc78e6ad4865c988c838f609",
+    "summary": "Plauna - Advanced UI System for Particle Engine Browser-first UI runtime with hybrid DOM/GPU rendering ============================================================================ MODULE STRUCTURE ============================================================================ This is the main entry point for the Plauna UI system. It re-exports all public APIs in a structured, organized manner. Export Categories: Core System: - createPlaunaApp: Main application entry point - PlaunaModuleTester: Module testing utilities - UINode, DIRTY, NODE_STATE: Core retained-mode UI tree - VisualTree: Visual tree management UI Components: - PlaunaSmartContextMenu: Type-aware context menu for debugging - PlaunaTextService: Internationalization service (Pretext) - PlaunaSurfaceManager: Surface/layer management - PlaunaGPUBridge: WebGPU integration bridge Widget System: - Layout widgets: Grid, Divider, Spacer - Primitive widgets: Button, Panel, Text, Modal, Tooltip, Badge, Avatar, Progress, Skeleton - Form widgets: Input, Checkbox, Radio, Switch, Select, Textarea, Slider, Rating - Navigation widgets: Tabs, Dropdown, Breadcrumb, Pagination - Data view widgets: ListView, Card Utilities: - Style system: Design tokens, theme management - Console system: PlaunaConsole for debugging - Notification system: Toast, Notify - Showcase system: WidgetShowcase for widget gallery - Particle controller: ParticleController for particle integration Lab/Development: - mountPlaunaWorkbenchLab: Workbench development environment - mountShowcaseApp: Widget showcase application",
+    "exports": [
+      {
+        "name": "Avatar",
+        "kind": "re-export",
+        "signature": "Avatar",
+        "summary": ""
+      },
+      {
+        "name": "BUILD_TAG",
+        "kind": "re-export",
+        "signature": "BUILD_TAG",
+        "summary": ""
+      },
+      {
+        "name": "Badge",
+        "kind": "re-export",
+        "signature": "Badge",
+        "summary": ""
+      },
+      {
+        "name": "BindingEngine",
+        "kind": "re-export",
+        "signature": "BindingEngine",
+        "summary": ""
+      },
+      {
+        "name": "BindingUtils",
+        "kind": "re-export",
+        "signature": "BindingUtils",
+        "summary": ""
+      },
+      {
+        "name": "Breadcrumb",
+        "kind": "re-export",
+        "signature": "Breadcrumb",
+        "summary": ""
+      },
+      {
+        "name": "Button",
+        "kind": "re-export",
+        "signature": "Button",
+        "summary": ""
+      },
+      {
+        "name": "Card",
+        "kind": "re-export",
+        "signature": "Card",
+        "summary": ""
+      },
+      {
+        "name": "Checkbox",
+        "kind": "re-export",
+        "signature": "Checkbox",
+        "summary": ""
+      },
+      {
+        "name": "DIRTY",
+        "kind": "re-export",
+        "signature": "DIRTY",
+        "summary": ""
+      },
+      {
+        "name": "Divider",
+        "kind": "re-export",
+        "signature": "Divider",
+        "summary": ""
+      },
+      {
+        "name": "Dropdown",
+        "kind": "re-export",
+        "signature": "Dropdown",
+        "summary": ""
+      },
+      {
+        "name": "Grid",
+        "kind": "re-export",
+        "signature": "Grid",
+        "summary": ""
+      },
+      {
+        "name": "INPUT_FLAGS",
+        "kind": "re-export",
+        "signature": "INPUT_FLAGS",
+        "summary": ""
+      },
+      {
+        "name": "Input",
+        "kind": "re-export",
+        "signature": "Input",
+        "summary": ""
+      },
+      {
+        "name": "ListView",
+        "kind": "re-export",
+        "signature": "ListView",
+        "summary": ""
+      },
+      {
+        "name": "Modal",
+        "kind": "re-export",
+        "signature": "Modal",
+        "summary": ""
+      },
+      {
+        "name": "NODE_STATE",
+        "kind": "re-export",
+        "signature": "NODE_STATE",
+        "summary": ""
+      },
+      {
+        "name": "NotificationSystem",
+        "kind": "re-export",
+        "signature": "NotificationSystem",
+        "summary": ""
+      },
+      {
+        "name": "Notify",
+        "kind": "re-export",
+        "signature": "Notify",
+        "summary": ""
+      },
+      {
+        "name": "PLAUNA_FULL",
+        "kind": "re-export",
+        "signature": "PLAUNA_FULL",
+        "summary": ""
+      },
+      {
+        "name": "PLAUNA_VERSION",
+        "kind": "re-export",
+        "signature": "PLAUNA_VERSION",
+        "summary": ""
+      },
+      {
+        "name": "PageTransition",
+        "kind": "re-export",
+        "signature": "PageTransition",
+        "summary": ""
+      },
+      {
+        "name": "Pagination",
+        "kind": "re-export",
+        "signature": "Pagination",
+        "summary": ""
+      },
+      {
+        "name": "Panel",
+        "kind": "re-export",
+        "signature": "Panel",
+        "summary": ""
+      },
+      {
+        "name": "ParticleController",
+        "kind": "re-export",
+        "signature": "ParticleController",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaConsole",
+        "kind": "re-export",
+        "signature": "PlaunaConsole",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaGPUBridge",
+        "kind": "re-export",
+        "signature": "PlaunaGPUBridge",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaModuleTester",
+        "kind": "re-export",
+        "signature": "PlaunaModuleTester",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaSmartContextMenu",
+        "kind": "re-export",
+        "signature": "PlaunaSmartContextMenu",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaSurfaceManager",
+        "kind": "re-export",
+        "signature": "PlaunaSurfaceManager",
+        "summary": ""
+      },
+      {
+        "name": "PlaunaTextService",
+        "kind": "re-export",
+        "signature": "PlaunaTextService",
+        "summary": ""
+      },
+      {
+        "name": "Progress",
+        "kind": "re-export",
+        "signature": "Progress",
+        "summary": ""
+      },
+      {
+        "name": "RENDER_FLAGS",
+        "kind": "re-export",
+        "signature": "RENDER_FLAGS",
+        "summary": ""
+      },
+      {
+        "name": "Radio",
+        "kind": "re-export",
+        "signature": "Radio",
+        "summary": ""
+      },
+      {
+        "name": "Rating",
+        "kind": "re-export",
+        "signature": "Rating",
+        "summary": ""
+      },
+      {
+        "name": "Select",
+        "kind": "re-export",
+        "signature": "Select",
+        "summary": ""
+      },
+      {
+        "name": "ShowcaseApp",
+        "kind": "re-export",
+        "signature": "ShowcaseApp",
+        "summary": ""
+      },
+      {
+        "name": "Skeleton",
+        "kind": "re-export",
+        "signature": "Skeleton",
+        "summary": ""
+      },
+      {
+        "name": "Slider",
+        "kind": "re-export",
+        "signature": "Slider",
+        "summary": ""
+      },
+      {
+        "name": "Spacer",
+        "kind": "re-export",
+        "signature": "Spacer",
+        "summary": ""
+      },
+      {
+        "name": "StateStore",
+        "kind": "re-export",
+        "signature": "StateStore",
+        "summary": ""
+      },
+      {
+        "name": "Switch",
+        "kind": "re-export",
+        "signature": "Switch",
+        "summary": ""
+      },
+      {
+        "name": "Tabs",
+        "kind": "re-export",
+        "signature": "Tabs",
+        "summary": ""
+      },
+      {
+        "name": "Text",
+        "kind": "re-export",
+        "signature": "Text",
+        "summary": ""
+      },
+      {
+        "name": "Textarea",
+        "kind": "re-export",
+        "signature": "Textarea",
+        "summary": ""
+      },
+      {
+        "name": "Toast",
+        "kind": "re-export",
+        "signature": "Toast",
+        "summary": ""
+      },
+      {
+        "name": "ToastManager",
+        "kind": "re-export",
+        "signature": "ToastManager",
+        "summary": ""
+      },
+      {
+        "name": "Tooltip",
+        "kind": "re-export",
+        "signature": "Tooltip",
+        "summary": ""
+      },
+      {
+        "name": "TransitionEngine",
+        "kind": "re-export",
+        "signature": "TransitionEngine",
+        "summary": ""
+      },
+      {
+        "name": "TransitionUtils",
+        "kind": "re-export",
+        "signature": "TransitionUtils",
+        "summary": ""
+      },
+      {
+        "name": "UINode",
+        "kind": "re-export",
+        "signature": "UINode",
+        "summary": ""
+      },
+      {
+        "name": "VisualTree",
+        "kind": "re-export",
+        "signature": "VisualTree",
+        "summary": ""
+      },
+      {
+        "name": "WidgetShowcase",
+        "kind": "re-export",
+        "signature": "WidgetShowcase",
+        "summary": ""
+      },
+      {
+        "name": "createPlaunaApp",
+        "kind": "re-export",
+        "signature": "createPlaunaApp",
+        "summary": ""
+      },
+      {
+        "name": "createPlaunaConsole",
+        "kind": "re-export",
+        "signature": "createPlaunaConsole",
+        "summary": ""
+      },
+      {
+        "name": "createStore",
+        "kind": "re-export",
+        "signature": "createStore",
+        "summary": ""
+      },
+      {
+        "name": "getPlaunaConsole",
+        "kind": "re-export",
+        "signature": "getPlaunaConsole",
+        "summary": ""
+      },
+      {
+        "name": "mountPlaunaWorkbenchLab",
+        "kind": "re-export",
+        "signature": "mountPlaunaWorkbenchLab",
+        "summary": ""
+      },
+      {
+        "name": "mountShowcaseApp",
+        "kind": "re-export",
+        "signature": "mountShowcaseApp",
+        "summary": ""
+      },
+      {
+        "name": "startPageTransition",
+        "kind": "re-export",
+        "signature": "startPageTransition",
+        "summary": ""
+      },
+      {
+        "name": "useStore",
+        "kind": "re-export",
+        "signature": "useStore",
+        "summary": ""
+      },
+      {
+        "name": "widgetShowcase",
+        "kind": "re-export",
+        "signature": "widgetShowcase",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "input/EventRouter",
+    "path": "plauna/reference/input/EventRouter.md",
+    "source": "plauna/input/EventRouter.js",
+    "import": "/plauna/input/EventRouter.js",
+    "sourceHash": "5d140a84a527e5ee503f5d3e6a0da2c97968b00afa2ac11d1348c81f04c67ccc",
+    "summary": "EventRouter - Event capture/target/bubble routing system for Plauna Handles DOM-style event propagation with capture and bubble phases",
+    "exports": [
+      {
+        "name": "EventRouter",
+        "kind": "class",
+        "signature": "class EventRouter",
+        "summary": "EventRouter - Event capture/target/bubble routing system for Plauna Handles DOM-style event propagation with capture and bubble phases"
+      },
+      {
+        "name": "EVENT_TYPES",
+        "kind": "constant",
+        "signature": "EVENT_TYPES",
+        "summary": ""
+      },
+      {
+        "name": "EventUtils",
+        "kind": "constant",
+        "signature": "EventUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "lab/showcase-app",
+    "path": "plauna/reference/lab/showcase-app.md",
+    "source": "plauna/lab/showcase-app.js",
+    "import": "/plauna/lab/showcase-app.js",
+    "sourceHash": "3d0aaa4412de4eb644f15db4c2228a9804a027b329150d3f20dba3121928d25a",
+    "summary": "ShowcaseApp - Thin shell that boots the Plauna engine and mounts WidgetGallery",
+    "exports": [
+      {
+        "name": "ShowcaseApp",
+        "kind": "class",
+        "signature": "class ShowcaseApp",
+        "summary": ""
+      },
+      {
+        "name": "mountShowcaseApp",
+        "kind": "function",
+        "signature": "mountShowcaseApp(options = {})",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "lab/workbench-lab",
+    "path": "plauna/reference/lab/workbench-lab.md",
+    "source": "plauna/lab/workbench-lab.js",
+    "import": "/plauna/lab/workbench-lab.js",
+    "sourceHash": "eb9b96ed9eadbe162a581a6162e9f6b8c126f98d299dc6d7e72a5095033cd152",
+    "summary": "",
+    "exports": [
+      {
+        "name": "buildBackdropController",
+        "kind": "function",
+        "signature": "buildBackdropController(canvas, logger, options = {})",
+        "summary": ""
+      },
+      {
+        "name": "mountPlaunaWorkbenchLab",
+        "kind": "function",
+        "signature": "mountPlaunaWorkbenchLab(options)",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "layout/Constraints",
+    "path": "plauna/reference/layout/Constraints.md",
+    "source": "plauna/layout/Constraints.js",
+    "import": "/plauna/layout/Constraints.js",
+    "sourceHash": "19dbb80de106679ba9026f4b0d6cf5d216282427c9e20cb5c28f088b14033bc5",
+    "summary": "Constraints - Size constraint system for Plauna layout Handles min/max/preferred sizes and constraint resolution",
+    "exports": [
+      {
+        "name": "Constraints",
+        "kind": "class",
+        "signature": "class Constraints",
+        "summary": ""
+      },
+      {
+        "name": "BoxConstraints",
+        "kind": "class",
+        "signature": "class BoxConstraints",
+        "summary": ""
+      },
+      {
+        "name": "LayoutConstraints",
+        "kind": "class",
+        "signature": "class LayoutConstraints",
+        "summary": ""
+      },
+      {
+        "name": "ConstraintResolver",
+        "kind": "class",
+        "signature": "class ConstraintResolver",
+        "summary": ""
+      },
+      {
+        "name": "LayoutConstraintType",
+        "kind": "constant",
+        "signature": "LayoutConstraintType",
+        "summary": ""
+      },
+      {
+        "name": "ConstraintUtils",
+        "kind": "constant",
+        "signature": "ConstraintUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "layout/FlexLayout",
+    "path": "plauna/reference/layout/FlexLayout.md",
+    "source": "plauna/layout/FlexLayout.js",
+    "import": "/plauna/layout/FlexLayout.js",
+    "sourceHash": "1d9e55008175304780755fc48a5d92c13ed9553d87d2d711c51b834b9b9a289a",
+    "summary": "FlexLayout - Flexbox-inspired layout engine for Plauna Provides CSS Flexbox-like layout functionality with constrained feature set",
+    "exports": [
+      {
+        "name": "FlexLayout",
+        "kind": "class",
+        "signature": "class FlexLayout",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "layout/LayoutSizing",
+    "path": "plauna/reference/layout/LayoutSizing.md",
+    "source": "plauna/layout/LayoutSizing.js",
+    "import": "/plauna/layout/LayoutSizing.js",
+    "sourceHash": "f26ba138196ed2ce36db7ce2a4a063919021bdb94331f9debfdc4b9b56ea66de",
+    "summary": "",
+    "exports": [
+      {
+        "name": "resolvePlaunaLayoutSize",
+        "kind": "function",
+        "signature": "resolvePlaunaLayoutSize(value, containerSize, options = {})",
+        "summary": ""
+      },
+      {
+        "name": "resolvePlaunaLayoutConstraints",
+        "kind": "function",
+        "signature": "resolvePlaunaLayoutConstraints(style = {}, containerSize = 0)",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "motion/MPAFallback",
+    "path": "plauna/reference/motion/MPAFallback.md",
+    "source": "plauna/motion/MPAFallback.js",
+    "import": "/plauna/motion/MPAFallback.js",
+    "sourceHash": "e355e7714038ff84d8c3624da2ec8eea899d70ba105d69f06fbc55a7da32b713",
+    "summary": "MPAFallback - Cross-document view transition fallback for mobile/legacy browsers. Browsers that don't support the CSS @view-transition at-rule for MPA navigation get a minimal fade-in of the new page instead of a hard cut. This is a graceful degradation, not a full polyfill; the real cross-document transition only works in browsers that support the View Transitions API Level 2. Usage: load as an optional enhancement, never as a parsing prerequisite: <script defer src=\"/plauna/motion/MPAFallback.js\"></script>",
+    "exports": []
+  },
+  {
+    "schemaVersion": 1,
+    "title": "motion/PageTransition",
+    "path": "plauna/reference/motion/PageTransition.md",
+    "source": "plauna/motion/PageTransition.js",
+    "import": "/plauna/motion/PageTransition.js",
+    "sourceHash": "248eb96f969e8b54ed308b05830aca51ec3059ad2f7186dec698f084f8b2c871",
+    "summary": "PageTransition - Modern page/view blending for Plauna. Wraps the native View Transitions API (Level 1/2) where available and falls back to CSS class/transition-based cross-fades for older browsers. Designed for SPA \"page\" swaps, tab changes, and content fades inside a Plauna app. Usage: const pt = new PageTransition({ type: 'slide-left', duration: 350 }); await pt.start(() => { // update the DOM here });",
+    "exports": [
+      {
+        "name": "PageTransition",
+        "kind": "class",
+        "signature": "class PageTransition",
+        "summary": ""
+      },
+      {
+        "name": "startPageTransition",
+        "kind": "function",
+        "signature": "startPageTransition(update, options = {})",
+        "summary": "Convenience function for one-off transitions."
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "motion/PageTransitionContracts",
+    "path": "plauna/reference/motion/PageTransitionContracts.md",
+    "source": "plauna/motion/PageTransitionContracts.js",
+    "import": "/plauna/motion/PageTransitionContracts.js",
+    "sourceHash": "324d899287c5421192e917aa514d5d42501ba440bd4b2effc720ab9781072d1e",
+    "summary": "",
+    "exports": [
+      {
+        "name": "UnsupportedPageTransitionVersionError",
+        "kind": "class",
+        "signature": "class UnsupportedPageTransitionVersionError extends Error",
+        "summary": ""
+      },
+      {
+        "name": "preparePageTransitionIntent",
+        "kind": "function",
+        "signature": "preparePageTransitionIntent(input)",
+        "summary": ""
+      },
+      {
+        "name": "preparePageTransitionResolved",
+        "kind": "function",
+        "signature": "preparePageTransitionResolved(input)",
+        "summary": ""
+      },
+      {
+        "name": "PAGE_TRANSITION_SCHEMA_VERSION",
+        "kind": "constant",
+        "signature": "PAGE_TRANSITION_SCHEMA_VERSION",
+        "summary": ""
+      },
+      {
+        "name": "PAGE_TRANSITION_INTENT_SCHEMA",
+        "kind": "constant",
+        "signature": "PAGE_TRANSITION_INTENT_SCHEMA",
+        "summary": ""
+      },
+      {
+        "name": "PAGE_TRANSITION_RESOLVED_SCHEMA",
+        "kind": "constant",
+        "signature": "PAGE_TRANSITION_RESOLVED_SCHEMA",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "motion/PageTransitionManager",
+    "path": "plauna/reference/motion/PageTransitionManager.md",
+    "source": "plauna/motion/PageTransitionManager.js",
+    "import": "/plauna/motion/PageTransitionManager.js",
+    "sourceHash": "dc658349f46e63e25b352f76401bda2471c823403445b02d485a1b3ec9033050",
+    "summary": "PageTransitionManager - Cross-document (MPA) view transition orchestration. This module runs on every page that opts in. It injects a shared stylesheet containing the PageTransition presets and, on supported browsers, sets the active view transition type for cross-document navigations via the pageswap and pagereveal events. Pages can control their transition with a data attribute on the <html> element: <html data-transition-preset=\"etch\"> <html data-transition-preset=\"random\"> <html data-transition-preset=\"cycle\"> The default is the project's default preset (etch). If the attribute is absent or the value is unknown, the default is used.",
+    "exports": []
+  },
+  {
+    "schemaVersion": 1,
+    "title": "motion/PageTransitionPresets",
+    "path": "plauna/reference/motion/PageTransitionPresets.md",
+    "source": "plauna/motion/PageTransitionPresets.js",
+    "import": "/plauna/motion/PageTransitionPresets.js",
+    "sourceHash": "95c05ffcc4eb2b516d5b0fcc22f43c9e6d8f64ca066b12608bb2f284b138f204",
+    "summary": "PageTransitionPresets - Shared transition presets and stylesheet generation. This module is the single source of truth for the keyframes and CSS used by both the same-document PageTransition engine and the cross-document PageTransitionManager. Keeping the presets in one place means SPA demos and MPA page navigation can share the same effects and the same default.",
+    "exports": [
+      {
+        "name": "directionToPreset",
+        "kind": "function",
+        "signature": "directionToPreset(direction)",
+        "summary": ""
+      },
+      {
+        "name": "resolvePreset",
+        "kind": "function",
+        "signature": "resolvePreset(name, state = { index: 0 })",
+        "summary": ""
+      },
+      {
+        "name": "keyframesForPreset",
+        "kind": "function",
+        "signature": "keyframesForPreset(name)",
+        "summary": ""
+      },
+      {
+        "name": "presetStyleSheet",
+        "kind": "function",
+        "signature": "presetStyleSheet(namespace)",
+        "summary": ""
+      },
+      {
+        "name": "ensureStyleSheet",
+        "kind": "function",
+        "signature": "ensureStyleSheet(namespace)",
+        "summary": ""
+      },
+      {
+        "name": "DEFAULT_PRESET",
+        "kind": "constant",
+        "signature": "DEFAULT_PRESET",
+        "summary": ""
+      },
+      {
+        "name": "DEFAULT_DURATION",
+        "kind": "constant",
+        "signature": "DEFAULT_DURATION",
+        "summary": ""
+      },
+      {
+        "name": "DEFAULT_EASING",
+        "kind": "constant",
+        "signature": "DEFAULT_EASING",
+        "summary": ""
+      },
+      {
+        "name": "DIRECTION_PRESETS",
+        "kind": "constant",
+        "signature": "DIRECTION_PRESETS",
+        "summary": ""
+      },
+      {
+        "name": "TYPES",
+        "kind": "constant",
+        "signature": "TYPES",
+        "summary": ""
+      },
+      {
+        "name": "SPECIAL_TYPES",
+        "kind": "constant",
+        "signature": "SPECIAL_TYPES",
+        "summary": ""
+      },
+      {
+        "name": "ALL_TYPES",
+        "kind": "constant",
+        "signature": "ALL_TYPES",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "motion/TransitionEngine",
+    "path": "plauna/reference/motion/TransitionEngine.md",
+    "source": "plauna/motion/TransitionEngine.js",
+    "import": "/plauna/motion/TransitionEngine.js",
+    "sourceHash": "33ca27d906e31a81b9701f5d3dcc232470cdc274738ea9bd264910b5d37b6542",
+    "summary": "TransitionEngine - Property animation system for Plauna Provides smooth transitions and animations for UI properties",
+    "exports": [
+      {
+        "name": "TransitionEngine",
+        "kind": "class",
+        "signature": "class TransitionEngine",
+        "summary": ""
+      },
+      {
+        "name": "TransitionUtils",
+        "kind": "constant",
+        "signature": "TransitionUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "notifications/NotificationSystem",
+    "path": "plauna/reference/notifications/NotificationSystem.md",
+    "source": "plauna/notifications/NotificationSystem.js",
+    "import": "/plauna/notifications/NotificationSystem.js",
+    "sourceHash": "9748d96249cf48cd191fc19f6b6923451af31d0c727edd6d04cb0abb9de375c3",
+    "summary": "============================================================================ NotificationSystem - Centralized Notification Management ============================================================================ NotificationSystem provides a unified API for user notifications, separating them from debug logging and integrating with ToastManager for UI feedback. NOTIFICATION CHANNELS: 1. Toasts: UI notifications via ToastManager (top-right corner) 2. Console: Browser console.log/error/warn for debugging 3. Sounds: Optional audio feedback using Web Audio API NOTIFICATION LEVELS (priority order): - debug (0): Development debugging information - info (1): General informational messages - success (2): Success confirmations - warning (3): Warning messages - error (4): Error messages - critical (5): Critical errors requiring immediate attention NOTIFICATION TYPES: - system: System-level notifications (startup, shutdown, etc.) - action: User action feedback (clicks, submissions, etc.) - validation: Form validation errors - performance: Performance metrics and warnings - security: Security-related alerts - network: Network request status GROUPING: - createGroup(name, options): Create a notification group - Groups collect related notifications and report summary - Useful for batch operations or multi-step processes CONVENIENCE METHODS: - debug(message, type, data): Debug-level notification - info(message, type, data): Info-level notification - success(message, type, data): Success-level notification - warning(message, type, data): Warning-level notification - error(message, type, data): Error-level notification - critical(message, type, data): Critical-level notification SOUND EFFECTS: - Uses Web Audio API to generate simple beep sounds - Different frequencies for different levels - Can be disabled via enableSounds option MIN LEVEL FILTERING: - minLevel option filters notifications below specified level - Useful for suppressing debug messages in production INTEGRATION: - Uses global Toast from ToastManager for UI toasts - Toast position defaults to top-right - Console output includes prefix (default: '[Plauna]') USAGE: const notify = new NotificationSystem({ minLevel: 'info' }); notify.success('File saved successfully', 'action'); notify.error('Failed to load data', 'network', { url: '/api/data' });",
+    "exports": [
+      {
+        "name": "NotificationSystem",
+        "kind": "class",
+        "signature": "class NotificationSystem",
+        "summary": ""
+      },
+      {
+        "name": "Notify",
+        "kind": "constant",
+        "signature": "Notify",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "particle/ParticleController",
+    "path": "plauna/reference/particle/ParticleController.md",
+    "source": "plauna/particle/ParticleController.js",
+    "import": "/plauna/particle/ParticleController.js",
+    "sourceHash": "a3659aca55e1918c43a4c088234b744502d943c5feec307f308199d578fa8a78",
+    "summary": "ParticleController - Manages particle effects and animations Handles particle system initialization and control for showcase",
+    "exports": [
+      {
+        "name": "ParticleController",
+        "kind": "class",
+        "signature": "class ParticleController",
+        "summary": "ParticleController - Manages particle effects and animations Handles particle system initialization and control for showcase"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "particle/bridge",
+    "path": "plauna/reference/particle/bridge.md",
+    "source": "plauna/particle/bridge.js",
+    "import": "/plauna/particle/bridge.js",
+    "sourceHash": "add11bd6169ac88b1bea8382cf8476905a40398090fd1e7f1f57f29db220740a",
+    "summary": "PlaunaParticleBridge - Connects Plauna to Particle Engine's VGPU Follows existing VGPU patterns from ViewportPanel",
+    "exports": [
+      {
+        "name": "PlaunaGPUBridge",
+        "kind": "class",
+        "signature": "class PlaunaGPUBridge",
+        "summary": "PlaunaParticleBridge - Connects Plauna to Particle Engine's VGPU Follows existing VGPU patterns from ViewportPanel"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/AdaptiveThemeFactory",
+    "path": "plauna/reference/style/AdaptiveThemeFactory.md",
+    "source": "plauna/style/AdaptiveThemeFactory.js",
+    "import": "/plauna/style/AdaptiveThemeFactory.js",
+    "sourceHash": "1a563e32bd26835aa2d3c2ea732b1f57fcc7d3e962b3a287247865fb4debc37a",
+    "summary": "",
+    "exports": [
+      {
+        "name": "AdaptiveThemeFactory",
+        "kind": "class",
+        "signature": "class AdaptiveThemeFactory",
+        "summary": ""
+      },
+      {
+        "name": "adaptiveThemeFactory",
+        "kind": "constant",
+        "signature": "adaptiveThemeFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/CSSGenerator",
+    "path": "plauna/reference/style/CSSGenerator.md",
+    "source": "plauna/style/CSSGenerator.js",
+    "import": "/plauna/style/CSSGenerator.js",
+    "sourceHash": "cf79013ff717a9e420f50c167d50838df282f1bae39bbb7519e186a5c10583b2",
+    "summary": "CSSGenerator - Runtime CSS generation from DesignTokens and LayerManager. CSS generation pattern: - Generates CSS custom properties from design tokens - Supports theme-based variable sets (bright/night) - Caches generated CSS for performance - Injects CSS into document via style tags - Supports z-index layer variables Architecture: - tokens: DesignTokens instance for token resolution - layerValues: LayerManager z-index values - generatedCSS: Map of cached CSS strings - styleElement: DOM style element for CSS injection - themes: Pre-defined theme variable sets",
+    "exports": [
+      {
+        "name": "CSSGenerator",
+        "kind": "class",
+        "signature": "class CSSGenerator",
+        "summary": ""
+      },
+      {
+        "name": "cssGenerator",
+        "kind": "constant",
+        "signature": "cssGenerator",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/ComputedStyle",
+    "path": "plauna/reference/style/ComputedStyle.md",
+    "source": "plauna/style/ComputedStyle.js",
+    "import": "/plauna/style/ComputedStyle.js",
+    "sourceHash": "5a93e204225ee79f36475509594685463211d0a7ac68a452d1406dc44609990f",
+    "summary": "ComputedStyle - Style resolution and caching system for Plauna. Style resolution pattern: - Handles style inheritance from parent nodes - Resolves design token references - Computes final style values for rendering - Caches computed styles for performance - Tracks performance statistics Architecture: - cache: Map of computed style results - tokenCache: Map of resolved token values - styleCache: Map of style property resolutions - performanceStats: Metrics for cache hits/misses and timing Style categories: - Position and layout: position, display, flex properties - Sizing: width, height, min/max dimensions, flex basis/grow/shrink - Spacing: margin, padding - Visual: colors, borders, shadows, opacity - Typography: font family, size, weight, line height, alignment - Interaction: pointer events, cursor - Accessibility: visibility, z-index - Transform and animation",
+    "exports": [
+      {
+        "name": "ComputedStyle",
+        "kind": "class",
+        "signature": "class ComputedStyle",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/DesignTokenContracts",
+    "path": "plauna/reference/style/DesignTokenContracts.md",
+    "source": "plauna/style/DesignTokenContracts.js",
+    "import": "/plauna/style/DesignTokenContracts.js",
+    "sourceHash": "c7a5cf3ed072856205d9ca341fddc0c7996b3914c6971aa183aca7ee53e978a2",
+    "summary": "Accept legacy raw token maps and return a canonical, safely cloned v1 envelope.",
+    "exports": [
+      {
+        "name": "UnsupportedDesignTokenVersionError",
+        "kind": "class",
+        "signature": "class UnsupportedDesignTokenVersionError extends Error",
+        "summary": ""
+      },
+      {
+        "name": "prepareDesignTokenDocument",
+        "kind": "function",
+        "signature": "prepareDesignTokenDocument(input)",
+        "summary": "Accept legacy raw token maps and return a canonical, safely cloned v1 envelope."
+      },
+      {
+        "name": "createDesignTokenExport",
+        "kind": "function",
+        "signature": "createDesignTokenExport(input)",
+        "summary": "Emit metadata additively so legacy readers still see token categories at the root."
+      },
+      {
+        "name": "DESIGN_TOKEN_SCHEMA",
+        "kind": "constant",
+        "signature": "DESIGN_TOKEN_SCHEMA",
+        "summary": ""
+      },
+      {
+        "name": "DESIGN_TOKEN_SCHEMA_VERSION",
+        "kind": "constant",
+        "signature": "DESIGN_TOKEN_SCHEMA_VERSION",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/DesignTokens",
+    "path": "plauna/reference/style/DesignTokens.md",
+    "source": "plauna/style/DesignTokens.js",
+    "import": "/plauna/style/DesignTokens.js",
+    "sourceHash": "da420ccc14e4020f3462b8a6d92a5d10ae49b85d2c80af5016de49a65cb90cd1",
+    "summary": "DesignTokens - Design system token management. Token management pattern: - Centralized token system for Plauna styling - Manages spacing, typography, color, motion, borderRadius, shadows, zIndex - Observer pattern for token change notifications - Caching for performance optimization - Deep merge strategy for token inheritance Architecture: - tokens: Merged token object (defaults + custom) - observers: Set of callback functions - cache: Map of cached token lookups",
+    "exports": [
+      {
+        "name": "DesignTokens",
+        "kind": "class",
+        "signature": "class DesignTokens",
+        "summary": "DesignTokens - Design system token management. Token management pattern: - Centralized token system for Plauna styling - Manages spacing, typography, color, motion, borderRadius, shadows, zIndex - Observer pattern for token change notifications - Caching for performance optimization - Deep merge strategy for token inheritance Architecture: - tokens: Merged token object (defaults + custom) - observers: Set of callback functions - cache: Map of cached token lookups"
+      },
+      {
+        "name": "tokens",
+        "kind": "constant",
+        "signature": "tokens",
+        "summary": ""
+      },
+      {
+        "name": "TokenUtils",
+        "kind": "constant",
+        "signature": "TokenUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/LayerManager",
+    "path": "plauna/reference/style/LayerManager.md",
+    "source": "plauna/style/LayerManager.js",
+    "import": "/plauna/style/LayerManager.js",
+    "sourceHash": "f2469425f3962220de13ef0f37b3bcfe6e8cd38c56448e0fb93f8f46c851b3ef",
+    "summary": "LayerManager - Semantic z-index management system. Z-index management pattern: - Centralized z-index constants organized by stacking context - Arithmetic relationships for self-documenting code - Prevents z-index wars by providing semantic layer names - Uses isolation: isolate for stacking context isolation Stacking contexts (lowest to highest): - Layout: backdrop, surface, widget gallery - Modal: backdrop, panel - Dropdown: backdrop, dropdown - Tooltip - Notification: toast, alert Arithmetic pattern: - base = 0 - above = 1 - below = -1 - Each layer is defined relative to the previous layer",
+    "exports": [
+      {
+        "name": "getStackingContextCSS",
+        "kind": "function",
+        "signature": "getStackingContextCSS(layerName)",
+        "summary": "Create CSS for stacking context isolation. Stacking context pattern: - Uses isolation: isolate to create new stacking context - Prevents side effects from parent stacking contexts - Returns CSS object with isolation and z-index"
+      },
+      {
+        "name": "getLayerZIndex",
+        "kind": "function",
+        "signature": "getLayerZIndex(layerName)",
+        "summary": "Get z-index value for a layer"
+      },
+      {
+        "name": "getLayerCSSVariables",
+        "kind": "function",
+        "signature": "getLayerCSSVariables()",
+        "summary": "Get all layer values as CSS custom properties"
+      },
+      {
+        "name": "zLayoutBackdrop",
+        "kind": "constant",
+        "signature": "zLayoutBackdrop",
+        "summary": ""
+      },
+      {
+        "name": "zLayoutSurface",
+        "kind": "constant",
+        "signature": "zLayoutSurface",
+        "summary": ""
+      },
+      {
+        "name": "zLayoutWidgetGallery",
+        "kind": "constant",
+        "signature": "zLayoutWidgetGallery",
+        "summary": ""
+      },
+      {
+        "name": "zModalBackdrop",
+        "kind": "constant",
+        "signature": "zModalBackdrop",
+        "summary": ""
+      },
+      {
+        "name": "zModalPanel",
+        "kind": "constant",
+        "signature": "zModalPanel",
+        "summary": ""
+      },
+      {
+        "name": "zDropdownBackdrop",
+        "kind": "constant",
+        "signature": "zDropdownBackdrop",
+        "summary": ""
+      },
+      {
+        "name": "zDropdown",
+        "kind": "constant",
+        "signature": "zDropdown",
+        "summary": ""
+      },
+      {
+        "name": "zTooltip",
+        "kind": "constant",
+        "signature": "zTooltip",
+        "summary": ""
+      },
+      {
+        "name": "zNotificationToast",
+        "kind": "constant",
+        "signature": "zNotificationToast",
+        "summary": ""
+      },
+      {
+        "name": "zNotificationAlert",
+        "kind": "constant",
+        "signature": "zNotificationAlert",
+        "summary": ""
+      },
+      {
+        "name": "layerValues",
+        "kind": "constant",
+        "signature": "layerValues",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/StyleSizing",
+    "path": "plauna/reference/style/StyleSizing.md",
+    "source": "plauna/style/StyleSizing.js",
+    "import": "/plauna/style/StyleSizing.js",
+    "sourceHash": "fc53654bce81be48fd296856034daa4dac86370600c341b920f3347115f242e6",
+    "summary": "",
+    "exports": [
+      {
+        "name": "resolvePlaunaStyleSize",
+        "kind": "function",
+        "signature": "resolvePlaunaStyleSize(value, options = {})",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/ThemeController",
+    "path": "plauna/reference/style/ThemeController.md",
+    "source": "plauna/style/ThemeController.js",
+    "import": "/plauna/style/ThemeController.js",
+    "sourceHash": "d2ad330c69dbed0f6e85d6482149cabac38894e22f56d7e432e6c51286ba5a6f",
+    "summary": "ThemeController - Runtime theme management and switching. Theme switching pattern: - Manages bright/night theme switching with live CSS updates - Persists theme preference to localStorage - Listens to system theme preference (prefers-color-scheme) - Observer pattern for theme change notifications - Applies theme via data-theme attribute and CSS variables Features: - Auto-switch based on system preference - Manual theme switching with setTheme() - Theme persistence across sessions - Observer notifications for reactive updates",
+    "exports": [
+      {
+        "name": "ThemeController",
+        "kind": "class",
+        "signature": "class ThemeController",
+        "summary": ""
+      },
+      {
+        "name": "themeController",
+        "kind": "constant",
+        "signature": "themeController",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/ThemeManager",
+    "path": "plauna/reference/style/ThemeManager.md",
+    "source": "plauna/style/ThemeManager.js",
+    "import": "/plauna/style/ThemeManager.js",
+    "sourceHash": "fdf9101d7853ef469a07369c2952cefe0d8651f3d633952f80a5b2cbe1772d03",
+    "summary": "ThemeManager - Theme management system for Plauna. Theme management pattern: - Provides theme registration and switching - Supports custom token overrides - Observer pattern for theme change notifications - Deep merge strategy for token inheritance - Pre-registered themes (light, dark) Architecture: - themes: Map of registered theme definitions - observers: Set of callback functions for change notifications - customTokens: Map of custom token overrides - currentTheme: Currently active theme ID",
+    "exports": [
+      {
+        "name": "ThemeManager",
+        "kind": "class",
+        "signature": "class ThemeManager",
+        "summary": ""
+      },
+      {
+        "name": "ThemeUtils",
+        "kind": "constant",
+        "signature": "ThemeUtils",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "style/index",
+    "path": "plauna/reference/style/index.md",
+    "source": "plauna/style/index.js",
+    "import": "/plauna/style/index.js",
+    "sourceHash": "8769ccaf5807e2dbc9f2c0aa71360b8f37fff546fec5a8e02edf5ed35498a23f",
+    "summary": "Style Module Exports Central export point for all Plauna styling utilities and managers. Exported modules: - LayerManager: Semantic z-index management system - ThemeManager: Theme registration and management - DesignTokens: Design system token management - WidgetStyleManager: Theme-aware widget styling - CSSGenerator: Runtime CSS generation - ThemeController: Runtime theme switching Usage: import { tokens, ThemeManager, layerValues } from './style/index.js';",
+    "exports": []
+  },
+  {
+    "schemaVersion": 1,
+    "title": "surface/surface-manager",
+    "path": "plauna/reference/surface/surface-manager.md",
+    "source": "plauna/surface/surface-manager.js",
+    "import": "/plauna/surface/surface-manager.js",
+    "sourceHash": "fe179792c3c283b3098014a32b4cba09edb988a2d54d6322b96903283f36cdcf",
+    "summary": "PlaunaSurfaceManager - Manages GPU surfaces and rendering Integrates with existing VGPU patterns",
+    "exports": [
+      {
+        "name": "PlaunaSurfaceManager",
+        "kind": "class",
+        "signature": "class PlaunaSurfaceManager",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "text/pretext-service",
+    "path": "plauna/reference/text/pretext-service.md",
+    "source": "plauna/text/pretext-service.js",
+    "import": "/plauna/text/pretext-service.js",
+    "sourceHash": "23ebfd88f83466a0b2ed50b29f0422e5f613f01b4661c00b5d7e5b5490efe0e8",
+    "summary": "PlaunaTextService - DOM-free text measurement and layout Implements Pretext-style text measurement for Plauna",
+    "exports": [
+      {
+        "name": "PlaunaTextService",
+        "kind": "class",
+        "signature": "class PlaunaTextService",
+        "summary": "PlaunaTextService - DOM-free text measurement and layout Implements Pretext-style text measurement for Plauna"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "themes/ThemeContracts",
+    "path": "plauna/reference/themes/ThemeContracts.md",
+    "source": "plauna/themes/ThemeContracts.js",
+    "import": "/plauna/themes/ThemeContracts.js",
+    "sourceHash": "b2f168771b7085d0cb3432a526d7f7fec5a1305c16e2621069f832a0b53dce93",
+    "summary": "",
+    "exports": [
+      {
+        "name": "validateThemeId",
+        "kind": "function",
+        "signature": "validateThemeId(value, label = 'Theme id')",
+        "summary": ""
+      },
+      {
+        "name": "prepareThemeVariables",
+        "kind": "function",
+        "signature": "prepareThemeVariables(input, { allowNull = true } = {})",
+        "summary": ""
+      },
+      {
+        "name": "prepareThemeRegistry",
+        "kind": "function",
+        "signature": "prepareThemeRegistry(input)",
+        "summary": ""
+      },
+      {
+        "name": "prepareThemeManifest",
+        "kind": "function",
+        "signature": "prepareThemeManifest(input, requestedId)",
+        "summary": ""
+      },
+      {
+        "name": "THEME_SCHEMA_VERSION",
+        "kind": "constant",
+        "signature": "THEME_SCHEMA_VERSION",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "themes/ThemeLoader",
+    "path": "plauna/reference/themes/ThemeLoader.md",
+    "source": "plauna/themes/ThemeLoader.js",
+    "import": "/plauna/themes/ThemeLoader.js",
+    "sourceHash": "14d9ab06a572b4b9c05d54fdc1a65d5542a8bc465ba0b07bfcfe8fc3214b8417",
+    "summary": "============================================================================ ThemeLoader - File-Based Theme Discovery and Loading ============================================================================ ThemeLoader is a file-based theme system inspired by WordPress but modernized. It loads themes from plauna/themes/{id}/theme.json and applies CSS variables. THEME STRUCTURE: plauna/themes/ ├── _base/              # Base theme with all token defaults (required) │   └── theme.json      # Defines every possible CSS variable ├── dark/               # Dark theme (extends _base) │   └── theme.json      # Only overrides what's different from _base ├── light/              # Light theme (extends _base) │   └── theme.json ├── high-contrast/      # High contrast theme (extends dark) │   └── theme.json ├── custom/             # User starter template (extends dark) │   └── theme.json └── index.json          # Registry of discoverable themes THEME MANIFEST (theme.json): { \"name\": \"Theme Name\", \"description\": \"Theme description\", \"extends\": \"parent-theme-id\",  // Optional: parent theme to inherit from \"variables\": { \"color-primary\": \"#3b82f6\",  // CSS variable name → value \"spacing-md\": \"16px\", // null or omitted values inherit from parent } } THEME RESOLUTION CASCADE (highest priority wins): 1. _base theme defaults (all variables defined) 2. Parent theme variables (if extends is set) 3. Current theme variables (overrides parent) 4. Runtime overrides (applyOverrides() - per-session changes) CSS VARIABLE APPLICATION: - Variables are written to <style data-plauna-theme=\"1\"> tag on :root - Format: --variable-name: value; - Overrides use separate <style data-plauna-overrides=\"1\"> tag REGISTRY (themes/index.json): { \"themes\": [\"dark\", \"light\", \"high-contrast\", \"custom\"] } Add your theme folder name here to make it discoverable without code changes. METHODS: - discover(): Load themes/index.json and return available theme IDs - load(id): Load raw theme.json without resolving parent chain - resolve(id): Resolve full theme with parent chain merged - apply(id): Apply theme CSS variables to DOM - applyOverrides(vars): Apply per-session variable overrides - clearOverrides(): Remove runtime overrides - listThemes(): Return theme metadata for all discoverable themes",
+    "exports": [
+      {
+        "name": "ThemeLoader",
+        "kind": "class",
+        "signature": "class ThemeLoader",
+        "summary": "ThemeLoader - File-based theme discovery and loading. Theme loading pattern: - Loads themes from plauna/themes/{id}/theme.json - Supports theme extension via \"extends\" property - Resolves parent chain with cascading variable inheritance - Applies CSS variables to :root via style tags - Caches resolved themes for performance Architecture: - _cache: Resolved theme manifests (parent chain merged) - _rawCache: Raw theme.json files - _registry: Discoverable theme IDs from index.json - _styleEl: CSS variable style tag - _overrideEl: Runtime override style tag"
+      },
+      {
+        "name": "themeLoader",
+        "kind": "constant",
+        "signature": "themeLoader",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "themes/ThemePreference",
+    "path": "plauna/reference/themes/ThemePreference.md",
+    "source": "plauna/themes/ThemePreference.js",
+    "import": "/plauna/themes/ThemePreference.js",
+    "sourceHash": "41083fbe07cba0b49571bdb89020fc5df9ec44e9b5e4f8e0075b0718a90873c8",
+    "summary": "Expand legacy state into both namespaced keys without contracting the old key. Older tabs may still be reading it during a rolling browser rollout.",
+    "exports": [
+      {
+        "name": "migrateLegacyThemePreference",
+        "kind": "function",
+        "signature": "migrateLegacyThemePreference(storage)",
+        "summary": "Expand legacy state into both namespaced keys without contracting the old key. Older tabs may still be reading it during a rolling browser rollout."
+      },
+      {
+        "name": "readFileThemePreference",
+        "kind": "function",
+        "signature": "readFileThemePreference(storage)",
+        "summary": ""
+      },
+      {
+        "name": "writeFileThemePreference",
+        "kind": "function",
+        "signature": "writeFileThemePreference(value, storage)",
+        "summary": ""
+      },
+      {
+        "name": "readColorModePreference",
+        "kind": "function",
+        "signature": "readColorModePreference(storage)",
+        "summary": ""
+      },
+      {
+        "name": "writeColorModePreference",
+        "kind": "function",
+        "signature": "writeColorModePreference(value, storage)",
+        "summary": ""
+      },
+      {
+        "name": "LEGACY_THEME_STORAGE_KEY",
+        "kind": "constant",
+        "signature": "LEGACY_THEME_STORAGE_KEY",
+        "summary": ""
+      },
+      {
+        "name": "FILE_THEME_STORAGE_KEY",
+        "kind": "constant",
+        "signature": "FILE_THEME_STORAGE_KEY",
+        "summary": ""
+      },
+      {
+        "name": "COLOR_MODE_STORAGE_KEY",
+        "kind": "constant",
+        "signature": "COLOR_MODE_STORAGE_KEY",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "ui/SmartContextMenu",
+    "path": "plauna/reference/ui/SmartContextMenu.md",
+    "source": "plauna/ui/SmartContextMenu.js",
+    "import": "/plauna/ui/SmartContextMenu.js",
+    "sourceHash": "dfcde552298dce32656e907de242f4b72bc32c965ba2df80bc3a7edb325514f5",
+    "summary": "============================================================================ PlaunaSmartContextMenu - Context-Aware Right-Click Menu ============================================================================ PlaunaSmartContextMenu provides a context-aware right-click menu that scans the visual tree near the cursor and builds a smart action panel based on nearby UI nodes. SCANNING ALGORITHM: 1. On right-click, collectNearbyNodes() scans the visual tree around cursor 2. Uses adaptive radius based on node density (shrinks when many nodes nearby) 3. Scores each node based on type, role, text content, and distance 4. Returns top N nodes within scan radius NODE SCORING: - Inside node: +1000 + inset depth (prioritizes deeper inside) - Has role: +22 - Has text content: +10 - Has className: +8 - Button type: +25 - Input type: +18 - Menu type: +15 - Small area: +6 (prefers compact elements) ADAPTIVE RADIUS: - Base radius: 140px (configurable) - Density >= 8: 48% of base (72px min) - Density >= 6: 55% of base (80px min) - Density >= 4: 65% of base (90px min) - Density >= 2: 80% of base (112px min) - Density < 2: 100% of base (140px) DOM FALLBACK: - If visualTree is unavailable (e.g., in showcase shell), falls back to DOM scanning - Uses element._plaunaNode back-reference set by WidgetRenderer - Scans all elements in root and collects associated UINodes ACTION GENERATION: - For each nearby node, generates contextual actions - Actions include: inspect, copy text, copy ID, copy styles, toggle visibility - Actions are sorted by relevance and displayed in a radial menu VISUAL FEEDBACK: - Draws a scan ring around cursor during scanning - Highlights nearby nodes with visual indicators - Shows tie nodes (nodes with similar scores) with special styling INTEGRATION: - Requires: app (PlaunaApp), root (DOM element), visualTree (optional) - Optional: domRenderer (WidgetRenderer instance), console (logger) - Configurable: radius, maxNearby, maxActions, enabled flag USAGE: const menu = new PlaunaSmartContextMenu({ app: plaunaApp, root: document.body, visualTree: app.visualTree, domRenderer: app.domRenderer, radius: 140, maxNearby: 6, maxActions: 6 }); menu.enable();",
+    "exports": [
+      {
+        "name": "PlaunaSmartContextMenu",
+        "kind": "class",
+        "signature": "class PlaunaSmartContextMenu",
+        "summary": "PlaunaSmartContextMenu - Context-aware right-click menu. Context menu pattern: - Scans visual tree near cursor on right-click - Builds smart action panel based on nearby UI nodes - Adaptive radius based on node density - Node scoring for relevance ranking - Visual feedback with scan ring and highlights Integration: - Requires: app (PlaunaApp), root (DOM element), visualTree (optional) - Optional: domRenderer (WidgetRenderer), console (logger) - Configurable: radius, maxNearby, maxActions, enabled flag"
+      },
+      {
+        "name": "SMART_CONTEXT_ASSIST_FORMAT",
+        "kind": "re-export",
+        "signature": "SMART_CONTEXT_ASSIST_FORMAT",
+        "summary": ""
+      },
+      {
+        "name": "SMART_CONTEXT_ASSIST_VERSION",
+        "kind": "re-export",
+        "signature": "SMART_CONTEXT_ASSIST_VERSION",
+        "summary": ""
+      },
+      {
+        "name": "createSmartContextAssistDescriptor",
+        "kind": "re-export",
+        "signature": "createSmartContextAssistDescriptor",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "ui/ToastManager",
+    "path": "plauna/reference/ui/ToastManager.md",
+    "source": "plauna/ui/ToastManager.js",
+    "import": "/plauna/ui/ToastManager.js",
+    "sourceHash": "fbadb905c8ae3017f1d9de2c5a4e55a056a720265d9d2b55cba49ea3bedd9156",
+    "summary": "============================================================================ ToastManager - Unified Toast Notification System ============================================================================ ToastManager provides a user-friendly toast notification system for Plauna. It separates UI notifications from debug logging and provides a clean API. TOAST POSITIONS: - top-right: Top-right corner (default) - top-left: Top-left corner - top-center: Top-center - bottom-right: Bottom-right corner - bottom-left: Bottom-left corner - bottom-center: Bottom-center TOAST TYPES: - success: Green checkmark, 3s duration - error: Red X, 5s duration - warning: Yellow warning, 4s duration - info: Blue info, 3s duration - loading: Gray spinner, indefinite (must be manually dismissed) TOAST LIFECYCLE: 1. show(options): Creates toast element and appends to container 2. Animate in: Slide-in animation based on position 3. Display: Shows for duration (or indefinite) 4. Animate out: Slide-out animation 5. Remove: Element removed from DOM TOAST STRUCTURE: - Container: Fixed-position div at specified position - Toast Element: Individual toast with type styling - Icon: Type-specific icon (✓, ✕, ⚠, ℹ, ⟳) - Content: Title and optional description - Close Button: X button to dismiss manually - Progress Bar: Optional countdown indicator AUTO-DISMISS: - maxToasts: Maximum concurrent toasts (default: 5) - defaultDuration: Default display time (default: 4000ms) - Oldest toasts are dismissed when limit is reached - Loading toasts have indefinite duration (duration: 0) ANIMATIONS: - Slide-in/out based on position - Fade effect for smooth transitions - CSS transitions defined in Toast.css CONVENIENCE METHODS: - success(message, options): Show success toast - error(message, options): Show error toast - warning(message, options): Show warning toast - info(message, options): Show info toast - loading(message, options): Show loading toast GLOBAL SINGLETON: - Toast.initialize() creates global singleton - Toast.show() uses global singleton - Used by NotificationSystem and widget gallery USAGE: const manager = new ToastManager({ position: 'top-right' }); manager.success('Operation completed'); manager.error('Failed to save', { duration: 6000 }); // Or use global singleton Toast.initialize(); Toast.show('Hello world', 'info');",
+    "exports": [
+      {
+        "name": "ToastManager",
+        "kind": "class",
+        "signature": "class ToastManager",
+        "summary": "ToastManager - Unified toast notification system. Toast pattern: - Fixed-position container at specified position - Type-specific styling (success, error, warning, info, loading) - Auto-dismiss with configurable duration - Slide-in/out animations based on position - Max concurrent toast limit with FIFO dismissal Lifecycle: 1. show(): Creates toast and appends to container 2. Animate in: Slide-in based on position 3. Display: Shows for duration (or indefinite for loading) 4. Animate out: Slide-out animation 5. Remove: Element removed from DOM"
+      },
+      {
+        "name": "Toast",
+        "kind": "constant",
+        "signature": "Toast",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "ui/WidgetGallery",
+    "path": "plauna/reference/ui/WidgetGallery.md",
+    "source": "plauna/ui/WidgetGallery.js",
+    "import": "/plauna/ui/WidgetGallery.js",
+    "sourceHash": "a605fa68d6951ce53a71dfc99973a61e994022937b585f3e3af836aaa197bfe2",
+    "summary": "============================================================================ WidgetGallery - Storybook-Style Widget Showcase ============================================================================ WidgetGallery is a Storybook-like gallery that renders real interactive widget instances from widget.stories() definitions. It's used for development and documentation of Plauna widgets. RENDERING STRATEGY: - Uses widgetRenderer.render() directly to bypass the broken require() in create() - Instantiates widgets with new WidgetClass(id, storyOptions) - Renders each widget to DOM in preview cells - Adds interactive state badges (on/off/animating/sending toast) - Wires click/change/input events to emit toast notifications GALLERY STRUCTURE: - Header: Title and theme selector dropdown - Tabs: Category navigation (Primitive, Input, Form, Layout, Navigation, etc.) - Content Area: Grid of widget story previews - Story Cell: Widget preview + label + state badges STORY PATTERN: Each widget defines static stories() returning named configurations: static stories() { return { 'Story Name': { variant: 'primary', size: 'md' }, 'Another Story': { disabled: true } }; } SPECIAL HANDLING: - Tooltips: Appended to document.body for correct overlay positioning - Toasts: Call show() immediately for visible demos - State Badges: Display on/off/animating/sending-toast indicators - Interactive Events: Click/change/input emit toast notifications DATA ATTRIBUTES: - data-widget: Widget ID (e.g., 'button', 'badge') - data-variant: Story variant name - data-size: Story size name - data-story: Story name TOAST INTEGRATION: - Uses global Toast from ToastManager - Emits toasts on widget interactions for immediate feedback - Toast position defaults to top-right THEME SELECTOR: - Async dropdown in header - Calls shell.setTheme() on change - Refreshes gallery on theme change",
+    "exports": [
+      {
+        "name": "WidgetGallery",
+        "kind": "class",
+        "signature": "class WidgetGallery",
+        "summary": "WidgetGallery - Interactive widget showcase. Gallery architecture: - Storybook-like interface for widget documentation - Renders real interactive widget instances - Category-based navigation with tabs - Interactive state badges (on/off/animating/sending toast) - Toast integration for immediate feedback"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "ui/WidgetShowcase",
+    "path": "plauna/reference/ui/WidgetShowcase.md",
+    "source": "plauna/ui/WidgetShowcase.js",
+    "import": "/plauna/ui/WidgetShowcase.js",
+    "sourceHash": "5efcd45d7bcf75ecdfdecee60dd5b6aaeacb7d888c51d8ea43ecc5e7a8e045c0",
+    "summary": "WidgetShowcase - Display system for widget examples and variants. Architecture: - Renders individual widget examples with state variations - Creates structured showcase sections with title, description, and variants - Supports variant grids, state grids, size grids, and color grids - Uses PlaunaTextService for internationalization - Returns UINode trees for integration with Plauna rendering Showcase structure: - Container: Card-like container with title and description - Variants grid: Auto-fit grid for widget variants - States grid: Grid for different widget states (hover, active, disabled) - Size grid: Grid for different widget sizes - Color grid: Grid for different color variants",
+    "exports": [
+      {
+        "name": "WidgetShowcase",
+        "kind": "class",
+        "signature": "class WidgetShowcase",
+        "summary": "WidgetShowcase - Widget example renderer. Showcase pattern: - Creates structured sections for widget documentation - Renders variants, states, sizes, and colors in grids - Returns UINode trees for Plauna rendering - Supports optional interactive mode"
+      },
+      {
+        "name": "widgetShowcase",
+        "kind": "constant",
+        "signature": "widgetShowcase",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/DataViews/Card",
+    "path": "plauna/reference/widgets/DataViews/Card.md",
+    "source": "plauna/widgets/DataViews/Card.js",
+    "import": "/plauna/widgets/DataViews/Card.js",
+    "sourceHash": "95df51e3fd53814969e3dbf5bedc6780593e54d542be8a932e8346d380c2f97b",
+    "summary": "Card - Flexible content container widget for Plauna Provides header, body, and footer slots with variant system",
+    "exports": [
+      {
+        "name": "Card",
+        "kind": "class",
+        "signature": "class Card extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/DataViews/List",
+    "path": "plauna/reference/widgets/DataViews/List.md",
+    "source": "plauna/widgets/DataViews/List.js",
+    "import": "/plauna/widgets/DataViews/List.js",
+    "sourceHash": "7179173832d04fc732f1a581ab1aeb1e266fc7d580795b24a54c676949296b75",
+    "summary": "List - Basic list widget for Plauna Provides list functionality with multiple variants and states",
+    "exports": [
+      {
+        "name": "List",
+        "kind": "class",
+        "signature": "class List extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/DataViews/ListView",
+    "path": "plauna/reference/widgets/DataViews/ListView.md",
+    "source": "plauna/widgets/DataViews/ListView.js",
+    "import": "/plauna/widgets/DataViews/ListView.js",
+    "sourceHash": "47c337861bcddd225ec68da2d12665a6b233247482179c6dcb275915da2ae5a6",
+    "summary": "ListView - Data display widget for Plauna Provides virtualized list rendering with selection and sorting",
+    "exports": [
+      {
+        "name": "ListView",
+        "kind": "class",
+        "signature": "class ListView extends UINode",
+        "summary": ""
+      },
+      {
+        "name": "ListViewFactory",
+        "kind": "constant",
+        "signature": "ListViewFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/DataViews/Table",
+    "path": "plauna/reference/widgets/DataViews/Table.md",
+    "source": "plauna/widgets/DataViews/Table.js",
+    "import": "/plauna/widgets/DataViews/Table.js",
+    "sourceHash": "11472cb7df367c17615b052536649324adee2520ca32a74cbd7922783843e288",
+    "summary": "Table - Data table widget for Plauna Provides table functionality with sorting, filtering, and pagination",
+    "exports": [
+      {
+        "name": "Table",
+        "kind": "class",
+        "signature": "class Table extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/DataViews/Tree",
+    "path": "plauna/reference/widgets/DataViews/Tree.md",
+    "source": "plauna/widgets/DataViews/Tree.js",
+    "import": "/plauna/widgets/DataViews/Tree.js",
+    "sourceHash": "02b9d9721468a8d9491d03fed5e7750e3082094971d81742fbd5a405dd8689cc",
+    "summary": "Tree - Hierarchical data display widget for Plauna Provides tree functionality with expand/collapse and navigation",
+    "exports": [
+      {
+        "name": "Tree",
+        "kind": "class",
+        "signature": "class Tree extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/DataViews/index",
+    "path": "plauna/reference/widgets/DataViews/index.md",
+    "source": "plauna/widgets/DataViews/index.js",
+    "import": "/plauna/widgets/DataViews/index.js",
+    "sourceHash": "15766cbe52c54194b3e93b81837e7bf60580a77964b4890a970d9844a97dd6cd",
+    "summary": "Data Views Widgets Category Data display and visualization widgets",
+    "exports": [
+      {
+        "name": "getDataviewsWidget",
+        "kind": "function",
+        "signature": "getDataviewsWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getAllDataviewsWidgets",
+        "kind": "function",
+        "signature": "getAllDataviewsWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "dataviewsWidgets",
+        "kind": "constant",
+        "signature": "dataviewsWidgets",
+        "summary": ""
+      },
+      {
+        "name": "dataviewsWidgetRegistry",
+        "kind": "constant",
+        "signature": "dataviewsWidgetRegistry",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Feedback/Alert",
+    "path": "plauna/reference/widgets/Feedback/Alert.md",
+    "source": "plauna/widgets/Feedback/Alert.js",
+    "import": "/plauna/widgets/Feedback/Alert.js",
+    "sourceHash": "a965f4c964e3d7978e59239a6c52fcaf926bda2d2f7e92b571fad0cc8d43ef10",
+    "summary": "Alert - Alert message widget for Plauna Provides alert functionality with multiple variants and dismissible options",
+    "exports": [
+      {
+        "name": "Alert",
+        "kind": "class",
+        "signature": "class Alert extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Feedback/EmptyState",
+    "path": "plauna/reference/widgets/Feedback/EmptyState.md",
+    "source": "plauna/widgets/Feedback/EmptyState.js",
+    "import": "/plauna/widgets/Feedback/EmptyState.js",
+    "sourceHash": "95a9f99c3e6569694107181b6ec8fb499567c0ce0e9c6dad0152a5de8e03648b",
+    "summary": "EmptyState - Empty state widget for Plauna Provides empty state functionality with multiple variants and content options",
+    "exports": [
+      {
+        "name": "EmptyState",
+        "kind": "class",
+        "signature": "class EmptyState extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Feedback/Spinner",
+    "path": "plauna/reference/widgets/Feedback/Spinner.md",
+    "source": "plauna/widgets/Feedback/Spinner.js",
+    "import": "/plauna/widgets/Feedback/Spinner.js",
+    "sourceHash": "d35ec361c28127b9415875d3910d24822cdbbd990b570109473a2af2e8a322cd",
+    "summary": "Spinner - Loading spinner widget for Plauna Provides spinner functionality with multiple variants and sizes",
+    "exports": [
+      {
+        "name": "Spinner",
+        "kind": "class",
+        "signature": "class Spinner extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Feedback/Status",
+    "path": "plauna/reference/widgets/Feedback/Status.md",
+    "source": "plauna/widgets/Feedback/Status.js",
+    "import": "/plauna/widgets/Feedback/Status.js",
+    "sourceHash": "75b1b49fddcdb22a79933c4c32de4d14edd0efddc6a3c15f5a4254fcdd3805ab",
+    "summary": "Status - Status indicator widget for Plauna Provides status functionality with multiple variants and sizes",
+    "exports": [
+      {
+        "name": "Status",
+        "kind": "class",
+        "signature": "class Status extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Feedback/Toast",
+    "path": "plauna/reference/widgets/Feedback/Toast.md",
+    "source": "plauna/widgets/Feedback/Toast.js",
+    "import": "/plauna/widgets/Feedback/Toast.js",
+    "sourceHash": "c98a5a42372a973ce479854944e8907d144ff3b84c110f2e3620b951b6ace685",
+    "summary": "Toast - Notification toast widget for Plauna Provides toast functionality with multiple variants and auto-dismiss",
+    "exports": [
+      {
+        "name": "Toast",
+        "kind": "class",
+        "signature": "class Toast extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Feedback/index",
+    "path": "plauna/reference/widgets/Feedback/index.md",
+    "source": "plauna/widgets/Feedback/index.js",
+    "import": "/plauna/widgets/Feedback/index.js",
+    "sourceHash": "5432cd012c07fcce204741f64ae9d1592eec230fb57c8a05c49bf7acdd8f7095",
+    "summary": "Feedback Widgets Category User feedback and notification widgets",
+    "exports": [
+      {
+        "name": "getFeedbackWidget",
+        "kind": "function",
+        "signature": "getFeedbackWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getAllFeedbackWidgets",
+        "kind": "function",
+        "signature": "getAllFeedbackWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "feedbackWidgets",
+        "kind": "constant",
+        "signature": "feedbackWidgets",
+        "summary": ""
+      },
+      {
+        "name": "feedbackWidgetRegistry",
+        "kind": "constant",
+        "signature": "feedbackWidgetRegistry",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Checkbox",
+    "path": "plauna/reference/widgets/Form/Checkbox.md",
+    "source": "plauna/widgets/Form/Checkbox.js",
+    "import": "/plauna/widgets/Form/Checkbox.js",
+    "sourceHash": "819915f03a8eebe46dfd977356cb11225f0cdfa2370f9fc094fd4bb7b358e906",
+    "summary": "Checkbox - Multi-select form control widget for Plauna Provides checkbox functionality with multiple states and variants",
+    "exports": [
+      {
+        "name": "Checkbox",
+        "kind": "class",
+        "signature": "class Checkbox extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Input",
+    "path": "plauna/reference/widgets/Form/Input.md",
+    "source": "plauna/widgets/Form/Input.js",
+    "import": "/plauna/widgets/Form/Input.js",
+    "sourceHash": "0190046b22177822c18b1b9b9ef06356211902f370f1f250ec0ab69e07b3e720",
+    "summary": "Input - Form input widget for Plauna Provides text input with validation and styling options",
+    "exports": [
+      {
+        "name": "Input",
+        "kind": "class",
+        "signature": "class Input extends UINode",
+        "summary": ""
+      },
+      {
+        "name": "InputFactory",
+        "kind": "constant",
+        "signature": "InputFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Radio",
+    "path": "plauna/reference/widgets/Form/Radio.md",
+    "source": "plauna/widgets/Form/Radio.js",
+    "import": "/plauna/widgets/Form/Radio.js",
+    "sourceHash": "cd7c6ebce5e5a7d56d1e853099a336f2000584169d9e7c40450230c52068366e",
+    "summary": "Radio - Single-select form control widget for Plauna Provides radio button functionality with multiple states and variants",
+    "exports": [
+      {
+        "name": "Radio",
+        "kind": "class",
+        "signature": "class Radio extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Rating",
+    "path": "plauna/reference/widgets/Form/Rating.md",
+    "source": "plauna/widgets/Form/Rating.js",
+    "import": "/plauna/widgets/Form/Rating.js",
+    "sourceHash": "d0e618dda344337e0d8da801dfd0e91af4431de890a256d6196ad91592c2ad83",
+    "summary": "Rating - Star rating widget for Plauna Provides rating functionality with multiple states and variants",
+    "exports": [
+      {
+        "name": "Rating",
+        "kind": "class",
+        "signature": "class Rating extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Select",
+    "path": "plauna/reference/widgets/Form/Select.md",
+    "source": "plauna/widgets/Form/Select.js",
+    "import": "/plauna/widgets/Form/Select.js",
+    "sourceHash": "6758951b44ac9478eb7cded71670b56ff7ce3cc61a1f6d5db5bfa0dc7d3ec4b9",
+    "summary": "Select - Multi-option selection widget for Plauna Provides dropdown functionality with search and keyboard navigation",
+    "exports": [
+      {
+        "name": "Select",
+        "kind": "class",
+        "signature": "class Select extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Slider",
+    "path": "plauna/reference/widgets/Form/Slider.md",
+    "source": "plauna/widgets/Form/Slider.js",
+    "import": "/plauna/widgets/Form/Slider.js",
+    "sourceHash": "006c32fca8ede1237bb0b3f4471ee4e76ddec4d93ef7755d2182ddbac3a7961d",
+    "summary": "Slider - Range selection widget for Plauna Provides slider functionality with multiple states and variants",
+    "exports": [
+      {
+        "name": "Slider",
+        "kind": "class",
+        "signature": "class Slider extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Switch",
+    "path": "plauna/reference/widgets/Form/Switch.md",
+    "source": "plauna/widgets/Form/Switch.js",
+    "import": "/plauna/widgets/Form/Switch.js",
+    "sourceHash": "fa900701f9e3cc04cefd9c1f925dc659cad0c0a991b9eca439aa172f77a162de",
+    "summary": "Switch - Binary on/off form control widget for Plauna Provides toggle functionality with multiple states and variants",
+    "exports": [
+      {
+        "name": "Switch",
+        "kind": "class",
+        "signature": "class Switch extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/Textarea",
+    "path": "plauna/reference/widgets/Form/Textarea.md",
+    "source": "plauna/widgets/Form/Textarea.js",
+    "import": "/plauna/widgets/Form/Textarea.js",
+    "sourceHash": "ca515ad55c5f048c6194308ec7fc493ace6a2390aa5a05ac2f68f5186f52cc39",
+    "summary": "Textarea - Multi-line text input widget for Plauna Provides textarea functionality with multiple states and variants",
+    "exports": [
+      {
+        "name": "Textarea",
+        "kind": "class",
+        "signature": "class Textarea extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Form/index",
+    "path": "plauna/reference/widgets/Form/index.md",
+    "source": "plauna/widgets/Form/index.js",
+    "import": "/plauna/widgets/Form/index.js",
+    "sourceHash": "9dc6d8f5bc41aa1ad794286d3cc5e57177a5dc663ccdd90512e5fa39167b5061",
+    "summary": "Form Widgets Category Form elements and validation widgets",
+    "exports": [
+      {
+        "name": "getFormWidget",
+        "kind": "function",
+        "signature": "getFormWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getAllFormWidgets",
+        "kind": "function",
+        "signature": "getAllFormWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "formWidgets",
+        "kind": "constant",
+        "signature": "formWidgets",
+        "summary": ""
+      },
+      {
+        "name": "formWidgetRegistry",
+        "kind": "constant",
+        "signature": "formWidgetRegistry",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Button",
+    "path": "plauna/reference/widgets/Input/Button.md",
+    "source": "plauna/widgets/Input/Button.js",
+    "import": "/plauna/widgets/Input/Button.js",
+    "sourceHash": "a40c11eaca8a62d7bc592edd40cac718e5f14caf0710b0e876c709779d48590a",
+    "summary": "Button - Interactive button widget for Plauna Provides various button types, states, and accessibility",
+    "exports": [
+      {
+        "name": "Button",
+        "kind": "class",
+        "signature": "class Button extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Color",
+    "path": "plauna/reference/widgets/Input/Color.md",
+    "source": "plauna/widgets/Input/Color.js",
+    "import": "/plauna/widgets/Input/Color.js",
+    "sourceHash": "0a4dd8695e09c9310926f9c422bafed65c2998f417e89e414a18ea8e43da8d1a",
+    "summary": "Color - Color picker widget for Plauna Provides color selection with various input formats",
+    "exports": [
+      {
+        "name": "Color",
+        "kind": "class",
+        "signature": "class Color extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Date",
+    "path": "plauna/reference/widgets/Input/Date.md",
+    "source": "plauna/widgets/Input/Date.js",
+    "import": "/plauna/widgets/Input/Date.js",
+    "sourceHash": "c772506febfc28914d32ad8da2b4c5dd47c398bc229abd4065da73983f020599",
+    "summary": "Date - Date picker widget for Plauna Provides date selection with various formats and validation",
+    "exports": [
+      {
+        "name": "Date",
+        "kind": "class",
+        "signature": "class Date extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/File",
+    "path": "plauna/reference/widgets/Input/File.md",
+    "source": "plauna/widgets/Input/File.js",
+    "import": "/plauna/widgets/Input/File.js",
+    "sourceHash": "51f0523ae0f9711d4453c9a9f6033f316c129900808481f915e7c8ee63f58082",
+    "summary": "File - File input widget for Plauna Provides file upload functionality with drag-and-drop support",
+    "exports": [
+      {
+        "name": "File",
+        "kind": "class",
+        "signature": "class File extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Input",
+    "path": "plauna/reference/widgets/Input/Input.md",
+    "source": "plauna/widgets/Input/Input.js",
+    "import": "/plauna/widgets/Input/Input.js",
+    "sourceHash": "04721512a09b1c84f10d129c05d8cff6144ea5cec841030f08a7bb6f2632e3ac",
+    "summary": "Input - Text input widget for Plauna Provides various input types with validation, states, and accessibility",
+    "exports": [
+      {
+        "name": "Input",
+        "kind": "class",
+        "signature": "class Input extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Number",
+    "path": "plauna/reference/widgets/Input/Number.md",
+    "source": "plauna/widgets/Input/Number.js",
+    "import": "/plauna/widgets/Input/Number.js",
+    "sourceHash": "33b06919cfde38c05d648e791b71a94e8ebd137e75952d4bdcb39093af4fa305",
+    "summary": "Number - Number input widget for Plauna Provides numeric input with validation, controls, and formatting",
+    "exports": [
+      {
+        "name": "Number",
+        "kind": "class",
+        "signature": "class Number extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Range",
+    "path": "plauna/reference/widgets/Input/Range.md",
+    "source": "plauna/widgets/Input/Range.js",
+    "import": "/plauna/widgets/Input/Range.js",
+    "sourceHash": "3b0fbe9c6b409487ffa7b30ed1efa750a4168e58cc1006c6d8318bede68b76bf",
+    "summary": "Range - Range slider widget for Plauna Provides range selection with various configurations",
+    "exports": [
+      {
+        "name": "Range",
+        "kind": "class",
+        "signature": "class Range extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Search",
+    "path": "plauna/reference/widgets/Input/Search.md",
+    "source": "plauna/widgets/Input/Search.js",
+    "import": "/plauna/widgets/Input/Search.js",
+    "sourceHash": "08dac219011fd432a1ce6ac1c540dfedf24c58c3d086b79bb2d1e2bffda2d9b8",
+    "summary": "Search - Search input widget for Plauna Provides search functionality with suggestions and filters",
+    "exports": [
+      {
+        "name": "Search",
+        "kind": "class",
+        "signature": "class Search extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Search.new",
+    "path": "plauna/reference/widgets/Input/Search.new.md",
+    "source": "plauna/widgets/Input/Search.new.js",
+    "import": "/plauna/widgets/Input/Search.new.js",
+    "sourceHash": "43517bc2fee56a549e7a1ca9c76e4db810fcd1c6d55469c62ebfc51b855d3107",
+    "summary": "Search - Search input widget for Plauna Provides search functionality with suggestions and filters Refactored to follow the new WidgetItem pattern while maintaining UINode compatibility",
+    "exports": [
+      {
+        "name": "Search",
+        "kind": "class",
+        "signature": "class Search extends WidgetItem",
+        "summary": ""
+      },
+      {
+        "name": "SearchUINode",
+        "kind": "re-export",
+        "signature": "SearchUINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Tag",
+    "path": "plauna/reference/widgets/Input/Tag.md",
+    "source": "plauna/widgets/Input/Tag.js",
+    "import": "/plauna/widgets/Input/Tag.js",
+    "sourceHash": "2eea9ade75d2aae231e36921c63487fe3192d5aac13a3dc35486b29427db13f8",
+    "summary": "Tag - Tag input widget for Plauna Provides tag management with autocomplete and suggestions",
+    "exports": [
+      {
+        "name": "Tag",
+        "kind": "class",
+        "signature": "class Tag extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Time",
+    "path": "plauna/reference/widgets/Input/Time.md",
+    "source": "plauna/widgets/Input/Time.js",
+    "import": "/plauna/widgets/Input/Time.js",
+    "sourceHash": "2bd5d54f9954aa1395c46078c31e61c5f4c4eeab7d2eb00ebd358debd4b6984b",
+    "summary": "Time - Time picker widget for Plauna Provides time selection with various formats and validation",
+    "exports": [
+      {
+        "name": "Time",
+        "kind": "class",
+        "signature": "class Time extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/Upload",
+    "path": "plauna/reference/widgets/Input/Upload.md",
+    "source": "plauna/widgets/Input/Upload.js",
+    "import": "/plauna/widgets/Input/Upload.js",
+    "sourceHash": "3f02ae8524884c5bd9bd39a6d4e76ec720909b8453dd1cd98d31d11769ecf0f3",
+    "summary": "Upload - File upload widget for Plauna Provides advanced file upload with drag-and-drop, progress, and preview",
+    "exports": [
+      {
+        "name": "Upload",
+        "kind": "class",
+        "signature": "class Upload extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Input/index",
+    "path": "plauna/reference/widgets/Input/index.md",
+    "source": "plauna/widgets/Input/index.js",
+    "import": "/plauna/widgets/Input/index.js",
+    "sourceHash": "eb86f67152f7609a10e8c93bd0c130ee71faca70443c7290fa288a15498d7fb5",
+    "summary": "Input Widgets Category User input and data entry widgets",
+    "exports": [
+      {
+        "name": "getInputWidget",
+        "kind": "function",
+        "signature": "getInputWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getAllInputWidgets",
+        "kind": "function",
+        "signature": "getAllInputWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "inputWidgets",
+        "kind": "constant",
+        "signature": "inputWidgets",
+        "summary": ""
+      },
+      {
+        "name": "inputWidgetRegistry",
+        "kind": "constant",
+        "signature": "inputWidgetRegistry",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Collapse",
+    "path": "plauna/reference/widgets/Layout/Collapse.md",
+    "source": "plauna/widgets/Layout/Collapse.js",
+    "import": "/plauna/widgets/Layout/Collapse.js",
+    "sourceHash": "2ab08c73c8180bdd5e7c663fc463f41bdf07c9e3ffea8d2cd1b2658dfd7dba67",
+    "summary": "Collapse - Collapsible content widget for Plauna Provides collapsible/expandable content areas with smooth animations",
+    "exports": [
+      {
+        "name": "Collapse",
+        "kind": "class",
+        "signature": "class Collapse extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Container",
+    "path": "plauna/reference/widgets/Layout/Container.md",
+    "source": "plauna/widgets/Layout/Container.js",
+    "import": "/plauna/widgets/Layout/Container.js",
+    "sourceHash": "c3b3a061522323f756f4713a26a62e455c1c5684c12a30d0cbfda57cd438c9f6",
+    "summary": "Container - Layout container widget for Plauna Provides flexible container with multiple variants and layouts",
+    "exports": [
+      {
+        "name": "Container",
+        "kind": "class",
+        "signature": "class Container extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Divider",
+    "path": "plauna/reference/widgets/Layout/Divider.md",
+    "source": "plauna/widgets/Layout/Divider.js",
+    "import": "/plauna/widgets/Layout/Divider.js",
+    "sourceHash": "4de573bc862106b3554742a5ff9fb58ac6a70ffbfea3dad9f4f3e17d8dfd0a33",
+    "summary": "Divider - Visual separation widget for Plauna Provides orientation variants with text label support",
+    "exports": [
+      {
+        "name": "Divider",
+        "kind": "class",
+        "signature": "class Divider extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Grid",
+    "path": "plauna/reference/widgets/Layout/Grid.md",
+    "source": "plauna/widgets/Layout/Grid.js",
+    "import": "/plauna/widgets/Layout/Grid.js",
+    "sourceHash": "2945ef0528976abf5267d267c97452ef6f090edfb718a4c177ab532c5ec8877d",
+    "summary": "Grid - CSS Grid wrapper widget for Plauna Provides responsive breakpoints and template areas support",
+    "exports": [
+      {
+        "name": "Grid",
+        "kind": "class",
+        "signature": "class Grid extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/HeaderFooter",
+    "path": "plauna/reference/widgets/Layout/HeaderFooter.md",
+    "source": "plauna/widgets/Layout/HeaderFooter.js",
+    "import": "/plauna/widgets/Layout/HeaderFooter.js",
+    "sourceHash": "4453cf7a8b1bfe32b4991e44f745240f85e8da481d4994e3ebc27ce233e9778d",
+    "summary": "HeaderFooter - Header and Footer widget for Plauna Provides semantic header and footer containers with comprehensive styling options",
+    "exports": [
+      {
+        "name": "HeaderFooter",
+        "kind": "class",
+        "signature": "class HeaderFooter extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Panel",
+    "path": "plauna/reference/widgets/Layout/Panel.md",
+    "source": "plauna/widgets/Layout/Panel.js",
+    "import": "/plauna/widgets/Layout/Panel.js",
+    "sourceHash": "982c93f890232d7c3fba6a147be32a1d09428b568859e02acbc6a8df995705a8",
+    "summary": "Panel - Content panel widget for Plauna Provides panel containers with various styles and configurations",
+    "exports": [
+      {
+        "name": "Panel",
+        "kind": "class",
+        "signature": "class Panel extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Section",
+    "path": "plauna/reference/widgets/Layout/Section.md",
+    "source": "plauna/widgets/Layout/Section.js",
+    "import": "/plauna/widgets/Layout/Section.js",
+    "sourceHash": "0726a046425d99acde614321181e56e2461fd63851dd6a42d7c23748a8ea7148",
+    "summary": "Section - Content section widget for Plauna Provides semantic section containers with layout and styling options",
+    "exports": [
+      {
+        "name": "Section",
+        "kind": "class",
+        "signature": "class Section extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/Spacer",
+    "path": "plauna/reference/widgets/Layout/Spacer.md",
+    "source": "plauna/widgets/Layout/Spacer.js",
+    "import": "/plauna/widgets/Layout/Spacer.js",
+    "sourceHash": "fba5b32f8d37f194ca3b8b1542b8aa1988fad048f0ded1f282c1728ff3420998",
+    "summary": "Spacer - Flexible spacing utility widget for Plauna Provides flexible sizing with token integration",
+    "exports": [
+      {
+        "name": "Spacer",
+        "kind": "class",
+        "signature": "class Spacer extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Layout/index",
+    "path": "plauna/reference/widgets/Layout/index.md",
+    "source": "plauna/widgets/Layout/index.js",
+    "import": "/plauna/widgets/Layout/index.js",
+    "sourceHash": "dab3d5c8c1ca62ca8efb6133b758b8309cacf082b0ec6f5d5757d10f9a7d4ae2",
+    "summary": "Layout Widgets Category Layout and container widgets",
+    "exports": [
+      {
+        "name": "getLayoutWidget",
+        "kind": "function",
+        "signature": "getLayoutWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getAllLayoutWidgets",
+        "kind": "function",
+        "signature": "getAllLayoutWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "layoutWidgets",
+        "kind": "constant",
+        "signature": "layoutWidgets",
+        "summary": ""
+      },
+      {
+        "name": "layoutWidgetRegistry",
+        "kind": "constant",
+        "signature": "layoutWidgetRegistry",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Breadcrumb",
+    "path": "plauna/reference/widgets/Navigation/Breadcrumb.md",
+    "source": "plauna/widgets/Navigation/Breadcrumb.js",
+    "import": "/plauna/widgets/Navigation/Breadcrumb.js",
+    "sourceHash": "1c50d63c3dc917e32c38b1f7bca1cdc1ec0816d16521a834294fda2683845c7a",
+    "summary": "Breadcrumb - Navigation hierarchy widget for Plauna Provides breadcrumb navigation with customizable separators",
+    "exports": [
+      {
+        "name": "Breadcrumb",
+        "kind": "class",
+        "signature": "class Breadcrumb extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Dropdown",
+    "path": "plauna/reference/widgets/Navigation/Dropdown.md",
+    "source": "plauna/widgets/Navigation/Dropdown.js",
+    "import": "/plauna/widgets/Navigation/Dropdown.js",
+    "sourceHash": "eab9709e664227ce58a808476fe3d0ead818bcbdcdf779010a30c0841a2e17c3",
+    "summary": "Dropdown - Context menu widget for Plauna Provides dropdown menus with keyboard navigation and accessibility",
+    "exports": [
+      {
+        "name": "Dropdown",
+        "kind": "class",
+        "signature": "class Dropdown extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Menu",
+    "path": "plauna/reference/widgets/Navigation/Menu.md",
+    "source": "plauna/widgets/Navigation/Menu.js",
+    "import": "/plauna/widgets/Navigation/Menu.js",
+    "sourceHash": "1ae886fcbae9f5da7ca9f434b53212ee3401f8fafdf33731e181f80bff33b405",
+    "summary": "Menu - Navigation menu widget for Plauna Provides menu functionality with multiple variants and states",
+    "exports": [
+      {
+        "name": "Menu",
+        "kind": "class",
+        "signature": "class Menu extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Navbar",
+    "path": "plauna/reference/widgets/Navigation/Navbar.md",
+    "source": "plauna/widgets/Navigation/Navbar.js",
+    "import": "/plauna/widgets/Navigation/Navbar.js",
+    "sourceHash": "f514d8024ad40a509b4933f93f62e012be3e5cb5d9b20ea741e45a5bcaf99b90",
+    "summary": "Navbar - Navigation bar widget for Plauna Provides navbar functionality with multiple variants and layouts",
+    "exports": [
+      {
+        "name": "Navbar",
+        "kind": "class",
+        "signature": "class Navbar extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Pagination",
+    "path": "plauna/reference/widgets/Navigation/Pagination.md",
+    "source": "plauna/widgets/Navigation/Pagination.js",
+    "import": "/plauna/widgets/Navigation/Pagination.js",
+    "sourceHash": "19afcb13f30c70edd85a96a17f59ad9100df46ea5e547560690b9a51ba41f99c",
+    "summary": "Pagination - Data navigation widget for Plauna Provides page controls with ellipsis and keyboard navigation",
+    "exports": [
+      {
+        "name": "Pagination",
+        "kind": "class",
+        "signature": "class Pagination extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Sidebar",
+    "path": "plauna/reference/widgets/Navigation/Sidebar.md",
+    "source": "plauna/widgets/Navigation/Sidebar.js",
+    "import": "/plauna/widgets/Navigation/Sidebar.js",
+    "sourceHash": "51c4dd1d8012380e96e21f055b15643745e52abb3c67e12b9891b6ef73982d06",
+    "summary": "Sidebar - Sidebar navigation widget for Plauna Provides sidebar functionality with multiple variants and states",
+    "exports": [
+      {
+        "name": "Sidebar",
+        "kind": "class",
+        "signature": "class Sidebar extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Stepper",
+    "path": "plauna/reference/widgets/Navigation/Stepper.md",
+    "source": "plauna/widgets/Navigation/Stepper.js",
+    "import": "/plauna/widgets/Navigation/Stepper.js",
+    "sourceHash": "28b19486329eb5fc23f6c7663b2f74217f2a6483a6791b07f088b00bbf480125",
+    "summary": "Stepper - Step indicator widget for Plauna Provides stepper functionality with multiple variants and states",
+    "exports": [
+      {
+        "name": "Stepper",
+        "kind": "class",
+        "signature": "class Stepper extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/Tabs",
+    "path": "plauna/reference/widgets/Navigation/Tabs.md",
+    "source": "plauna/widgets/Navigation/Tabs.js",
+    "import": "/plauna/widgets/Navigation/Tabs.js",
+    "sourceHash": "c5d6441f13c343fefdec3fbe8c4c442c5ebc8383c7e4a4cacf4bd8ca03a73894",
+    "summary": "Tabs - Tab navigation widget for Plauna Provides tabbed interface with keyboard navigation and styling",
+    "exports": [
+      {
+        "name": "Tabs",
+        "kind": "class",
+        "signature": "class Tabs extends UINode",
+        "summary": ""
+      },
+      {
+        "name": "TabsFactory",
+        "kind": "constant",
+        "signature": "TabsFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Navigation/index",
+    "path": "plauna/reference/widgets/Navigation/index.md",
+    "source": "plauna/widgets/Navigation/index.js",
+    "import": "/plauna/widgets/Navigation/index.js",
+    "sourceHash": "28393120f06dc354de21fd15e935d717405e97b3e07b7dd407e5ce453e3de290",
+    "summary": "Navigation Widgets Category Navigation and menu widgets",
+    "exports": [
+      {
+        "name": "getNavigationWidget",
+        "kind": "function",
+        "signature": "getNavigationWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getAllNavigationWidgets",
+        "kind": "function",
+        "signature": "getAllNavigationWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "navigationWidgets",
+        "kind": "constant",
+        "signature": "navigationWidgets",
+        "summary": ""
+      },
+      {
+        "name": "navigationWidgetRegistry",
+        "kind": "constant",
+        "signature": "navigationWidgetRegistry",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Avatar",
+    "path": "plauna/reference/widgets/Primitive/Avatar.md",
+    "source": "plauna/widgets/Primitive/Avatar.js",
+    "import": "/plauna/widgets/Primitive/Avatar.js",
+    "sourceHash": "ef405346036184033d4d26029934550a068870ef98663b382b6db2e5c8e2f658",
+    "summary": "Avatar - User representation widget for Plauna Provides image, icon, and text fallback with status indicators",
+    "exports": [
+      {
+        "name": "Avatar",
+        "kind": "class",
+        "signature": "class Avatar extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Badge",
+    "path": "plauna/reference/widgets/Primitive/Badge.md",
+    "source": "plauna/widgets/Primitive/Badge.js",
+    "import": "/plauna/widgets/Primitive/Badge.js",
+    "sourceHash": "c04645c5bb48a3dce981bc68f9e2db633a57176985d2632dfd5dcc826804a0a2",
+    "summary": "Badge - Status indicator widget for Plauna Provides status indicators, counts, and labels with variants",
+    "exports": [
+      {
+        "name": "Badge",
+        "kind": "class",
+        "signature": "class Badge extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Button",
+    "path": "plauna/reference/widgets/Primitive/Button.md",
+    "source": "plauna/widgets/Primitive/Button.js",
+    "import": "/plauna/widgets/Primitive/Button.js",
+    "sourceHash": "8b407fae9ea82783ff6e82f50e74b00eaff2eb4ff60a0646d88ac1c87f843b00",
+    "summary": "Button - Interactive button widget for Plauna Provides clickable button with styling, states, and event handling",
+    "exports": [
+      {
+        "name": "Button",
+        "kind": "class",
+        "signature": "class Button extends UINode",
+        "summary": ""
+      },
+      {
+        "name": "ButtonFactory",
+        "kind": "constant",
+        "signature": "ButtonFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Chip",
+    "path": "plauna/reference/widgets/Primitive/Chip.md",
+    "source": "plauna/widgets/Primitive/Chip.js",
+    "import": "/plauna/widgets/Primitive/Chip.js",
+    "sourceHash": "df938286c5ba7039573e9735d161be8aa57e92c8b01525db8cd74bb2a949f6bb",
+    "summary": "Chip/Tag - Removable tag widget for Plauna Provides chip functionality with multiple variants and states",
+    "exports": [
+      {
+        "name": "Chip",
+        "kind": "class",
+        "signature": "class Chip extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Modal",
+    "path": "plauna/reference/widgets/Primitive/Modal.md",
+    "source": "plauna/widgets/Primitive/Modal.js",
+    "import": "/plauna/widgets/Primitive/Modal.js",
+    "sourceHash": "4d78ac8ebd653538391dfa54b71742978ed51355c888a9306dded5868991a227",
+    "summary": "Modal - Overlay dialog widget for Plauna Provides modal dialogs with focus trapping, accessibility, and backdrop",
+    "exports": [
+      {
+        "name": "Modal",
+        "kind": "class",
+        "signature": "class Modal extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Panel",
+    "path": "plauna/reference/widgets/Primitive/Panel.md",
+    "source": "plauna/widgets/Primitive/Panel.js",
+    "import": "/plauna/widgets/Primitive/Panel.js",
+    "sourceHash": "948eaeb3897d7faf0e4f86fa15b6ca43fb00ed1379833dc2fcb8381d38ce4bd6",
+    "summary": "Panel - Basic container widget for Plauna Provides a container for other UI elements with styling and layout options",
+    "exports": [
+      {
+        "name": "Panel",
+        "kind": "class",
+        "signature": "class Panel extends UINode",
+        "summary": ""
+      },
+      {
+        "name": "PanelFactory",
+        "kind": "constant",
+        "signature": "PanelFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Progress",
+    "path": "plauna/reference/widgets/Primitive/Progress.md",
+    "source": "plauna/widgets/Primitive/Progress.js",
+    "import": "/plauna/widgets/Primitive/Progress.js",
+    "sourceHash": "8a23205004a48e09cbea3f125b6b287843711b3b4768687027e61c95d21a39fd",
+    "summary": "Progress - Task completion indicator widget for Plauna Provides linear and circular progress indicators with multiple states",
+    "exports": [
+      {
+        "name": "Progress",
+        "kind": "class",
+        "signature": "class Progress extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Skeleton",
+    "path": "plauna/reference/widgets/Primitive/Skeleton.md",
+    "source": "plauna/widgets/Primitive/Skeleton.js",
+    "import": "/plauna/widgets/Primitive/Skeleton.js",
+    "sourceHash": "238888bdd1e9a8a6eab57e03b657f5f636b7d850fb3468350654a8972b196243",
+    "summary": "Skeleton - Content loading placeholder widget for Plauna Provides loading placeholders with realistic shapes and shimmer animation",
+    "exports": [
+      {
+        "name": "Skeleton",
+        "kind": "class",
+        "signature": "class Skeleton extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Text",
+    "path": "plauna/reference/widgets/Primitive/Text.md",
+    "source": "plauna/widgets/Primitive/Text.js",
+    "import": "/plauna/widgets/Primitive/Text.js",
+    "sourceHash": "a9f00b2fd28138f74eea4a16308aa1f7b288c908be19c65c604a2270a42b3e20",
+    "summary": "Text - Basic text widget for Plauna Provides text rendering with styling and layout options",
+    "exports": [
+      {
+        "name": "Text",
+        "kind": "class",
+        "signature": "class Text extends UINode",
+        "summary": ""
+      },
+      {
+        "name": "TextFactory",
+        "kind": "constant",
+        "signature": "TextFactory",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/Primitive/Tooltip",
+    "path": "plauna/reference/widgets/Primitive/Tooltip.md",
+    "source": "plauna/widgets/Primitive/Tooltip.js",
+    "import": "/plauna/widgets/Primitive/Tooltip.js",
+    "sourceHash": "6bdddaaaa0031e8cabdab46ded999aa7a65c092a9b4af7900a8f2b1c067180c9",
+    "summary": "Tooltip - Contextual help widget for Plauna Provides positioning engine with arrow support and accessibility",
+    "exports": [
+      {
+        "name": "Tooltip",
+        "kind": "class",
+        "signature": "class Tooltip extends UINode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/WidgetConfig",
+    "path": "plauna/reference/widgets/WidgetConfig.md",
+    "source": "plauna/widgets/WidgetConfig.js",
+    "import": "/plauna/widgets/WidgetConfig.js",
+    "sourceHash": "f9c1a6f7df17f4a9c9181b19a46915c1417bfeb10c910ddc10a9b020aa9af289",
+    "summary": "Widget Configuration System Manages widget configurations, presets, and user preferences Following the same pattern as the editor's theme system",
+    "exports": [
+      {
+        "name": "UnsupportedWidgetConfigVersionError",
+        "kind": "class",
+        "signature": "class UnsupportedWidgetConfigVersionError extends Error",
+        "summary": ""
+      },
+      {
+        "name": "prepareWidgetConfigImport",
+        "kind": "function",
+        "signature": "prepareWidgetConfigImport(input)",
+        "summary": ""
+      },
+      {
+        "name": "WIDGET_CONFIG_SCHEMA",
+        "kind": "constant",
+        "signature": "WIDGET_CONFIG_SCHEMA",
+        "summary": ""
+      },
+      {
+        "name": "WIDGET_CONFIG_SCHEMA_VERSION",
+        "kind": "constant",
+        "signature": "WIDGET_CONFIG_SCHEMA_VERSION",
+        "summary": ""
+      },
+      {
+        "name": "widgetConfigManager",
+        "kind": "constant",
+        "signature": "widgetConfigManager",
+        "summary": "Singleton export for WidgetConfigManager. Ensures a single instance is used throughout the application: - Consistent configuration state across all components - Single storage persistence point - Centralized event notification system"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/WidgetItem",
+    "path": "plauna/reference/widgets/WidgetItem.md",
+    "source": "plauna/widgets/WidgetItem.js",
+    "import": "/plauna/widgets/WidgetItem.js",
+    "sourceHash": "1918051dc66ee29bb7d8cc01201319858cfd4fb07cfb1d822aa86281b66d3da0",
+    "summary": "WidgetItem - Base class for all Plauna widgets. Follows the same pattern as SpawnableItem from the editor: - Static properties for metadata - Static methods for configuration - Registry-based discovery - Category-based organization ```js export class MyWidget extends WidgetItem { static id = 'my-widget'; static name = 'My Widget'; static icon = '🔧'; static category = 'custom'; static description = 'A custom widget for specific use case'; static create(container, options = {}) { return new MyWidget(container, options); } } ```",
+    "exports": [
+      {
+        "name": "MyWidget",
+        "kind": "class",
+        "signature": "class MyWidget extends WidgetItem",
+        "summary": ""
+      },
+      {
+        "name": "WidgetItem",
+        "kind": "class",
+        "signature": "class WidgetItem",
+        "summary": "WidgetItem - Base class for all Plauna widgets. Follows the same pattern as SpawnableItem from the editor: - Static properties for metadata - Static methods for configuration - Registry-based discovery - Category-based organization ```js export class MyWidget extends WidgetItem { static id = 'my-widget'; static name = 'My Widget'; static icon = '🔧'; static category = 'custom'; static description = 'A custom widget for specific use case'; static create(container, options = {}) { return new MyWidget(container, options); } } ```"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/WidgetRenderer",
+    "path": "plauna/reference/widgets/WidgetRenderer.md",
+    "source": "plauna/widgets/WidgetRenderer.js",
+    "import": "/plauna/widgets/WidgetRenderer.js",
+    "sourceHash": "7e4953a611b3cd2e2850cb6dd8020ee6af448395dd0c23249718b7fbd41bf52e",
+    "summary": "============================================================================ WidgetRenderer - UINode to DOM Converter ============================================================================ WidgetRenderer is the bridge between Plauna's retained UINode tree and the actual browser DOM. It converts UINode instances into DOM elements recursively. RENDERING PIPELINE: 1. render(node) - Entry point, converts UINode tree to DOM tree 2. createDOMElement(node) - Creates appropriate DOM element for UINode type 3. Applies styles, classes, IDs, text content, and attributes 4. Recursively renders children and appends to parent 5. Returns root DOM element ready for insertion into document MAPPING TABLES: - nodeToDOM: Map<UINode, HTMLElement> - UINode → DOM element - domToNode: Map<HTMLElement, UINode> - DOM element → UINode (reverse lookup) ELEMENT TYPE MAPPING: - SVG elements: svg, circle, path, etc. → created with createElementNS - Text nodes: type='text' → rendered as <span> - Form elements: button, input, textarea, select, label, form, img → native elements - HTML elements: h1-h6, p, div, header, footer, nav, etc. → native elements - Unknown types: fallback to <div> SPECIAL HANDLING: - Raw HTMLElements: If node is already an HTMLElement, return it directly - Pre-existing DOM: If node.element exists (created by widget), use it - Back-reference: Sets element._plaunaNode for reverse lookup (used by SmartContextMenu) STYLE APPLICATION: 1. node.style: Direct inline styles (highest priority) 2. node.computedStyle: Computed styles from layout engine 3. node.className: CSS class names 4. node.id: Element ID TEXT CONTENT: - node.textContent: Plain text content - node.innerHTML: HTML string content - If node has children, text content is ignored",
+    "exports": [
+      {
+        "name": "WidgetRenderer",
+        "kind": "class",
+        "signature": "class WidgetRenderer",
+        "summary": "============================================================================ WidgetRenderer - UINode to DOM Converter ============================================================================ WidgetRenderer is the bridge between Plauna's retained UINode tree and the actual browser DOM. It converts UINode instances into DOM elements recursively. RENDERING PIPELINE: 1. render(node) - Entry point, converts UINode tree to DOM tree 2. createDOMElement(node) - Creates appropriate DOM element for UINode type 3. Applies styles, classes, IDs, text content, and attributes 4. Recursively renders children and appends to parent 5. Returns root DOM element ready for insertion into document MAPPING TABLES: - nodeToDOM: Map<UINode, HTMLElement> - UINode → DOM element - domToNode: Map<HTMLElement, UINode> - DOM element → UINode (reverse lookup) ELEMENT TYPE MAPPING: - SVG elements: svg, circle, path, etc. → created with createElementNS - Text nodes: type='text' → rendered as <span> - Form elements: button, input, textarea, select, label, form, img → native elements - HTML elements: h1-h6, p, div, header, footer, nav, etc. → native elements - Unknown types: fallback to <div> SPECIAL HANDLING: - Raw HTMLElements: If node is already an HTMLElement, return it directly - Pre-existing DOM: If node.element exists (created by widget), use it - Back-reference: Sets element._plaunaNode for reverse lookup (used by SmartContextMenu) STYLE APPLICATION: 1. node.style: Direct inline styles (highest priority) 2. node.computedStyle: Computed styles from layout engine 3. node.className: CSS class names 4. node.id: Element ID TEXT CONTENT: - node.textContent: Plain text content - node.innerHTML: HTML string content - If node has children, text content is ignored"
+      },
+      {
+        "name": "widgetRenderer",
+        "kind": "constant",
+        "signature": "widgetRenderer",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/WidgetStyleManager",
+    "path": "plauna/reference/widgets/WidgetStyleManager.md",
+    "source": "plauna/widgets/WidgetStyleManager.js",
+    "import": "/plauna/widgets/WidgetStyleManager.js",
+    "sourceHash": "0b987b2917e1ca1696ecef1c30771858289ee706e295818534898675ccf53cc2",
+    "summary": "WidgetStyleManager - Widget-specific styling system Provides theme-based styling utilities for widgets and UI components",
+    "exports": [
+      {
+        "name": "WidgetStyleManager",
+        "kind": "class",
+        "signature": "class WidgetStyleManager",
+        "summary": "WidgetStyleManager - Theme-aware widget styling system. Architecture pattern: - Singleton pattern for consistent styling across the application - Style caching for performance (memoization by widgetType:variant:theme) - Theme integration with ThemeManager for dynamic theme switching - Observer pattern for reactive style updates on theme changes - Base token fallback for graceful degradation Features: - Generates CSS styles based on theme tokens - Supports multiple widget types (modal, tooltip, dropdown, etc.) - Automatic cache invalidation on theme changes - Token-based styling for consistency"
+      },
+      {
+        "name": "widgetStyleManager",
+        "kind": "constant",
+        "signature": "widgetStyleManager",
+        "summary": "Singleton export for WidgetStyleManager. Ensures a single instance is used throughout the application: - Consistent style caching across all components - Single theme subscription point - Centralized style generation"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "widgets/index",
+    "path": "plauna/reference/widgets/index.md",
+    "source": "plauna/widgets/index.js",
+    "import": "/plauna/widgets/index.js",
+    "sourceHash": "355b3371ad6f128442508471d3edd74138396e936ab9dbc823cac2f51b5f1923",
+    "summary": "============================================================================ PLAUNA WIDGET REGISTRY ============================================================================ This file serves as the central registry for all Plauna widgets. It imports widgets from their category folders and provides: 1. widgets array - Flat array of all widget classes 2. widgetRegistry - Map of widget.id → widget class for O(1) lookup 3. categories - Map of category name → array of widgets in that category 4. Helper functions for querying and filtering widgets WIDGET CATEGORIES: - Primitive: Basic building blocks (Button, Badge, Avatar, Chip, etc.) - Input: Form input controls (Search, Color, Date, File, etc.) - Form: Form elements (Checkbox, Radio, Switch, Select, etc.) - Layout: Layout containers (Card, Grid, Panel, Divider, etc.) - Navigation: Navigation components (Menu, Tabs, Sidebar, etc.) - DataViews: Data presentation (List, Table, Tree, etc.) - Feedback: User feedback (Alert, Toast, Spinner, etc.) WIDGET PATTERN: Each widget class MUST have: - static id: Unique string identifier (e.g., 'button') - static name: Display name (e.g., 'Button') - static category: Category name (e.g., 'primitive') - static icon: Emoji or icon for UI display - static description: Short description of widget purpose - static tags: Array of searchable tags - static dependencies: Array of required widget IDs - static getDefaultOptions(): Returns default configuration object - static stories(): Returns named story configurations for showcase - constructor(id, options): Initializes widget instance IMPORTANT: - Do NOT use widget.create() - it has require() that breaks in ESM - Instead, instantiate directly: new WidgetClass(id, options) - Use widgetRegistry.get(id) to find widget class by ID",
+    "exports": [
+      {
+        "name": "getWidget",
+        "kind": "function",
+        "signature": "getWidget(id)",
+        "summary": ""
+      },
+      {
+        "name": "getWidgetsByCategory",
+        "kind": "function",
+        "signature": "getWidgetsByCategory(category)",
+        "summary": ""
+      },
+      {
+        "name": "getAllCategories",
+        "kind": "function",
+        "signature": "getAllCategories()",
+        "summary": ""
+      },
+      {
+        "name": "getAllWidgets",
+        "kind": "function",
+        "signature": "getAllWidgets()",
+        "summary": ""
+      },
+      {
+        "name": "searchWidgets",
+        "kind": "function",
+        "signature": "searchWidgets(query)",
+        "summary": ""
+      },
+      {
+        "name": "getWidgetsByTag",
+        "kind": "function",
+        "signature": "getWidgetsByTag(tag)",
+        "summary": ""
+      },
+      {
+        "name": "getWidgetDependencies",
+        "kind": "function",
+        "signature": "getWidgetDependencies(widgetId)",
+        "summary": ""
+      },
+      {
+        "name": "validateWidgetDependencies",
+        "kind": "function",
+        "signature": "validateWidgetDependencies(widgetId)",
+        "summary": ""
+      },
+      {
+        "name": "createWidget",
+        "kind": "function",
+        "signature": "createWidget(widgetId, container, options = {})",
+        "summary": ""
+      },
+      {
+        "name": "createWidgetWithTheme",
+        "kind": "function",
+        "signature": "createWidgetWithTheme(widgetId, container, theme, options = {})",
+        "summary": ""
+      },
+      {
+        "name": "getWidgetMetadata",
+        "kind": "function",
+        "signature": "getWidgetMetadata(widgetId)",
+        "summary": ""
+      },
+      {
+        "name": "getAllWidgetMetadata",
+        "kind": "function",
+        "signature": "getAllWidgetMetadata()",
+        "summary": ""
+      },
+      {
+        "name": "getWidgetDocumentation",
+        "kind": "function",
+        "signature": "getWidgetDocumentation(widgetId)",
+        "summary": ""
+      },
+      {
+        "name": "getWidgetStats",
+        "kind": "function",
+        "signature": "getWidgetStats()",
+        "summary": ""
+      },
+      {
+        "name": "widgets",
+        "kind": "constant",
+        "signature": "widgets",
+        "summary": ""
+      },
+      {
+        "name": "widgetRegistry",
+        "kind": "constant",
+        "signature": "widgetRegistry",
+        "summary": ""
+      },
+      {
+        "name": "categories",
+        "kind": "constant",
+        "signature": "categories",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/Panel",
+    "path": "plauna/reference/workspace/Panel.md",
+    "source": "plauna/workspace/Panel.js",
+    "import": "/plauna/workspace/Panel.js",
+    "sourceHash": "a332e7edd31c649a7d4d37ca37a04e73d02ab52d8f49be5600cb7d4b81fb7ad8",
+    "summary": "Panel.js — Base panel and two concrete flavours: DOMPanel  — a positioned <div> container for Plauna widgets / HTML content GPUPanel  — owns a GPUTexture render target; blitted to canvas by WorkspaceCompositor Lifecycle:  create → mount(container) → [resize / focus / show / hide] → destroy()",
+    "exports": [
+      {
+        "name": "Panel",
+        "kind": "class",
+        "signature": "class Panel",
+        "summary": "Panel - Base class for workspace panels. Architecture pattern: - Abstract base class for DOMPanel and GPUPanel - Lifecycle: create → mount → [resize/focus/show/hide] → destroy - Observer pattern for event emission (move, resize, visibility, focus, blur) - Position/size constraints with min-size enforcement - Z-index management for panel stacking Panel types: - DOMPanel: Renders Plauna widgets in DOM elements - GPUPanel: Renders to WebGPU textures, composited by WorkspaceCompositor"
+      },
+      {
+        "name": "DOMPanel",
+        "kind": "class",
+        "signature": "class DOMPanel extends Panel",
+        "summary": ""
+      },
+      {
+        "name": "GPUPanel",
+        "kind": "class",
+        "signature": "class GPUPanel extends Panel",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/PanelLayout",
+    "path": "plauna/reference/workspace/PanelLayout.md",
+    "source": "plauna/workspace/PanelLayout.js",
+    "import": "/plauna/workspace/PanelLayout.js",
+    "sourceHash": "3ef1a8ab88ee47e21a177a38ae49dd2b506a4986ceb57cf2414ea98e73bab9bb",
+    "summary": "PanelLayout.js — Layout engine for arranging panels in a workspace. Modes: fullscreen — one panel fills the entire workspace float      — panels are free-position windows (drag/resize) split      — tmux/VS Code-style binary split tree (horizontal | vertical) tile       — auto-arranged fixed grid",
+    "exports": [
+      {
+        "name": "LayoutEngine",
+        "kind": "class",
+        "signature": "class LayoutEngine",
+        "summary": "LayoutEngine - Panel layout orchestration. Layout modes: - fullscreen: First visible panel fills entire workspace - float: Panels are free-position windows with drag/resize - split: Binary tree layout (like tmux/VS Code) with recursive splits - tile: Auto-arranged grid layout Architecture: - Mode-based layout dispatch (apply() switches between modes) - Split tree cached for efficiency (reused if panels unchanged) - Z-index management for float mode (focused panel on top) - Observer pattern for mode change notifications"
+      },
+      {
+        "name": "LayoutMode",
+        "kind": "constant",
+        "signature": "LayoutMode",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/Workspace",
+    "path": "plauna/reference/workspace/Workspace.md",
+    "source": "plauna/workspace/Workspace.js",
+    "import": "/plauna/workspace/Workspace.js",
+    "sourceHash": "a372a172593f511cbc501ad336a8aeb8fa8f5a02c524f0b77c778f7fd801fc70",
+    "summary": "Workspace.js — Virtual desktop for panels. Architecture: - Virtual desktop that holds an ordered list of panels - DOM layer that sits over WebGPU canvas - LayoutEngine for panel arrangement (fullscreen/float/split/tile) - WorkspaceManager handles switching between workspaces via CSS transitions Lifecycle: - mount(container): Creates DOM layer and mounts panels - activate(): Shows workspace (opacity 1, pointer-events auto) - deactivate(): Hides workspace (opacity 0, pointer-events none) - CSS transitions for smooth workspace switching Panel management: - addPanel(): Adds panel to workspace and mounts it - removePanel(): Removes panel from workspace - Layout applied automatically on mount and resize",
+    "exports": [
+      {
+        "name": "Workspace",
+        "kind": "class",
+        "signature": "class Workspace",
+        "summary": "Workspace - Virtual desktop container. Virtual desktop pattern: - Each workspace is a separate DOM layer - Workspaces are stacked with CSS z-index - Only one workspace active/visible at a time - CSS opacity transitions for smooth switching - Panels are mounted into workspace DOM layer"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/WorkspaceCompositor",
+    "path": "plauna/reference/workspace/WorkspaceCompositor.md",
+    "source": "plauna/workspace/WorkspaceCompositor.js",
+    "import": "/plauna/workspace/WorkspaceCompositor.js",
+    "sourceHash": "dd866bb5cb51eab623ee06fcb4ce4eb3d02298ddeb7e302ab846793435f8d705",
+    "summary": "WorkspaceCompositor.js — WebGPU blit pipeline for GPU panels. Architecture: - Each GPUPanel owns a GPUTexture render target - Compositor blits all visible GPU panels onto canvas swap chain each frame - DOM panels are rendered directly by browser (compositor only handles WebGPU) - Simple blit shader: just copies texture to canvas Pipeline components: - Sampler: Linear filtering for panel textures - Bind group layout: Single texture binding (binding 0) - Shader: Simple vertex + fragment shader for texture copy - Blend state: Alpha blending for layered panels Render loop: - Called by WorkspaceManager each frame - Iterates visible GPU panels in z-order - Creates bind group per panel - Issues draw call (6 vertices for quad)",
+    "exports": [
+      {
+        "name": "WorkspaceCompositor",
+        "kind": "class",
+        "signature": "class WorkspaceCompositor",
+        "summary": "WorkspaceCompositor - WebGPU texture compositor. Compositor pattern: - Blits GPU panel textures to canvas swap chain - Handles only WebGPU panels (DOM panels rendered by browser) - Simple texture copy pipeline (no post-processing) - Alpha blending for layered panel support"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/WorkspaceManager",
+    "path": "plauna/reference/workspace/WorkspaceManager.md",
+    "source": "plauna/workspace/WorkspaceManager.js",
+    "import": "/plauna/workspace/WorkspaceManager.js",
+    "sourceHash": "78c3807db65f3c9e3f4da472cfd9e368b1ef3bee0291f08878e7587bd42eeb01",
+    "summary": "============================================================================ WorkspaceManager - Virtual Desktop Management ============================================================================ WorkspaceManager provides a virtual desktop system for Plauna, allowing multiple workspaces with different layouts and panel configurations. WORKSPACE CONCEPT: - A Workspace is a virtual desktop that holds panels - Each workspace can have its own layout mode (fullscreen, float, split, tile) - Workspaces are DOM layers stacked over the canvas - Only one workspace is active/visible at a time PANEL TYPES: - DOMPanel: Wrapper for Plauna widgets (div-based) - GPUPanel: WebGPU texture panel (for GPU-accelerated content) LAYOUT MODES: - fullscreen: One panel fills the entire workspace - float: Draggable, resizable windows with z-order - split: Recursive binary tree layout (like tmux/VS Code) - tile: Auto-arranged grid layout COMPOSITOR: - WorkspaceCompositor blits GPU panel textures to canvas swap chain - Iterates visible GPU panels in z-order - Required for GPU panel support SWITCHER: - WorkspaceSwitcher provides HUD overlay (Ctrl+`) - Shows thumbnails of all workspaces - Keyboard navigation with arrow keys - Enter to switch workspace SINGLE CONSTRAINT: - Only one WebGPU canvas context allowed per page - Only one GPUDevice instance shared across all workspaces - GPU panels share the same device and canvas PUBLIC API: - createWorkspace({ name, layout }): Create new workspace - switchTo(id): Switch active workspace - createPanel(type, options): Create panel in active workspace - list(): List all workspaces - activeWorkspace: Get currently active workspace INITIALIZATION: - Requires: container (DOM element), device (WebGPU), canvas - Optional: format (texture format), logger - Must call initialize() before using KEYBOARD SHORTCUTS: - Ctrl+`: Open workspace switcher - Arrow keys: Navigate switcher - Enter: Switch to selected workspace - Escape: Close switcher USAGE: const manager = new WorkspaceManager({ container: document.body, device: gpuDevice, canvas: canvasElement, format: 'bgra8unorm' }); await manager.initialize(); const ws = manager.createWorkspace({ name: 'Main', layout: 'float' }); manager.switchTo(ws.id); manager.createPanel('dom', { title: 'Panel 1' });",
+    "exports": [
+      {
+        "name": "WorkspaceManager",
+        "kind": "class",
+        "signature": "class WorkspaceManager",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/WorkspaceSwitcher",
+    "path": "plauna/reference/workspace/WorkspaceSwitcher.md",
+    "source": "plauna/workspace/WorkspaceSwitcher.js",
+    "import": "/plauna/workspace/WorkspaceSwitcher.js",
+    "sourceHash": "32f2aba085789625842a75f602521d4c097b2fd46392ba68878a5322c072af94",
+    "summary": "WorkspaceSwitcher.js — HUD overlay for workspace switching. Architecture: - Triggered by Ctrl+` (managed by WorkspaceManager) - Shows thumbnails of all workspaces in grid layout - Keyboard navigation with arrow keys - Enter to switch to selected workspace - Escape to close switcher UI pattern: - Full-screen overlay with backdrop blur - Centered card with workspace thumbnails - Highlighted selection indicator - CSS transitions for smooth show/hide Keyboard handling: - Arrow keys: Navigate between workspaces - Enter: Switch to selected workspace - Escape: Close switcher without switching",
+    "exports": [
+      {
+        "name": "WorkspaceSwitcher",
+        "kind": "class",
+        "signature": "class WorkspaceSwitcher",
+        "summary": "WorkspaceSwitcher - HUD overlay for workspace navigation. HUD pattern: - Full-screen overlay with backdrop blur - Grid layout of workspace thumbnails - Keyboard navigation support - Smooth CSS transitions for show/hide"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "title": "workspace/index",
+    "path": "plauna/reference/workspace/index.md",
+    "source": "plauna/workspace/index.js",
+    "import": "/plauna/workspace/index.js",
+    "sourceHash": "e51e6ddcf93355d22a0c078f3f540def56ecf82469e29107643f5371f560ac6e",
+    "summary": "plauna/workspace — Virtual desktop / multi-panel system for Plauna. Exported classes: - Panel, DOMPanel, GPUPanel - Workspace - WorkspaceManager - WorkspaceCompositor - WorkspaceSwitcher - LayoutEngine, LayoutMode",
+    "exports": [
+      {
+        "name": "DOMPanel",
+        "kind": "re-export",
+        "signature": "DOMPanel",
+        "summary": ""
+      },
+      {
+        "name": "GPUPanel",
+        "kind": "re-export",
+        "signature": "GPUPanel",
+        "summary": ""
+      },
+      {
+        "name": "LayoutEngine",
+        "kind": "re-export",
+        "signature": "LayoutEngine",
+        "summary": ""
+      },
+      {
+        "name": "LayoutMode",
+        "kind": "re-export",
+        "signature": "LayoutMode",
+        "summary": ""
+      },
+      {
+        "name": "Panel",
+        "kind": "re-export",
+        "signature": "Panel",
+        "summary": ""
+      },
+      {
+        "name": "Workspace",
+        "kind": "re-export",
+        "signature": "Workspace",
+        "summary": ""
+      },
+      {
+        "name": "WorkspaceCompositor",
+        "kind": "re-export",
+        "signature": "WorkspaceCompositor",
+        "summary": ""
+      },
+      {
+        "name": "WorkspaceManager",
+        "kind": "re-export",
+        "signature": "WorkspaceManager",
+        "summary": ""
+      },
+      {
+        "name": "WorkspaceSwitcher",
+        "kind": "re-export",
+        "signature": "WorkspaceSwitcher",
+        "summary": ""
+      }
+    ]
+  }
+]

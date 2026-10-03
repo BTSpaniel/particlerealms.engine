@@ -1,0 +1,81 @@
+{
+  "header": {
+    "major": 1,
+    "minor": 0,
+    "flags": 0,
+    "dictionaryVersion": 0,
+    "languageProfile": 0
+  },
+  "manifest": {
+    "applicationId": "test.binary-assets",
+    "applicationVersion": "1.0.0",
+    "blockmap": {
+      "builtAt": "2026-01-01T00:00:00Z",
+      "files": {
+        "files/image.bin": "02a3e298f1533f62558c58e4c70edcab9af5a50d62d925fd5390942020fb0fb8",
+        "files/index.html": "df089fb24fe98dfd8547a88a7e50a4d1911c10f888bce44f87a558eed3525a4e"
+      },
+      "format": "blockmap-v1",
+      "packageId": "test.binary-assets",
+      "version": "1.0.0"
+    },
+    "container": "jhc-1.0",
+    "entry": "files/index.html",
+    "format": "jhc-1.0",
+    "name": "Binary Assets",
+    "publisher": "fixtures",
+    "requiredFeatures": 0,
+    "resources": [
+      {
+        "decodedLength": 16,
+        "hash": "02a3e298f1533f62558c58e4c70edcab9af5a50d62d925fd5390942020fb0fb8",
+        "id": 0,
+        "mime": "application/octet-stream",
+        "path": "files/image.bin",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 62,
+        "hash": "df089fb24fe98dfd8547a88a7e50a4d1911c10f888bce44f87a558eed3525a4e",
+        "id": 1,
+        "mime": "application/octet-stream",
+        "path": "files/index.html",
+        "representation": "raw"
+      }
+    ]
+  },
+  "directory": [
+    {
+      "sectionType": 0,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 48,
+      "storedLength": 886,
+      "decodedLength": 886
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 1150,
+      "storedLength": 16,
+      "decodedLength": 16
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 1,
+      "codec": 0,
+      "storedOffset": 1166,
+      "storedLength": 62,
+      "decodedLength": 62
+    }
+  ],
+  "resourcePaths": [
+    "files/image.bin",
+    "files/index.html"
+  ],
+  "rootHash": "9b7c4383e3ff16d602080dbcfb2ad276edb0961bd827c3f7fef268f4c46bd116"
+}

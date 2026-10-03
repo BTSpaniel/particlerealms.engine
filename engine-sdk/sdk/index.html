@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en" data-sdk-profile="__SDK_PROFILE__">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><link rel="stylesheet" href="examples/example.css"><title>Particle __SDK_PROFILE__ SDK</title></head>
+<body>
+<h1>Particle __SDK_PROFILE__ SDK</h1>
+<p>Serve this extracted directory with <code>python serve_sdk.py --port 9001</code>. Use <code>--isolate</code> when a workload needs threaded compute. This package contains source modules, a verified compiled runtime, documentation, and the tools to rebuild its JavaScript runtime.</p>
+<p><a href="MD/viewer/?doc=guides/sdk-distribution.md">SDK setup and rebuilding guide</a> · <a href="MD/guides/sdk-distribution.md">Guide as Markdown</a> · <a href="manifest.json">Package inventory</a></p>
+<h2>Package runtime check</h2>
+<pre id="sdk-check" role="status" aria-live="polite">Loading the verified compiled runtime…</pre>
+<h2>Runnable examples</h2>
+<p>Source mode imports the canonical ES modules. Compiled mode waits for <code>__PE_RUNTIME_READY</code> and calls public namespaces. Every example reports its assertions and has a Release resources button.</p>
+<ul>
+<li>Engine ECS, rendering and native physics: <a href="examples/source.html?case=engine">source</a> · <a href="examples/compiled.html?case=engine">compiled</a></li>
+<li>Surface Field module worker and GPU transport: <a href="examples/source.html?case=worker">source</a> · <a href="examples/compiled.html?case=worker">compiled</a></li>
+<li data-sdk-requires="Plauna">Plauna retained UI interaction: <a href="examples/source.html?case=plauna">source</a> · <a href="examples/compiled.html?case=plauna">compiled</a></li>
+<li data-sdk-requires="Editor">Editor project save and reopen: <a href="examples/source.html?case=editor">source</a> · <a href="examples/compiled.html?case=editor">compiled</a></li>
+<li data-sdk-requires="AGI">AGI ComputeGraph GPU computation: <a href="examples/source.html?case=agi">source</a> · <a href="examples/compiled.html?case=agi">compiled</a></li>
+<li data-sdk-requires="WebGPUOS">WebGPU OS explicit boot and local app: <a href="examples/source.html?case=os">source</a> · <a href="examples/compiled.html?case=os">compiled</a></li>
+</ul>
+__SDK_LOADER__
+<script type="module" src="sdk-check.js"></script>
+</body>
+</html>

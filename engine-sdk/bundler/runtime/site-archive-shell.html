@@ -1,0 +1,88 @@
+<!doctype html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#050711">
+  <title>@@TITLE@@</title>
+  <style>
+    :root { color-scheme: dark; background: #050711; color: #f4f7f9; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 0; min-height: 100vh; min-height: 100dvh; }
+    [hidden] { display: none !important; }
+    .preload { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+      background: radial-gradient(ellipse at 50% 43%, #10283b66, transparent 52%), #050711; }
+    .preload-header { display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding: 20px clamp(20px, 5vw, 72px); border-bottom: 1px solid rgba(173, 203, 226, .1); }
+    .preload-brand { color: #dce9f0; font-size: 14px; font-weight: 650; letter-spacing: .02em; }
+    .preload-nav { display: flex; gap: 24px; }
+    .skeleton { display: block; background: rgba(173, 203, 226, .08); border-radius: 5px; }
+    .preload-nav .skeleton { width: 52px; height: 7px; }
+    .preload-main { flex: 1; display: grid; place-items: center; padding: 48px 24px; }
+    .preload-card { width: min(100%, 400px); text-align: center; }
+    .preload-mark { width: 76px; height: 76px; border-radius: 20px; display: block; margin: 0 auto 26px; }
+    .preload-eyebrow { color: #8dabbc; text-transform: uppercase; letter-spacing: .22em; font-size: 10px; margin: 0 0 12px; }
+    h1 { font-size: clamp(25px, 5vw, 32px); line-height: 1.2; font-weight: 560; letter-spacing: -.035em; margin: 0 0 14px; }
+    #pe-site-status { color: #b7c8d3; font-size: 13px; margin: 0; min-height: 40px; overflow-wrap: anywhere; }
+    .preload-meter { text-align: left; margin: 25px auto 0; width: min(100%, 320px); }
+    .preload-track { height: 4px; border-radius: 8px; overflow: hidden; background: #152637; }
+    .preload-fill { height: 100%; width: 30%; background: linear-gradient(90deg, #53e6c2, #55d7ff); border-radius: inherit; }
+    .preload-track:not([aria-valuenow]) .preload-fill { animation: preload-scan 1.6s ease-in-out infinite; }
+    .preload-track[aria-valuenow] .preload-fill { transition: width .18s ease-out; }
+    .preload-meta { display: flex; gap: 16px; justify-content: space-between; margin-top: 12px;
+      color: #91a8b8; font: 10px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .035em; }
+    .preload-preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 38px auto 0; opacity: .65; }
+    .preload-preview > div { padding: 14px; border: 1px solid #adcbe212; border-radius: 8px; }
+    .preload-preview .skeleton:first-child { height: 5px; width: 55%; margin-bottom: 10px; }
+    .preload-preview .skeleton:last-child { height: 4px; width: 85%; }
+    .preload-footer { text-align: center; color: #8a9daa; font-size: 11px; padding: 16px 24px 28px; }
+    .preload-footer span { display: inline-block; }
+    #pe-site-retry { margin-top: 22px; padding: 10px 18px; color: #dff7ff; background: #163244;
+      border: 1px solid #55d7ff66; border-radius: 6px; font: inherit; font-size: 13px; cursor: pointer; }
+    #pe-site-retry:hover { background: #20485e; }
+    #pe-site-retry:focus-visible { outline: 2px solid #55d7ff; outline-offset: 4px; }
+    .preload[data-state="failed"] .preload-fill { animation: none; background: #ff8f9f; }
+    .preload[data-state="failed"] #pe-site-status { color: #ffc0c9; }
+    @keyframes preload-scan { 0% { transform: translateX(-110%); } 100% { transform: translateX(440%); } }
+    @media (max-width: 480px) { .preload-nav .skeleton:last-child { display: none; } .preload-nav { gap: 14px; }
+      .preload-header { padding: 18px 20px; } .preload-preview { gap: 8px; } }
+    @media (prefers-reduced-motion: reduce) { .preload-track .preload-fill { animation: none !important; transition: none !important; }
+      .preload-track:not([aria-valuenow]) .preload-fill { width: 100%; opacity: .45; } }
+  </style>
+</head>
+<body>
+  <div class="preload" id="pe-site-preload" data-state="loading">
+    <header class="preload-header">
+      <span class="preload-brand">Particle Realms</span>
+      <div class="preload-nav" aria-hidden="true"><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i></div>
+    </header>
+    <main class="preload-main" aria-busy="true" id="pe-site-main">
+      <section class="preload-card" aria-labelledby="pe-site-heading">
+        <img class="preload-mark" src="data:image/svg+xml;base64,@@BRAND@@" alt="" width="76" height="76">
+        <p class="preload-eyebrow">World simulation platform</p>
+        <h1 id="pe-site-heading">Preparing your realm</h1>
+        <p id="pe-site-status" role="status" aria-live="polite">Connecting to your local site cache…</p>
+        <div class="preload-meter">
+          <div id="pe-site-progress" class="preload-track" role="progressbar" aria-label="Site files prepared" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Connecting">
+            <div class="preload-fill" id="pe-site-progress-fill"></div>
+          </div>
+          <div class="preload-meta" aria-hidden="true"><span id="pe-site-phase">CONNECTING</span><span id="pe-site-count">PLEASE WAIT</span></div>
+        </div>
+        <button id="pe-site-retry" type="button" hidden>Try again</button>
+        <div class="preload-preview" aria-hidden="true">
+          <div><i class="skeleton"></i><i class="skeleton"></i></div>
+          <div><i class="skeleton"></i><i class="skeleton"></i></div>
+          <div><i class="skeleton"></i><i class="skeleton"></i></div>
+        </div>
+        <noscript>This application needs JavaScript. Enable it, then reload to continue.</noscript>
+      </section>
+    </main>
+    <footer class="preload-footer">Engine · Playground · WebGPU OS<br><span>Site files are verified and cached on this device.</span></footer>
+  </div>
+  <script id="pe-site-document" type="application/octet-stream">@@DOCUMENT@@</script>
+  <script src="/site-archive-boot.js?v=@@VERSION@@" data-version="@@VERSION@@" data-os-worker="@@OS_WORKER@@"></script>
+</body>
+</html>

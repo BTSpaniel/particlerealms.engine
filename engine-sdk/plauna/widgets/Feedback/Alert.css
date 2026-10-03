@@ -1,0 +1,148 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Alert Component Styles
+ * Modular CSS for Alert feedback widget
+ */
+
+.alert {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  border-left: 4px solid;
+  background: var(--bg-secondary);
+}
+
+/* Type Variants */
+.alert--info {
+  border-left-color: var(--color-info);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+[data-theme="night"] .alert--info {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.alert--success {
+  border-left-color: var(--color-success);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+[data-theme="night"] .alert--success {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.alert--warning {
+  border-left-color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+[data-theme="night"] .alert--warning {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.alert--error {
+  border-left-color: var(--color-error);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+[data-theme="night"] .alert--error {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Icon */
+.alert__icon {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.alert--info .alert__icon {
+  color: var(--color-info);
+}
+
+.alert--success .alert__icon {
+  color: var(--color-success);
+}
+
+.alert--warning .alert__icon {
+  color: var(--color-warning);
+}
+
+.alert--error .alert__icon {
+  color: var(--color-error);
+}
+
+/* Content */
+.alert__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.alert__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.alert__description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* Close Button */
+.alert__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.alert__close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+}
+
+[data-theme="night"] .alert__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .alert {
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .alert__title {
+    font-size: var(--font-size-sm);
+  }
+
+  .alert__description {
+    font-size: 12px;
+  }
+}

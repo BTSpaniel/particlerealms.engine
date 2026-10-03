@@ -1,0 +1,84 @@
+{
+  "status": "UPGRADE_BUILD_AND_TESTS_PASSED_NOT_RELEASE_CERTIFIED",
+  "sdk": "5.11.0",
+  "upstreamCommit": "da950a3537927784951853c66618036f332ca0ce",
+  "artifactHashes": {
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f"
+  },
+  "physics": {
+    "status": "REGRESSION_EVIDENCE_ACCEPTED_NOT_RELEASE_CERTIFIED",
+    "profile": "candidate",
+    "physicsExecuted": true,
+    "releaseApproved": false,
+    "engineIntegrationVerified": false,
+    "testsAccepted": 23,
+    "stillUnproven": [
+      "D6/ragdolls and articulation behavior",
+      "vehicles and character controllers",
+      "mesh cooking and serialization stream-width migration",
+      "contact/trigger callbacks",
+      "long-duration memory endurance",
+      "browser/device matrix including Android",
+      "rollback/replay and full Particle Realms integration"
+    ]
+  },
+  "blastVersion": "5.0.6",
+  "flowModules": 97,
+  "flowSelectedPipelines": 96,
+  "flowPipelineExclusions": [
+    "source/nvflowext/shaders/EmitterNanoVdbCS.wgsl"
+  ],
+  "sphCases": 9,
+  "playgroundControls": [
+    "vent opens",
+    "vent drains without deleting particles",
+    "reset seals",
+    "reset holds inlet",
+    "reset restores contained population"
+  ],
+  "rollback510Hashes": {
+    "physx-js-webidl.wasm": "81cc7c08bab8ac793876f9585bc379cedd3040875c6b2875007d74b0deefb8d4",
+    "physx-js-webidl.mjs": "986079088b4f69e584dacdac52701ec596e90f681470a391d4386462eda85a69"
+  },
+  "productionEngineReplaced": false,
+  "flowHostSolver": {
+    "frames": 120,
+    "dispatches": 3273,
+    "passes": {
+      "source/nvflow/shaders/SparseUploadCS.wgsl": 6,
+      "source/nvflow/shaders/SparseCS.wgsl": 6,
+      "source/nvflow/shaders/SparseClearTexture4CS.wgsl": 5,
+      "source/nvflow/shaders/SparseClearTexture1CS.wgsl": 2,
+      "source/nvflow/shaders/AdvectionDensity1CS.wgsl": 120,
+      "source/nvflow/shaders/AdvectionDensity2CS.wgsl": 120,
+      "source/nvflowext/shaders/EmitterSimpleCS.wgsl": 480,
+      "source/nvflow/shaders/AdvectionVelocity1CS.wgsl": 120,
+      "source/nvflow/shaders/AdvectionVelocity2CS.wgsl": 120,
+      "source/nvflow/shaders/Vorticity1CS.wgsl": 120,
+      "source/nvflow/shaders/Vorticity2CS.wgsl": 120,
+      "source/nvflow/shaders/PressureDivergenceCS.wgsl": 120,
+      "source/nvflow/shaders/PressureJacobiCS.wgsl": 960,
+      "source/nvflow/shaders/PressureResidualCS.wgsl": 240,
+      "source/nvflow/shaders/PressureRestrictCS.wgsl": 240,
+      "source/nvflow/shaders/PressureProlongCS.wgsl": 240,
+      "source/nvflow/shaders/PressureSubtractCS.wgsl": 120,
+      "source/nvflow/shaders/SummaryCS.wgsl": 120,
+      "source/nvflow/shaders/SparseClearNew4CS.wgsl": 10,
+      "source/nvflow/shaders/SparseClearNew1CS.wgsl": 4
+    },
+    "activeBlocks": 32,
+    "allocatedBytes": 46241780,
+    "collisionCount": 0,
+    "collisionEnabled": 0,
+    "collisionMode": "one-way-native-velocity-obstacle",
+    "velocitySamples": 10
+  },
+  "limitations": [
+    "Blast Toolkit/ExtPhysX/ExtSerialization are not linked; ExtAuthoring is limited to the convex Voronoi slice",
+    "Native ExtStress, convex authoring, Flow geometry and collision require their separate matching numerical proof receipts",
+    "NanoVDB emitter pipeline not accepted",
+    "Production engine deployment not performed"
+  ],
+  "checkedUtc": "2026-09-23T02:19:09.321287+00:00"
+}

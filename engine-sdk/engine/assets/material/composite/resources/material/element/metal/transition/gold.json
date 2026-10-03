@@ -1,0 +1,132 @@
+{
+  "schema": "engine.composite-material",
+  "schemaVersion": "1.0.0",
+  "copyright": "Copyright (c) 2026 Jake Wehmeier (BTSpaniel)",
+  "license": "LicenseRef-ParticleRealms-Alpha",
+  "id": "builtin.material.element.gold",
+  "logicalPath": "material/element/metal/transition/gold.json",
+  "name": "Gold",
+  "category": "element",
+  "facets": {
+    "identity": {
+      "kind": "element",
+      "phaseAt293K": "solid",
+      "description": "Elemental gold (Au)."
+    },
+    "chemistry": {
+      "symbol": "Au",
+      "atomicNumber": 79,
+      "relativeAtomicMass": 196.967
+    },
+    "render": {
+      "workflow": "metallicRoughness",
+      "baseColorFactor": [1, 0.76, 0.33, 1],
+      "metallicFactor": 1,
+      "roughnessFactor": 0.2,
+      "emissiveFactor": [0, 0, 0],
+      "alphaMode": "opaque",
+      "alphaCutoff": 0.5,
+      "doubleSided": false
+    },
+    "physical": {
+      "densityKgPerM3": 19300
+    },
+    "thermal": {
+      "meltingPointK": 1337.33,
+      "boilingPointK": 3109,
+      "specificHeatJPerKgK": 129,
+      "thermalConductivityWPerMK": 317,
+      "linearExpansionPerK": 0.0000142
+    },
+    "electrical": {
+      "resistivityOhmM": 2.214e-8,
+      "referenceTemperatureK": 293,
+      "temperatureCoefficientPerK": 0.003678410117,
+      "relativePermeability": 0.99996
+    },
+    "substance": {
+      "particleElementSymbol": "Au"
+    },
+    "audio": {
+      "proceduralPatch": "impact_metal"
+    }
+  },
+  "missingFacets": ["contact", "mechanical", "fabrication"],
+  "notApplicableFacets": ["fiber"],
+  "sources": [
+    {
+      "id": "engine-render",
+      "kind": "repository",
+      "uri": "engine/render/materials/MaterialLibrary.js",
+      "citation": "Engine MaterialLibrary Gold preset",
+      "note": "Renderer-authored appearance values only; they are not physical-property evidence."
+    },
+    {
+      "id": "editor-render",
+      "kind": "repository",
+      "uri": "editor/js/components/MaterialNodePresets.js",
+      "citation": "Editor Gold material-node preset",
+      "note": "Exact compatible appearance values copied into immutable Engine-owned data; RealmForge has no runtime Editor dependency."
+    },
+    {
+      "id": "engine-elements",
+      "kind": "repository",
+      "uri": "engine/sim/particles/ParticleElementTable.js",
+      "citation": "Engine ParticleElementTable Au record",
+      "note": "Element identity bridge only."
+    },
+    {
+      "id": "engine-audio",
+      "kind": "repository",
+      "uri": "engine/audio/synth/ProceduralPatches.js",
+      "citation": "Engine elemental audio routing for Au"
+    },
+    {
+      "id": "rsc-gold",
+      "kind": "primary",
+      "uri": "https://periodic-table.rsc.org/element/79/gold",
+      "citation": "Royal Society of Chemistry periodic-table record for gold"
+    },
+    {
+      "id": "nist-reference",
+      "kind": "primary",
+      "uri": "https://www.nist.gov/ncnr/neutron-instruments/sample-environment/sample-mounting/reference-tables",
+      "citation": "NIST NCNR sample-mounting reference tables"
+    },
+    {
+      "id": "nist-resistivity",
+      "kind": "primary",
+      "uri": "https://srd.nist.gov/JPCRD/jpcrd155.pdf",
+      "citation": "NIST electrical resistivity reference data",
+      "note": "The temperature coefficient is derived explicitly from the cited 293 K and 300 K resistivity values."
+    }
+  ],
+  "fieldSources": {
+    "identity.kind": ["rsc-gold"],
+    "identity.phaseAt293K": ["rsc-gold"],
+    "identity.description": ["rsc-gold"],
+    "chemistry.symbol": ["rsc-gold", "engine-elements"],
+    "chemistry.atomicNumber": ["rsc-gold", "engine-elements"],
+    "chemistry.relativeAtomicMass": ["rsc-gold", "engine-elements"],
+    "render.workflow": ["engine-render"],
+    "render.baseColorFactor": ["engine-render", "editor-render"],
+    "render.metallicFactor": ["engine-render", "editor-render"],
+    "render.roughnessFactor": ["engine-render", "editor-render"],
+    "render.emissiveFactor": ["engine-render"],
+    "render.alphaMode": ["engine-render"],
+    "render.alphaCutoff": ["engine-render"],
+    "render.doubleSided": ["engine-render"],
+    "physical.densityKgPerM3": ["nist-reference"],
+    "thermal.meltingPointK": ["rsc-gold"],
+    "thermal.boilingPointK": ["rsc-gold"],
+    "thermal.specificHeatJPerKgK": ["nist-reference"],
+    "thermal.thermalConductivityWPerMK": ["nist-reference"],
+    "thermal.linearExpansionPerK": ["nist-reference"],
+    "electrical.resistivityOhmM": ["nist-resistivity"],
+    "electrical.referenceTemperatureK": ["nist-resistivity"],
+    "electrical.temperatureCoefficientPerK": ["nist-resistivity"],
+    "electrical.relativePermeability": ["nist-reference"],
+    "substance.particleElementSymbol": ["engine-elements"],
+    "audio.proceduralPatch": ["engine-audio"]
+  }
+}

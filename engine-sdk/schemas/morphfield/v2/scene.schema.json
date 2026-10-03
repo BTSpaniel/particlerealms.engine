@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/scene.schema.json",
+  "title": "MorphField R2 canonical Nexel scene",
+  "description": "The authoritative semantic manifest serialized by NexelScene and stored in the MANF chunk of a .morph asset.",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "type": "object",
+  "required": ["$schema", "schema", "version", "id", "units", "revision", "nexels"],
+  "properties": {
+    "$schema": { "const": "https://particlerealms.online/schemas/morphfield/v2/scene.schema.json" },
+    "schema": { "const": "morphfield-nexel-scene" },
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "id": { "$ref": "common.schema.json#/$defs/stableId" },
+    "units": { "const": "meters" },
+    "revision": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "nexels": {
+      "type": "array",
+      "maxItems": 1000000,
+      "items": { "$ref": "nexel.schema.json" }
+    }
+  },
+  "additionalProperties": false
+}

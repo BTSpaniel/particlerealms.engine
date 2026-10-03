@@ -1,0 +1,445 @@
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine v2 Core Glossary</title>
+  <link rel="stylesheet" href="glossary.css">
+  <style>
+    :root {
+      --accent: #38bdf8;
+      --fg-muted: #94a3b8;
+      --fg: #e2e8f0;
+      --border: #334155;
+      --bg-tertiary: #1a1f2e;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, #1e293b, #1a1f2e);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 32px;
+      z-index: 1000;
+    }
+
+    .top-nav h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.5px;
+    }
+
+    .top-nav nav {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .top-nav .nav-link {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--fg-muted);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .nav-link:hover {
+      color: var(--fg);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .top-nav .nav-link.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .page {
+      margin-top: 60px !important;
+    }
+
+    /* Override glossary.css nav to not conflict */
+    .page > nav {
+      position: sticky;
+      top: 70px;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <h1>Engine v2 – Documentation</h1>
+    <nav>
+      <a href="../../" class="nav-link">← Back to Hub</a>
+      <a href="index.html" class="nav-link">Overview</a>
+      <a href="core.html" class="nav-link active">Core</a>
+      <a href="ecs.html" class="nav-link">ECS</a>
+      <a href="render.html" class="nav-link">Render</a>
+      <a href="sim.html" class="nav-link">Sim</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <header class="site-header" id="top">
+      <h1>Engine v2 – core</h1>
+      <p class="summary">Core runtime, WebGPU device/texture/buffer helpers, framegraph, platform loop, and event bus.</p>
+      <p class="path">Path: <code>engine/core/*</code></p>
+    </header>
+
+    <nav aria-label="Core glossary table of contents">
+      <h2>Contents</h2>
+      <p class="note">Flat list of core terms. Click to jump within this page.</p>
+      <ul>
+        <li><a href="#term-webgpu">WebGPU</a></li>
+        <li><a href="#term-wgsl">WGSL</a></li>
+        <li><a href="#term-gpudevicemanager">GPUDeviceManager</a></li>
+        <li><a href="#term-gpubuffer">GpuBuffer</a></li>
+        <li><a href="#term-gputexture">GpuTexture</a></li>
+        <li><a href="#term-gpusampler">GpuSampler</a></li>
+        <li><a href="#term-framegraph">Framegraph</a></li>
+        <li><a href="#term-frame-loop">Frame loop</a></li>
+        <li><a href="#term-platform-canvas">Platform canvas binding</a></li>
+        <li><a href="#term-event-bus">Event bus</a></li>
+        <li><a href="#term-gpu-resilience">GPU Resilience</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2 class="section-title">Core runtime &amp; GPU abstractions</h2>
+      <p class="section-intro">These terms cover the low-level building blocks that everything else in Engine v2 sits on.</p>
+      <div class="term-list">
+        <article class="term" id="term-webgpu">
+          <h3>WebGPU</h3>
+          <p><strong class="label">Definition</strong> Browser GPU API used for all rendering and compute in Engine v2. Replaces WebGL/Three.js and has no software fallback.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const adapter = await navigator.gpu.requestAdapter();
+if (!adapter) throw new Error('WebGPU not available');
+const device = await adapter.requestDevice();
+console.log(device.limits.maxTextureDimension2D);
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-gpudevicemanager">GPUDeviceManager</a>, <a href="#term-wgsl">WGSL</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-wgsl">
+          <h3>WGSL</h3>
+          <p><strong class="label">Definition</strong> WebGPU Shading Language. All Engine v2 vertex, fragment, and compute shaders live as WGSL modules in <code>engine/render/shaders/*</code>.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>// Minimal WGSL vertex shader
+@vertex
+fn vs_main(@location(0) position : vec3f) -&gt; @builtin(position) vec4f {
+  return vec4f(position, 1.0);
+}
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-framegraph">Framegraph</a>, <a href="#term-gpubuffer">GpuBuffer</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-gpudevicemanager">
+          <h3>GPUDeviceManager</h3>
+          <p><strong class="label">Definition</strong> Helper that requests the WebGPU adapter/device, negotiates features/limits, and centralizes lost-device handling and debug labels.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { GPUDeviceManager } from './gpu/GPUDeviceManager.js';
+
+const gpu = new GPUDeviceManager();
+await gpu.initialize();
+const device = gpu.device;
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-gpubuffer">GpuBuffer</a>, <a href="#term-gputexture">GpuTexture</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-gpubuffer">
+          <h3>GpuBuffer</h3>
+          <p><strong class="label">Definition</strong> Wrapper for <code>GPUBuffer</code> creation and updates (vertex, index, uniform, storage) with consistent usage flags and upload helpers.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { GpuBuffer } from './gpu/GpuBuffer.js';
+
+const verts = new Float32Array([
+  0.0,  0.5, 0.0,
+ -0.5, -0.5, 0.0,
+  0.5, -0.5, 0.0,
+]);
+
+const vb = GpuBuffer.createVertex(device, verts, 'triangle-verts');
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-gputexture">GpuTexture</a>, <a href="#term-framegraph">Framegraph</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-gputexture">
+          <h3>GpuTexture</h3>
+          <p><strong class="label">Definition</strong> Helper for creating color/depth textures and render targets with resize semantics and default formats wired to engine policies.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { GpuTexture } from './gpu/GpuTexture.js';
+
+const depthTex = GpuTexture.createDepthAttachment(device, {
+  width: canvas.width,
+  height: canvas.height,
+  label: 'main-depth',
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-framegraph">Framegraph</a>, <a href="#term-frame-loop">Frame loop</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-gpusampler">
+          <h3>GpuSampler</h3>
+          <p><strong class="label">Definition</strong> Cache of common <code>GPUSampler</code> presets (point, linear, comparison) so materials reuse the same sampler objects per device.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { GpuSampler } from './gpu/GpuSampler.js';
+
+const linearSampler = GpuSampler.getLinear(device);
+// Use in a bind group with a sampled texture view
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-gputexture">GpuTexture</a>, <a href="#term-framegraph">Framegraph</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-framegraph">
+          <h3>Framegraph</h3>
+          <p><strong class="label">Definition</strong> Graph of render/compute/copy passes and virtual resources. Schedules passes automatically based on read/write dependencies.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const fg = new FrameGraph();
+const color = fg.createTexture({ name: 'mainColor' });
+
+fg.addRenderPass('clear', pass =&gt; {
+  pass.write(color, { loadOp: 'clear' });
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-frame-loop">Frame loop</a>, <a href="#term-platform-canvas">Platform canvas binding</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-frame-loop">
+          <h3>Frame loop</h3>
+          <p><strong class="label">Definition</strong> Main browser loop that calls <code>beginFrame() → buildGraph() → execute() → present()</code> every animation frame and wires timing into ECS/net.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>function frame(ts) {
+  engine.beginFrame(ts);
+  engine.buildFramegraph();
+  engine.executeFramegraph();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-framegraph">Framegraph</a>, <a href="#term-event-bus">Event bus</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-platform-canvas">
+          <h3>Platform canvas binding</h3>
+          <p><strong class="label">Definition</strong> Code in <code>engine/core/platform</code> that picks the target canvas, handles DPR/resizes, and creates the WebGPU context/swapchain.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>const canvas = document.querySelector('#game');
+const context = canvas.getContext('webgpu');
+context.configure({ device, format });
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-webgpu">WebGPU</a>, <a href="#term-frame-loop">Frame loop</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-event-bus">
+          <h3>Event bus</h3>
+          <p><strong class="label">Definition</strong> Central pub/sub layer in <code>engine/core/events</code> for engine, input, gameplay, and debug events. Avoids hidden singletons and DOM listeners.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { eventBus } from './events/EventBus.js';
+
+eventBus.subscribe('input:move', (payload) =&gt; {
+  console.log('Move', payload.direction);
+});
+</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-frame-loop">Frame loop</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-webgpu-bootstrap">
+          <h3>WebGPU canvas bootstrap</h3>
+          <p><strong class="label">Definition</strong> Helper in <code>engine/core/gpu/WebGpuCanvasBootstrap.js</code> that initializes the WebGPU device, creates a canvas surface, depth texture, and wires resize handling for a given canvas selector.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { initWebGpuCanvas } from "engine/core/gpu/WebGpuCanvasBootstrap.js";
+
+const ctx = await initWebGpuCanvas({
+  canvasSelector: "#canvas",
+  label: "MyWebGPUDevice",
+  alphaMode: "opaque",
+  dprMode: "auto",
+  logger,
+});
+
+// ctx contains gpuDevice, gpuQueue, canvasSurface, depthTexture, etc.</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <a href="#term-webgpu">WebGPU</a>, <a href="#term-gpudevicemanager">GPUDeviceManager</a>, <a href="#term-platform-canvas">Platform canvas binding</a></p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-gpu-resilience">
+          <h3>GPU Resilience</h3>
+          <p><strong class="label">Definition</strong> Production-grade patterns for handling GPU device loss, crash recovery, graceful shutdown, and error management. Based on <a href="https://toji.dev/webgpu-best-practices/device-loss.html" target="_blank">toji.dev best practices</a>.</p>
+
+          <p><strong class="label">Device Loss</strong> The GPU driver can crash, be killed by Chrome's watchdog (10s timeout), or lose power. When this happens, <em>all</em> GPU resources (buffers, textures, pipelines) are destroyed and the device becomes unusable.</p>
+
+          <p><strong class="label">Auto-Recovery (<code>GpuRecovery.js</code>)</strong> Listens for <code>device.lost</code>, then automatically requests a new adapter + device with exponential backoff. Reconfigures the canvas context and fires callbacks so the app can re-upload resources. Chrome limits: 2nd crash in 2 min blocks adapter for the page; 3rd blocks all pages.</p>
+
+          <div class="example">
+            <strong class="label">Example &mdash; Recovery Setup</strong>
+            <pre><code>import { GpuRecovery } from 'engine/core/gpu/GpuRecovery.js';
+
+const recovery = new GpuRecovery({
+    device,
+    canvas,
+    context,
+    format: navigator.gpu.getPreferredCanvasFormat(),
+    onLost: () =&gt; { renderLoop.pause(); },
+    onRecovered: ({ device }) =&gt; {
+        myDevice = device;
+        recreateResources();
+        renderLoop.resume();
+    },
+    onRecoveryFailed: () =&gt; {
+        showMessage('Please refresh the page');
+    },
+});
+
+// Test: recovery.simulateLoss();</code></pre>
+          </div>
+
+          <p><strong class="label">Graceful Shutdown</strong> Call <code>device.destroy()</code> before page unload to release GPU memory cleanly. This prevents Chrome from counting it as a crash. The engine does this automatically via <code>beforeunload</code>.</p>
+
+          <div class="example">
+            <strong class="label">Example &mdash; Shutdown</strong>
+            <pre><code>// GpuDevice.destroy() handles:
+// 1. Flush pending GPU work
+// 2. Destroy pipeline cache, buffer pool, scheduler
+// 3. Call device.destroy() (releases all GPU memory)
+// 4. Clear event listeners
+
+gpuDevice.destroy();</code></pre>
+          </div>
+
+          <p><strong class="label">Error Handling</strong></p>
+          <ul style="margin:8px 0 8px 20px;color:var(--fg-muted);">
+            <li><code>uncapturederror</code> event &mdash; global listener on GPUDevice catches all unhandled validation/OOM/internal errors</li>
+            <li><code>event.preventDefault()</code> &mdash; suppresses DevTools console warnings (Chrome 128+, may be no-op on Firefox/Safari)</li>
+            <li>SharedTextureMemory/SharedImageD3D errors &mdash; Chrome-only D3D11 swap chain bug, silently filtered</li>
+            <li>Render loop try-catch &mdash; catches JS exceptions in renderFrame() with auto-pause after 5 consecutive failures</li>
+          </ul>
+
+          <p><strong class="label">Canvas Resize</strong> Use <code>devicePixelContentBoxSize</code> from ResizeObserver for pixel-perfect sizing (falls back to <code>contentBoxSize &times; dpr</code> on older Safari). Clamp to <code>device.limits.maxTextureDimension2D</code>. Guard against 0-size. Recreate depth texture on every resize.</p>
+
+          <p><strong class="label">Cross-Browser Compatibility</strong> The engine detects the browser via <code>detectGpuPlatform()</code> in <code>GpuDevice.js</code> and applies per-browser workarounds:</p>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--fg-muted);margin:8px 0;">
+            <thead><tr style="text-align:left;border-bottom:1px solid var(--border);">
+              <th style="padding:4px 8px;">Browser</th>
+              <th style="padding:4px 8px;">Platforms</th>
+              <th style="padding:4px 8px;">Backend</th>
+              <th style="padding:4px 8px;">Notes</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:4px 8px;"><strong>Chrome 113+</strong></td><td style="padding:4px 8px;">Windows (D3D12), macOS (Metal), ChromeOS (Vulkan)</td><td style="padding:4px 8px;">Dawn (C++)</td><td style="padding:4px 8px;">SharedTextureMemory D3D11 bug on Windows only. Chrome 140+ consumes adapter on requestDevice.</td></tr>
+              <tr><td style="padding:4px 8px;"><strong>Chrome 144+</strong></td><td style="padding:4px 8px;"><a href="https://developer.chrome.com/blog/new-in-webgpu-144#webgpu_on_linux" target="_blank">Linux</a> (Vulkan, Intel Gen12+, expanding AMD/NVIDIA)</td><td style="padding:4px 8px;">Dawn</td><td style="padding:4px 8px;">Vulkan backend. No D3D11 swap chain issues. 2&times; faster writeBuffer/writeTexture.</td></tr>
+              <tr><td style="padding:4px 8px;"><strong>Chrome 121+</strong></td><td style="padding:4px 8px;">Android 12+ Qualcomm/ARM (Vulkan)</td><td style="padding:4px 8px;">Dawn</td><td style="padding:4px 8px;">Lower limits than desktop. Samsung Internet 24+ also supported. OpenGL ES compat via Chrome 135+ flag.</td></tr>
+              <tr><td style="padding:4px 8px;"><strong>Edge 113+</strong></td><td style="padding:4px 8px;">Same as Chrome</td><td style="padding:4px 8px;">Dawn</td><td style="padding:4px 8px;">Identical to Chrome (Chromium engine).</td></tr>
+              <tr><td style="padding:4px 8px;"><strong>Firefox 141+</strong></td><td style="padding:4px 8px;">Windows (D3D12); macOS ARM64 145+ (Metal)</td><td style="padding:4px 8px;">wgpu (Rust)</td><td style="padding:4px 8px;">Linux/Android expected 2026. No SharedTextureMemory errors. <code>preventDefault</code> may be no-op.</td></tr>
+              <tr><td style="padding:4px 8px;"><strong>Safari 26+</strong></td><td style="padding:4px 8px;">macOS Tahoe, iOS 26, iPadOS 26, visionOS 26 (Metal)</td><td style="padding:4px 8px;">WebKit</td><td style="padding:4px 8px;"><code>COPY_DST</code> on swapchain may fail &mdash; use <code>safeCanvasUsage</code>. <code>bgra8unorm</code> preferred format.</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong class="label">Per-Browser Workarounds (<code>detectGpuPlatform()</code>)</strong></p>
+          <ul style="margin:8px 0 8px 20px;color:var(--fg-muted);">
+            <li><code>safeCanvasUsage</code> &mdash; <code>RENDER_ATTACHMENT | COPY_SRC</code> on Safari/iOS (no <code>COPY_DST</code>), full flags on Chromium/Firefox</li>
+            <li><code>adapterInfo</code> &mdash; prefers <code>device.adapterInfo</code> (Chrome 132+), falls back to <code>adapter.info</code> (spec standard)</li>
+            <li><code>devicePixelContentBoxSize</code> &mdash; pixel-perfect sizing on Chrome/Firefox, falls back to <code>contentBoxSize &times; dpr</code> on older Safari</li>
+            <li><code>context.unconfigure()</code> &mdash; wrapped in try-catch for browsers that don't support it</li>
+            <li>Optional features (<code>timestamp-query</code>, <code>float32-filterable</code>, etc.) &mdash; gracefully skipped if adapter doesn't support them</li>
+          </ul>
+
+          <p><strong class="label">Testing Device Loss</strong></p>
+          <ul style="margin:8px 0 8px 20px;color:var(--fg-muted);">
+            <li><code>recovery.simulateLoss()</code> &mdash; calls device.destroy() with a flag to trigger recovery</li>
+            <li><code>about:gpucrash</code> &mdash; open in a separate tab to kill Chrome's GPU process (more realistic)</li>
+            <li>Chrome flags: <code>--disable-domain-blocking-for-3d-apis --disable-gpu-process-crash-limit</code></li>
+          </ul>
+
+          <p class="related"><strong class="label">Key Files</strong>
+            <code>engine/core/gpu/GpuDevice.js</code> (detectGpuPlatform, uncapturederror, adapter info),
+            <code>engine/core/gpu/GpuRecovery.js</code> (auto-recovery),
+            <code>engine/core/gpu/GpuCanvas.js</code> (safeCanvasUsage),
+            <code>engine/core/gpu/WebGpuCanvasBootstrap.js</code> (resize, depth texture),
+            <code>engine/core/platform/PlatformCanvas.js</code> (devicePixelContentBoxSize fallback)
+          </p>
+          <p class="related"><strong class="label">References</strong>
+            <a href="https://toji.dev/webgpu-best-practices/device-loss.html" target="_blank">toji.dev &mdash; Device Loss</a>,
+            <a href="https://toji.dev/webgpu-best-practices/error-handling.html" target="_blank">toji.dev &mdash; Error Handling</a>,
+            <a href="https://webgpufundamentals.org/webgpu/lessons/webgpu-resizing-the-canvas.html" target="_blank">webgpufundamentals &mdash; Canvas Resize</a>,
+            <a href="https://caniuse.com/webgpu" target="_blank">caniuse.com/webgpu</a>,
+            <a href="https://github.com/gpuweb/gpuweb/wiki/Implementation-Status" target="_blank">WebGPU Implementation Status</a>,
+            <a href="https://developer.chrome.com/blog/new-in-webgpu-145" target="_blank">Chrome 145 WebGPU</a>
+          </p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+
+        <article class="term" id="term-engine-config">
+          <h3>Engine config (engine.cfg)</h3>
+          <p><strong class="label">Definition</strong> Lightweight configuration system in <code>engine/config</code> that merges default engine settings with optional per-scene <code>engine.cfg</code> YAML files.</p>
+          <div class="example">
+            <strong class="label">Example</strong>
+            <pre><code>import { Config } from "engine/EngineImports.js";
+
+// At scene startup
+const cfg = await Config.loadEngineConfig({
+  configUrl: "./engine.cfg", // relative to the scene entry
+  logger,
+});
+
+// Apply cfg.room, cfg.physics, cfg.render, cfg.spawn to scene variables</code></pre>
+          </div>
+          <p class="related"><strong class="label">Related</strong> <code>engine/config/EngineDefaultConfig.js</code>, <code>engine/config/EngineConfig.js</code>, Phase 4 simulation tests.</p>
+          <p class="back-top"><a href="#top">Back to top</a></p>
+        </article>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

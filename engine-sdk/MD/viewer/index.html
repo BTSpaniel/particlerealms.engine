@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebGPU OS Docs</title>
+  <meta name="description" content="Unified documentation for the WebGPU OS stack: engine, editor, plauna, agi, and the OS itself." />
+  <link id="canonical-link" rel="canonical" href="../index.md" />
+  <link id="markdown-alternate" rel="alternate" type="text/markdown" href="../index.md" title="Current page as Markdown" />
+  <link rel="alternate" type="text/plain" href="../../llms.txt" title="AI discovery index" />
+  <link rel="alternate" type="application/json" href="../../api-index.json" title="Machine API catalog" />
+  <link rel="alternate" type="application/x-ndjson" href="../../docs-chunks.jsonl" title="Documentation chunks" />
+  <link rel="alternate" type="application/x-ndjson" href="../../api-symbols.jsonl" title="API modules and symbols" />
+  <link rel="stylesheet" href="viewer.css" />
+  <script src="../../plauna/motion/MPAFallback.js"></script>
+  <script type="module" src="../../plauna/motion/PageTransitionManager.js" blocking="render"></script>
+  <!-- Vendored libs (offline). Run tools/fetch_vendor.py to populate ../assets/vendor/. -->
+  <link rel="stylesheet" href="../assets/vendor/highlight/github-dark.min.css" />
+  <script defer src="../assets/vendor/marked/marked.min.js"></script>
+  <script defer src="../assets/vendor/highlight/highlight.min.js"></script>
+  <script defer src="../assets/vendor/mermaid/mermaid.min.js"></script>
+  <script id="page-structured-data" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "headline": "WebGPU OS Documentation",
+        "description": "Unified documentation for the WebGPU OS stack.",
+        "url": "../index.md",
+        "inLanguage": "en",
+        "author": { "@type": "Person", "name": "Jake Wehmeier" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Documentation", "item": "../index.md" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    /* Cross-document page transitions (View Transitions API) */
+    @view-transition { navigation: auto; }
+    @keyframes md-page-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-20px); } }
+    @keyframes md-page-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    ::view-transition-group(root) { animation-duration: 300ms; animation-timing-function: ease-out; }
+    ::view-transition-old(root) { animation: md-page-out 300ms ease-out forwards; }
+    ::view-transition-new(root) { animation: md-page-in 300ms ease-out forwards; }
+    @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+  <div id="read-progress" class="read-progress" role="presentation"></div>
+
+  <header class="topbar">
+    <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle navigation" aria-expanded="true">&#9776;</button>
+    <a class="brand" href="#/index.md">
+      <span class="brand-mark">WGPU</span>
+      <span class="brand-text">OS&nbsp;Docs</span>
+    </a>
+    <nav class="product-links" aria-label="Product navigation">
+      <a href="../../">Home</a>
+      <a href="../../learn/">Learn</a>
+      <a href="../../playground/">Playground</a>
+      <a href="../../api/">API</a>
+    </nav>
+    <div class="search-wrap">
+      <input id="search-input" type="search" placeholder="Search docs (Ctrl+K)" aria-label="Search documentation" autocomplete="off" />
+      <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+    </div>
+    <span class="version-badge" id="version-badge">v0.0.0</span>
+  </header>
+
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Documentation navigation">
+      <div class="sidebar-tools">
+        <input id="nav-filter" type="search" placeholder="Filter pages…" aria-label="Filter navigation" autocomplete="off" />
+        <button id="nav-collapse-all" class="nav-tool-btn" type="button" title="Collapse all" aria-label="Collapse all sections">&#10697;</button>
+      </div>
+      <div id="nav-tree" class="nav-tree"></div>
+    </nav>
+
+    <main class="main">
+      <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+      <article id="doc-content" class="doc-content" tabindex="-1">
+        <section class="viewer-static-intro">
+          <h1>WebGPU OS Documentation</h1>
+          <p>The canonical documentation is plain Markdown for the Engine, Editor, Plauna, AGI, and WebGPU OS. This navigator adds search and cross-links when JavaScript loads; the source documents remain directly readable.</p>
+          <ul>
+            <li><a href="../getting-started/install.md">Install and run</a></li>
+            <li><a href="../engine/getting-started.md">Engine getting started</a></li>
+            <li><a href="../api/index.md">API reference guide</a></li>
+            <li><a href="../../api-index.json">Machine API catalog</a></li>
+            <li><a href="../../docs-chunks.jsonl">Documentation chunks (JSONL)</a></li>
+            <li><a href="../../api-symbols.jsonl">API modules and symbols (JSONL)</a></li>
+          </ul>
+        </section>
+      </article>
+      <nav class="page-nav" aria-label="Page navigation">
+        <a id="prev-link" class="page-nav-link" rel="prev" hidden></a>
+        <a id="next-link" class="page-nav-link page-nav-next" rel="next" hidden></a>
+      </nav>
+      <footer class="doc-footer">
+        <span id="source-path"></span>
+        <span class="footer-credit">Built by <a href="https://github.com/BTSpaniel" target="_blank" rel="noopener">Jake Wehmeier</a></span>
+      </footer>
+    </main>
+
+    <aside id="toc" class="toc" aria-label="On this page">
+      <h2 class="toc-title">On this page</h2>
+      <ul id="toc-list" class="toc-list"></ul>
+    </aside>
+  </div>
+
+  <div id="nav-backdrop" class="nav-backdrop" hidden></div>
+  <button id="back-to-top" class="back-to-top" type="button" title="Back to top" aria-label="Back to top" hidden>&#8593;</button>
+
+  <script src="viewer.js"></script>
+</body>
+</html>

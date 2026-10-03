@@ -1,0 +1,58 @@
+{
+  "component": "Unified PhysX, NVIDIA Blast and Flow WebGPU bridge",
+  "source": "ovphysx-0.6.3",
+  "status": "UNIFIED_PHYSX_BLAST_FLOW_BROWSER_PASSED",
+  "started": "2026-09-23T02:16:59.335979+00:00",
+  "tests": [
+    {
+      "name": "PhysX and Rust bridge module identity",
+      "status": "PASS",
+      "detail": 2
+    },
+    {
+      "name": "Pinned Blast 5.0.6 in unified module",
+      "status": "PASS",
+      "detail": 50006
+    },
+    {
+      "name": "Blast asset, bond fracture and split in unified module",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "Unified Flow staging ABI",
+      "status": "PASS",
+      "detail": {
+        "abi": 1,
+        "simd128": true
+      }
+    },
+    {
+      "name": "WASM heap to WebGPU compute to WASM heap",
+      "status": "PASS",
+      "detail": {
+        "elements": 4097,
+        "bytes": 16388
+      }
+    }
+  ],
+  "browser": "153.0.8010.48",
+  "adapter": {
+    "vendor": "nvidia",
+    "architecture": "blackwell",
+    "device": "",
+    "description": ""
+  },
+  "artifactHashes": {
+    "physx-pe.wasm": {
+      "bytes": 6948292,
+      "sha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+    },
+    "physx-pe.mjs": {
+      "bytes": 4837868,
+      "sha256": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f"
+    }
+  },
+  "bridgeSha256": "7c7cc893363db9325f5f77084a1a35325711846c04b4364cab87cd90a74554a4",
+  "finished": "2026-09-23T02:17:02.141978+00:00"
+}

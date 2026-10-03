@@ -1,0 +1,174 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Button Component Styles
+ * Modular CSS for Button widget with theme support
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-md);
+  border: none;
+  background: var(--button-bg-primary);
+  color: var(--button-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  outline: none;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: var(--button-bg-primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size Variants */
+.button--sm {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.button--md {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.button--lg {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+  min-width: 48px;
+  min-height: 48px;
+}
+
+/* Style Variants */
+.button--primary {
+  background: var(--button-bg-primary);
+  color: var(--button-text-primary);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.button--primary:hover:not(:disabled) {
+  background: var(--button-bg-primary-hover);
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+}
+
+.button--secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+}
+
+.button--secondary:hover:not(:disabled) {
+  background: var(--bg-quaternary);
+  border-color: var(--color-primary-500);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid transparent;
+}
+
+.button--ghost:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--border-subtle);
+}
+
+.button--success {
+  background: var(--color-success);
+  color: white;
+}
+
+.button--success:hover:not(:disabled) {
+  background: #059669;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.button--warning {
+  background: var(--color-warning);
+  color: white;
+}
+
+.button--warning:hover:not(:disabled) {
+  background: #d97706;
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+}
+
+.button--error {
+  background: var(--color-error);
+  color: white;
+}
+
+.button--error:hover:not(:disabled) {
+  background: #dc2626;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+/* Icon Support */
+.button__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 var(--spacing-sm);
+}
+
+.button__icon:first-child {
+  margin-left: 0;
+}
+
+.button__icon:last-child {
+  margin-right: 0;
+}
+
+/* Loading State */
+.button--loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Full Width */
+.button--full {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .button--md {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .button--lg {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-md);
+  }
+}

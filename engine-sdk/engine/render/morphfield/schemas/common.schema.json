@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/common.schema.json",
+  "title": "MorphField R2 common canonical JSON definitions",
+  "description": "Definitions shared by canonical semantic MorphField JSON. Runtime-only GPU objects and binary ABI records are intentionally outside this data model.",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "$defs": {
+    "version": {
+      "type": "object",
+      "required": ["major", "minor"],
+      "properties": {
+        "major": { "const": 2 },
+        "minor": { "const": 0 }
+      },
+      "additionalProperties": false
+    },
+    "stableId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "finiteF32": {
+      "type": "number",
+      "minimum": -3.4028234663852886e38,
+      "maximum": 3.4028234663852886e38
+    },
+    "nonNegativeF32": {
+      "allOf": [
+        { "$ref": "#/$defs/finiteF32" },
+        { "minimum": 0 }
+      ]
+    },
+    "positiveF32": {
+      "allOf": [
+        { "$ref": "#/$defs/finiteF32" },
+        { "exclusiveMinimum": 0 }
+      ]
+    },
+    "unitF32": {
+      "allOf": [
+        { "$ref": "#/$defs/finiteF32" },
+        { "minimum": 0, "maximum": 1 }
+      ]
+    },
+    "vec3": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/finiteF32" },
+        { "$ref": "#/$defs/finiteF32" },
+        { "$ref": "#/$defs/finiteF32" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "nonNegativeVec3": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/nonNegativeF32" },
+        { "$ref": "#/$defs/nonNegativeF32" },
+        { "$ref": "#/$defs/nonNegativeF32" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "positiveVec3": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/positiveF32" },
+        { "$ref": "#/$defs/positiveF32" },
+        { "$ref": "#/$defs/positiveF32" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "quaternion": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/finiteF32" },
+        { "$ref": "#/$defs/finiteF32" },
+        { "$ref": "#/$defs/finiteF32" },
+        { "$ref": "#/$defs/finiteF32" }
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "transform": {
+      "type": "object",
+      "required": ["translation", "rotation", "scale"],
+      "properties": {
+        "translation": { "$ref": "#/$defs/vec3" },
+        "rotation": { "$ref": "#/$defs/quaternion" },
+        "scale": {
+          "allOf": [
+            { "$ref": "#/$defs/finiteF32" },
+            { "minimum": 1e-7 }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "bounds": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "$ref": "#/$defs/vec3" },
+        "max": { "$ref": "#/$defs/vec3" }
+      },
+      "additionalProperties": false
+    },
+    "color3": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/nonNegativeF32" },
+        { "$ref": "#/$defs/nonNegativeF32" },
+        { "$ref": "#/$defs/nonNegativeF32" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "color4": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/unitF32" },
+        { "$ref": "#/$defs/unitF32" },
+        { "$ref": "#/$defs/unitF32" },
+        { "$ref": "#/$defs/unitF32" }
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "material": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "type",
+        "baseColorFactor",
+        "emissiveFactor",
+        "metallicFactor",
+        "roughnessFactor",
+        "baseColorTexture",
+        "normalTexture",
+        "normalTextureScale",
+        "normalTextureGreenChannel",
+        "metallicRoughnessTexture",
+        "emissiveTexture",
+        "pipelineTag"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "$ref": "#/$defs/nullableString" },
+        "type": { "type": "string" },
+        "baseColorFactor": { "$ref": "#/$defs/color4" },
+        "emissiveFactor": { "$ref": "#/$defs/color3" },
+        "metallicFactor": { "type": "number", "minimum": 0, "maximum": 1 },
+        "roughnessFactor": { "type": "number", "minimum": 0.04, "maximum": 1 },
+        "baseColorTexture": { "$ref": "#/$defs/nullableString" },
+        "normalTexture": { "$ref": "#/$defs/nullableString" },
+        "normalTextureScale": { "type": "number", "minimum": 0, "maximum": 8 },
+        "normalTextureGreenChannel": { "enum": ["up", "down"] },
+        "metallicRoughnessTexture": { "$ref": "#/$defs/nullableString" },
+        "emissiveTexture": { "$ref": "#/$defs/nullableString" },
+        "pipelineTag": { "$ref": "#/$defs/nullableString" }
+      },
+      "additionalProperties": false
+    },
+    "motion": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["velocity", "angularVelocity", "acceleration", "validDuration"],
+          "properties": {
+            "velocity": { "$ref": "#/$defs/vec3" },
+            "angularVelocity": { "$ref": "#/$defs/vec3" },
+            "acceleration": { "$ref": "#/$defs/vec3" },
+            "validDuration": { "$ref": "#/$defs/positiveF32" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "collision": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["contactOffset", "restOffset", "contactSlop", "layer", "mask"],
+          "properties": {
+            "contactOffset": { "$ref": "#/$defs/nonNegativeF32" },
+            "restOffset": { "$ref": "#/$defs/finiteF32" },
+            "contactSlop": { "$ref": "#/$defs/nonNegativeF32" },
+            "layer": { "type": "integer", "minimum": 0, "maximum": 31 },
+            "mask": { "type": "integer", "minimum": 0, "maximum": 4294967295 }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "intent": {
+      "type": "object",
+      "required": ["updateClass", "topologyRequirement", "featureMode", "qualityImportance", "authoritative"],
+      "properties": {
+        "updateClass": { "enum": ["static", "low-churn", "dynamic", "streamed"] },
+        "topologyRequirement": { "enum": ["unspecified", "closed-2-manifold", "open"] },
+        "featureMode": { "enum": ["smooth", "sharp", "noisy"] },
+        "qualityImportance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "authoritative": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "type": ["null", "boolean", "number", "string"] },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/jsonValue" } }
+      ]
+    },
+    "simulation": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "particle-chain-simulation.schema.json" },
+        {
+          "type": "object",
+          "required": ["adapter"],
+          "properties": {
+            "adapter": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "not": { "const": "particle-chain-nexel-snapshot" }
+            },
+            "authority": { "enum": ["authoritative", "visual"] }
+          },
+          "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+        }
+      ]
+    }
+  }
+}

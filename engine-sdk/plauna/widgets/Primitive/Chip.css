@@ -1,0 +1,144 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Chip Component Styles
+ * Modular CSS for Chip widget
+ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.chip:hover {
+  background: var(--bg-quaternary);
+  border-color: var(--color-primary-500);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Icon */
+.chip__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Close Button */
+.chip__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  margin-left: var(--spacing-xs);
+}
+
+.chip__close:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="night"] .chip__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Size Variants */
+.chip--sm {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.chip--md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.chip--lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-md);
+}
+
+/* Color Variants */
+.chip--primary {
+  background: var(--color-primary-100);
+  border-color: var(--color-primary-300);
+  color: var(--color-primary-700);
+}
+
+[data-theme="night"] .chip--primary {
+  background: var(--color-primary-900);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-300);
+}
+
+.chip--success {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--color-success);
+  color: #047857;
+}
+
+[data-theme="night"] .chip--success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.chip--warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-warning);
+  color: #92400e;
+}
+
+[data-theme="night"] .chip--warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.chip--error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error);
+  color: #991b1b;
+}
+
+[data-theme="night"] .chip--error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chip--lg {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}

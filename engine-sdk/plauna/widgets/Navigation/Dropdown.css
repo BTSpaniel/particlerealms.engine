@@ -1,0 +1,155 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Dropdown Component Styles
+ * Modular CSS for Dropdown navigation widget with stacking context
+ */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.dropdown__trigger:hover {
+  color: var(--color-primary-500);
+}
+
+.dropdown__trigger:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Dropdown Menu */
+.dropdown__menu {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  isolation: isolate;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all var(--transition-fast);
+  pointer-events: none;
+}
+
+.dropdown--open .dropdown__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Item */
+.dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-md);
+}
+
+.dropdown__item:hover {
+  background: var(--bg-tertiary);
+  color: var(--color-primary-500);
+}
+
+.dropdown__item:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: -2px;
+}
+
+.dropdown__item--active {
+  background: var(--color-primary-100);
+  color: var(--color-primary-700);
+  font-weight: var(--font-weight-semibold);
+}
+
+[data-theme="night"] .dropdown__item--active {
+  background: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+.dropdown__item:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Divider */
+.dropdown__divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: var(--spacing-sm) 0;
+  border: none;
+}
+
+/* Icon */
+.dropdown__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: inherit;
+  font-size: 16px;
+}
+
+/* Label */
+.dropdown__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  margin-top: var(--spacing-sm);
+}
+
+.dropdown__label:first-child {
+  margin-top: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dropdown__menu {
+    min-width: 160px;
+    max-height: 300px;
+  }
+
+  .dropdown__item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}

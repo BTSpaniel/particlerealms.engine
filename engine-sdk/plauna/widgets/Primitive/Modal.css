@@ -1,0 +1,162 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Modal Component Styles
+ * Modular CSS for Modal widget with stacking context isolation
+ */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-panel);
+  isolation: isolate;
+  outline: none;
+}
+
+.modal--hidden {
+  display: none;
+  pointer-events: none;
+}
+
+.modal__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal-backdrop);
+  pointer-events: auto;
+}
+
+.modal__panel {
+  position: relative;
+  z-index: var(--z-modal-panel);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  animation: modalSlideIn var(--transition-base);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Size Variants */
+.modal__panel--sm {
+  width: 400px;
+}
+
+.modal__panel--md {
+  width: 600px;
+}
+
+.modal__panel--lg {
+  width: 800px;
+}
+
+.modal__panel--xl {
+  width: 1000px;
+}
+
+.modal__panel--fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
+/* Modal Header */
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-fast);
+}
+
+.modal__close:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Modal Body */
+.modal__body {
+  padding: var(--spacing-lg);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* Modal Footer */
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal__panel--sm,
+  .modal__panel--md,
+  .modal__panel--lg,
+  .modal__panel--xl {
+    width: calc(100vw - 32px);
+  }
+
+  .modal__header,
+  .modal__body,
+  .modal__footer {
+    padding: var(--spacing-md);
+  }
+
+  .modal__title {
+    font-size: var(--font-size-md);
+  }
+}

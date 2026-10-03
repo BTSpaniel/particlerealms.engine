@@ -1,0 +1,644 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/* ============================================================================
+   Editor Guide — Fullscreen interactive tutorial overlay
+   ============================================================================ */
+
+/* ── Overlay ─────────────────────────────────────────────────────────────── */
+.guide-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    background: rgba(8, 8, 14, 0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.guide-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ── Sidebar nav ─────────────────────────────────────────────────────────── */
+.guide-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: rgba(16, 16, 24, 0.6);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    overflow-y: auto;
+}
+.guide-sidebar-title {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 0 24px 20px;
+    background: linear-gradient(135deg, #fff 0%, #a0b4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
+}
+.guide-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+}
+.guide-nav-item:hover {
+    color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.03);
+}
+.guide-nav-item.active {
+    color: #fff;
+    background: rgba(99, 102, 241, 0.12);
+    border-left-color: #6b8afd;
+}
+.guide-nav-icon {
+    font-size: 16px;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.guide-sidebar-footer {
+    margin-top: auto;
+    padding: 16px 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+}
+
+/* ── Main content ────────────────────────────────────────────────────────── */
+.guide-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px 56px;
+    scroll-behavior: smooth;
+}
+.guide-main::-webkit-scrollbar { width: 6px; }
+.guide-main::-webkit-scrollbar-track { background: transparent; }
+.guide-main::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+}
+
+/* ── Close button ────────────────────────────────────────────────────────── */
+.guide-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.6);
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    z-index: 2;
+}
+.guide-close:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+}
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+.guide-section {
+    margin-bottom: 56px;
+    scroll-margin-top: 24px;
+}
+.guide-section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff 0%, #c4d0ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.guide-section-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/* ── Cards grid ──────────────────────────────────────────────────────────── */
+.guide-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+.guide-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+.guide-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.guide-card-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+.guide-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+}
+.guide-card-desc {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+}
+
+/* ── Keyboard shortcut display ───────────────────────────────────────────── */
+.guide-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 26px;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+.guide-key-accent {
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.35) 0%, rgba(99, 102, 241, 0.2) 100%);
+    border-color: rgba(99, 102, 241, 0.4);
+    border-bottom-color: rgba(99, 102, 241, 0.5);
+    color: #c4d0ff;
+}
+
+/* ── Shortcut table ──────────────────────────────────────────────────────── */
+.guide-shortcut-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+.guide-shortcut-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.025);
+    border-radius: 8px;
+    transition: background 0.1s;
+}
+.guide-shortcut-row:hover {
+    background: rgba(255,255,255,0.05);
+}
+.guide-shortcut-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+}
+.guide-shortcut-keys {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+.guide-shortcut-plus {
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    margin: 0 2px;
+}
+
+/* ── Step list (numbered) ────────────────────────────────────────────────── */
+.guide-steps {
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+.guide-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    background: rgba(255,255,255,0.025);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.guide-step::before {
+    counter-increment: step;
+    content: counter(step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #c4d0ff;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 50%;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+.guide-step-content {
+    flex: 1;
+}
+.guide-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+}
+.guide-step-desc {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+}
+
+/* ── Demo embed area ─────────────────────────────────────────────────────── */
+.guide-demo {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.guide-demo canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.guide-demo-label {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(0,0,0,0.5);
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+.guide-demo-placeholder {
+    font-size: 13px;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    padding: 20px;
+}
+.guide-demo-placeholder .guide-demo-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+/* ── Tip callout ─────────────────────────────────────────────────────────── */
+.guide-tip {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    margin-top: 16px;
+}
+.guide-tip-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.guide-tip-text {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.55;
+}
+
+/* ── Welcome hero ────────────────────────────────────────────────────────── */
+.guide-hero {
+    text-align: center;
+    padding: 40px 0 48px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.guide-hero-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 24px rgba(107, 138, 253, 0.4));
+}
+.guide-hero-title {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #6b8afd 50%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+.guide-hero-desc {
+    font-size: 15px;
+    color: rgba(255,255,255,0.45);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ── Layout panel diagram ────────────────────────────────────────────────── */
+.guide-layout-diagram {
+    display: grid;
+    grid-template-columns: 100px 1fr 120px;
+    grid-template-rows: 32px 1fr 60px;
+    gap: 4px;
+    height: 220px;
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.guide-layout-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    transition: all 0.2s;
+}
+.guide-layout-toolbar {
+    grid-column: 1 / -1;
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: #a0b4ff;
+}
+.guide-layout-entities {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.2);
+    color: rgba(74, 222, 128, 0.7);
+}
+.guide-layout-viewport {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+}
+.guide-layout-inspector {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.2);
+    color: rgba(251, 191, 36, 0.7);
+}
+.guide-layout-console {
+    grid-column: 1 / -1;
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: rgba(239, 68, 68, 0.6);
+}
+
+/* ── Scroll progress bar ─────────────────────────────────────────────────── */
+.guide-scroll-progress {
+    position: absolute;
+    top: 0;
+    left: 240px;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    z-index: 3;
+    pointer-events: none;
+    transition: width 0.1s linear;
+    background: linear-gradient(90deg, #6b8afd, #a78bfa);
+    width: 0%;
+    border-radius: 0 0 2px 0;
+    box-shadow: 0 0 8px rgba(107, 138, 253, 0.5);
+}
+
+/* ── Search box ──────────────────────────────────────────────────────────── */
+.guide-search-box {
+    padding: 0 16px 12px;
+}
+.guide-search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+.guide-search-input::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+.guide-search-input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+/* ── Section header (title + read badge) ─────────────────────────────────── */
+.guide-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.guide-section-header .guide-section-title {
+    margin-bottom: 0;
+}
+
+/* ── Read badge ──────────────────────────────────────────────────────────── */
+.guide-read-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 10px;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.guide-read-badge.visible {
+    opacity: 1;
+}
+
+/* ── Nav check mark ──────────────────────────────────────────────────────── */
+.guide-nav-check {
+    margin-left: auto;
+    font-size: 11px;
+    color: #4ade80;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.guide-nav-item.read {
+    color: rgba(255,255,255,0.6);
+}
+.guide-nav-label {
+    flex: 1;
+}
+
+/* ── Progress summary (welcome hero) ─────────────────────────────────────── */
+.guide-progress-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+}
+.guide-progress-bar-outer {
+    width: 200px;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.guide-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6b8afd, #4ade80);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px rgba(107, 138, 253, 0.4);
+}
+.guide-progress-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 600;
+}
+
+/* ── No results ──────────────────────────────────────────────────────────── */
+.guide-no-results {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* ── Version label ───────────────────────────────────────────────────────── */
+.guide-version {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-right: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Search match highlight ──────────────────────────────────────────────── */
+.guide-section.guide-search-match {
+    border-left: 3px solid rgba(99, 102, 241, 0.5);
+    padding-left: 16px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 800px) {
+    .guide-sidebar { width: 56px; overflow: hidden; }
+    .guide-nav-item .guide-nav-label,
+    .guide-nav-item .guide-nav-check { display: none; }
+    .guide-sidebar-title { display: none; }
+    .guide-search-box { display: none; }
+    .guide-sidebar-footer { display: none; }
+    .guide-main { padding: 24px 20px; }
+    .guide-cards { grid-template-columns: 1fr; }
+    .guide-shortcut-grid { grid-template-columns: 1fr; }
+    .guide-scroll-progress { left: 56px; }
+}
+
+/* ── Print styles ────────────────────────────────────────────────────────── */
+@media print {
+    .guide-overlay {
+        position: static;
+        background: #fff;
+        backdrop-filter: none;
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .guide-sidebar,
+    .guide-close,
+    .guide-scroll-progress,
+    .guide-demo,
+    .guide-search-box { display: none; }
+    .guide-main {
+        padding: 20px;
+        overflow: visible;
+    }
+    .guide-section-title {
+        color: #000;
+        -webkit-text-fill-color: #000;
+    }
+    .guide-section-subtitle,
+    .guide-card-desc,
+    .guide-step-desc,
+    .guide-tip-text,
+    .guide-shortcut-label {
+        color: #333;
+    }
+    .guide-key {
+        color: #000;
+        background: #eee;
+        border-color: #ccc;
+    }
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes guideSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.guide-overlay.visible .guide-section {
+    animation: guideSlideIn 0.4s ease-out backwards;
+}
+.guide-overlay.visible .guide-section:nth-child(2) { animation-delay: 0.05s; }
+.guide-overlay.visible .guide-section:nth-child(3) { animation-delay: 0.1s; }
+.guide-overlay.visible .guide-section:nth-child(4) { animation-delay: 0.15s; }
+.guide-overlay.visible .guide-section:nth-child(5) { animation-delay: 0.2s; }
+.guide-overlay.visible .guide-section:nth-child(6) { animation-delay: 0.25s; }
+.guide-overlay.visible .guide-section:nth-child(7) { animation-delay: 0.3s; }
+.guide-overlay.visible .guide-section:nth-child(8) { animation-delay: 0.35s; }
+.guide-overlay.visible .guide-section:nth-child(9) { animation-delay: 0.4s; }
+.guide-overlay.visible .guide-section:nth-child(10) { animation-delay: 0.45s; }

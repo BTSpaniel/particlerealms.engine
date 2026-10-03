@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/handle.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "handle v1",
+  "description": "Opaque issued identifier. Structure is not authority: the host checks exact owner, live mount and operator generation on every use.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": [
+    "id",
+    "generation"
+  ],
+  "additionalProperties": false
+}

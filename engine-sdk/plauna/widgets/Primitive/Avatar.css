@@ -1,0 +1,195 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Avatar Component Styles
+ * Modular CSS for Avatar widget with image, initials, and status support
+ */
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-light);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Size Variants */
+.avatar--xs {
+  width: 24px;
+  height: 24px;
+  font-size: var(--font-size-xs);
+}
+
+.avatar--sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-sm);
+}
+
+.avatar--md {
+  width: 40px;
+  height: 40px;
+  font-size: var(--font-size-md);
+}
+
+.avatar--lg {
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-lg);
+}
+
+.avatar--xl {
+  width: 64px;
+  height: 64px;
+  font-size: var(--font-size-xl);
+}
+
+/* Content Container */
+.avatar__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Image */
+.avatar__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Initials */
+.avatar__initials {
+  font-size: inherit;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Icon */
+.avatar__icon {
+  font-size: 60%;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Status Indicator */
+.avatar__status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 2px solid var(--bg-primary);
+  border-radius: 50%;
+}
+
+.avatar--xs .avatar__status {
+  width: 8px;
+  height: 8px;
+}
+
+.avatar--sm .avatar__status {
+  width: 10px;
+  height: 10px;
+}
+
+.avatar--md .avatar__status {
+  width: 12px;
+  height: 12px;
+}
+
+.avatar--lg .avatar__status {
+  width: 14px;
+  height: 14px;
+}
+
+.avatar--xl .avatar__status {
+  width: 18px;
+  height: 18px;
+}
+
+/* Status Colors */
+.avatar__status--online {
+  background: var(--color-success);
+}
+
+.avatar__status--offline {
+  background: var(--text-tertiary);
+}
+
+.avatar__status--away {
+  background: var(--color-warning);
+}
+
+.avatar__status--busy {
+  background: var(--color-error);
+}
+
+/* Variant Styles */
+.avatar--primary {
+  background: var(--color-primary-100);
+  border-color: var(--color-primary-300);
+}
+
+[data-theme="night"] .avatar--primary {
+  background: var(--color-primary-900);
+  border-color: var(--color-primary-700);
+}
+
+.avatar--success {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--color-success);
+}
+
+.avatar--warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-warning);
+}
+
+.avatar--error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error);
+}
+
+/* Group Avatar */
+.avatar-group {
+  display: flex;
+  align-items: center;
+  gap: -8px;
+}
+
+.avatar-group .avatar {
+  border: 2px solid var(--bg-primary);
+  margin-left: -8px;
+}
+
+.avatar-group .avatar:first-child {
+  margin-left: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .avatar--lg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .avatar--xl {
+    width: 48px;
+    height: 48px;
+  }
+}

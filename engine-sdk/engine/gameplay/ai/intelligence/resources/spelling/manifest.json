@@ -1,0 +1,75 @@
+{
+  "definitions": 0,
+  "format": "particle-compiled-spelling-resource-v1",
+  "graph": {
+    "edges": 205470,
+    "format": "realm-lexical-dafsa/1",
+    "maxWordBytes": 45,
+    "roots": [
+      82499,
+      82499
+    ],
+    "states": 82500,
+    "wordCount": 228133
+  },
+  "licenses": {
+    "CMUDICT_LICENSE.txt": {
+      "bytes": 1754,
+      "compression": "none",
+      "sha256": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a"
+    },
+    "HUNSPELL_DATA_COPYRIGHT.txt": {
+      "bytes": 11135,
+      "compression": "none",
+      "sha256": "1d7c0128f6c72d2270bf1b271b37a3a21267f759161b68c4dc6c501574c0892e"
+    }
+  },
+  "meaning": "spelling-membership-only",
+  "normalization": "NFC + ASCII A-Z lowercase only",
+  "provenance": {
+    "originalInputSha256": {
+      "CMUDICT_LICENSE.txt": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
+      "CMUDICT_README.txt": "00c34e7564f1f6a68de02e12c123d801471da92bc3091f7d89b605f238bf8554",
+      "HUNSPELL_DATA_COPYRIGHT.txt": "1d7c0128f6c72d2270bf1b271b37a3a21267f759161b68c4dc6c501574c0892e",
+      "cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+      "en_US.aff": "70fe5778717d097ce2f3326baaa5c1e4d2206d81a5a81d3ea8e11c4770806dd5",
+      "en_US.dic": "829a043cf078d1e80e886289a13823454977f442a239a859d2133ea61944aa60"
+    },
+    "sourceArtifactSha256": "97d4c81d090c5ca3ba7e374ca903e0dbf55bcff115806f04f5e1530837d3379e",
+    "sourceLanguageSha256": "4dadacc68042bcdf031aca9af56d747e4940e2e70fee330bb0599a77cb697040",
+    "sourceManifest": "source-manifest.json",
+    "sourceManifestSha256": "acb66d37b35432eb57f2ccb13291764ee1b628f2222bc381118acf11e019b001",
+    "sources": [
+      {
+        "definition_coverage": false,
+        "id": "hunspell-en-us-installed",
+        "license_file": "HUNSPELL_DATA_COPYRIGHT.txt",
+        "mask": 1,
+        "name": "SCOWL-derived Hunspell en_US spelling data",
+        "scope": "US spelling entries plus explicitly generated affixes; compounds not exhaustively enumerated",
+        "source_url": "https://wordlist.aspell.net/",
+        "version": "Debian 1:2020.12.07-4 (installed snapshot)"
+      },
+      {
+        "definition_coverage": false,
+        "id": "cmudict-installed",
+        "license_file": "CMUDICT_LICENSE.txt",
+        "mask": 2,
+        "name": "Carnegie Mellon Pronouncing Dictionary",
+        "scope": "US-English ARPAbet pronunciations, including names and variants; not all accents or words",
+        "source_url": "https://github.com/cmusphinx/cmudict",
+        "version": "cmudict Python data package 1.1.3 (installed snapshot)"
+      }
+    ]
+  },
+  "providerId": "particle.spelling.M2_2",
+  "resource": {
+    "bytes": 796740,
+    "compressedBytes": 546092,
+    "compressedSha256": "013ca99bb32e8b5d23c7c5629df10e520b92801a291965c2cd80c2ac9dab3b8c",
+    "compression": "gzip",
+    "path": "membership.prlx.gz",
+    "sha256": "37db9c8e5388a95b713a3a6df878a0685b2f6727714a3416ed9bc059ec7bd37e"
+  },
+  "version": "M2.2-local-snapshots-1"
+}

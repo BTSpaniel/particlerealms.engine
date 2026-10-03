@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/nexel-capability-report.schema.json",
+  "title": "MorphField R2 per-Nexel capability report",
+  "description": "The serializable result of Engine.MorphField.Schemas.inspectNexelCapabilities().",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "type": "object",
+  "required": ["$schema", "schema", "version", "qualificationScope", "deviceQualification", "nexelId", "sourceKind", "fieldletFamily", "fieldletFamilyName", "representationReason", "compilerMode", "queryMask", "queries", "gpuQueries", "unavailableGpuQueries", "gpuQueryModes", "renderer", "fullyGpuExecutable", "fullyCurrentRendererExecutable", "limitations", "canonicalDescriptor"],
+  "properties": {
+    "$schema": { "const": "https://particlerealms.online/schemas/morphfield/v2/nexel-capability-report.schema.json" },
+    "schema": { "const": "morphfield-nexel-capability-report" },
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "qualificationScope": { "const": "semantic-descriptor" },
+    "deviceQualification": { "const": "not-evaluated" },
+    "nexelId": { "$ref": "common.schema.json#/$defs/stableId" },
+    "sourceKind": { "enum": ["sphere", "box", "capsule", "csg", "sampled-field", "sparse-residual", "oriented-samples", "indexed-surface", "medium"] },
+    "fieldletFamily": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "fieldletFamilyName": { "enum": ["analytic", "sparse-residual", "oriented-kernel", "cached-surface"] },
+    "representationReason": { "type": "string", "minLength": 1 },
+    "compilerMode": { "$ref": "nexel-capabilities.schema.json#/$defs/compilerMode" },
+    "queryMask": { "type": "integer", "minimum": 0, "maximum": 63 },
+    "queries": { "type": "array", "maxItems": 6, "uniqueItems": true, "items": { "$ref": "nexel-capabilities.schema.json#/$defs/queryKind" } },
+    "gpuQueries": { "type": "array", "maxItems": 6, "uniqueItems": true, "items": { "$ref": "nexel-capabilities.schema.json#/$defs/queryKind" } },
+    "unavailableGpuQueries": { "type": "array", "maxItems": 6, "uniqueItems": true, "items": { "$ref": "nexel-capabilities.schema.json#/$defs/queryKind" } },
+    "gpuQueryModes": { "$ref": "nexel-capabilities.schema.json#/$defs/gpuQueryModes" },
+    "renderer": { "enum": ["direct-field", "marker-only"] },
+    "fullyGpuExecutable": { "type": "boolean" },
+    "fullyCurrentRendererExecutable": { "type": "boolean" },
+    "limitations": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "canonicalDescriptor": { "$ref": "nexel.schema.json" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "fullyCurrentRendererExecutable": { "const": true } },
+        "required": ["fullyCurrentRendererExecutable"]
+      },
+      "then": {
+        "properties": {
+          "renderer": { "const": "direct-field" },
+          "compilerMode": { "enum": ["certified-analytic-execution", "certified-field-execution"] },
+          "unavailableGpuQueries": { "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "fullyGpuExecutable": { "const": true },
+            "fullyCurrentRendererExecutable": { "const": true }
+          }
+        },
+        {
+          "properties": {
+            "fullyGpuExecutable": { "const": false },
+            "fullyCurrentRendererExecutable": { "const": false }
+          }
+        }
+      ]
+    },
+    {
+      "if": {
+        "properties": { "compilerMode": { "const": "unavailable" } },
+        "required": ["compilerMode"]
+      },
+      "then": {
+        "properties": {
+          "gpuQueries": { "maxItems": 0 },
+          "gpuQueryModes": {
+            "const": { "bound": "unavailable", "surface": "unavailable", "medium": "unavailable", "material": "unavailable", "motion": "unavailable", "collision": "unavailable" }
+          },
+          "fullyCurrentRendererExecutable": { "const": false }
+        }
+      }
+    },
+    {
+      "oneOf": [
+        { "$ref": "#/$defs/sphere" },
+        { "$ref": "#/$defs/box" },
+        { "$ref": "#/$defs/capsule" },
+        { "$ref": "#/$defs/csg" },
+        { "$ref": "#/$defs/sampledField" },
+        { "$ref": "#/$defs/sparseResidual" },
+        { "$ref": "#/$defs/orientedSamples" },
+        { "$ref": "#/$defs/indexedSurface" },
+        { "$ref": "#/$defs/medium" }
+      ]
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "analyticBase": {
+      "properties": {
+        "fieldletFamily": { "const": 0 },
+        "fieldletFamilyName": { "const": "analytic" },
+        "compilerMode": { "enum": ["certified-analytic-execution", "unavailable"] },
+        "renderer": { "const": "direct-field" }
+      }
+    },
+    "sphere": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticBase" },
+        { "properties": { "sourceKind": { "const": "sphere" }, "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "sphere" } } } } } } }
+      ]
+    },
+    "box": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticBase" },
+        { "properties": { "sourceKind": { "const": "box" }, "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "box" } } } } } } }
+      ]
+    },
+    "capsule": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticBase" },
+        { "properties": { "sourceKind": { "const": "capsule" }, "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "capsule" } } } } } } }
+      ]
+    },
+    "csg": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticBase" },
+        { "properties": { "sourceKind": { "const": "csg" }, "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "csg" } } } } } } }
+      ]
+    },
+    "sampledField": {
+      "properties": {
+        "sourceKind": { "const": "sampled-field" },
+        "fieldletFamily": { "const": 1 },
+        "fieldletFamilyName": { "const": "sparse-residual" },
+        "compilerMode": { "enum": ["certified-field-execution", "unavailable"] },
+        "renderer": { "const": "direct-field" },
+        "limitations": { "minItems": 1 },
+        "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "sampled-field" } } } } }
+      }
+    },
+    "sparseResidual": {
+      "properties": {
+        "sourceKind": { "const": "sparse-residual" },
+        "fieldletFamily": { "const": 1 },
+        "fieldletFamilyName": { "const": "sparse-residual" },
+        "compilerMode": { "enum": ["certified-field-execution", "unavailable"] },
+        "renderer": { "const": "direct-field" },
+        "limitations": { "minItems": 1 },
+        "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "sparse-residual" } } } } }
+      }
+    },
+    "orientedSamples": {
+      "properties": {
+        "sourceKind": { "const": "oriented-samples" },
+        "fieldletFamily": { "const": 2 },
+        "fieldletFamilyName": { "const": "oriented-kernel" },
+        "compilerMode": { "enum": ["certificate-record", "unavailable"] },
+        "renderer": { "const": "marker-only" },
+        "fullyGpuExecutable": { "const": false },
+        "fullyCurrentRendererExecutable": { "const": false },
+        "limitations": { "minItems": 1 },
+        "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "oriented-samples" } } } } }
+      }
+    },
+    "indexedSurface": {
+      "properties": {
+        "sourceKind": { "const": "indexed-surface" },
+        "fieldletFamily": { "const": 3 },
+        "fieldletFamilyName": { "const": "cached-surface" },
+        "compilerMode": { "enum": ["packed-marker", "unavailable"] },
+        "renderer": { "const": "marker-only" },
+        "fullyGpuExecutable": { "const": false },
+        "fullyCurrentRendererExecutable": { "const": false },
+        "limitations": { "minItems": 1 },
+        "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "indexed-surface" } } } } }
+      }
+    },
+    "medium": {
+      "properties": {
+        "sourceKind": { "const": "medium" },
+        "fieldletFamily": { "const": 0 },
+        "fieldletFamilyName": { "const": "analytic" },
+        "compilerMode": { "enum": ["certificate-record", "unavailable"] },
+        "renderer": { "const": "marker-only" },
+        "fullyGpuExecutable": { "const": false },
+        "fullyCurrentRendererExecutable": { "const": false },
+        "limitations": { "minItems": 1 },
+        "canonicalDescriptor": { "properties": { "source": { "properties": { "kind": { "const": "medium" } } } } }
+      }
+    }
+  }
+}

@@ -1,0 +1,117 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Container Component Styles
+ * Modular CSS for Container layout widget
+ */
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Size Variants */
+.container--sm {
+  max-width: 640px;
+}
+
+.container--md {
+  max-width: 768px;
+}
+
+.container--lg {
+  max-width: 1024px;
+}
+
+.container--xl {
+  max-width: 1280px;
+}
+
+.container--2xl {
+  max-width: 1536px;
+}
+
+.container--fluid {
+  max-width: 100%;
+}
+
+/* Padding Variants */
+.container--px-0 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.container--px-sm {
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
+}
+
+.container--px-md {
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+
+.container--px-lg {
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.container--px-xl {
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .container--xl {
+    max-width: 1024px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .container--lg {
+    max-width: 768px;
+  }
+
+  .container--xl {
+    max-width: 768px;
+  }
+
+  .container--2xl {
+    max-width: 768px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container--md {
+    max-width: 100%;
+  }
+
+  .container--lg {
+    max-width: 100%;
+  }
+
+  .container--xl {
+    max-width: 100%;
+  }
+
+  .container--2xl {
+    max-width: 100%;
+  }
+
+  .container--px-lg {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  .container--px-xl {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+}

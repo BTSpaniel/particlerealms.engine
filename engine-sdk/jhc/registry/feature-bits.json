@@ -1,0 +1,22 @@
+{
+  "MODULE_ENTRY": {
+    "bit": 0,
+    "description": "Entry is an ES module."
+  },
+  "DOCUMENT_ENTRY": {
+    "bit": 1,
+    "description": "Entry is an HTML document."
+  },
+  "WORKER": {
+    "bit": 2,
+    "description": "Package uses Web Workers."
+  },
+  "DYNAMIC_IMPORT": {
+    "bit": 3,
+    "description": "Package uses dynamic import()."
+  },
+  "WASM": {
+    "bit": 4,
+    "description": "Package uses WebAssembly."
+  }
+}

@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+# SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+# Keep inventoried SDK bytes exact on every operating system.
+/engine-sdk/** -text
+/Template.zip -text
+/README.md text eol=lf
+/SDK-VALIDATION.json text eol=lf

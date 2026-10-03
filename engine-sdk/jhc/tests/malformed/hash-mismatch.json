@@ -1,0 +1,6 @@
+{
+  "name": "hash-mismatch",
+  "expectedCode": 204,
+  "expectedMessageFragment": "Hash mismatch",
+  "size": 571
+}

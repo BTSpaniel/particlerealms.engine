@@ -1,0 +1,191 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Date Component Styles
+ * Modular CSS for Date input widget
+ */
+
+.date-input {
+  display: block;
+  width: 100%;
+}
+
+.date-input__field {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+  color: var(--input-text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+  outline: none;
+}
+
+.date-input__field::placeholder {
+  color: var(--input-placeholder);
+}
+
+.date-input__field:hover:not(:disabled) {
+  border-color: var(--color-primary-500);
+}
+
+.date-input__field:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.date-input__field:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Calendar Picker */
+.date-input__picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: var(--z-dropdown);
+  isolation: isolate;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all var(--transition-fast);
+  pointer-events: none;
+}
+
+.date-input--open .date-input__picker {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.date-input__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.date-input__month {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.date-input__nav {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.date-input__nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.date-input__nav-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.date-input__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.date-input__day-header {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  padding: var(--spacing-sm);
+}
+
+.date-input__day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-sm);
+}
+
+.date-input__day:hover {
+  background: var(--bg-tertiary);
+}
+
+.date-input__day--selected {
+  background: var(--color-primary-500);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+}
+
+.date-input__day--disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.date-input__day--other-month {
+  color: var(--text-tertiary);
+}
+
+/* Size Variants */
+.date-input--sm .date-input__field {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.date-input--lg .date-input__field {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .date-input__picker {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .date-input--open .date-input__picker {
+    transform: translate(-50%, -50%);
+  }
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Reference — WebGPU OS</title>
+  <meta name="description" content="Source-backed ES-module reference for the WebGPU OS engine, Editor, Plauna, AGI, and operating-system runtime.">
+  <link id="canonical-link" rel="canonical" href="https://particlerealms.online/api/">
+  <link id="markdown-alternate" rel="alternate" type="text/markdown" href="/MD/api/index.md" title="API guide as Markdown">
+  <link rel="alternate" type="application/json" href="/api-index.json" title="Machine API catalog">
+  <link rel="alternate" type="application/x-ndjson" href="/api-symbols.jsonl" title="API modules and symbols">
+  <link rel="alternate" type="application/x-ndjson" href="/docs-chunks.jsonl" title="Documentation chunks">
+  <link rel="stylesheet" href="../common/docs.css">
+  <link rel="stylesheet" href="/MD/assets/vendor/highlight/github-dark.min.css">
+  <link rel="stylesheet" href="/MD/viewer/viewer.css">
+  <link rel="stylesheet" href="../common/docs-portal.css">
+  <script src="/plauna/motion/MPAFallback.js"></script>
+  <script type="module" src="/plauna/motion/PageTransitionManager.js" blocking="render"></script>
+  <script id="page-structured-data" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "APIReference",
+        "headline": "WebGPU OS ES-module API Reference",
+        "description": "Generated module and export reference for the five WebGPU OS subsystems, with summaries where source JSDoc provides them.",
+        "url": "https://particlerealms.online/api/",
+        "inLanguage": "en",
+        "mentions": { "@id": "https://github.com/BTSpaniel/particlerealms.engine#distribution" },
+        "author": { "@type": "Person", "name": "Jake Wehmeier" },
+        "isPartOf": { "@type": "WebSite", "name": "WebGPU OS", "url": "https://particlerealms.online/" },
+        "encoding": {
+          "@type": "MediaObject",
+          "contentUrl": "https://particlerealms.online/api-index.json",
+          "encodingFormat": "application/json"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://github.com/BTSpaniel/particlerealms.engine#distribution",
+        "name": "WebGPU OS platform downloads",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any browser with WebGPU support",
+        "downloadUrl": "https://github.com/BTSpaniel/particlerealms.engine"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://particlerealms.online/" },
+          { "@type": "ListItem", "position": 2, "name": "API Reference", "item": "https://particlerealms.online/api/" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="docs-portal-page portal-api">
+  <a class="portal-skip-link" href="#api-workspace">Skip to API documentation</a>
+  <header class="doc-header">
+    <a href="../index.html" class="logo">Particle <span>Realms</span></a>
+    <nav aria-label="Product navigation">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="../learn/" class="nav-link">Learn</a>
+      <a href="../guide/" class="nav-link">Guide</a>
+      <a href="./" class="nav-link active" aria-current="page">API</a>
+      <a href="../playground/" class="nav-link">Playground</a>
+      <a href="https://chromewebstore.google.com/detail/webgpu-os-companion/pbibggeclfjpmmbfmjagmngefonepbjj" class="nav-link" target="_blank" rel="noopener noreferrer">Companion ↗</a>
+    </nav>
+  </header>
+
+  <main class="portal">
+    <section class="portal-hero" aria-labelledby="api-title">
+      <span class="portal-kicker">Source observatory / API</span>
+      <h1 id="api-title">Every module tied back to the code.</h1>
+      <p class="portal-lead">Browse signatures for people or consume the same catalog as structured JSON. Every enriched record names its source file, source-server import specifier, SHA-256, detected exports, and signatures; summaries appear only where source JSDoc provides them, without pretending this ES-module stack is a REST API.</p>
+      <div class="portal-actions">
+        <a class="portal-action primary" href="/api-index.json">Open machine catalog</a>
+        <a class="portal-action" href="#api-workspace">Browse the reference</a>
+        <a class="portal-action" href="/MD/api/index.md">Read API guide Markdown</a>
+      </div>
+    </section>
+
+    <section class="route-grid api-routes" aria-label="Subsystem API catalogs">
+      <article class="route-card">
+        <span class="route-index">CATALOG 01</span>
+        <h2>Engine</h2>
+        <p>GPU runtime, ECS, rendering, simulation, math, audio, gameplay, and tools.</p>
+        <a href="/MD/engine/reference/_index.json">Engine JSON →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">CATALOG 02</span>
+        <h2>Editor</h2>
+        <p>Scene, assets, viewport, inspectors, project workflow, extensions, and UI.</p>
+        <a href="/MD/editor/reference/_index.json">Editor JSON →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">CATALOG 03</span>
+        <h2>Plauna</h2>
+        <p>Retained UI, state, layout, motion, rendering surfaces, and application services.</p>
+        <a href="/MD/plauna/reference/_index.json">Plauna JSON →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">CATALOG 04</span>
+        <h2>AGI</h2>
+        <p>Training, tensors, observations, rewards, motion, model loading, and Studio.</p>
+        <a href="/MD/agi/reference/_index.json">AGI JSON →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">CATALOG 05</span>
+        <h2>WebGPU OS</h2>
+        <p>Kernel, shell, packages, storage, drivers, browser bridge, and extension contracts.</p>
+        <a href="/MD/webgpu-os/reference/_index.json">OS JSON →</a>
+      </article>
+    </section>
+
+    <aside class="truth-strip" aria-label="Reference integrity contract">
+      <strong>Truth gate active</strong>
+      <p>The catalog includes only exports the Python extractor positively detects in repository source. Source hashes expose drift. Its runtime-loading contract separates repository imports from production bundles. Shared GPU guidance is checked against the real `GpuDevice` exports before release; unverified behavior must remain in source-backed prose, not invented examples.</p>
+    </aside>
+
+    <section id="api-workspace" class="portal-docs-workspace portal-docs-api" aria-labelledby="api-workspace-heading" tabindex="-1">
+      <header class="portal-docs-toolbar">
+        <span class="viewer-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <strong id="api-workspace-heading" class="brand-text">WebGPU OS Docs</strong>
+        <button id="sidebar-toggle" class="icon-btn" type="button" aria-label="Toggle API navigation" aria-expanded="true">&#9776;</button>
+        <div class="search-wrap">
+          <label class="portal-sr-only" for="search-input">Search API documentation</label>
+          <input id="search-input" type="search" placeholder="Search modules and guides (Ctrl+K)" autocomplete="off">
+          <ul id="search-results" class="search-results" aria-live="polite" hidden></ul>
+        </div>
+        <span id="version-badge" class="version-badge">v0.1.0</span>
+        <a class="portal-docs-source" href="/api-index.json">API JSON ↗</a>
+      </header>
+
+      <div id="read-progress" class="read-progress" role="progressbar" aria-label="API reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      <div class="layout portal-docs-layout">
+        <nav id="sidebar" class="sidebar" aria-label="API navigation">
+          <div class="sidebar-tools">
+            <label class="portal-sr-only" for="nav-filter">Filter API navigation</label>
+            <input id="nav-filter" type="search" placeholder="Filter modules…" autocomplete="off">
+            <button id="nav-collapse-all" class="nav-tool-btn" type="button" title="Collapse all" aria-label="Collapse all sections">&#10697;</button>
+          </div>
+          <div id="nav-tree" class="nav-tree"></div>
+        </nav>
+
+        <section class="main portal-docs-main" aria-label="API document">
+          <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+          <article id="doc-content" class="doc-content" tabindex="-1">
+            <section class="portal-docs-static">
+              <h2>The API remains inspectable without JavaScript.</h2>
+              <p>The interactive browser reads the canonical Markdown, compressed document bundle, and generated reference indexes directly. These machine routes expose the same source hashes and detected exports when scripting is unavailable.</p>
+              <ul>
+                <li><a href="/api-index.json">Combined API catalog with runtime-loading context</a></li>
+                <li><a href="/api-symbols.jsonl">API modules and exports as streaming JSONL</a></li>
+                <li><a href="/docs-chunks.jsonl">Documentation chunks as streaming JSONL</a></li>
+                <li><a href="/MD/engine/reference/_index.json">Engine module index</a></li>
+                <li><a href="/MD/editor/reference/_index.json">Editor module index</a></li>
+                <li><a href="/MD/plauna/reference/_index.json">Plauna module index</a></li>
+                <li><a href="/MD/agi/reference/_index.json">AGI module index</a></li>
+                <li><a href="/MD/webgpu-os/reference/_index.json">WebGPU OS module index</a></li>
+              </ul>
+            </section>
+          </article>
+          <nav class="page-nav" aria-label="Document navigation">
+            <a id="prev-link" class="page-nav-link" rel="prev" hidden></a>
+            <a id="next-link" class="page-nav-link page-nav-next" rel="next" hidden></a>
+          </nav>
+          <footer class="doc-footer">
+            <span id="source-path">Source: <a href="/MD/api/index.md">MD/api/index.md</a></span>
+            <span class="footer-credit">Platform downloads: <a href="https://github.com/BTSpaniel/particlerealms.engine" target="_blank" rel="noopener noreferrer">particlerealms.engine</a></span>
+          </footer>
+        </section>
+
+        <aside id="toc" class="toc" aria-label="On this page">
+          <h2 class="toc-title">On this page</h2>
+          <ul id="toc-list" class="toc-list"></ul>
+        </aside>
+      </div>
+      <div id="nav-backdrop" class="nav-backdrop" hidden></div>
+      <button id="back-to-top" class="back-to-top" type="button" title="Back to top" aria-label="Back to top" hidden>&#8593;</button>
+      <noscript><p class="portal-noscript">Interactive filtering needs JavaScript; the catalog cards and JSON links above remain directly available.</p></noscript>
+    </section>
+
+    <p class="machine-paths">Crawler routes: <a href="/MD/api/index.md">API guide Markdown</a> · <a href="/api-index.json">combined API JSON</a> · <a href="/api-symbols.jsonl">API symbols JSONL</a> · <a href="/docs-chunks.jsonl">documentation chunks JSONL</a> · <a href="/llms.txt">llms.txt</a> · <a href="/sitemap.xml">XML sitemap</a>. `llms.txt` is supplemental discovery metadata; linked Markdown, generated catalogs, and repository source remain canonical.</p>
+  </main>
+  <script src="/MD/assets/vendor/marked/marked.min.js"></script>
+  <script src="/MD/assets/vendor/highlight/highlight.min.js"></script>
+  <script src="/MD/viewer/viewer.js" data-doc-root="/MD/" data-default-doc="api/index.md" data-default-kind="reference" data-inline="true" data-portal-canonical="https://particlerealms.online/api/" data-platform-repository="https://github.com/BTSpaniel/particlerealms.engine"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * EmptyState Component Styles
+ * Modular CSS for EmptyState feedback widget
+ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+  min-height: 300px;
+}
+
+.empty-state__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 40px;
+}
+
+.empty-state__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.empty-state__description {
+  margin: 0 0 var(--spacing-lg);
+  max-width: 400px;
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.empty-state__action {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+/* Size Variants */
+.empty-state--sm {
+  padding: var(--spacing-lg);
+  min-height: 200px;
+}
+
+.empty-state--sm .empty-state__icon {
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+}
+
+.empty-state--sm .empty-state__title {
+  font-size: var(--font-size-md);
+}
+
+.empty-state--sm .empty-state__description {
+  font-size: var(--font-size-sm);
+}
+
+.empty-state--lg {
+  padding: var(--spacing-2xl);
+  min-height: 400px;
+}
+
+.empty-state--lg .empty-state__icon {
+  width: 100px;
+  height: 100px;
+  font-size: 50px;
+}
+
+.empty-state--lg .empty-state__title {
+  font-size: var(--font-size-xl);
+}
+
+/* Type Variants */
+.empty-state--error .empty-state__icon {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.empty-state--warning .empty-state__icon {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.empty-state--success .empty-state__icon {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.empty-state--info .empty-state__icon {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-info);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .empty-state {
+    padding: var(--spacing-lg);
+    min-height: 250px;
+  }
+
+  .empty-state__icon {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+  }
+
+  .empty-state__title {
+    font-size: var(--font-size-md);
+  }
+
+  .empty-state__description {
+    font-size: var(--font-size-sm);
+  }
+
+  .empty-state__action {
+    flex-direction: column;
+    width: 100%;
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "header": {
+    "major": 1,
+    "minor": 0,
+    "flags": 0,
+    "dictionaryVersion": 0,
+    "languageProfile": 0
+  },
+  "manifest": {
+    "applicationId": "test.cyclic-modules",
+    "applicationVersion": "1.0.0",
+    "blockmap": {
+      "builtAt": "2026-01-01T00:00:00Z",
+      "files": {
+        "files/a.js": "8f1e20661a238699b31dc584c7a897eec66a43b537d5c18e2dc2028a465a1f92",
+        "files/app.js": "bbbb99f1c9b448d2817b222a196907690d90a385de0086e24773c16f21233203",
+        "files/b.js": "dac97539138c502e3ee443d2e86c935e8fa0f2804254015d08befdd717bcb628",
+        "files/index.html": "f66df28a5059ed7f3c820eb869988c0d267b384b8cb93e5c6a3ea03125a940e2"
+      },
+      "format": "blockmap-v1",
+      "packageId": "test.cyclic-modules",
+      "version": "1.0.0"
+    },
+    "container": "jhc-1.0",
+    "entry": "files/index.html",
+    "format": "jhc-1.0",
+    "name": "Cyclic Modules",
+    "publisher": "fixtures",
+    "requiredFeatures": 0,
+    "resources": [
+      {
+        "decodedLength": 115,
+        "hash": "8f1e20661a238699b31dc584c7a897eec66a43b537d5c18e2dc2028a465a1f92",
+        "id": 0,
+        "mime": "application/octet-stream",
+        "path": "files/a.js",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 152,
+        "hash": "bbbb99f1c9b448d2817b222a196907690d90a385de0086e24773c16f21233203",
+        "id": 1,
+        "mime": "application/octet-stream",
+        "path": "files/app.js",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 115,
+        "hash": "dac97539138c502e3ee443d2e86c935e8fa0f2804254015d08befdd717bcb628",
+        "id": 2,
+        "mime": "application/octet-stream",
+        "path": "files/b.js",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 201,
+        "hash": "f66df28a5059ed7f3c820eb869988c0d267b384b8cb93e5c6a3ea03125a940e2",
+        "id": 3,
+        "mime": "application/octet-stream",
+        "path": "files/index.html",
+        "representation": "raw"
+      }
+    ]
+  },
+  "directory": [
+    {
+      "sectionType": 0,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 48,
+      "storedLength": 1405,
+      "decodedLength": 1405
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 1813,
+      "storedLength": 115,
+      "decodedLength": 115
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 1,
+      "codec": 0,
+      "storedOffset": 1928,
+      "storedLength": 152,
+      "decodedLength": 152
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 2,
+      "codec": 0,
+      "storedOffset": 2080,
+      "storedLength": 115,
+      "decodedLength": 115
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 3,
+      "codec": 0,
+      "storedOffset": 2195,
+      "storedLength": 201,
+      "decodedLength": 201
+    }
+  ],
+  "resourcePaths": [
+    "files/a.js",
+    "files/app.js",
+    "files/b.js",
+    "files/index.html"
+  ],
+  "rootHash": "766b29fda70842f82977233a32aa020aef5ee4cb9fcb7bfd1b855b868dbc5476"
+}

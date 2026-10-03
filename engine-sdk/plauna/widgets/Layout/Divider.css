@@ -1,0 +1,109 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Divider Component Styles
+ * Modular CSS for Divider layout widget
+ */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  margin: var(--spacing-md) 0;
+}
+
+.divider__line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.divider__text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Orientation Variants */
+.divider--horizontal {
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+}
+
+.divider--vertical {
+  flex-direction: column;
+  width: auto;
+  height: 100%;
+  margin: 0 var(--spacing-md);
+}
+
+.divider--vertical .divider__line {
+  width: 1px;
+  height: 100%;
+}
+
+/* Spacing Variants */
+.divider--sm {
+  margin: var(--spacing-sm) 0;
+}
+
+.divider--md {
+  margin: var(--spacing-md) 0;
+}
+
+.divider--lg {
+  margin: var(--spacing-lg) 0;
+}
+
+.divider--xl {
+  margin: var(--spacing-xl) 0;
+}
+
+/* Style Variants */
+.divider--solid {
+  border-style: solid;
+}
+
+.divider--dashed .divider__line {
+  border-top: 1px dashed var(--border-light);
+  background: transparent;
+}
+
+.divider--dotted .divider__line {
+  border-top: 1px dotted var(--border-light);
+  background: transparent;
+}
+
+/* Color Variants */
+.divider--primary .divider__line {
+  background: var(--color-primary-500);
+}
+
+.divider--success .divider__line {
+  background: var(--color-success);
+}
+
+.divider--warning .divider__line {
+  background: var(--color-warning);
+}
+
+.divider--error .divider__line {
+  background: var(--color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .divider--lg {
+    margin: var(--spacing-md) 0;
+  }
+
+  .divider--xl {
+    margin: var(--spacing-lg) 0;
+  }
+}

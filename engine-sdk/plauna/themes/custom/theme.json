@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "custom",
+  "name": "My Custom Theme",
+  "description": "Starter theme — change whatever you like, leave the rest blank to inherit from your parent.",
+  "author": "You",
+  "version": "1.0.0",
+  "extends": "dark",
+
+  "vars": {
+    "--bg-primary":    null,
+    "--bg-secondary":  null,
+    "--bg-tertiary":   null,
+    "--bg-quaternary": null,
+
+    "--text-primary":   null,
+    "--text-secondary": null,
+    "--text-tertiary":  null,
+    "--text-disabled":  null,
+
+    "--border-light":  null,
+    "--border-medium": null,
+    "--border-dark":   null,
+    "--border-subtle": null,
+
+    "--color-primary": null,
+    "--color-success": null,
+    "--color-warning": null,
+    "--color-error":   null,
+    "--color-info":    null,
+
+    "--shadow-sm": null,
+    "--shadow-md": null,
+    "--shadow-lg": null,
+    "--shadow-xl": null,
+
+    "--spacing-xs":  null,
+    "--spacing-sm":  null,
+    "--spacing-md":  null,
+    "--spacing-lg":  null,
+    "--spacing-xl":  null,
+    "--spacing-2xl": null,
+    "--spacing-3xl": null,
+
+    "--font-size-xs":  null,
+    "--font-size-sm":  null,
+    "--font-size-md":  null,
+    "--font-size-lg":  null,
+    "--font-size-xl":  null,
+    "--font-size-2xl": null,
+
+    "--border-radius-sm":   null,
+    "--border-radius-md":   null,
+    "--border-radius-lg":   null,
+    "--border-radius-xl":   null,
+    "--border-radius-full": null,
+
+    "--transition-fast": null,
+    "--transition-base": null,
+    "--transition-slow": null
+  }
+}

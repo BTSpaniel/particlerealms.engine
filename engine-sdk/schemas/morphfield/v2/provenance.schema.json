@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/provenance.schema.json",
+  "title": "MorphField R2 asset provenance",
+  "description": "Canonical, bounded JSON metadata stored in a .morph PROV chunk. The codec injects and validates the contract-identification fields for object payloads supplied through encodeAsset().",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "type": "object",
+  "required": ["$schema", "schema", "version"],
+  "properties": {
+    "$schema": {
+      "const": "https://particlerealms.online/schemas/morphfield/v2/provenance.schema.json"
+    },
+    "schema": { "const": "morphfield-asset-provenance" },
+    "version": { "const": 1 },
+    "author": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "generator": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?:T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,9})?Z)?$"
+    },
+    "scene": { "$ref": "common.schema.json#/$defs/stableId" },
+    "sourceRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "certificateRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "capabilityProfile": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "records": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": { "$ref": "common.schema.json#/$defs/jsonValue" }
+    }
+  },
+  "maxProperties": 256,
+  "additionalProperties": { "$ref": "common.schema.json#/$defs/jsonValue" }
+}

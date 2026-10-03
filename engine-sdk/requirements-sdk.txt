@@ -1,0 +1,15 @@
+# Install explicitly before an offline SDK rebuild.
+# Requires Python 3.12.7 and the nativeCompression environment in sdk-build.json.
+jsonschema==4.25.1
+cryptography==46.0.5
+rjsmin==1.2.5
+attrs==25.4.0
+referencing==0.37.0
+rpds-py==0.30.0
+jsonschema-specifications==2025.9.1
+cffi==2.0.0
+pycparser==3.0
+typing-extensions==4.15.0
+brotli==1.2.0
+zstandard==0.25.0
+zopfli==0.4.1

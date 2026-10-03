@@ -1,0 +1,110 @@
+{
+  "INVALID_PATH": {
+    "code": 100,
+    "message": "Path is not canonical or contains unsafe components."
+  },
+  "INVALID_ID": {
+    "code": 101,
+    "message": "Application identifier is not safe."
+  },
+  "INVALID_VERSION": {
+    "code": 102,
+    "message": "Version string is not safe."
+  },
+  "DUPLICATE_PATH": {
+    "code": 103,
+    "message": "Duplicate normalized path."
+  },
+  "PATH_TOO_LONG": {
+    "code": 104,
+    "message": "Path exceeds the maximum allowed length."
+  },
+  "ABSOLUTE_PATH": {
+    "code": 105,
+    "message": "Absolute paths are not allowed."
+  },
+  "TRAVERSAL": {
+    "code": 106,
+    "message": "Path traversal is not allowed."
+  },
+  "NULL_BYTE": {
+    "code": 107,
+    "message": "Path contains a null byte."
+  },
+  "INVALID_UTF8": {
+    "code": 108,
+    "message": "Path contains invalid UTF-8."
+  },
+  "DRIVE_LETTER": {
+    "code": 109,
+    "message": "Drive letters are not allowed."
+  },
+  "BACKSLASH": {
+    "code": 110,
+    "message": "Backslashes are not allowed."
+  },
+  "EMPTY_SEGMENT": {
+    "code": 111,
+    "message": "Empty path segment is not allowed."
+  },
+  "RESERVED_CHAR": {
+    "code": 112,
+    "message": "Path segment contains a reserved character."
+  },
+  "INVALID_PERCENT": {
+    "code": 113,
+    "message": "Invalid percent-encoding."
+  },
+  "TOO_MANY_FILES": {
+    "code": 114,
+    "message": "Package contains too many files."
+  },
+  "FILE_TOO_LARGE": {
+    "code": 115,
+    "message": "File exceeds the maximum allowed size."
+  },
+  "PACKAGE_TOO_LARGE": {
+    "code": 116,
+    "message": "Package exceeds the maximum allowed size."
+  },
+  "MANIFEST_TOO_LARGE": {
+    "code": 117,
+    "message": "Manifest exceeds the maximum allowed size."
+  },
+  "TOO_MANY_SECTIONS": {
+    "code": 118,
+    "message": "Package contains too many sections."
+  },
+  "DECODE_BUDGET": {
+    "code": 119,
+    "message": "Decoded data exceeds the configured resource budget."
+  },
+  "LENGTH_MISMATCH": {
+    "code": 120,
+    "message": "Decoded data length does not match authenticated metadata."
+  },
+  "OVERLAPPING_SECTION": {
+    "code": 121,
+    "message": "Package sections overlap or cover protected metadata."
+  },
+  "UNSUPPORTED_CODEC": {
+    "code": 122,
+    "message": "Package uses an unsupported or invalid codec."
+  },
+  "BAD_RESOURCE_MAP": {
+    "code": 123,
+    "message": "Manifest resources do not match package sections."
+  },
+  "SIGNATURE_REQUIRED": {
+    "code": 124,
+    "message": "A valid package signature is required."
+  },
+  "DICTIONARY_MISMATCH": {
+    "code": 125,
+    "message": "Compression dictionary identity does not match authenticated metadata."
+  },
+  "LICENSE_MISMATCH": {
+    "code": 126,
+    "message": "Asset license or provenance metadata does not match packaged content."
+  }
+}

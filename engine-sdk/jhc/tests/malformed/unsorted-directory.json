@@ -1,0 +1,6 @@
+{
+  "name": "unsorted-directory",
+  "expectedCode": 202,
+  "expectedMessageFragment": "Directory is not sorted",
+  "size": 571
+}

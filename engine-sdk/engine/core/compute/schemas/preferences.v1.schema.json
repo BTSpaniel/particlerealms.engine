@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/preferences.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "Operator compute acceleration preference v1",
+  "description": "Protected operator-bound stored record; storage authority, conditional commits and corruption preservation remain runtime responsibilities.",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "webgpu-os-compute-preferences-v1"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "accelerationEnabled": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "format",
+    "schemaVersion",
+    "accelerationEnabled"
+  ],
+  "additionalProperties": false
+}

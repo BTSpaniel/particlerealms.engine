@@ -1,0 +1,139 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Range Component Styles
+ * Modular CSS for Range input widget
+ */
+
+.range-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.range-input__track {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-full);
+  position: relative;
+  cursor: pointer;
+}
+
+.range-input__fill {
+  height: 100%;
+  background: var(--color-primary-500);
+  border-radius: var(--border-radius-full);
+  position: absolute;
+  left: 0;
+  transition: width var(--transition-fast);
+}
+
+.range-input__thumb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary-500);
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.range-input__thumb:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+.range-input__thumb:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.range-input__thumb:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Labels */
+.range-input__labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.range-input__value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Size Variants */
+.range-input--sm .range-input__track {
+  height: 4px;
+}
+
+.range-input--sm .range-input__thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.range-input--md .range-input__track {
+  height: 6px;
+}
+
+.range-input--md .range-input__thumb {
+  width: 20px;
+  height: 20px;
+}
+
+.range-input--lg .range-input__track {
+  height: 8px;
+}
+
+.range-input--lg .range-input__thumb {
+  width: 24px;
+  height: 24px;
+}
+
+/* Color Variants */
+.range-input--primary .range-input__fill,
+.range-input--primary .range-input__thumb {
+  background: var(--color-primary-500);
+}
+
+.range-input--success .range-input__fill,
+.range-input--success .range-input__thumb {
+  background: var(--color-success);
+}
+
+.range-input--warning .range-input__fill,
+.range-input--warning .range-input__thumb {
+  background: var(--color-warning);
+}
+
+.range-input--error .range-input__fill,
+.range-input--error .range-input__thumb {
+  background: var(--color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .range-input--lg .range-input__track {
+    height: 6px;
+  }
+
+  .range-input--lg .range-input__thumb {
+    width: 20px;
+    height: 20px;
+  }
+}

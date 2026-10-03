@@ -1,0 +1,49 @@
+<!doctype html>
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MorphField Wavefront Self-Test</title>
+  <style>
+    :root { color-scheme: dark; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    body { margin: 2rem; background: #0b1015; color: #d9e5ee; }
+    main { max-width: 72rem; margin: auto; }
+    h1 { font: 600 1.4rem system-ui, sans-serif; }
+    #status { padding: 1rem; border: 1px solid #334554; border-radius: .5rem; white-space: pre-wrap; }
+    .pass { color: #75e6a4; }
+    .fail { color: #ff8585; }
+    .blocked { color: #ffd166; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MorphField R2 Wavefront Self-Test</h1>
+    <pre id="status">Running…</pre>
+  </main>
+  <script type="module">
+    import { runWavefrontSelfTest } from "./selfTest.js";
+
+    const status = document.querySelector("#status");
+    try {
+      const result = await runWavefrontSelfTest({ realWebGpu: Boolean(navigator.gpu) });
+      status.className = "pass";
+      status.textContent = `PASS ${result.count}/${result.count}\n\n${result.passed.map((entry) => `✓ ${entry}`).join("\n")}`;
+      document.title = `PASS — ${document.title}`;
+    } catch (error) {
+      const blocked = error?.code === "WEBGPU_DEVICE_UNAVAILABLE";
+      status.className = blocked ? "blocked" : "fail";
+      const portable = Array.isArray(error?.portablePassed) ? error.portablePassed : [];
+      const portableEvidence = portable.length > 0
+        ? `PORTABLE PASS ${portable.length}/${portable.length}\n${portable.map((entry) => `✓ ${entry}`).join("\n")}\n\n`
+        : "";
+      status.textContent = `${portableEvidence}${blocked ? "GPU BLOCKED" : "FAIL"}\n\n${error.stack || error.message}`;
+      document.title = `${blocked ? "BLOCKED" : "FAIL"} — ${document.title}`;
+      if (!blocked) throw error;
+    }
+  </script>
+</body>
+</html>

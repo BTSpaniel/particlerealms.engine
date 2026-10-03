@@ -1,0 +1,81 @@
+{
+  "header": {
+    "major": 1,
+    "minor": 0,
+    "flags": 0,
+    "dictionaryVersion": 0,
+    "languageProfile": 0
+  },
+  "manifest": {
+    "applicationId": "test.html-entry",
+    "applicationVersion": "1.0.0",
+    "blockmap": {
+      "builtAt": "2026-01-01T00:00:00Z",
+      "files": {
+        "files/index.html": "efed71e4666361226a975de88fb2f20edb5433df651c0a404644fa164e83e36a",
+        "files/style.css": "8eea58197e35e362cc04b6b66f94060f97be5f1659aa0b5e1a18019ea7bf4283"
+      },
+      "format": "blockmap-v1",
+      "packageId": "test.html-entry",
+      "version": "1.0.0"
+    },
+    "container": "jhc-1.0",
+    "entry": "files/index.html",
+    "format": "jhc-1.0",
+    "name": "HTML Entry",
+    "publisher": "fixtures",
+    "requiredFeatures": 0,
+    "resources": [
+      {
+        "decodedLength": 234,
+        "hash": "efed71e4666361226a975de88fb2f20edb5433df651c0a404644fa164e83e36a",
+        "id": 0,
+        "mime": "application/octet-stream",
+        "path": "files/index.html",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 89,
+        "hash": "8eea58197e35e362cc04b6b66f94060f97be5f1659aa0b5e1a18019ea7bf4283",
+        "id": 1,
+        "mime": "application/octet-stream",
+        "path": "files/style.css",
+        "representation": "raw"
+      }
+    ]
+  },
+  "directory": [
+    {
+      "sectionType": 0,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 48,
+      "storedLength": 878,
+      "decodedLength": 878
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 1142,
+      "storedLength": 234,
+      "decodedLength": 234
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 1,
+      "codec": 0,
+      "storedOffset": 1376,
+      "storedLength": 89,
+      "decodedLength": 89
+    }
+  ],
+  "resourcePaths": [
+    "files/index.html",
+    "files/style.css"
+  ],
+  "rootHash": "4ebff89e18310bda82fbf263026aee976f4bde3ed3e33d50432cca791e0deec0"
+}

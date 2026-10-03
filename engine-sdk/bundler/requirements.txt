@@ -1,0 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+# SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+# Offline schema validation during compute-aware Python builds.
+jsonschema==4.25.1

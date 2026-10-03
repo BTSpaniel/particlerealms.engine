@@ -1,0 +1,141 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Input Component Styles
+ * Modular CSS for Input form control with validation states
+ */
+
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+  color: var(--input-text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.input:hover:not(:disabled):not(:read-only) {
+  border-color: var(--color-primary-500);
+}
+
+.input:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.input:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input:read-only {
+  background: var(--bg-tertiary);
+  cursor: default;
+}
+
+/* Size Variants */
+.input--sm {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.input--md {
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+}
+
+.input--lg {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+}
+
+/* Validation States */
+.input--valid {
+  border-color: var(--color-success);
+}
+
+.input--valid:focus {
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.input--invalid {
+  border-color: var(--color-error);
+}
+
+.input--invalid:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.input--warning {
+  border-color: var(--color-warning);
+}
+
+.input--warning:focus {
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Input Group */
+.input-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.input-group .input {
+  flex: 1;
+}
+
+/* Prefix/Suffix */
+.input__prefix,
+.input__suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  pointer-events: none;
+}
+
+.input__prefix {
+  position: absolute;
+  left: 0;
+}
+
+.input__suffix {
+  position: absolute;
+  right: 0;
+}
+
+.input-group .input:has(+ .input__suffix) {
+  padding-right: 40px;
+}
+
+.input-group .input:has(~ .input__prefix) {
+  padding-left: 40px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .input--lg {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+  }
+}

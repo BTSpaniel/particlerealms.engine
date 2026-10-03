@@ -1,0 +1,6 @@
+{
+  "name": "manifest-oob",
+  "expectedCode": 201,
+  "expectedMessageFragment": "Manifest out of bounds",
+  "size": 571
+}

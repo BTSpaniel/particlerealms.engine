@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/capabilities.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "Compute capability report v1",
+  "description": "Runtime capability metadata, optionally augmented with OS decisions and protected preference receipt. Reporting support or a syntactically valid access decision grants no authority.",
+  "type": "object",
+  "properties": {
+    "supported": {
+      "type": "object",
+      "properties": {
+        "wasm": {
+          "type": "boolean"
+        },
+        "scalar": {
+          "type": "boolean"
+        },
+        "simd": {
+          "type": "boolean"
+        },
+        "threads": {
+          "type": "boolean"
+        },
+        "threadsSimd": {
+          "type": "boolean"
+        },
+        "workers": {
+          "type": "boolean"
+        },
+        "crossOriginIsolated": {
+          "type": "boolean"
+        },
+        "sharedArrayBuffer": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "wasm",
+        "scalar",
+        "simd",
+        "threads",
+        "threadsSimd",
+        "workers",
+        "crossOriginIsolated",
+        "sharedArrayBuffer"
+      ],
+      "additionalProperties": false
+    },
+    "deployed": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "js",
+          "wasm-scalar",
+          "wasm-simd",
+          "wasm-threads",
+          "wasm-threads-simd",
+          "webgpu"
+        ]
+      },
+      "maxItems": 6,
+      "uniqueItems": true
+    },
+    "enabled": {
+      "type": "object",
+      "properties": {
+        "acceleration": {
+          "type": "boolean"
+        },
+        "threads": {
+          "type": "boolean"
+        },
+        "gpu": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "acceleration",
+        "threads",
+        "gpu"
+      ],
+      "additionalProperties": false
+    },
+    "permitted": {
+      "type": "object",
+      "properties": {
+        "approvedOperations": {
+          "type": "boolean"
+        },
+        "arbitraryModules": {
+          "const": false
+        },
+        "gpu": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "approvedOperations",
+        "arbitraryModules",
+        "gpu"
+      ],
+      "additionalProperties": false
+    },
+    "backends": {
+      "type": "object",
+      "properties": {
+        "js": {
+          "$ref": "#/$defs/backendState"
+        },
+        "wasm-scalar": {
+          "$ref": "#/$defs/backendState"
+        },
+        "wasm-simd": {
+          "$ref": "#/$defs/backendState"
+        },
+        "wasm-threads": {
+          "$ref": "#/$defs/backendState"
+        },
+        "wasm-threads-simd": {
+          "$ref": "#/$defs/backendState"
+        },
+        "webgpu": {
+          "$ref": "#/$defs/backendState"
+        }
+      },
+      "required": [
+        "js",
+        "wasm-scalar",
+        "wasm-simd",
+        "wasm-threads",
+        "wasm-threads-simd",
+        "webgpu"
+      ],
+      "additionalProperties": false
+    },
+    "deploymentError": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/$defs/summary"
+      },
+      "maxItems": 1024
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "usedBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "gpuUsedBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxGpuBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxQueuedJobs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxWorkers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "buffers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxBuffers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "usedBytes",
+        "maxBytes",
+        "gpuUsedBytes",
+        "maxGpuBytes",
+        "maxQueuedJobs",
+        "maxWorkers",
+        "buffers",
+        "maxBuffers"
+      ],
+      "additionalProperties": false
+    },
+    "access": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "execution",
+            "inspect-only",
+            "unknown"
+          ]
+        },
+        "execution": {
+          "$ref": "#/$defs/accessDecision"
+        },
+        "inspection": {
+          "$ref": "#/$defs/accessDecision"
+        },
+        "gpu": {
+          "$ref": "#/$defs/accessDecision"
+        },
+        "administration": {
+          "$ref": "#/$defs/accessDecision"
+        }
+      },
+      "required": [
+        "mode",
+        "execution",
+        "inspection",
+        "gpu",
+        "administration"
+      ],
+      "additionalProperties": false
+    },
+    "preference": {
+      "$ref": "#/$defs/preferenceReceipt"
+    }
+  },
+  "required": [
+    "supported",
+    "deployed",
+    "enabled",
+    "permitted",
+    "backends",
+    "deploymentError",
+    "operations"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "backendState": {
+      "type": "object",
+      "properties": {
+        "supported": {
+          "type": "boolean"
+        },
+        "deployed": {
+          "type": "boolean"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "permitted": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "supported",
+        "deployed",
+        "enabled",
+        "permitted"
+      ],
+      "additionalProperties": false
+    },
+    "accessDecision": {
+      "type": "object",
+      "properties": {
+        "declared": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "granted": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "granted",
+            "not-requested",
+            "denied",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "declared",
+        "granted",
+        "state",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "preferenceReceipt": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "const": "operator"
+        },
+        "state": {
+          "enum": [
+            "saved",
+            "default",
+            "unavailable",
+            "error"
+          ]
+        },
+        "persisted": {
+          "type": "boolean"
+        },
+        "accelerationEnabled": {
+          "type": "boolean"
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "state",
+        "persisted",
+        "accelerationEnabled",
+        "errorCode"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

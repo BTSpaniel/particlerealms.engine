@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asset Ingestion Runtime — Verification</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; font: 14px/1.5 Inter, system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #16203a, #07090f 60%); color: #e7ecf3; min-height: 100vh;
+  }
+  h1 { font-size: 20px; margin: 0 0 2px; }
+  .sub { color: #9aa6b8; font-size: 12px; margin-bottom: 18px; }
+  .summary { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .pill { border-radius: 999px; padding: 5px 14px; font-weight: 700; font-size: 13px; }
+  .pill.ok   { background: rgba(63,185,80,.16);  color: #56d364; border: 1px solid rgba(63,185,80,.4); }
+  .pill.bad  { background: rgba(248,81,73,.16);  color: #ff7b72; border: 1px solid rgba(248,81,73,.4); }
+  .pill.tot  { background: rgba(88,166,255,.14); color: #79c0ff; border: 1px solid rgba(88,166,255,.35); }
+  button {
+    font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 7px 16px;
+    background: linear-gradient(135deg,#5eead4,#38bdf8); color: #04111a; border: none;
+  }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 13px; }
+  th { color: #9aa6b8; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+  td.s { width: 64px; font-weight: 700; }
+  td.s.PASS { color: #56d364; }
+  td.s.FAIL { color: #ff7b72; }
+  .grp { color: #79c0ff; font-weight: 700; padding-top: 14px; }
+  .detail { color: #ff9a93; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+  .ms { color: #6b7488; font-size: 11px; }
+  code { background: rgba(255,255,255,.06); padding: 1px 6px; border-radius: 5px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>Asset Ingestion Runtime — Verification</h1>
+  <div class="sub">
+    Manual gate runner. Serve the repo and open
+    <code>/engine/assets/verify.html</code>. Re-run after each edit.
+  </div>
+  <div class="summary">
+    <span id="pill-total" class="pill tot">…</span>
+    <span id="pill-pass"  class="pill ok">…</span>
+    <span id="pill-fail"  class="pill bad">…</span>
+    <button id="rerun">Re-run</button>
+    <span id="time" class="ms"></span>
+  </div>
+  <table>
+    <thead><tr><th class="s">Status</th><th>Gate</th><th>Detail</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+<script type="module">
+// ── Phase 0: foundations ─────────────────────────────────────────────────────
+import {
+  createEngineModel, createImportTransform, createEngineNode, createEngineMesh,
+  createEnginePrimitive, ENGINE_MODEL_LAYERS, layerStatus,
+} from './EngineModel.js';
+import { createAssetRecord, createLicenseBlock, licenseNeedsReview } from './AssetRecord.js';
+import {
+  parseVPath, isVPath, makeVPath, withScheme, vpathBasename, vpathExtension, cachePathFor,
+} from './vpath.js';
+import { axisVector, axisCorrectionQuat, rotateVecByQuat, unitScaleToMeters } from './CanonicalSpace.js';
+// ── Phase 1: asset core + import pipeline ────────────────────────────────────
+import { hashContent, classify, DEDUP } from './AssetDeduper.js';
+import { AssetRegistry } from './AssetRegistry.js';
+import { AssetResolver, makeMemoryBackend } from './AssetResolver.js';
+import { LicenseTracker, GATE } from './LicenseTracker.js';
+import { detectFormat } from './import/FormatDetector.js';
+import { importGltf } from './import/GltfSceneImporter.js';
+import { importObj } from './import/ObjImporter.js';
+import { importStl } from './import/StlImporter.js';
+import { importPly } from './import/PlyImporter.js';
+import { resolveOrientation, classifyConfidence, CONFIDENCE_POLICY } from './import/OrientationResolver.js';
+import { detectHierarchy, detectParts, detectSemanticDomain } from './import/Detectors.js';
+import { interleaveStandard, STANDARD_STRIDE_FLOATS } from './import/GpuUploader.js';
+import { importFile } from './import/ImportPipeline.js';
+// ── Phase 2: materials & textures ────────────────────────────────────────────
+import { WORKFLOW, COLOR_SPACE, createEngineMaterial, hasTextureTransform } from './material/EngineMaterial.js';
+import { importMaterials } from './material/MaterialImport.js';
+import { normalizeTextures } from './material/TextureImport.js';
+import { buildSurfaceBindings } from './material/SurfaceBinding.js';
+import { SEGMENT_MODE, createSegmentView, bakeSegment } from './material/SegmentView.js';
+import { createMaterialVariant, approximateToMetallicRoughness, restoreOriginal } from './material/MaterialVariant.js';
+// ── Phase 3: vehicles ────────────────────────────────────────────────────────
+import { detectWheels } from './vehicle/WheelDetector.js';
+import { detectChassis } from './vehicle/ChassisDetector.js';
+import { buildVehicleRig } from './vehicle/VehicleRigBuilder.js';
+import { suspensionForce, tireForce, advanceSpin, visualWheelMatrix } from './vehicle/WheelPhysics.js';
+import { transformPoint as vehTransformPoint, identity as vehIdentity } from './vehicle/VehicleMath.js';
+// ── Render layer (reusable geometry + visual wheel spin/steer) ─────────────────
+import { buildWheelSpinMap, pivotSpin, rotAxis, rollAngle } from './vehicle/WheelSpinVisual.js';
+import { principalAxes } from './geometry/PrincipalAxes.js';
+// ── Phase 5: humanoids ─────────────────────────────────────────────────────────
+import { mapBones } from './humanoid/BoneMapper.js';
+import { buildHumanoidRig } from './humanoid/HumanoidRigBuilder.js';
+// ── Phase 5: weapons ───────────────────────────────────────────────────────────
+import { detectWeapon } from './weapon/WeaponSocketDetector.js';
+import { buildWeaponRig } from './weapon/WeaponRigBuilder.js';
+import { defaultFireAction, createTimelinePlayer, eventsBetween } from './weapon/WeaponTimeline.js';
+import { createWeaponStateMachine } from './weapon/WeaponStateMachine.js';
+// ── Phase 5: hands / fingers ─────────────────────────────────────────────────
+import { mapFingers } from './humanoid/FingerMapper.js';
+import { generateFingers } from './humanoid/FingerGenerator.js';
+import { buildHandRig } from './humanoid/HandRigBuilder.js';
+// ── Phase 5: joint limits (range of motion) ──────────────────────────────────
+import {
+  buildJointLimits, hingeAxis, deriveBendDirection, deriveJointType, deriveSwingCone,
+  deriveHingeLimit, deriveTwistLimit, mirrorLeftRightLimits, validJointTypeSet, validateBoneTopology,
+} from './rig/JointLimits.js';
+import { buildRagdoll } from './rig/RagdollBuilder.js';
+import { createRagdollSim } from './rig/RagdollSim.js';
+import { createCharacterPhysicsAsset, validateCharacterPhysicsAsset, inferDriveType } from './rig/CharacterPhysicsAsset.js';
+import {
+  createActiveRigFromCharacterPhysicsAsset, createActiveRigControllerOptionsFromCharacterPhysicsAsset,
+} from '../sim/physics/rig/CharacterPhysicsAssetAdapter.js';
+import { ActiveRigController } from '../sim/physics/rig/ActiveRigController.js';
+import { PBDRagdoll, RagdollBone, JointType, DEFAULT_MEASUREMENTS } from '../sim/physics/PBDRagdoll.js';
+import { characterPhysicsAssetToBodyTemplate } from './rig/BodyTemplateExport.js';
+// ── Phase 5: skeleton heal ───────────────────────────────────────────────────
+import { healHumanoid, humanoidBonePosition, healSkeleton, analyzeSymmetry } from './humanoid/SkeletonHeal.js';
+import { buildBindPose, jointPosition } from './humanoid/SkinPose.js';
+
+const VERSION = 'assets v0.9.0-alpha';
+
+// Build a synthetic car EngineModel directly (no glTF needed): a body box + 4
+// cylinder wheels at the corners. `named=false` exercises geometry-only detection.
+function makeCar(named = true) {
+  const m = createEngineModel({ name: 'car', sourceFormat: 'gltf' });
+  const addBox = (id, name, t, size) => {
+    const half = size.map((s) => s / 2);
+    const bounds = { min: [-half[0], -half[1], -half[2]], max: [half[0], half[1], half[2]], center: [0, 0, 0], radius: Math.hypot(...half) };
+    m.primitives.push(createEnginePrimitive({ id: `primitive:${id}`, mesh: `mesh:${id}`, bounds, vertexCount: 8 }));
+    m.meshes.push(createEngineMesh({ id: `mesh:${id}`, name, primitives: [`primitive:${id}`], bounds }));
+    m.nodes.push(createEngineNode({ id: `node:${id}`, name, translation: t, mesh: `mesh:${id}` }));
+  };
+  addBox('body', 'Body', [0, 0.5, 0], [2, 1, 4]);
+  const wn = named ? ['Wheel_FL', 'Wheel_FR', 'Wheel_RL', 'Wheel_RR'] : ['Cyl_0', 'Cyl_1', 'Cyl_2', 'Cyl_3'];
+  const wp = [[-1, 0.3, 1.5], [1, 0.3, 1.5], [-1, 0.3, -1.5], [1, 0.3, -1.5]];
+  wp.forEach((p, i) => addBox('w' + i, wn[i], p, [0.2, 0.7, 0.7]));
+  return m;
+}
+function makeBodyOnly() {
+  const m = createEngineModel({ name: 'blob', sourceFormat: 'gltf' });
+  const bounds = { min: [-1, -0.5, -2], max: [1, 0.5, 2], center: [0, 0, 0], radius: 2.3 };
+  m.primitives.push(createEnginePrimitive({ id: 'primitive:body', mesh: 'mesh:body', bounds, vertexCount: 8 }));
+  m.meshes.push(createEngineMesh({ id: 'mesh:body', name: 'Body', primitives: ['primitive:body'], bounds }));
+  m.nodes.push(createEngineNode({ id: 'node:body', name: 'Body', translation: [0, 0.5, 0], mesh: 'mesh:body' }));
+  return m;
+}
+
+// A car whose REAR wheels are merged into one coaxial mesh node ("BackWheels"),
+// matching the real CityPack rigs: the merged node is long along the axle (X) and
+// disc-shaped (Y,Z). Front wheels are separate, named with +X = left.
+function makeMergedCar() {
+  const m = createEngineModel({ name: 'mcar', sourceFormat: 'gltf' });
+  const addBox = (id, name, t, size) => {
+    const half = size.map((s) => s / 2);
+    const bounds = { min: [-half[0], -half[1], -half[2]], max: [half[0], half[1], half[2]], center: [0, 0, 0], radius: Math.hypot(...half) };
+    m.primitives.push(createEnginePrimitive({ id: `primitive:${id}`, mesh: `mesh:${id}`, bounds, vertexCount: 8 }));
+    m.meshes.push(createEngineMesh({ id: `mesh:${id}`, name, primitives: [`primitive:${id}`], bounds }));
+    m.nodes.push(createEngineNode({ id: `node:${id}`, name, translation: t, mesh: `mesh:${id}` }));
+  };
+  addBox('body', 'Body', [0, 0.5, 0], [2, 1, 4]);
+  addBox('fl', 'Wheel_FL', [1, 0.3, 1.5], [0.2, 0.7, 0.7]);   // +X = left
+  addBox('fr', 'Wheel_FR', [-1, 0.3, 1.5], [0.2, 0.7, 0.7]);
+  addBox('back', 'BackWheels', [0, 0.3, -1.5], [1.5, 0.7, 0.7]); // coaxial pair, long in X
+  return m;
+}
+
+// A thin disc point cloud (in the Y–Z plane, narrow in X) to exercise PCA: the
+// axis of LEAST variance should be ~X (the disc's axle).
+function makeDiscModel() {
+  const m = createEngineModel({ name: 'disc', sourceFormat: 'gltf' });
+  const pts = [];
+  for (let i = 0; i < 48; i++) {
+    const a = (i / 48) * Math.PI * 2;
+    pts.push((Math.random() - 0.5) * 0.04, Math.cos(a) * 0.5, Math.sin(a) * 0.5); // x thin, y/z ring
+  }
+  const arr = new Float32Array(pts);
+  const bounds = { min: [-0.02, -0.5, -0.5], max: [0.02, 0.5, 0.5], center: [0, 0, 0], radius: 0.71 };
+  const prim = createEnginePrimitive({ id: 'primitive:disc', mesh: 'mesh:disc', bounds, vertexCount: arr.length / 3 });
+  prim.attributes = { position: arr };
+  m.primitives.push(prim);
+  m.meshes.push(createEngineMesh({ id: 'mesh:disc', name: 'Disc', primitives: ['primitive:disc'], bounds }));
+  m.nodes.push(createEngineNode({ id: 'node:disc', name: 'Disc', translation: [0, 0, 0], mesh: 'mesh:disc' }));
+  return m;
+}
+
+// Synthetic humanoid skeleton: a shared bone hierarchy + TRS, named per rig
+// convention. Arms are lateral (no Y drop) so the rest pose reads as a T-pose.
+const HUMAN_PARENTS = [-1, 0, 1, 2, 3, 4, 3, 6, 7, 8, 3, 10, 11, 12, 0, 14, 15, 16, 0, 18, 19, 20];
+const HUMAN_TRS = [
+  [0, 1, 0], [0, 0.1, 0], [0, 0.1, 0], [0, 0.1, 0], [0, 0.1, 0], [0, 0.1, 0],
+  [0.1, 0, 0], [0.15, 0, 0], [0.25, 0, 0], [0.25, 0, 0],
+  [-0.1, 0, 0], [-0.15, 0, 0], [-0.25, 0, 0], [-0.25, 0, 0],
+  [0.1, -0.1, 0], [0, -0.4, 0], [0, -0.4, 0], [0, -0.05, 0.1],
+  [-0.1, -0.1, 0], [0, -0.4, 0], [0, -0.4, 0], [0, -0.05, 0.1],
+];
+const MIXAMO_NAMES = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftShoulder', 'LeftArm', 'LeftForeArm', 'LeftHand', 'RightShoulder', 'RightArm', 'RightForeArm', 'RightHand', 'LeftUpLeg', 'LeftLeg', 'LeftFoot', 'LeftToeBase', 'RightUpLeg', 'RightLeg', 'RightFoot', 'RightToeBase'].map((n) => 'mixamorig:' + n);
+const VRM_NAMES = ['C_Hips', 'C_Spine', 'C_Chest', 'C_UpperChest', 'C_Neck', 'C_Head', 'L_Shoulder', 'L_UpperArm', 'L_LowerArm', 'L_Hand', 'R_Shoulder', 'R_UpperArm', 'R_LowerArm', 'R_Hand', 'L_UpperLeg', 'L_LowerLeg', 'L_Foot', 'L_ToeBase', 'R_UpperLeg', 'R_LowerLeg', 'R_Foot', 'R_ToeBase'].map((n) => 'J_Bip_' + n);
+
+function makeHumanoid(style = 'mixamo') {
+  const names = style === 'vrm' ? VRM_NAMES : MIXAMO_NAMES;
+  const m = createEngineModel({ name: 'human', sourceFormat: 'gltf' });
+  names.forEach((name, i) => {
+    m.nodes.push(createEngineNode({ id: `node:${i}`, name, parent: HUMAN_PARENTS[i] >= 0 ? `node:${HUMAN_PARENTS[i]}` : null, translation: HUMAN_TRS[i], children: [] }));
+  });
+  HUMAN_PARENTS.forEach((p, i) => { if (p >= 0) m.nodes[p].children.push(`node:${i}`); });
+  m.skins.push({ id: 'skin:0', name: 'Armature', jointCount: names.length, raw: { joints: names.map((_, i) => i) } });
+  return m;
+}
+
+function makePartialHuman() {
+  const m = createEngineModel({ name: 'partial', sourceFormat: 'gltf' });
+  [['mixamorig:Hips', -1, [0, 1, 0]], ['mixamorig:Spine', 0, [0, 0.1, 0]], ['mixamorig:Head', 1, [0, 0.3, 0]]]
+    .forEach((d, i) => m.nodes.push(createEngineNode({ id: `node:${i}`, name: d[0], parent: d[1] >= 0 ? `node:${d[1]}` : null, translation: d[2] })));
+  return m;
+}
+
+// A synthetic pistol: long along +Z (barrel), with named sockets + a slide. The
+// muzzle empty sits front-most so geometry agrees with the name.
+function makeWeapon() {
+  const m = createEngineModel({ name: 'Glock Pistol', sourceFormat: 'gltf' });
+  const addBox = (id, name, t, size) => {
+    const half = size.map((s) => s / 2);
+    const bounds = { min: [-half[0], -half[1], -half[2]], max: [half[0], half[1], half[2]], center: [0, 0, 0], radius: Math.hypot(...half) };
+    m.primitives.push(createEnginePrimitive({ id: `primitive:${id}`, mesh: `mesh:${id}`, bounds, vertexCount: 8 }));
+    m.meshes.push(createEngineMesh({ id: `mesh:${id}`, name, primitives: [`primitive:${id}`], bounds }));
+    m.nodes.push(createEngineNode({ id: `node:${id}`, name, translation: t, mesh: `mesh:${id}` }));
+  };
+  const addEmpty = (id, name, t) => m.nodes.push(createEngineNode({ id: `node:${id}`, name, translation: t }));
+  addBox('frame', 'Frame', [0, 0, 0], [0.2, 0.5, 3.0]);     // long in Z
+  addBox('slide', 'Slide', [0, 0.15, 0.3], [0.2, 0.3, 2.0]);
+  addBox('barrel', 'Barrel', [0, 0.05, 1.2], [0.1, 0.1, 1.0]);
+  addEmpty('muzzle', 'Muzzle', [0, 0.05, 1.7]);             // front-most
+  addBox('trigger', 'Trigger', [0, -0.1, -0.2], [0.05, 0.2, 0.1]);
+  addBox('grip', 'Grip', [0, -0.5, -0.5], [0.2, 0.6, 0.3]);
+  addBox('mag', 'Magazine', [0, -0.7, -0.5], [0.18, 0.5, 0.25]);
+  addBox('sight', 'Sight', [0, 0.32, 0.8], [0.05, 0.05, 0.1]);
+  return m;
+}
+
+// A hand skeleton with named finger bones (3 joints each) under a hand node.
+function makeHandSkeleton() {
+  const m = createEngineModel({ name: 'hand', sourceFormat: 'gltf' });
+  m.nodes.push(createEngineNode({ id: 'node:0', name: 'mixamorig:RightHand', parent: null, children: [] }));
+  let id = 1;
+  for (const f of ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']) {
+    let parent = 'node:0';
+    for (let j = 1; j <= 3; j++) {
+      const nid = `node:${id++}`;
+      m.nodes.push(createEngineNode({ id: nid, name: `mixamorig:RightHand${f}${j}`, parent, children: [] }));
+      const pn = m.nodes.find((n) => n.id === parent); if (pn) pn.children.push(nid);
+      parent = nid;
+    }
+  }
+  return m;
+}
+
+// An OPEN hand point cloud: a palm slab + 5 prongs (4 fingers + a shorter, offset
+// thumb) along +Z, spread in X, thin in Y.
+function makeOpenHandCloud() {
+  const pts = [];
+  for (let xi = -0.25; xi <= 0.251; xi += 0.1) for (let zi = 0; zi <= 0.31; zi += 0.1) for (const y of [-0.04, 0, 0.04]) pts.push([xi, y, zi]);
+  for (const x of [-0.18, -0.06, 0.06, 0.18]) for (const z of [0.45, 0.6, 0.75, 0.9]) pts.push([x, 0, z]);
+  for (const z of [0.45, 0.52, 0.6]) pts.push([0.30, 0, z]); // thumb: offset + shorter
+  return pts;
+}
+
+// A CLENCHED fist: a compact, dense blob with no separated finger prongs (the
+// fine X spacing keeps it a single lateral lobe, like a real closed-hand mesh).
+function makeClenchedCloud() {
+  const pts = [];
+  for (let xi = -0.2; xi <= 0.201; xi += 0.02) for (let zi = 0; zi <= 0.451; zi += 0.05) for (const y of [-0.05, 0, 0.05]) pts.push([xi, y, zi]);
+  return pts;
+}
+
+// A spider: a central body hub with 8 straight radial leg chains (coxa→femur→
+// tibia→tarsus). No names/skin — exercises generic topology joint-limit inference.
+function makeSpider() {
+  const m = createEngineModel({ name: 'spider', sourceFormat: 'gltf' });
+  m.nodes.push(createEngineNode({ id: 'node:0', name: 'Body', parent: null, translation: [0, 1, 0], children: [] }));
+  let id = 1;
+  for (let k = 0; k < 8; k++) {
+    const a = k * Math.PI / 4; const dir = [Math.cos(a) * 0.3, 0, Math.sin(a) * 0.3];
+    let parent = 'node:0';
+    for (let s = 0; s < 4; s++) { // coxa, femur, tibia, tarsus — straight radial
+      const nid = `node:${id++}`;
+      m.nodes.push(createEngineNode({ id: nid, name: `leg${k}_seg${s}`, parent, translation: dir, children: [] }));
+      const pn = m.nodes.find((n) => n.id === parent); if (pn) pn.children.push(nid);
+      parent = nid;
+    }
+  }
+  return m;
+}
+
+// 1×1 PNG (data URI) so embedded-image extraction has real bytes to resolve.
+const PNG_1PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+
+function texturedGltf() {
+  const g = triangleGltf();
+  g.images = [{ uri: PNG_1PX }];
+  g.samplers = [{ wrapS: 33071, wrapT: 10497, magFilter: 9729, minFilter: 9987 }]; // clamp / repeat / linear / trilinear
+  g.textures = [{ source: 0, sampler: 0 }];
+  g.materials = [{
+    name: 'painted',
+    pbrMetallicRoughness: {
+      baseColorFactor: [1, 0, 0, 1],
+      baseColorTexture: { index: 0, texCoord: 1, extensions: { KHR_texture_transform: { offset: [0.1, 0.2], rotation: 0.5, scale: [2, 2], texCoord: 0 } } },
+      metallicFactor: 0.3, roughnessFactor: 0.7,
+      metallicRoughnessTexture: { index: 0 },
+    },
+    normalTexture: { index: 0 },
+    occlusionTexture: { index: 0 },
+    emissiveFactor: [0, 0.5, 0],
+    alphaMode: 'MASK', alphaCutoff: 0.3, doubleSided: true,
+  }];
+  return g;
+}
+
+// ── inline fixtures (no GPU, no files needed) ────────────────────────────────
+const b64 = (bytes) => { let s = ''; for (const b of bytes) s += String.fromCharCode(b); return btoa(s); };
+const GLTF_MAGIC_HEAD = new Uint8Array([0x67, 0x6c, 0x54, 0x46, 2, 0, 0, 0]);
+const PNG_HEAD = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+function triangleGltf() {
+  const pos = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const idx = new Uint16Array([0, 1, 2]);
+  const buf = new Uint8Array(pos.byteLength + idx.byteLength);
+  buf.set(new Uint8Array(pos.buffer), 0);
+  buf.set(new Uint8Array(idx.buffer), pos.byteLength);
+  return {
+    asset: { version: '2.0' },
+    buffers: [{ uri: 'data:application/octet-stream;base64,' + b64(buf), byteLength: buf.length }],
+    bufferViews: [
+      { buffer: 0, byteOffset: 0, byteLength: pos.byteLength },
+      { buffer: 0, byteOffset: pos.byteLength, byteLength: idx.byteLength },
+    ],
+    accessors: [
+      { bufferView: 0, componentType: 5126, count: 3, type: 'VEC3', min: [0, 0, 0], max: [1, 1, 0] },
+      { bufferView: 1, componentType: 5123, count: 3, type: 'SCALAR' },
+    ],
+    meshes: [{ name: 'tri', primitives: [{ attributes: { POSITION: 0 }, indices: 1, material: 0 }] }],
+    materials: [{ name: 'red', pbrMetallicRoughness: { baseColorFactor: [1, 0, 0, 1] } }],
+    nodes: [{ name: 'Body', mesh: 0, children: [1] }, { name: 'Wheel_FL' }],
+    scenes: [{ nodes: [0] }],
+  };
+}
+
+const OBJ_TRI = 'v 0 0 0\nv 1 0 0\nv 0 1 0\nusemtl red\nf 1 2 3\n';
+const STL_ASCII = 'solid t\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 1 0 0\nvertex 0 1 0\nendloop\nendfacet\nendsolid t\n';
+const PLY_ASCII = 'ply\nformat ascii 1.0\nelement vertex 3\nproperty float x\nproperty float y\nproperty float z\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n0 0 0\n1 0 0\n0 1 0\n3 0 1 2\n';
+
+function binaryStlTriangle() {
+  const buf = new Uint8Array(84 + 50);
+  const dv = new DataView(buf.buffer);
+  dv.setUint32(80, 1, true); // 1 triangle
+  let o = 84;
+  const verts = [0, 0, 1, /* normal */ 0, 0, 0, 1, 0, 0, 0, 1, 0];
+  for (const f of verts) { dv.setFloat32(o, f, true); o += 4; }
+  return buf;
+}
+
+async function runAll() {
+  const results = [];
+  let group = '';
+  const G = (name) => { group = name; };
+  const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
+  const vnear = (a, b, eps = 1e-6) => a.length === b.length && a.every((x, i) => near(x, b[i], eps));
+  const eqArr = vnear;
+  const assert = (cond, msg) => { if (!cond) throw new Error(msg || 'assertion failed'); };
+  const t = (name, fn) => {
+    try { fn(); results.push({ group, name, status: 'PASS' }); }
+    catch (e) { results.push({ group, name, status: 'FAIL', detail: e?.message ?? String(e) }); }
+  };
+  const ta = async (name, fn) => {
+    try { await fn(); results.push({ group, name, status: 'PASS' }); }
+    catch (e) { results.push({ group, name, status: 'FAIL', detail: e?.message ?? String(e) }); }
+  };
+
+  // ── EngineModel ─────────────────────────────────────────────────────────────
+  G('Assets P0 · EngineModel');
+
+  t('a fresh EngineModel has every layer present but explicitly unbuilt', () => {
+    const m = createEngineModel({ name: 'mug' });
+    for (const layer of ENGINE_MODEL_LAYERS) assert(Array.isArray(m[layer]), `${layer} missing`);
+    const s = layerStatus(m);
+    assert(ENGINE_MODEL_LAYERS.every((l) => s[l] === 0), 'layers should start empty (no faked layers)');
+    assert(m.rigs.vehicle === null && m.rigs.weapon === null, 'rigs start null, not faked');
+    assert(m.gpuReady === false, 'gpuReady starts false');
+  });
+
+  t('layerStatus reports built vs unbuilt layers', () => {
+    const m = createEngineModel();
+    m.nodes.push(createEngineNode({ id: 'n0', name: 'root' }));
+    m.primitives.push(createEnginePrimitive({ id: 'p0', vertexCount: 3 }));
+    m.rigs.vehicle = { wheels: [] };
+    const s = layerStatus(m);
+    assert(s.nodes === 1 && s.primitives === 1, 'built layers counted');
+    assert(s.materials === 0, 'unbuilt layer stays zero');
+    assert(s.rigs.vehicle === true && s.rigs.weapon === false, 'rig status reported');
+  });
+
+  t('ImportTransform defaults to canonical + full confidence and is non-destructive', () => {
+    const it = createImportTransform();
+    assert(it.upAxis === '+Y' && it.forwardAxis === '+Z', 'canonical default frame');
+    assert(it.scaleCorrection === 1 && it.confidence === 1, 'identity correction by default');
+  });
+
+  // ── AssetRecord + license ────────────────────────────────────────────────────
+  G('Assets P0 · AssetRecord');
+
+  t('asset records carry source hash, primary, backups and converted slots', () => {
+    const r = createAssetRecord({
+      type: 'model', name: 'Sports Car', sourceHash: 'sha256:9ab3', sourceFormat: 'glb',
+      primary: 'asset://models/vehicles/sports_car/source.glb',
+      backups: ['user://imports/sports_car.glb'],
+    });
+    assert(r.id.startsWith('asset_model_'), 'typed id');
+    assert(r.primary && r.backups.length === 1, 'primary + backups recorded');
+    assert(r.converted.engineModel === null, 'converted artifacts start unbuilt');
+  });
+
+  t('unknown or conversion-disallowed licenses require review', () => {
+    assert(licenseNeedsReview(createLicenseBlock()), 'unknown license flagged');
+    assert(licenseNeedsReview(createLicenseBlock({ source: 'Fab', licenseType: 'standard', allowsEngineConversion: false })), 'no-conversion flagged');
+    assert(!licenseNeedsReview(createLicenseBlock({ source: 'user', licenseType: 'owned', allowsEngineConversion: true })), 'owned + convertible passes');
+  });
+
+  // ── virtual paths ────────────────────────────────────────────────────────────
+  G('Assets P0 · Virtual paths');
+
+  t('parseVPath splits scheme + normalized segments; rejects bad schemes', () => {
+    const p = parseVPath('asset://models/vehicles/sports_car');
+    assert(p.scheme === 'asset' && p.segments.length === 3, 'parsed segments');
+    assert(parseVPath('http://evil') === null, 'unknown scheme rejected');
+    assert(parseVPath('not a path') === null, 'malformed rejected');
+  });
+
+  t('makeVPath + normalization collapse redundant separators', () => {
+    assert(makeVPath('cache', 'models', 'a.bin') === 'cache://models/a.bin', 'joined');
+    assert(makeVPath('asset', 'a//b/./c') === 'asset://a/b/c', 'normalized');
+    assert(isVPath('user://imports/x.glb'), 'isVPath true for valid');
+  });
+
+  t('withScheme re-points a path for backups; basename/extension helpers work', () => {
+    assert(withScheme('asset://models/car.glb', 'cache') === 'cache://models/car.glb', 're-schemed');
+    assert(vpathBasename('asset://a/b/car.GLB') === 'car.GLB', 'basename');
+    assert(vpathExtension('asset://a/b/car.GLB') === 'glb', 'lowercased extension');
+  });
+
+  t('cachePathFor keys converted artifacts by content hash', () => {
+    const cp = cachePathFor('models', 'sha256:9ab3deadbeefcafe0011', 'enginebin');
+    assert(cp.startsWith('cache://models/') && cp.endsWith('.enginebin'), 'hash-keyed cache path');
+  });
+
+  // ── canonical space ──────────────────────────────────────────────────────────
+  G('Assets P0 · Canonical space');
+
+  t('axisVector resolves tokens and rejects garbage', () => {
+    assert(vnear(axisVector('+Y'), [0, 1, 0]), '+Y');
+    assert(vnear(axisVector('-Z'), [0, 0, -1]), '-Z');
+    let threw = false; try { axisVector('Q'); } catch (_) { threw = true; }
+    assert(threw, 'bad axis rejected');
+  });
+
+  t('canonical frame (Y-up/Z-fwd) yields identity correction', () => {
+    const q = axisCorrectionQuat('+Y', '+Z');
+    assert(vnear(rotateVecByQuat([1, 2, 3], q), [1, 2, 3]), 'no-op for canonical input');
+  });
+
+  t('Blender frame (Z-up, -Y-fwd) maps source-up onto canonical up', () => {
+    const q = axisCorrectionQuat('+Z', '-Y');
+    // a Blender "up" vector (+Z) must become canonical up (+Y)
+    assert(vnear(rotateVecByQuat([0, 0, 1], q), [0, 1, 0]), 'Z-up → Y-up');
+    // Blender "forward" (-Y) must become canonical forward (+Z)
+    assert(vnear(rotateVecByQuat([0, -1, 0], q), [0, 0, 1]), '-Y-fwd → +Z-fwd');
+  });
+
+  t('unit scale guesses convert to meters', () => {
+    assert(near(unitScaleToMeters('mm'), 0.001) && near(unitScaleToMeters('cm'), 0.01), 'metric');
+    assert(near(unitScaleToMeters('in'), 0.0254) && near(unitScaleToMeters('m'), 1), 'imperial + meters');
+  });
+
+  // ── Phase 1: format detection ────────────────────────────────────────────────
+  G('Assets P1 · Format detection');
+
+  t('magic bytes identify GLB and PNG', () => {
+    assert(detectFormat('thing.glb', GLTF_MAGIC_HEAD).format === 'glb', 'glb magic');
+    assert(detectFormat('pic.png', PNG_HEAD).format === 'png', 'png magic');
+  });
+
+  t('a lying extension is overruled by magic bytes (conflict flagged)', () => {
+    const d = detectFormat('actually_a.obj', PNG_HEAD); // .obj name, PNG content
+    assert(d.format === 'png' && d.conflict, 'magic wins, conflict reported');
+    assert(d.confidence < 0.95, 'confidence reduced on conflict');
+  });
+
+  t('extension-only detection has lower confidence', () => {
+    const d = detectFormat('mesh.obj', null);
+    assert(d.format === 'obj' && d.byMagic === null && d.confidence <= 0.7, 'obj by extension');
+  });
+
+  // ── Phase 1: content hash + dedup ────────────────────────────────────────────
+  G('Assets P1 · Dedup');
+
+  await ta('hashContent is deterministic and self-describing', async () => {
+    const a = await hashContent('hello-model');
+    const b = await hashContent('hello-model');
+    const c = await hashContent('other');
+    assert(a === b, 'same bytes → same hash');
+    assert(a !== c, 'different bytes → different hash');
+    assert(/^(sha256|fnv1a):/.test(a), 'algorithm-tagged');
+  });
+
+  t('classify separates exact duplicates, variants, and conflicts', () => {
+    const records = [
+      { id: 'r1', name: 'car', sourceHash: 'sha256:aaa', metadata: { meshHash: 'm1' } },
+      { id: 'r2', name: 'tree', sourceHash: 'sha256:bbb', metadata: { meshHash: 'm2' } },
+    ];
+    assert(classify({ sourceHash: 'sha256:aaa', name: 'car' }, records).kind === DEDUP.EXACT_DUPLICATE, 'dup');
+    assert(classify({ sourceHash: 'sha256:zzz', name: 'car' }, records).kind === DEDUP.CONFLICT, 'name conflict');
+    assert(classify({ sourceHash: 'sha256:zzz', name: 'new', meshHash: 'm1' }, records).kind === DEDUP.VARIANT, 'mesh variant');
+    assert(classify({ sourceHash: 'sha256:zzz', name: 'new' }, records).kind === DEDUP.NEW, 'new');
+  });
+
+  await ta('registry deduplicates re-imports of the same bytes (idempotent)', async () => {
+    const reg = new AssetRegistry();
+    const bytes = new TextEncoder().encode('GLB-LIKE-BYTES');
+    const r1 = await reg.registerSource(bytes, { name: 'car.glb', sourceFormat: 'glb', primary: 'temp://a.glb' });
+    const r2 = await reg.registerSource(bytes, { name: 'car.glb', sourceFormat: 'glb', primary: 'user://b.glb' });
+    assert(reg.size === 1, 'no second asset for identical source');
+    assert(r2.dedup === DEDUP.EXACT_DUPLICATE, 'classified as duplicate');
+    assert(r1.record.backups.includes('user://b.glb'), 'new path added as backup');
+  });
+
+  // ── Phase 1: backup resolution + repair ──────────────────────────────────────
+  G('Assets P1 · Resolver');
+
+  await ta('a missing primary is served + repaired from a hash-matching backup', async () => {
+    const bytes = new TextEncoder().encode('the-real-asset');
+    const hash = await hashContent(bytes);
+    const resolver = new AssetResolver();
+    const temp = makeMemoryBackend(); const cache = makeMemoryBackend();
+    resolver.registerBackend('temp', temp).registerBackend('cache', cache);
+    await cache.write('originals/x.bin', bytes); // only the backup exists
+    const record = { sourceHash: hash, primary: 'temp://drop/x.bin', backups: ['cache://originals/x.bin'] };
+    const res = await resolver.resolveAsset(record);
+    assert(res.ok && res.source === 'cache://originals/x.bin', 'served from backup');
+    assert(res.repaired, 'primary repaired');
+    assert(await temp.read('drop/x.bin') != null, 'primary now restored');
+  });
+
+  await ta('a backup with the wrong content is flagged a conflict, never accepted', async () => {
+    const good = new TextEncoder().encode('correct');
+    const hash = await hashContent(good);
+    const resolver = new AssetResolver();
+    const temp = makeMemoryBackend();
+    resolver.registerBackend('temp', temp);
+    await temp.write('drop/x.bin', new TextEncoder().encode('TAMPERED'));
+    const res = await resolver.resolveAsset({ sourceHash: hash, primary: 'temp://drop/x.bin', backups: [] });
+    assert(!res.ok && res.conflicts.includes('temp://drop/x.bin'), 'wrong-hash candidate rejected');
+  });
+
+  // ── Phase 1: license gate ────────────────────────────────────────────────────
+  G('Assets P1 · License gate');
+
+  t('unknown licenses warn (advisory) but strict mode blocks', () => {
+    const lax = new LicenseTracker();
+    const strict = new LicenseTracker({ strict: true });
+    assert(lax.evaluate({}).gate === GATE.WARN, 'advisory warn');
+    assert(strict.evaluate({}).gate === GATE.BLOCK, 'strict blocks unknown');
+    assert(lax.evaluate({ allowsEngineConversion: false }).gate === GATE.BLOCK, 'no-conversion always blocks');
+    assert(lax.evaluate({ source: 'user', licenseType: 'owned', allowsEngineConversion: true }).allowed, 'owned passes');
+  });
+
+  // ── Phase 1: glTF scene import ───────────────────────────────────────────────
+  G('Assets P1 · glTF import');
+
+  await ta('glTF imports the full scene graph, geometry, materials, and parents', async () => {
+    const model = await importGltf(triangleGltf(), { name: 'tri', sourceFormat: 'gltf' });
+    assert(model.primitives.length === 1, 'one primitive');
+    const prim = model.primitives[0];
+    assert(prim.vertexCount === 3, 'three vertices decoded');
+    assert(prim.attributes.position.length === 9, 'positions decoded');
+    assert(prim.indices && prim.indices.length === 3, 'indices decoded');
+    assert(prim.material === 'material:0', 'material bound to primitive');
+    assert(model.materials.length === 1 && model.materials[0].raw, 'raw material preserved');
+    assert(model.nodes.length === 2, 'all nodes imported');
+    const wheel = model.nodes.find((n) => n.name === 'Wheel_FL');
+    assert(wheel.parent === 'node:0', 'hierarchy parent link restored');
+    assert(model.bounds && model.bounds.max[0] === 1, 'bounds computed');
+  });
+
+  // ── Phase 1: OBJ / STL / PLY import ──────────────────────────────────────────
+  G('Assets P1 · OBJ/STL/PLY import');
+
+  t('OBJ imports geometry and per-material groups', () => {
+    const model = importObj(OBJ_TRI, { name: 'tri' });
+    assert(model.primitives.length === 1 && model.primitives[0].vertexCount === 3, 'triangle');
+    assert(model.materials.length === 1 && model.materials[0].name === 'red', 'usemtl group');
+  });
+
+  t('STL imports both ASCII and binary triangles', () => {
+    const a = importStl(STL_ASCII, { name: 'a' });
+    const b = importStl(binaryStlTriangle(), { name: 'b' });
+    assert(a.primitives[0].vertexCount === 3, 'ascii STL');
+    assert(b.primitives[0].vertexCount === 3, 'binary STL');
+  });
+
+  t('PLY imports vertices and triangulated faces', () => {
+    const model = importPly(PLY_ASCII, { name: 'p' });
+    assert(model.primitives[0].vertexCount === 3, 'three vertices');
+    assert(model.primitives[0].indices.length === 3, 'one face → 3 indices');
+  });
+
+  // ── Phase 1: orientation + detectors ─────────────────────────────────────────
+  G('Assets P1 · Orientation & detectors');
+
+  t('confidence policy thresholds: auto / review / preview / neutral', () => {
+    assert(classifyConfidence(0.97) === CONFIDENCE_POLICY.AUTO, 'auto');
+    assert(classifyConfidence(0.8) === CONFIDENCE_POLICY.REVIEW, 'review');
+    assert(classifyConfidence(0.6) === CONFIDENCE_POLICY.PREVIEW, 'preview');
+    assert(classifyConfidence(0.3) === CONFIDENCE_POLICY.NEUTRAL, 'neutral');
+  });
+
+  await ta('glTF orientation auto-applies (Y-up); STL guesses a unit from size', async () => {
+    const g = await importGltf(triangleGltf(), { name: 'tri', sourceFormat: 'gltf' });
+    const og = resolveOrientation(g);
+    assert(og.policy === CONFIDENCE_POLICY.AUTO && og.transform.upAxis === '+Y', 'glTF Y-up auto');
+    const stl = importStl(STL_ASCII, { name: 'big' });
+    stl.bounds = { min: [0, 0, 0], max: [3000, 10, 10], center: [1500, 5, 5], radius: 1500 };
+    const os = resolveOrientation(stl);
+    assert(os.transform.scaleCorrection === 0.001 && os.signals.unitGuess === 'mm', 'large STL → mm guess');
+  });
+
+  await ta('detectors summarize hierarchy and flag semantic parts (wheel→vehicle)', async () => {
+    const model = await importGltf(triangleGltf(), { name: 'tri', sourceFormat: 'gltf' });
+    const h = detectHierarchy(model);
+    assert(h.nodeCount === 2 && h.roots.length === 1, 'hierarchy summary');
+    const parts = detectParts(model);
+    const wheel = parts.find((p) => p.kind === 'wheel');
+    assert(wheel && wheel.side === 'front', 'Wheel_FL detected as front wheel');
+    assert(detectSemanticDomain(model).domain === 'vehicle', 'domain rolled up to vehicle');
+  });
+
+  // ── Phase 1: interleave for GPU upload ───────────────────────────────────────
+  G('Assets P1 · GPU interleave');
+
+  await ta('interleaveStandard packs pos/normal/uv and generates missing normals', async () => {
+    const model = await importGltf(triangleGltf(), { name: 'tri', sourceFormat: 'gltf' });
+    const inter = interleaveStandard(model.primitives[0]);
+    assert(inter.vertexCount === 3, 'three vertices');
+    assert(inter.data.length === 3 * STANDARD_STRIDE_FLOATS, 'interleaved stride');
+    // generated normal for a Z-facing triangle should point ±Z
+    assert(Math.abs(inter.data[5]) > 0.9, 'flat normal generated');
+  });
+
+  // ── Phase 1: end-to-end pipeline ─────────────────────────────────────────────
+  G('Assets P1 · Pipeline (end-to-end)');
+
+  await ta('importFile detects, parses, orients, detects parts, and registers', async () => {
+    const reg = new AssetRegistry();
+    const bytes = new TextEncoder().encode(OBJ_TRI);
+    const res = await importFile({ name: 'car.obj', bytes, registry: reg, options: { primary: 'temp://car.obj' } });
+    assert(res.ok, 'import ok');
+    assert(res.format.format === 'obj', 'format detected');
+    assert(res.model.primitives[0].vertexCount === 3, 'geometry parsed');
+    assert(res.model.importTransform, 'orientation resolved');
+    assert(res.registration && reg.size === 1, 'registered once');
+    assert(res.model.sourceHash && res.model.sourceHash === res.registration.record.sourceHash, 'hash linked');
+  });
+
+  // ── Phase 2: material decode ─────────────────────────────────────────────────
+  G('Assets P2 · Material decode');
+
+  await ta('glTF material decodes factors, alpha, and double-sided exactly', async () => {
+    const model = await importGltf(texturedGltf(), { name: 't', sourceFormat: 'gltf' });
+    const [mat] = importMaterials(model);
+    assert(mat.workflow === WORKFLOW.METALLIC_ROUGHNESS, 'metallic-roughness workflow');
+    assert(eqArr(mat.baseColorFactor, [1, 0, 0, 1]), 'base color');
+    assert(near(mat.metallicFactor, 0.3) && near(mat.roughnessFactor, 0.7), 'metal/rough factors');
+    assert(mat.alphaMode === 'mask' && near(mat.alphaCutoff, 0.3) && mat.doubleSided, 'alpha + double-sided');
+    assert(eqArr(mat.emissiveFactor, [0, 0.5, 0]), 'emissive');
+  });
+
+  await ta('UV set, KHR_texture_transform, and sampler wrap/filter survive', async () => {
+    const model = await importGltf(texturedGltf(), { name: 't', sourceFormat: 'gltf' });
+    const [mat] = importMaterials(model);
+    const bc = mat.textures.baseColor;
+    assert(bc && bc.textureId === 'texture:0', 'base color bound');
+    assert(bc.uvSet === 0, 'KHR_texture_transform.texCoord (0) overrides info.texCoord (1)');
+    assert(hasTextureTransform(bc) && near(bc.transform.rotation, 0.5) && eqArr(bc.transform.scale, [2, 2]), 'transform preserved');
+    assert(bc.colorSpace === COLOR_SPACE.SRGB && bc.usage === 'color', 'base color is sRGB');
+    assert(bc.sampler.wrapU === 'clamp-to-edge' && bc.sampler.wrapV === 'repeat', 'wrap modes preserved');
+    assert(bc.sampler.minFilter === 'linearMipmapLinear' && bc.sampler.magFilter === 'linear', 'filters preserved');
+  });
+
+  await ta('packed ORM channels are read exactly (rough=G, metal=B); MR is linear', async () => {
+    const model = await importGltf(texturedGltf(), { name: 't', sourceFormat: 'gltf' });
+    const [mat] = importMaterials(model);
+    const mr = mat.textures.metallicRoughness;
+    assert(mr && mr.colorSpace === COLOR_SPACE.LINEAR, 'metallic-roughness is linear data');
+    assert(mr.channelUse.roughness === 'g' && mr.channelUse.metallic === 'b', 'packed channels exact');
+    assert(mat.textures.occlusion.channelUse.occlusion === 'r', 'occlusion in R');
+  });
+
+  // ── Phase 2: texture normalize ───────────────────────────────────────────────
+  G('Assets P2 · Texture normalize');
+
+  await ta('textures infer colour space from bindings (sRGB wins) and carry bytes', async () => {
+    const model = await importGltf(texturedGltf(), { name: 't', sourceFormat: 'gltf' });
+    importMaterials(model);
+    const [tex] = normalizeTextures(model);
+    assert(tex.colorSpace === COLOR_SPACE.SRGB, 'shared texture used as colour ⇒ sRGB');
+    assert(tex.hasBytes && tex.mimeType === 'image/png', 'embedded PNG bytes extracted');
+    assert(tex.compressed === false && tex.decoded === false, 'uncompressed, not yet pixel-decoded');
+  });
+
+  // ── Phase 2: surface bindings ────────────────────────────────────────────────
+  G('Assets P2 · Surface bindings');
+
+  await ta('materials bind to primitives with uv set + semantic part', async () => {
+    const model = await importGltf(texturedGltf(), { name: 't', sourceFormat: 'gltf' });
+    importMaterials(model); detectParts(model);
+    const bindings = buildSurfaceBindings(model);
+    assert(bindings.length === model.primitives.length, 'one binding per primitive');
+    const b = bindings[0];
+    assert(b.materialId === 'material:0' && b.primitiveId === model.primitives[0].id, 'material↔primitive');
+    assert(b.nodeId === 'node:0' && b.semanticPart === 'chassis', 'node + semantic part (Body→chassis)');
+  });
+
+  // ── Phase 2: segment views (non-destructive) ─────────────────────────────────
+  G('Assets P2 · Segment views');
+
+  await ta('segment views group by material/node without copying geometry; bake on demand', async () => {
+    const model = await importGltf(texturedGltf(), { name: 't', sourceFormat: 'gltf' });
+    importMaterials(model);
+    const byMat = createSegmentView(model, SEGMENT_MODE.MATERIAL);
+    assert(byMat.baked === false, 'view is non-destructive');
+    assert(byMat.segments.length === 1 && byMat.segments[0].materialId === 'material:0', 'one material segment');
+    assert(byMat.segments[0].primitiveIds.includes(model.primitives[0].id), 'references original primitive id');
+    const baked = bakeSegment(model, byMat, byMat.segments[0].key);
+    assert(baked.baked === true && baked.primitives.length === 1, 'bake copies only on demand');
+  });
+
+  // ── Phase 2: variants & shader-model fallback ────────────────────────────────
+  G('Assets P2 · Variants & fallback');
+
+  t('specular-glossiness approximates to metallic-roughness (original recoverable)', () => {
+    const sg = createEngineMaterial({
+      id: 'm', name: 'sg', workflow: WORKFLOW.SPECULAR_GLOSSINESS, roughnessFactor: 0.2,
+      original: { format: 'gltf', rawMaterialIndex: 0, raw: { extensions: { KHR_materials_pbrSpecularGlossiness: { diffuseFactor: [0.8, 0.1, 0.1, 1], specularFactor: [0.9, 0.9, 0.9], glossinessFactor: 0.8 } } } },
+    });
+    const mr = approximateToMetallicRoughness(sg);
+    assert(mr.workflow === WORKFLOW.METALLIC_ROUGHNESS, 'now metallic-roughness');
+    assert(mr.metallicFactor > 0.5, 'bright specular ⇒ metallic');
+    assert(near(mr.roughnessFactor, 0.2), 'roughness = 1 - glossiness');
+    assert(mr.approximatedFrom === WORKFLOW.SPECULAR_GLOSSINESS, 'labelled approximation');
+    assert(restoreOriginal(mr) && restoreOriginal(mr).extensions, 'original raw recoverable');
+  });
+
+  t('a variant overrides fields, shares the source, and keeps the original', () => {
+    const base = createEngineMaterial({ id: 'mat:0', name: 'body', baseColorFactor: [1, 0, 0, 1], original: { raw: { name: 'body' } } });
+    const blue = createMaterialVariant(base, { baseColorFactor: [0, 0, 1, 1] });
+    assert(blue.variantOf === 'mat:0', 'variant lineage recorded');
+    assert(eqArr(blue.baseColorFactor, [0, 0, 1, 1]), 'override applied');
+    assert(base.baseColorFactor[0] === 1, 'base untouched (non-destructive)');
+    assert(restoreOriginal(blue), 'original still recoverable');
+  });
+
+  // ── Phase 2: pipeline integration ────────────────────────────────────────────
+  G('Assets P2 · Pipeline integration');
+
+  await ta('importFile decodes materials, normalizes textures, and binds surfaces', async () => {
+    const bytes = new TextEncoder().encode(JSON.stringify(texturedGltf()));
+    const res = await importFile({ name: 'painted.gltf', bytes });
+    assert(res.ok, 'import ok');
+    assert(res.model.metadata.materialsDecoded && res.model.metadata.texturesNormalized, 'phase-2 passes ran');
+    assert(res.model.materials[0].original, 'material decoded with recoverable original');
+    assert(res.model.surfaceBindings.length === res.model.primitives.length, 'surface bindings built');
+  });
+
+  // ── Phase 3: wheel detection ─────────────────────────────────────────────────
+  G('Assets P3 · Wheel detection');
+
+  t('named wheels are detected at all four corners with sides', () => {
+    const wheels = detectWheels(makeCar(true));
+    assert(wheels.length === 4, `found ${wheels.length} wheels`);
+    const sides = new Set(wheels.map((w) => w.side));
+    assert(sides.has('front-left') && sides.has('front-right') && sides.has('rear-left') && sides.has('rear-right'), 'four corners classified');
+    assert(wheels.every((w) => w.source === 'name'), 'detected by name');
+  });
+
+  t('unnamed cylinders are still detected by geometry; the chassis box is not', () => {
+    const wheels = detectWheels(makeCar(false));
+    assert(wheels.length === 4, `geometry-only found ${wheels.length}`);
+    assert(wheels.every((w) => w.source === 'geometry'), 'detected by geometry');
+    assert(wheels.every((w) => w.nodeId !== 'node:body'), 'chassis box excluded');
+  });
+
+  // ── Phase 3: chassis + rig builder ───────────────────────────────────────────
+  G('Assets P3 · Rig builder');
+
+  t('buildVehicleRig assembles 4 slots, chassis, steering + drive, high confidence', () => {
+    const m = makeCar(true);
+    const rig = buildVehicleRig(m, { drivetrain: 'rwd' });
+    assert(rig.wheelSlots.length === 4, 'four wheel slots');
+    assert(rig.chassisNode === 'node:body', 'largest mesh is chassis');
+    assert(!rig.needsCorrection && rig.confidence > 0.7, 'credible vehicle');
+    const front = rig.wheelSlots.filter((w) => w.canSteer);
+    const drivenRear = rig.wheelSlots.filter((w) => w.driven);
+    assert(front.length === 2 && front.every((w) => w.id.startsWith('front')), 'front wheels steer');
+    assert(drivenRear.length === 2 && drivenRear.every((w) => w.id.startsWith('rear')), 'RWD drives rear');
+    assert(m.rigs.vehicle === rig, 'rig attached to model');
+  });
+
+  t('a body with no wheels flags needsCorrection instead of guessing', () => {
+    const rig = buildVehicleRig(makeBodyOnly());
+    assert(rig.wheelSlots.length === 0 && rig.needsCorrection, 'merged/absent wheels → correction');
+    assert(rig.confidence < 0.4, 'low confidence');
+  });
+
+  // ── Phase 3: suspension + tire ───────────────────────────────────────────────
+  G('Assets P3 · Suspension & tire');
+
+  t('suspension force = spring(stiffness·compression) + damper(damping·vel)', () => {
+    const r = suspensionForce({ restLength: 0.4, currentLength: 0.3, stiffness: 1000, damping: 10, compressionVelocity: 2 });
+    assert(near(r.compression, 0.1) && near(r.springForce, 100) && near(r.damperForce, 20), 'components');
+    assert(near(r.suspensionForce, 120) && near(r.normalLoad, 120), 'total + load');
+  });
+
+  t('tire force is zero at zero slip and saturates at the friction limit', () => {
+    assert(near(tireForce(0, 1000, 1), 0), 'no slip → no force');
+    const f = tireForce(10, 1000, 0.9, 12);
+    assert(f > 0.85 * 900 && f <= 900, 'saturates near load·grip');
+  });
+
+  // ── Phase 3: visual wheel sync ───────────────────────────────────────────────
+  G('Assets P3 · Visual wheel sync');
+
+  t('wheel visual follows socket, and spin rotates about the axle', () => {
+    const slot = { localCenter: [1, 0.3, 1.5], axleAxisLocal: [1, 0, 0], steerAxisLocal: [0, 1, 0], suspensionAxisLocal: [0, -1, 0], meshCorrectionRotation: [0, 0, 0, 1] };
+    const I = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    const m0 = visualWheelMatrix(I, slot, { spinAngle: 0 });
+    assert(vnear([m0[12], m0[13], m0[14]], [1, 0.3, 1.5]), 'wheel sits at its socket');
+    const mSpin = visualWheelMatrix(I, slot, { spinAngle: Math.PI });
+    const a = vehTransformPoint(m0, [0, 0, 0.3]);
+    const b = vehTransformPoint(mSpin, [0, 0, 0.3]);
+    assert(Math.abs(a[2] - b[2]) > 0.4, 'spin about axle moves a rim point');
+    assert(near(advanceSpin(0, 10, 0.5, 0.1), 2), 'spin integrates ω = v/r · dt');
+  });
+
+  // ── Render layer: axle rule, side handedness, spin/steer, PCA ─────────────────
+  G('Assets · Render layer (wheels/geometry)');
+
+  t('axle = odd extent: thin width (single wheel) AND long run (merged coaxial pair)', () => {
+    const w = detectWheels(makeMergedCar());
+    const front = w.find((x) => x.nodeId === 'node:fl');
+    const back = w.find((x) => x.nodeId === 'node:back');
+    assert(front && back, 'front + merged-rear detected');
+    assert(vnear(front.axleAxisLocal, [1, 0, 0]) && near(front.radius, 0.35), 'single wheel axle=X, radius=diameter/2');
+    assert(vnear(back.axleAxisLocal, [1, 0, 0]), 'merged coaxial axle is the long X run, not the thin disc axis');
+    assert(near(back.radius, 0.35), 'merged radius from diameter (0.7/2), not half the axle run');
+  });
+
+  t('geometry side fallback is right-handed (+Z front ⇒ +X left)', () => {
+    const g = detectWheels(makeCar(false)); // unnamed → geometry classification
+    const fl = g.find((x) => x.worldCenter[0] > 0 && x.worldCenter[2] > 0);
+    const fr = g.find((x) => x.worldCenter[0] < 0 && x.worldCenter[2] > 0);
+    assert(fl && fl.side === 'front-left', `+X,+Z ⇒ front-left (got ${fl?.side})`);
+    assert(fr && fr.side === 'front-right', `−X,+Z ⇒ front-right (got ${fr?.side})`);
+  });
+
+  t('buildWheelSpinMap yields mesh-local pivot/axle; only front wheels steer', () => {
+    const m = makeMergedCar();
+    const rig = buildVehicleRig(m, { drivetrain: 'rwd' });
+    const map = buildWheelSpinMap(m, vehIdentity(), rig);
+    assert(map.size === rig.wheelSlots.length, 'one entry per wheel slot');
+    const front = rig.wheelSlots.find((s) => s.id.startsWith('front'));
+    const rear = rig.wheelSlots.find((s) => s.id.startsWith('rear'));
+    const fe = map.get(front.visualNode); const re = map.get(rear.visualNode);
+    assert(fe.steer === true && re.steer === false, 'front steers, merged rear does not');
+    assert(Math.abs(fe.axle[0]) > 0.95 && Math.abs(fe.axle[1]) < 0.05 && Math.abs(fe.axle[2]) < 0.05, 'axle is lateral (±X)');
+    assert(fe.pivot.length === 3, 'pivot is a mesh-local point');
+  });
+
+  t('pivotSpin rotates a rim point about its axle through the pivot', () => {
+    const m0 = pivotSpin([0, 0, 0], [1, 0, 0], Math.PI);
+    assert(vnear(vehTransformPoint(m0, [0, 0, 1]), [0, 0, -1], 1e-5), '180° about X flips Z');
+    const m1 = pivotSpin([0, 1, 0], [1, 0, 0], Math.PI); // pivot offset in Y
+    assert(vnear(vehTransformPoint(m1, [0, 1, 1]), [0, 1, -1], 1e-5), 'rotation happens around the pivot, not the origin');
+    assert(near(rollAngle(10, 0.5), 20) && near(rollAngle(1, 0), 20), 'roll angle = distance / max(radius, 0.05)');
+    const r = rotAxis([0, 1, 0], Math.PI / 2);
+    assert(vnear(vehTransformPoint(r, [1, 0, 0]), [0, 0, -1], 1e-5), 'rotAxis about Y by 90° maps +X→−Z');
+  });
+
+  t('principalAxes finds a disc\'s axle as the axis of least variance', () => {
+    const pca = principalAxes(makeDiscModel(), 'node:disc');
+    assert(pca, 'PCA computed');
+    const axle = pca.axes[2]; // least variance
+    assert(Math.abs(axle[0]) > 0.9 && Math.abs(axle[1]) < 0.3 && Math.abs(axle[2]) < 0.3, 'least-variance axis ≈ X (the thin disc axle)');
+  });
+
+  // ── Phase 5: humanoid bone mapping ───────────────────────────────────────────
+  G('Assets P5 · Humanoid bone map');
+
+  t('Mixamo skeleton maps to canonical bones, sides, and spine chain', () => {
+    const m = makeHumanoid('mixamo');
+    const rig = buildHumanoidRig(m);
+    assert(rig.bones.hips === 'node:0' && rig.bones.head === 'node:5', 'hips + head');
+    assert(rig.bones.spine === 'node:1' && rig.bones.chest === 'node:2' && rig.bones.upperChest === 'node:3', 'spine→chest→upperChest by hierarchy');
+    assert(rig.bones.leftUpperArm === 'node:7' && rig.bones.leftLowerArm === 'node:8' && rig.bones.leftHand === 'node:9', 'left arm chain (Arm/ForeArm/Hand)');
+    assert(rig.bones.rightHand === 'node:13' && rig.bones.leftFoot === 'node:16' && rig.bones.rightFoot === 'node:20', 'right hand + both feet');
+    assert(rig.confidence === 1 && !rig.needsCorrection, 'all required bones mapped');
+    assert(rig.poseType === 't-pose', 'lateral arms → T-pose');
+    assert(m.rigs.humanoid === rig, 'rig attached to model');
+  });
+
+  t('VRM naming maps and respects explicit chest / upperChest', () => {
+    const rig = buildHumanoidRig(makeHumanoid('vrm'));
+    assert(rig.bones.spine === 'node:1' && rig.bones.chest === 'node:2' && rig.bones.upperChest === 'node:3', 'explicit torso slots');
+    assert(rig.bones.leftUpperArm === 'node:7' && rig.bones.rightLowerArm === 'node:12', 'sides via _L_/_R_ tokens');
+    assert(!rig.needsCorrection, 'complete VRM rig');
+  });
+
+  t('a partial skeleton flags needsCorrection and lists the missing required bones', () => {
+    const m = makePartialHuman();
+    const map = mapBones(m);
+    assert(map.bones.hips === 'node:0' && map.bones.head === 'node:2', 'core mapped (no skin → all nodes)');
+    assert(map.confidence < 1 && map.missing.includes('leftHand') && map.missing.includes('rightFoot'), 'missing limbs reported');
+    assert(buildHumanoidRig(m).needsCorrection, 'needs editor correction');
+  });
+
+  t('a limb bone without a side is not force-mapped (no false L/R from stray letters)', () => {
+    const m = createEngineModel({ name: 'amb', sourceFormat: 'gltf' });
+    m.nodes.push(createEngineNode({ id: 'node:0', name: 'Pelvis', translation: [0, 1, 0] }));
+    m.nodes.push(createEngineNode({ id: 'node:1', name: 'Shoulder', parent: 'node:0', translation: [0, 0.2, 0] }));
+    const map = mapBones(m);
+    assert(map.bones.hips === 'node:0', 'Pelvis → hips (center)');
+    assert(!map.bones.leftShoulder && !map.bones.rightShoulder, 'sideless Shoulder not guessed L/R');
+    assert(map.unmapped.includes('node:1'), 'ambiguous bone reported as unmapped');
+  });
+
+  // ── Phase 5: weapon rig (game abstraction) ───────────────────────────────────
+  G('Assets P5 · Weapon rig');
+
+  t('detectWeapon finds sockets, moving parts, forward axis, and muzzle', () => {
+    const det = detectWeapon(makeWeapon());
+    assert(det.type === 'pistol', `type (${det.type})`);
+    assert(det.sockets.muzzle?.nodeId === 'node:muzzle', 'muzzle socket');
+    assert(det.sockets.gripPrimary?.nodeId === 'node:grip' && det.sockets.trigger?.nodeId === 'node:trigger', 'grip + trigger');
+    assert(vnear(det.forwardAxis, [0, 0, 1]), 'forward = long (Z) axis');
+    assert(det.muzzleNode === 'node:muzzle', 'muzzle is the front-most node');
+    assert(det.movingParts.some((p) => p.motion === 'slide'), 'slide detected as a moving part');
+    assert(det.confidence === 1 && det.missing.length === 0, 'required sockets present');
+  });
+
+  t('buildWeaponRig attaches a rig with timelines + type defaults', () => {
+    const m = makeWeapon();
+    const rig = buildWeaponRig(m);
+    assert(m.rigs.weapon === rig && rig.type === 'pistol', 'rig attached');
+    assert(rig.magazineCapacity === 15 && rig.fireMode === 'semi', 'pistol defaults');
+    assert(rig.timeline.fire && rig.timeline.reload, 'fire + reload timelines');
+    assert(!rig.needsCorrection, 'credible weapon');
+  });
+
+  t('fire timeline crosses each event once as the playhead advances', () => {
+    const player = createTimelinePlayer(defaultFireAction(0.12));
+    player.start();
+    const first = player.advance(0.012).map((e) => e.type);
+    assert(first.includes('trigger') && first.includes('discharge'), 't=0 + early events fire on first step');
+    assert(player.advance(0).length === 0, 'no time elapsed → no events');
+    const mid = eventsBetween(defaultFireAction(0.12), 0.02, 0.06).map((e) => e.type);
+    assert(mid.includes('slideBack') && mid.includes('eject'), 'mid-window events queryable');
+  });
+
+  t('weapon state machine: fire, last-round, dry-fire, reload-from-empty', () => {
+    const sm = createWeaponStateMachine({ capacity: 2, ammo: 1, chambered: true }); // total 2
+    let r = sm.send('pullTrigger');
+    assert(r.fired === true && sm.state === 'firing' && sm.total === 1, 'first shot fires + cycles');
+    sm.send('actionDone'); assert(sm.state === 'idle' && sm.chambered, 'returns to idle, chambered');
+    r = sm.send('pullTrigger');
+    assert(r.fired === true && sm.total === 0, 'last round fired');
+    sm.send('actionDone'); assert(sm.state === 'empty', 'no round → empty');
+    r = sm.send('pullTrigger'); assert(r.dry === true && sm.state === 'empty', 'dry fire when empty');
+    sm.send('reloadStart'); assert(sm.state === 'reloading', 'reload begins');
+    sm.send('actionDone'); assert(sm.state === 'idle' && sm.total === 2, 'reload refills + chambers');
+  });
+
+  // ── Phase 5: hands & finger generation ───────────────────────────────────────
+  G('Assets P5 · Hands & fingers');
+
+  t('named finger bones are mapped into 5 fingers, palm→tip', () => {
+    const m = makeHandSkeleton();
+    const fm = mapFingers(m, 'node:0');
+    assert(fm.detected && fm.count === 5, `5 fingers (${fm.count})`);
+    const thumb = fm.fingers.find((f) => f.name === 'thumb');
+    const pinky = fm.fingers.find((f) => f.name === 'pinky');
+    assert(thumb && thumb.joints.length === 3 && pinky && pinky.joints.length === 3, '3 joints per finger');
+    assert(thumb.joints[0].nodeId === 'node:1', 'joint order is palm→tip (Thumb1 first)');
+    const hand = buildHandRig(m, { side: 'right', handNode: 'node:0' });
+    assert(hand.source === 'skeleton' && hand.fingerCount === 5, 'builder uses existing skeleton fingers');
+  });
+
+  t('an OPEN hand mesh generates 5 finger chains (thumb + index→pinky)', () => {
+    const gen = generateFingers(makeOpenHandCloud(), { wrist: [0, 0, 0], forward: [0, 0, 1] });
+    assert(gen.detected && gen.count === 5, `generated 5 fingers (${gen.count})`);
+    assert(gen.fingers[0].name === 'thumb', 'shortest offset lobe labelled thumb');
+    assert(gen.fingers.every((f) => f.joints.length === 4), 'each generated finger has 4 joints');
+    // fingertips should sit out along +Z (forward), beyond the palm
+    assert(gen.fingers[1].joints[3].position[2] > 0.5, 'index tip reaches forward');
+  });
+
+  t('a CLENCHED fist generates no fingers (paddle fallback)', () => {
+    const gen = generateFingers(makeClenchedCloud(), { wrist: [0, 0, 0], forward: [0, 0, 1] });
+    assert(!gen.detected && gen.count === 0, 'no separable finger lobes → not detected');
+  });
+
+  // ── Phase 5: joint limits (range of motion) ──────────────────────────────────
+  G('Assets P5 · Joint limits (ROM)');
+
+  t('humanoid joints: hinge elbows/knees, ball shoulders/hips, root hips', () => {
+    const rig = buildHumanoidRig(makeHumanoid('mixamo')); // attaches rig.jointLimits
+    const L = rig.jointLimits;
+    assert(L.get('hips').jointType === 'root', 'hips are the root joint');
+    const sh = L.get('leftUpperArm');
+    assert(sh.jointType === 'ball' && sh.swingDeg >= 80, 'shoulder is a wide ball joint');
+    assert(L.get('leftLowerArm').jointType === 'hinge' && L.get('leftLowerLeg').jointType === 'hinge', 'elbow + knee are hinges');
+    const knee = L.get('leftLowerLeg');
+    assert(Math.abs(Math.hypot(...knee.axis) - 1) < 1e-3, 'hinge has a unit bend axis');
+    assert(knee.swingRad < knee.twistRad, 'a hinge bends on one axis (small swing, large bend)');
+  });
+
+  t('generic topology (spider): ball limb-roots, hinge mid-segments, root body', () => {
+    const res = buildJointLimits(makeSpider(), { forceGeneric: true });
+    assert(res.species === 'generic', 'no humanoid rig → generic inference');
+    assert(res.counts.root === 1, 'one root (the body hub)');
+    assert(res.counts.ball === 8, 'eight ball joints at the leg roots');
+    assert(res.counts.hinge >= 16, 'straight mid-leg segments become hinges');
+    const femur = res.limits.get('node:2'); // leg0: coxa=node:1, femur=node:2
+    assert(femur.jointType === 'hinge' && Math.abs(Math.hypot(...femur.axis) - 1) < 1e-3, 'femur hinge + unit axis');
+  });
+
+  t('Phase 1 derivers: deriveJointType/deriveSwingCone/deriveHingeLimit/deriveTwistLimit expose the same values as the limit map', () => {
+    const rig = buildHumanoidRig(makeHumanoid('mixamo'));
+    const L = rig.jointLimits;
+    const hinge = L.get('leftLowerArm'); // elbow
+    const ball = L.get('leftUpperArm');  // shoulder
+    assert(deriveJointType({ type: hinge.jointType }) === hinge.jointType, 'deriveJointType reads the profile type');
+    assert(deriveSwingCone({ swing: hinge.swingDeg }) === hinge.swingDeg, 'deriveSwingCone reads the profile swing');
+    assert(deriveHingeLimit({ twist: hinge.twistDeg }) === hinge.twistDeg, 'deriveHingeLimit reads the hinge bend-range field');
+    assert(deriveTwistLimit({ twist: ball.twistDeg }) === ball.twistDeg, 'deriveTwistLimit reads the same field for non-hinges');
+    assert(deriveBendDirection === hingeAxis, 'deriveBendDirection is an alias for hingeAxis');
+  });
+
+  t('mirrorLeftRightLimits verifies symmetric anatomy and forces it when violated', () => {
+    const rig = buildHumanoidRig(makeHumanoid('mixamo'));
+    const L = rig.jointLimits;
+    const left = L.get('leftUpperArm'); const right = L.get('rightUpperArm');
+    const sym = mirrorLeftRightLimits(left, right);
+    assert(sym.ok, 'humanoid left/right shoulders are already symmetric by construction');
+    const brokenRight = { ...right, swingDeg: right.swingDeg + 30 };
+    const forced = mirrorLeftRightLimits(left, brokenRight);
+    assert(!forced.ok, 'asymmetric input is detected');
+    assert(forced.rightLimit.swingDeg === left.swingDeg, 'asymmetry is forced back to the left (canonical) values');
+  });
+
+  // ── Phase 5: skeleton heal (anatomy repair) ──────────────────────────────────
+  G('Assets P5 · Skeleton heal');
+
+  t('infers pelvis from legs and mirrors a missing arm (non-destructive)', () => {
+    const m = makeHumanoid('mixamo');
+    const rig = buildHumanoidRig(m);
+    const pose = buildBindPose(m);
+    // Break the rig: drop the pelvis and the whole left arm.
+    for (const s of ['hips', 'leftShoulder', 'leftUpperArm', 'leftLowerArm', 'leftHand']) delete rig.bones[s];
+    const res = healHumanoid(m, rig, pose);
+    assert(res.synthesized.hips, 'pelvis inferred from the leg roots');
+    const lUL = jointPosition(pose, rig.bones.leftUpperLeg);
+    const rUL = jointPosition(pose, rig.bones.rightUpperLeg);
+    assert(Math.abs(res.synthesized.hips[0] - (lUL[0] + rUL[0]) / 2) < 1e-4, 'hips at the midpoint of the hip joints');
+    assert(res.synthesized.leftUpperArm && res.synthesized.leftHand, 'missing left arm mirrored from the right');
+    const r = humanoidBonePosition(rig, 'rightUpperArm', pose);
+    const l = res.synthesized.leftUpperArm;
+    assert(Math.sign(l[0]) === -Math.sign(r[0]), 'mirror flips the lateral axis');
+    assert(res.healed.length >= 4, 'repairs are reported');
+    assert(humanoidBonePosition(rig, 'hips', pose), 'bone position resolves via the synthesized joint');
+  });
+
+  t('generic creature heal: a missing leg is mirrored from the symmetric side', () => {
+    const m = makeSpider();
+    // amputate one leg (leg index 1 = nodes 5..8).
+    const gone = new Set(['node:5', 'node:6', 'node:7', 'node:8']);
+    m.nodes = m.nodes.filter((n) => !gone.has(n.id));
+    const body = m.nodes.find((n) => n.id === 'node:0'); body.children = body.children.filter((c) => !gone.has(c));
+    const sym = analyzeSymmetry(m);
+    assert(sym && sym.score > 0.5, `symmetry plane found (score ${sym ? (sym.score * 100) | 0 : 0}%)`);
+    const heal = healSkeleton(m);
+    assert(heal.synthesized.length === 4, `missing 4-segment leg mirrored (${heal.synthesized.length})`);
+    const rd = buildRagdoll(m); // generic path heals + includes the mirrored leg
+    assert(rd.bones.length === 33, `ragdoll restored to a full 8-leg body (${rd.bones.length})`);
+    assert(rd.bones.some((b) => b.synthesized), 'mirrored bodies flagged');
+  });
+
+  // ── Phase 5: ragdoll from rig + joint limits ─────────────────────────────────
+  G('Assets P5 · Ragdoll');
+
+  t('humanoid ragdoll: capsule bodies + ROM-limited joints, hips at the root', () => {
+    const m = makeHumanoid('mixamo');
+    buildHumanoidRig(m); // attaches rig.jointLimits
+    const rd = buildRagdoll(m);
+    assert(rd.source === 'humanoid' && rd.bones.length >= 12, `bodies (${rd.bones.length})`);
+    const hips = rd.bones.find((b) => b.slot === 'hips');
+    assert(hips && hips.parentIndex === -1 && hips.jointType === 'root', 'hips is the root body');
+    const knee = rd.bones.find((b) => b.slot === 'leftLowerLeg');
+    assert(knee && knee.jointType === 'hinge' && knee.parentIndex >= 0, 'knee is a hinge jointed to its parent');
+    assert(rd.bones.every((b) => b.mass > 0 && b.radius > 0), 'every body has mass + radius');
+    assert(rd.bones.every((b) => b.parentIndex < rd.bones.indexOf(b)), 'parents precede children (valid hierarchy)');
+    assert(rd.massKg > 0 && m.rigs.ragdoll === rd, 'attached with a total mass');
+  });
+
+  t('generic ragdoll (spider): one root body + a chain per leg', () => {
+    const rd = buildRagdoll(makeSpider());
+    assert(rd.source === 'generic', 'no humanoid rig → generic topology');
+    assert(rd.bones.filter((b) => b.parentIndex === -1).length === 1, 'a single root body (the hub)');
+    assert(rd.bones.length >= 33, 'hub + 8×4 leg bodies');
+    assert(rd.bones.every((b) => b.parentIndex === -1 || b.parentIndex < rd.bones.indexOf(b)), 'topological body order');
+  });
+
+  t('RagdollBuilder bones carry D6-ready data: motion, frameA/frameB, collisionGroup, driveType', () => {
+    const m = makeHumanoid('mixamo');
+    buildHumanoidRig(m);
+    const rd = buildRagdoll(m);
+    const hips = rd.bones.find((b) => b.slot === 'hips');
+    assert(hips.frameA === null && hips.frameB === null && hips.motion === null, 'the root has no joint frame/motion');
+    const knee = rd.bones.find((b) => b.slot === 'leftLowerLeg');
+    assert(knee.motion.swingY === 'locked' && knee.motion.swingZ === 'locked' && knee.motion.twist === 'limited', 'a hinge locks both swing axes, limits twist');
+    const hip = rd.bones.find((b) => b.slot === 'leftUpperLeg');
+    assert(hip.motion.swingY === 'limited' && hip.motion.swingZ === 'limited', 'a ball joint leaves both swing axes limited');
+    assert(Array.isArray(knee.frameB.position) && knee.frameB.position.length === 3, 'frameB is a local-space anchor');
+    assert(Array.isArray(knee.frameA.position) && knee.frameA.position.length === 3, 'frameA is the parent-local anchor at the same pivot');
+    assert(knee.collisionGroup === 'leftLowerLeg', 'collisionGroup defaults to the slot name');
+    assert(knee.driveType === 'knee', 'driveType is inferred from the slot name');
+  });
+
+  // ── Phase 5: CharacterPhysicsAsset (unified generator-output schema) ────────
+  G('Assets P5 · CharacterPhysicsAsset');
+
+  t('humanoid CharacterPhysicsAsset packages RagdollBuilder + JointLimits into one schema', () => {
+    const m = makeHumanoid('mixamo');
+    buildHumanoidRig(m); // attaches rig.jointLimits so buildRagdoll takes the humanoid path
+    const asset = createCharacterPhysicsAsset(m);
+    assert(asset.source === 'humanoid', 'humanoid path');
+    assert(asset.validationReport.ok, `validation passes (${asset.validationReport.errors.join(',')})`);
+    assert(asset.bodyDefs.length === asset.jointDefs.length + 1, 'one joint per non-root body (single root)');
+    assert(Number.isFinite(asset.boneMap.hips) && asset.bodyDefs[asset.boneMap.hips].parentIndex === -1, 'boneMap resolves "hips" to the root body');
+    assert(asset.collisionFilters.length === asset.jointDefs.length, 'one collision filter pair per joint');
+    assert(asset.collisionFilters.some(([p]) => p === 'hips'), 'hips→child collision filter present');
+    assert(Object.keys(asset.driveProfiles).length === asset.bodyDefs.length, 'every body has a drive-profile hint');
+    assert(asset.particleCageDef === null, 'flesh-cage reserved, not yet implemented (later phase)');
+  });
+
+  t('generic (spider) CharacterPhysicsAsset also validates cleanly', () => {
+    const asset = createCharacterPhysicsAsset(makeSpider());
+    assert(asset.source === 'generic', 'generic topology path');
+    assert(asset.validationReport.ok, `validation passes (${asset.validationReport.errors.join(',')})`);
+    assert(asset.bodyDefs.length >= 33, 'hub + 8×4 leg bodies');
+  });
+
+  t('skeletonFingerprint is deterministic per topology, distinct across topologies', () => {
+    const m1 = makeHumanoid('mixamo'); buildHumanoidRig(m1);
+    const m2 = makeHumanoid('mixamo'); buildHumanoidRig(m2);
+    const a1 = createCharacterPhysicsAsset(m1);
+    const a2 = createCharacterPhysicsAsset(m2);
+    assert(a1.skeletonFingerprint === a2.skeletonFingerprint, 'same skeleton shape hashes identically');
+    const a3 = createCharacterPhysicsAsset(makeSpider());
+    assert(a1.skeletonFingerprint !== a3.skeletonFingerprint, 'different topology hashes differently');
+  });
+
+  t('inferDriveType assigns anatomical roles from bone names', () => {
+    assert(inferDriveType('leftLowerArm') === 'elbow', 'lowerArm → elbow');
+    assert(inferDriveType('rightUpperLeg') === 'hip', 'upperLeg → hip');
+    assert(inferDriveType('hips') === 'pelvis', 'hips → pelvis');
+    assert(inferDriveType('unknownBoneXyz') === 'default', 'unmatched name falls back to default');
+  });
+
+  t('validateCharacterPhysicsAsset catches structural corruption', () => {
+    const m = makeHumanoid('mixamo'); buildHumanoidRig(m);
+    const asset = createCharacterPhysicsAsset(m);
+    const broken = { ...asset, bodyDefs: asset.bodyDefs.map((b, i) => (i === 2 ? { ...b, mass: -1 } : b)) };
+    const report = validateCharacterPhysicsAsset(broken);
+    assert(!report.ok, 'negative mass flagged as invalid');
+    assert(report.errors.some((e) => e.startsWith('bone_mass_invalid')), 'specific error identifies the bad bone');
+  });
+
+  // ── Phase 1: CharacterPhysicsAssetAdapter (the actual PhysX joint-schema fix) ──
+  G('Assets P5 · CharacterPhysicsAssetAdapter (Phase 1)');
+
+  t('adapter parts/joints are built from the SAME axis/swing/twist data RagdollSim uses (root-cause fix)', () => {
+    const m = makeHumanoid('mixamo'); buildHumanoidRig(m);
+    const asset = createCharacterPhysicsAsset(m);
+    const rig = createActiveRigFromCharacterPhysicsAsset(asset);
+    assert(rig.parts.length === asset.bodyDefs.length, 'one PhysX part per body');
+    assert(rig.joints.length === asset.jointDefs.length, 'one PhysX joint per jointDef');
+    const kneeJointDef = asset.jointDefs.find((j) => j.childId === 'leftLowerLeg');
+    const kneeRigJoint = rig.joints.find((j) => j.child === 'leftLowerLeg');
+    assert(kneeRigJoint, 'the knee joint exists in the adapted rig');
+    assert(vnear(kneeRigJoint.axis, kneeJointDef.axis), 'PhysX joint axis === CharacterPhysicsAsset axis (same source as RagdollSim)');
+    assert(kneeRigJoint.swingLimit.yAngle === kneeJointDef.swingDeg && kneeRigJoint.twistLimit.upper === kneeJointDef.twistDeg, 'PhysX swing/twist limits === CharacterPhysicsAsset limits');
+    assert(kneeRigJoint.motion.swingY === 'locked', 'hinge motion carried through to the PhysX joint descriptor');
+  });
+
+  t('adapter builds a valid root + retarget graph + drive profile', () => {
+    const m = makeHumanoid('mixamo'); buildHumanoidRig(m);
+    const asset = createCharacterPhysicsAsset(m);
+    const options = createActiveRigControllerOptionsFromCharacterPhysicsAsset(asset);
+    assert(options.rig.root.id === 'hips', 'root resolves to the hips body');
+    assert(options.rig.retarget, 'a retarget graph is attached');
+    assert(options.rig.driveProfile && Object.keys(options.rig.driveProfile).length > 0, 'a drive profile is built');
+    assert(options.config.backend === 'articulation', 'defaults to the articulation backend');
+  });
+
+  // ── Phase 2: ActiveRigController fallback chain ──────────────────────────────
+  G('Assets P5 · ActiveRigController fallback chain (Phase 2)');
+
+  t('no PhysX world → falls through to the Verlet/PBD tier automatically', () => {
+    const m = makeHumanoid('mixamo'); buildHumanoidRig(m);
+    const asset = createCharacterPhysicsAsset(m);
+    const options = createActiveRigControllerOptionsFromCharacterPhysicsAsset(asset);
+    const controller = new ActiveRigController(options);
+    const ok = controller.initialize(null); // no PhysX world available
+    assert(ok, 'initialize succeeds even with no PhysX world');
+    assert(controller.backend === 'pbd', `falls through to the Verlet/PBD tier (backend=${controller.backend})`);
+    assert(controller.verletSim, 'a RagdollSim instance was built');
+  });
+
+  t('an empty rig falls all the way through to kinematic-only', () => {
+    const controller = new ActiveRigController({ rig: { joints: [], links: [], parts: [] } });
+    const ok = controller.initialize(null);
+    assert(ok, 'kinematic-only always succeeds');
+    assert(controller.backend === 'none', `backend is none (${controller.backend})`);
+    assert(controller.state === 'kinematic', 'state is forced to kinematic');
+  });
+
+  t('the pbd tier actually steps physics: hips fall under gravity across update() calls', () => {
+    const m = makeHumanoid('mixamo'); buildHumanoidRig(m);
+    const asset = createCharacterPhysicsAsset(m);
+    const options = createActiveRigControllerOptionsFromCharacterPhysicsAsset(asset);
+    const controller = new ActiveRigController(options);
+    controller.initialize(null);
+    assert(controller.backend === 'pbd', 'pbd tier active');
+    const y0 = controller.pose.joints['hips'].position[1];
+    for (let i = 0; i < 60; i++) controller.update(1 / 60, {});
+    const y1 = controller.pose.joints['hips'].position[1];
+    assert(y1 < y0 - 0.05, `hips fell under gravity (${y0.toFixed(3)} → ${y1.toFixed(3)})`);
+  });
+
+  // ── Phase 3: PBDRagdoll (legacy Life consumer) sourced from canonical limits ──
+  G('Assets P5 · PBDRagdoll consolidation (Phase 3)');
+
+  t('PBDRagdoll bone jointType/jointLimits come from the canonical RagdollBuilder/JointLimits profile', () => {
+    const rd = new PBDRagdoll({ measurements: DEFAULT_MEASUREMENTS });
+    const elbow = rd.bones[RagdollBone.LEFT_FOREARM];
+    const shoulder = rd.bones[RagdollBone.LEFT_UPPER_ARM];
+    const knee = rd.bones[RagdollBone.LEFT_SHIN];
+    const hip = rd.bones[RagdollBone.LEFT_THIGH];
+    assert(elbow.jointType === JointType.HINGE, 'elbow (leftLowerArm) is a hinge');
+    assert(shoulder.jointType === JointType.BALL, 'shoulder (leftUpperArm) is a ball joint');
+    assert(knee.jointType === JointType.HINGE, 'knee (leftLowerLeg) is a hinge');
+    assert(hip.jointType === JointType.BALL, 'hip (leftUpperLeg) is a ball joint');
+    assert(elbow.jointLimits && Math.abs(elbow.jointLimits.twistDeg - 145) < 1e-6, `elbow bend range matches canonical LowerArm profile (145°), got ${elbow.jointLimits?.twistDeg}`);
+    assert(hip.jointLimits && Math.abs(hip.jointLimits.swingDeg - 75) < 1e-6, `hip swing matches canonical UpperLeg profile (75°), got ${hip.jointLimits?.swingDeg}`);
+    assert(rd.bones[RagdollBone.PELVIS].jointType !== undefined, 'root bone left untouched (no incoming joint)');
+  });
+
+  t('PBDRagdoll limb capsule radii are derived from the shared radiusRatio table (same as the editor/PhysX ragdoll)', () => {
+    const rd = new PBDRagdoll({ measurements: DEFAULT_MEASUREMENTS });
+    const upperArm = rd.bones[RagdollBone.LEFT_UPPER_ARM];
+    const expectedRadius = 0.16 * upperArm.length; // radiusRatio('UpperArm') = 0.16
+    assert(Math.abs(upperArm.collider.radius - expectedRadius) < 1e-6, `upper-arm radius (${upperArm.collider.radius.toFixed(4)}) matches canonical ratio × length (${expectedRadius.toFixed(4)})`);
+  });
+
+  t('PBDRagdoll bone lengths still exactly match `measurements` (distance constraints must not fight the spawn pose)', () => {
+    const measurements = { ...DEFAULT_MEASUREMENTS, upperArmLength: 0.64, thighLength: 0.68 };
+    const rd = new PBDRagdoll({ measurements });
+    assert(rd.bones[RagdollBone.LEFT_UPPER_ARM].length === 0.64, 'upper arm length passes through untouched');
+    assert(rd.bones[RagdollBone.LEFT_THIGH].length === 0.68, 'thigh length passes through untouched');
+  });
+
+  t('PBDRagdoll elbow/knee angle constraints derive their fold limit from canonical hinge twistRad (π − twistRad ≤ angle ≤ π)', () => {
+    const rd = new PBDRagdoll({ measurements: DEFAULT_MEASUREMENTS });
+    const elbowLimit = rd.bones[RagdollBone.LEFT_FOREARM].jointLimits;
+    const elbowConstraint = rd.angleConstraints.find((c) => c.particleC === rd.bones[RagdollBone.LEFT_FOREARM].particle);
+    assert(elbowConstraint, 'an angle constraint exists for the elbow chain');
+    assert(Math.abs(elbowConstraint.maxAngle - Math.PI) < 1e-6, 'max angle is π (straight allowed)');
+    assert(Math.abs(elbowConstraint.minAngle - (Math.PI - elbowLimit.twistRad)) < 1e-6, 'min angle caps the fold at the canonical bend range');
+  });
+
+  // ── Phase 4: shared bone-topology validator + body-template exporter ────────
+  G('Assets P5 · Phase 4: shared validator + BodyTemplateExport');
+
+  t('validJointTypeSet includes every JOINT_TYPE value (single source of truth for validators)', () => {
+    const set = validJointTypeSet();
+    for (const jt of ['root', 'ball', 'hinge', 'saddle', 'twist', 'fixed']) {
+      assert(set.has(jt), `set includes ${jt}`);
+    }
+  });
+
+  t('validateBoneTopology catches duplicate ids and unresolved parent refs, passes a clean chain', () => {
+    const clean = validateBoneTopology([{ id: 'hips', parentId: null }, { id: 'spine', parentId: 'hips' }]);
+    assert(clean.errors.length === 0, 'clean topology has no errors');
+    assert(clean.boneIds.has('hips') && clean.boneIds.has('spine'), 'boneIds populated');
+
+    const dup = validateBoneTopology([{ id: 'hips', parentId: null }, { id: 'hips', parentId: null }]);
+    assert(dup.errors.some((e) => e.startsWith('bone_duplicate:hips')), 'duplicate id caught');
+
+    const orphan = validateBoneTopology([{ id: 'spine', parentId: 'ghost' }]);
+    assert(orphan.errors.some((e) => e.includes('bone_parent_missing:spine->ghost')), 'unresolved parent caught');
+  });
+
+  t('characterPhysicsAssetToBodyTemplate produces a valid life.body.v1-shaped starting point from a generated humanoid', () => {
+    const m = makeHumanoid('mixamo'); buildHumanoidRig(m);
+    const asset = createCharacterPhysicsAsset(m);
+    const template = characterPhysicsAssetToBodyTemplate(asset, { id: 'test_generated', name: 'Test Generated' });
+    assert(template.schema === 'life.body.v1', 'correct schema tag');
+    assert(template.id === 'test_generated', 'id override respected');
+    assert(Array.isArray(template.bones) && template.bones.length === asset.bodyDefs.length, 'one template bone per generated bone');
+    const root = template.bones.find((b) => b.parent === null);
+    assert(root && root.joint === 'root', 'root bone has no parent and joint=root');
+    const hinge = template.bones.find((b) => b.joint === 'hinge');
+    assert(hinge && hinge.limits && Number.isFinite(hinge.limits.twistDeg), 'hinge bones carry generated swing/twist limits');
+    // Structural validity: every bone id unique, every parent resolves.
+    const topology = validateBoneTopology(template.bones.map((b) => ({ id: b.id, parentId: b.parent })));
+    assert(topology.errors.length === 0, `generated template passes shared topology validation (errors: ${topology.errors.join(',')})`);
+    // Every joint type used is a member of the shared valid-type set.
+    const validTypes = validJointTypeSet();
+    assert(template.bones.every((b) => validTypes.has(b.joint)), 'every generated joint type is valid');
+    assert(template.anatomy && template.ligaments && template.presets.HumanAverage, 'hand-authorable sections present as stubs, not silently omitted');
+  });
+
+  G('Assets P5 · Ragdoll'); // resume — sim-level RagdollSim tests below still belong to this section
+
+  t('sim ROM: a hinge folds within its limit and never past it (law-of-cosines bound)', () => {
+    // 3-bone straight chain root→mid→tip (unit segments along +X). The bend happens
+    // AT the middle joint, so the HINGE (±40°) lives on the mid bone. Pin the upper
+    // bone (root, mid), let gravity pull the free tip down: the joint must fold, but
+    // the grandparent (root↔tip) distance can never drop below the law-of-cosines
+    // bound for 40° → the joint stays within its ROM.
+    const bones = [
+      { position: [0, 2, 0], parentIndex: -1, jointType: 'root', swingDeg: 0, twistDeg: 0 },
+      { position: [1, 2, 0], parentIndex: 0, jointType: 'hinge', swingDeg: 5, twistDeg: 40 },
+      { position: [2, 2, 0], parentIndex: 1, jointType: 'fixed', swingDeg: 0, twistDeg: 0 },
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [0, -30, 0], ground: null, iterations: 20, pinned: [0, 1] });
+    assert(sim.angleConstraints.length === 1, 'one grandparent ROM constraint (the hinge)');
+    const c = sim.angleConstraints[0];
+    // βmax = 40° ⇒ dMin = √(1+1+2cos40°); βmin = 0° ⇒ dMax = 2 (straight).
+    const dMinExp = Math.sqrt(2 + 2 * Math.cos(40 * Math.PI / 180));
+    assert(Math.abs(c.dMin - dMinExp) < 1e-6 && Math.abs(c.dMax - 2) < 1e-6, `bounds dMin≈${c.dMin.toFixed(3)} dMax≈${c.dMax.toFixed(3)}`);
+    for (let i = 0; i < 480; i++) sim.step(1 / 60);
+    const p = sim.positions();
+    const d = Math.hypot(p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]);
+    assert(d >= c.dMin - 2e-3 && d <= c.dMax + 2e-3, `grandparent distance ${d.toFixed(3)} stays in [${c.dMin.toFixed(3)}, ${c.dMax.toFixed(3)}] ⇒ bend within ROM`);
+    assert(d < c.dMax - 1e-2, 'the hinge actually folded toward its limit (not stuck straight)');
+  });
+
+  t('sim hub: the pelvis/trunk stays rigid (no give-out at the hips) under load', () => {
+    // hips(root) with three children (spine, L/R upper-leg) + a chest above spine.
+    // The hub bracing must keep the pelvis triangle rigid even under lateral load,
+    // so the trunk can't shear/collapse at the root joint.
+    const bones = [
+      { position: [0, 2, 0], parentIndex: -1, jointType: 'root' },
+      { position: [0, 3, 0], parentIndex: 0, jointType: 'saddle', swingDeg: 20, twistDeg: 15 },   // spine
+      { position: [-0.4, 1.8, 0], parentIndex: 0, jointType: 'ball', swingDeg: 75, twistDeg: 40 }, // L leg
+      { position: [0.4, 1.8, 0], parentIndex: 0, jointType: 'ball', swingDeg: 75, twistDeg: 40 },  // R leg
+      { position: [0, 4, 0], parentIndex: 1, jointType: 'saddle', swingDeg: 15, twistDeg: 12 },    // chest
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [6, -20, 0], ground: 0, iterations: 18 });
+    const e = (a, b, p) => Math.hypot(p[a][0] - p[b][0], p[a][1] - p[b][1], p[a][2] - p[b][2]);
+    const p0 = sim.positions();
+    const ls = e(1, 2, p0); const rs = e(1, 3, p0); const lr = e(2, 3, p0); // pelvis triangle at bind
+    for (let i = 0; i < 600; i++) sim.step(1 / 60);
+    const p = sim.positions();
+    assert(Math.abs(e(1, 2, p) - ls) / ls < 0.05, `spine↔L-hip rigid (${(e(1, 2, p)).toFixed(3)} vs ${ls.toFixed(3)})`);
+    assert(Math.abs(e(1, 3, p) - rs) / rs < 0.05, 'spine↔R-hip rigid');
+    assert(Math.abs(e(2, 3, p) - lr) / lr < 0.05, 'L-hip↔R-hip rigid');
+  });
+
+  t('sim hinge: a knee flexes one way only (no hyperextension)', () => {
+    // Straight chain root→knee→foot down −Y, flexTarget +Z. Pin the thigh; push the
+    // foot with gravity. WRONG way (−Z) ⇒ must stay ~straight (no hyperextension);
+    // RIGHT way (+Z) ⇒ the knee flexes.
+    const make = (gravZ) => {
+      const bones = [
+        { position: [0, 3, 0], parentIndex: -1, jointType: 'root' },
+        { position: [0, 2, 0], parentIndex: 0, jointType: 'hinge', twistDeg: 140, flexTarget: [0, 0, 1] },
+        { position: [0, 1, 0], parentIndex: 1, jointType: 'fixed' },
+      ];
+      const sim = createRagdollSim({ bones }, { gravity: [0, -2, gravZ], ground: null, iterations: 20, pinned: [0, 1] });
+      assert(sim.hingeConstraints.length === 1, 'one signed hinge built from flexTarget');
+      for (let i = 0; i < 480; i++) sim.step(1 / 60);
+      return sim.positions();
+    };
+    const pe = make(-8);
+    assert(pe[2][2] > -0.15, `no hyperextension: foot z=${pe[2][2].toFixed(3)} stays ≈ straight`);
+    const pf = make(8);
+    assert(pf[2][2] > 0.3, `flexes the correct way: foot z=${pf[2][2].toFixed(3)} > 0`);
+  });
+
+  t('sim cone: a hip swings within a body-referenced cone (not the wrong way)', () => {
+    // hips(root) + spine(up ref) + a thigh down, with a 45° swing cone about body-down
+    // (hips − spine). Pin the pelvis + hip socket; shove the knee sideways: the thigh
+    // must stay within ~45° of body-down instead of lifting freely.
+    const bones = [
+      { position: [0, 2, 0], parentIndex: -1, jointType: 'root' },                                                              // hips
+      { position: [0, 3, 0], parentIndex: 0, jointType: 'saddle' },                                                             // spine (up ref)
+      { position: [0.3, 2, 0], parentIndex: 0, jointType: 'ball', swingDeg: 45, swingCone: { aIdx: 1, bIdx: 0, half: 45, child: 3 } }, // hip
+      { position: [0.3, 1, 0], parentIndex: 2, jointType: 'fixed' },                                                            // knee
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [10, -2, 0], ground: null, iterations: 20, pinned: [0, 1, 2] });
+    assert(sim.coneConstraints.length === 1, 'one swing cone built');
+    for (let i = 0; i < 480; i++) sim.step(1 / 60);
+    const p = sim.positions();
+    const v = [p[3][0] - p[2][0], p[3][1] - p[2][1], p[3][2] - p[2][2]];
+    const l = Math.hypot(v[0], v[1], v[2]) || 1;
+    const ang = Math.acos(Math.max(-1, Math.min(1, -v[1] / l))) * 180 / Math.PI; // angle from body-down
+    assert(ang <= 47, `thigh stays within the ~45° cone (${ang.toFixed(1)}°)`);
+    assert(ang > 25, `the hip actually swung toward the limit (${ang.toFixed(1)}°)`);
+  });
+
+  t('sim cone: an elliptical hip allows flexion but limits sideways abduction', () => {
+    // Pelvis frame: spine(up), hips, L/R hip sockets give lateral. The R hip has an
+    // elliptical cone: 90° forward, 30° sideways. Shoving the knee sideways must clamp
+    // near 30°; shoving it forward must reach far past that → asymmetric, anatomical.
+    const mk = (grav) => {
+      const bones = [
+        { position: [0, 2, 0], parentIndex: -1, jointType: 'root' },     // hips
+        { position: [0, 3, 0], parentIndex: 0, jointType: 'saddle' },    // spine (up ref)
+        { position: [-0.3, 2, 0], parentIndex: 0, jointType: 'ball' },   // L hip socket (lateral ref)
+        { position: [0.3, 2, 0], parentIndex: 0, jointType: 'ball', swingCone: { aIdx: 1, bIdx: 0, child: 4, lIdx: 2, rIdx: 3, fwdSign: 1, maxFwd: 90, maxBack: 20, maxSide: 30 } }, // R hip
+        { position: [0.3, 1, 0], parentIndex: 3, jointType: 'fixed' },   // R knee
+      ];
+      const sim = createRagdollSim({ bones }, { gravity: grav, ground: null, iterations: 24, pinned: [0, 1, 2, 3] });
+      for (let i = 0; i < 600; i++) sim.step(1 / 60);
+      const p = sim.positions();
+      const v = [p[4][0] - p[3][0], p[4][1] - p[3][1], p[4][2] - p[3][2]];
+      const l = Math.hypot(v[0], v[1], v[2]) || 1;
+      return Math.acos(Math.max(-1, Math.min(1, -v[1] / l))) * 180 / Math.PI; // swing from body-down
+    };
+    const side = mk([12, -2, 0]);   // shove sideways (+X) → abduction, tight
+    const fwd = mk([0, -2, -12]);   // shove forward (−Z) → flexion, generous
+    assert(side <= 35, `sideways abduction limited (~30°): ${side.toFixed(1)}°`);
+    assert(fwd >= 50, `forward flexion allowed far more than sideways: ${fwd.toFixed(1)}°`);
+  });
+
+  t('sim cone: a CARRIED shoulder cone flexes forward freely but limits back-extension', () => {
+    // Rest-relative cone (editor/Bullet-style): the arm points +X at rest, with a
+    // carried frame {center +X, fwd +Z, up −Y}. Limits 100° fwd / 30° back / 60° side.
+    // Pinning the torso keeps the carried frame at bind, so a backward shove clamps
+    // ~30° while a forward shove swings far past it.
+    const mk = (grav) => {
+      const bones = [
+        { position: [0, 3, 0], parentIndex: -1, jointType: 'root' },    // upperChest (cgp)
+        { position: [0.3, 3, 0], parentIndex: 0, jointType: 'saddle' }, // shoulder/clavicle (cp)
+        { position: [0.6, 3, 0], parentIndex: 1, jointType: 'ball', swingCone: { child: 3, half: 90, maxFwd: 100, maxBack: 30, maxSide: 60, carry: { cp: 1, cgp: 0, center0: [1, 0, 0], fwd0: [0, 0, 1], lat0: [0, -1, 0] } } }, // upperArm (p)
+        { position: [0.9, 3, 0], parentIndex: 2, jointType: 'fixed' },  // lowerArm (child)
+      ];
+      const sim = createRagdollSim({ bones }, { gravity: grav, ground: null, iterations: 24, pinned: [0, 1, 2] });
+      assert(sim.coneConstraints.length === 1 && sim.coneConstraints[0].carry, 'one carried cone built');
+      for (let i = 0; i < 600; i++) sim.step(1 / 60);
+      const p = sim.positions();
+      const v = [p[3][0] - p[2][0], p[3][1] - p[2][1], p[3][2] - p[2][2]];
+      const l = Math.hypot(v[0], v[1], v[2]) || 1;
+      return Math.acos(Math.max(-1, Math.min(1, v[0] / l))) * 180 / Math.PI; // swing from rest arm (+X)
+    };
+    const back = mk([0, 0, -12]);  // shove backward (−Z) → extension, tight
+    const fwd = mk([0, 0, 12]);    // shove forward (+Z) → flexion, generous
+    assert(back <= 36, `back-extension limited (~30°): ${back.toFixed(1)}°`);
+    assert(fwd >= 60, `forward flexion allowed far more than back: ${fwd.toFixed(1)}°`);
+  });
+
+  t('sim falls under gravity and settles on the ground plane', () => {
+    const bones = [
+      { position: [0, 5, 0], parentIndex: -1, jointType: 'root' },
+      { position: [0, 4, 0], parentIndex: 0, jointType: 'ball', swingDeg: 60, twistDeg: 30 },
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [0, -20, 0], ground: 0, iterations: 12 });
+    const y0 = sim.positions()[0][1];
+    for (let i = 0; i < 600; i++) sim.step(1 / 60);
+    const p = sim.positions();
+    assert(p[0][1] < y0 - 1, 'the body fell');
+    assert(p[0][1] >= -1e-3 && p[1][1] >= -1e-3, 'no particle sinks below the ground plane');
+  });
+
+  t('sim stability: frame spikes stay finite and bounded', () => {
+    const bones = [
+      { position: [0, 3, 0], parentIndex: -1, jointType: 'root' },
+      { position: [0, 2, 0], parentIndex: 0, jointType: 'hinge', twistDeg: 140, flexTarget: [0, 0, 1] },
+      { position: [0, 1, 0], parentIndex: 1, jointType: 'fixed' },
+      { position: [0.5, 2.7, 0], parentIndex: 0, jointType: 'ball', swingCone: { aIdx: 0, bIdx: 1, child: 4, half: 70 } },
+      { position: [1.0, 2.7, 0], parentIndex: 3, jointType: 'fixed' },
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [30, -80, 15], ground: 0, substeps: 6, iterationsPerSubstep: 4, maxFrameDt: 0.25, maxVelocity: 8, maxProjection: 0.15, maxDisplacement: 0.1, boundsRadius: 5 });
+    sim.step(0.25);
+    for (let i = 0; i < 180; i++) sim.step(1 / 60);
+    const p = sim.positions();
+    for (const q of p) assert(q.every(Number.isFinite), 'all positions remain finite after spike');
+    const far = Math.max(...p.map((q) => Math.hypot(q[0], q[1] - 3, q[2])));
+    assert(far <= 5.01, `particles remain inside safety bounds (${far.toFixed(2)})`);
+    assert(sim.stats().substeps >= 6, 'small substeps are active');
+  });
+
+  t('sim stability: carried shoulder cone and elbow hinge do not fight explosively', () => {
+    const bones = [
+      { position: [0, 3, 0], parentIndex: -1, jointType: 'root' },
+      { position: [0.3, 3, 0], parentIndex: 0, jointType: 'saddle' },
+      { position: [0.6, 3, 0], parentIndex: 1, jointType: 'ball', swingCone: { child: 3, half: 90, maxFwd: 100, maxBack: 30, maxSide: 60, carry: { cp: 1, cgp: 0, center0: [1, 0, 0], fwd0: [0, 0, 1], lat0: [0, -1, 0] } } },
+      { position: [0.9, 3, 0], parentIndex: 2, jointType: 'hinge', twistDeg: 145, flexTarget: [0, 0, 1] },
+      { position: [1.2, 3, 0], parentIndex: 3, jointType: 'fixed' },
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [0, 0, 30], ground: null, substeps: 6, iterationsPerSubstep: 4, maxProjection: 0.08, maxDisplacement: 0.08, pinned: [0, 1, 2] });
+    for (let i = 0; i < 600; i++) sim.step(1 / 60);
+    const p = sim.positions();
+    const upper = [p[3][0] - p[2][0], p[3][1] - p[2][1], p[3][2] - p[2][2]];
+    const lower = [p[4][0] - p[3][0], p[4][1] - p[3][1], p[4][2] - p[3][2]];
+    const lu = Math.hypot(...upper) || 1; const ll = Math.hypot(...lower) || 1;
+    const bend = Math.acos(Math.max(-1, Math.min(1, (upper[0] * lower[0] + upper[1] * lower[1] + upper[2] * lower[2]) / (lu * ll)))) * 180 / Math.PI;
+    const cone = sim.coneStatus()[0];
+    assert(bend <= 147, `elbow remains near hinge limit (${bend.toFixed(1)}°)`);
+    assert(cone.swingDeg <= cone.limitDeg + 2, `shoulder remains near cone limit (${cone.swingDeg.toFixed(1)}°/${cone.limitDeg.toFixed(1)}°)`);
+  });
+
+  t('sim telemetry: on-limit is distinct from violation', () => {
+    const bones = [
+      { position: [0, 2, 0], parentIndex: -1, jointType: 'root' },
+      { position: [1, 2, 0], parentIndex: 0, jointType: 'hinge', swingDeg: 5, twistDeg: 40 },
+      { position: [2, 2, 0], parentIndex: 1, jointType: 'fixed' },
+    ];
+    const sim = createRagdollSim({ bones }, { gravity: [0, -30, 0], ground: null, iterationsPerSubstep: 4, pinned: [0, 1] });
+    for (let i = 0; i < 240; i++) sim.step(1 / 60);
+    const c = sim.angleConstraints[0]; const p = sim.positions();
+    const d = Math.hypot(p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]);
+    assert(d >= c.dMin - 0.002 && d <= c.dMax + 0.002, 'distance is inside telemetry tolerance');
+    assert(Math.abs(d - c.dMin) <= 0.01 || Math.abs(d - c.dMax) <= 0.01, 'constraint can sit on a limit without being a violation');
+  });
+
+  return results;
+}
+
+async function render() {
+  const start = performance.now();
+  const results = await runAll();
+  const ms = (performance.now() - start).toFixed(2);
+  const pass = results.filter((r) => r.status === 'PASS').length;
+  const fail = results.length - pass;
+
+  document.getElementById('pill-total').textContent = `${results.length} gates`;
+  document.getElementById('pill-pass').textContent = `${pass} passed`;
+  document.getElementById('pill-fail').textContent = `${fail} failed`;
+  document.getElementById('pill-fail').classList.toggle('ok', fail === 0);
+  document.getElementById('pill-fail').classList.toggle('bad', fail !== 0);
+  document.getElementById('time').textContent = `${VERSION} · ran in ${ms} ms`;
+
+  const rows = document.getElementById('rows');
+  rows.innerHTML = '';
+  let lastGroup = null;
+  for (const r of results) {
+    if (r.group !== lastGroup) {
+      lastGroup = r.group;
+      const gr = document.createElement('tr');
+      gr.innerHTML = `<td></td><td class="grp" colspan="2">${r.group}</td>`;
+      rows.appendChild(gr);
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="s ${r.status}">${r.status}</td><td>${r.name}</td>` +
+      `<td class="detail">${r.detail ? r.detail : ''}</td>`;
+    rows.appendChild(tr);
+  }
+}
+
+document.getElementById('rerun').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>

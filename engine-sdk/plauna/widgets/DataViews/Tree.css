@@ -1,0 +1,137 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Tree Component Styles
+ * Modular CSS for Tree data view widget
+ */
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree__item {
+  display: flex;
+  flex-direction: column;
+}
+
+.tree__node {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.tree__node:hover {
+  background: var(--bg-tertiary);
+}
+
+.tree__node--selected {
+  background: var(--color-primary-100);
+}
+
+[data-theme="night"] .tree__node--selected {
+  background: var(--color-primary-900);
+}
+
+.tree__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: var(--spacing-sm);
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.tree__toggle--collapsed {
+  transform: rotate(-90deg);
+}
+
+.tree__toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Icon */
+.tree__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: var(--spacing-sm);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Label */
+.tree__label {
+  flex: 1;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+/* Children */
+.tree__children {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: 20px;
+  border-left: 1px solid var(--border-light);
+}
+
+.tree__item--collapsed .tree__children {
+  display: none;
+}
+
+/* Size Variants */
+.tree--sm .tree__node {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.tree--sm .tree__label {
+  font-size: var(--font-size-sm);
+}
+
+.tree--lg .tree__node {
+  padding: var(--spacing-lg);
+}
+
+.tree--lg .tree__label {
+  font-size: var(--font-size-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tree__node {
+    padding: var(--spacing-md);
+  }
+
+  .tree__children {
+    margin-left: 16px;
+  }
+
+  .tree--lg .tree__node {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}

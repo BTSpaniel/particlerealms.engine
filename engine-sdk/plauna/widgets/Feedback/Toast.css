@@ -1,0 +1,211 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Toast Component Styles
+ * Modular CSS for Toast notification widget
+ */
+
+.toast {
+  position: fixed;
+  z-index: var(--z-notification-toast);
+  isolation: isolate;
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-lg);
+  min-width: 300px;
+  max-width: 500px;
+  animation: toastSlideIn var(--transition-base);
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+}
+
+.toast--exiting {
+  animation: toastSlideOut var(--transition-base);
+}
+
+/* Position Variants */
+.toast--top-right {
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+}
+
+.toast--top-left {
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+}
+
+.toast--bottom-right {
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+}
+
+.toast--bottom-left {
+  bottom: var(--spacing-lg);
+  left: var(--spacing-lg);
+}
+
+.toast--top-center {
+  top: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast--bottom-center {
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Icon */
+.toast__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+/* Type Variants */
+.toast--info .toast__icon {
+  color: var(--color-info);
+}
+
+.toast--success .toast__icon {
+  color: var(--color-success);
+}
+
+.toast--warning .toast__icon {
+  color: var(--color-warning);
+}
+
+.toast--error .toast__icon {
+  color: var(--color-error);
+}
+
+/* Content */
+.toast__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.toast__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.toast__description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* Close Button */
+.toast__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toast__close:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Progress Bar */
+.toast__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-primary-500);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+  animation: toastProgress 5s linear forwards;
+}
+
+@keyframes toastProgress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toast {
+    min-width: auto;
+    max-width: calc(100vw - 32px);
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .toast--top-right,
+  .toast--top-left,
+  .toast--bottom-right,
+  .toast--bottom-left {
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+
+  .toast--top-center,
+  .toast--bottom-center {
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    transform: none;
+  }
+
+  .toast__title {
+    font-size: var(--font-size-sm);
+  }
+
+  .toast__description {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,5 @@
+# Python deps for the optional MkDocs Material site.
+# The zero-build viewer and the OS docs app need NONE of these — they are pure browser.
+# Install:  pip install -r requirements.txt
+mkdocs-material>=9.5
+pymdown-extensions>=10.7

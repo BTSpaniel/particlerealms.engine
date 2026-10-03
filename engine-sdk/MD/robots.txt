@@ -1,0 +1,41 @@
+# robots.txt — WebGPU OS documentation
+# Spec: https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Generative-AI crawlers are deliberately limited to public documentation,
+# examples, and machine-discovery contracts. Application/runtime state and the
+# rest of the repository are not part of the AI ingestion surface.
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: Google-Extended
+User-agent: CCBot
+User-agent: PerplexityBot
+Allow: /MD/
+Allow: /guide/
+Allow: /api/
+Allow: /playground/
+Allow: /learn/
+Allow: /learn/starter/
+Allow: /webgpu-os/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /api-index.json
+Allow: /docs-chunks.jsonl
+Allow: /api-symbols.jsonl
+Allow: /sitemap.xml
+Disallow: /
+
+# tools/build_llms.py writes an absolute deployment URL into the root copy.
+Sitemap: /sitemap.xml
+
+# Supplemental AI-discovery indexes (emerging llmstxt.org convention) live at the site root:
+#   /llms.txt        curated, machine-readable index of the docs
+#   /llms-full.txt   curated pages concatenated for full-context ingestion
+#   /docs-chunks.jsonl  bounded documentation chunks, one JSON object per line
+#   /api-symbols.jsonl  source-backed API modules and exports, one object per line

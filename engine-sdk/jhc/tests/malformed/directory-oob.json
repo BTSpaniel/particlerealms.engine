@@ -1,0 +1,6 @@
+{
+  "name": "directory-oob",
+  "expectedCode": 202,
+  "expectedMessageFragment": "Directory out of bounds",
+  "size": 571
+}

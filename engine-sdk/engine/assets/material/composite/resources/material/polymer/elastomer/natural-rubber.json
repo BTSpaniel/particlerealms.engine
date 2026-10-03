@@ -1,0 +1,114 @@
+{
+  "schema": "engine.composite-material",
+  "schemaVersion": "1.0.0",
+  "copyright": "Copyright (c) 2026 Jake Wehmeier (BTSpaniel)",
+  "license": "LicenseRef-ParticleRealms-Alpha",
+  "id": "builtin.material.polymer.natural-rubber",
+  "logicalPath": "material/polymer/elastomer/natural-rubber.json",
+  "name": "Natural Rubber",
+  "category": "polymer",
+  "facets": {
+    "identity": {
+      "kind": "elastomer",
+      "phaseAt293K": "solid",
+      "description": "Natural-rubber compatibility material for deformable assemblies."
+    },
+    "render": {
+      "workflow": "metallicRoughness",
+      "baseColorFactor": [0.15, 0.15, 0.15, 1],
+      "metallicFactor": 0,
+      "roughnessFactor": 0.95,
+      "emissiveFactor": [0, 0, 0],
+      "alphaMode": "opaque",
+      "alphaCutoff": 0.5,
+      "doubleSided": false
+    },
+    "physical": {
+      "densityKgPerM3": 1100
+    },
+    "contact": {
+      "staticFriction": 0.9,
+      "dynamicFriction": 0.8,
+      "restitution": 0.8
+    },
+    "mechanical": {
+      "youngsModulusPa": 1000000,
+      "poissonRatio": 0.49,
+      "elasticityNormalized": 0.95,
+      "hardnessNormalized": 0.1,
+      "tensileStrengthNormalized": 0.3,
+      "brittlenessNormalized": 0,
+      "deformable": true,
+      "breakable": false
+    }
+  },
+  "missingFacets": ["chemistry", "thermal", "electrical", "substance", "fabrication", "audio"],
+  "notApplicableFacets": ["fiber"],
+  "sources": [
+    {
+      "id": "engine-render",
+      "kind": "repository",
+      "uri": "engine/render/materials/MaterialLibrary.js",
+      "citation": "Engine MaterialLibrary Rubber preset",
+      "note": "Renderer-authored appearance values only."
+    },
+    {
+      "id": "editor-render",
+      "kind": "repository",
+      "uri": "editor/js/components/MaterialNodePresets.js",
+      "citation": "Editor Rubber material-node preset",
+      "note": "Exact compatible appearance values copied into immutable Engine-owned data; RealmForge has no runtime Editor dependency."
+    },
+    {
+      "id": "engine-physical",
+      "kind": "repository",
+      "uri": "engine/sim/physics/PhysicalMaterialPresets.js",
+      "citation": "Engine rubber physical-material preset",
+      "note": "Normalized gameplay fields remain explicitly normalized."
+    },
+    {
+      "id": "engine-contact",
+      "kind": "repository",
+      "uri": "engine/sim/physics/PhysicsSchema.js",
+      "citation": "Engine rubber contact preset"
+    },
+    {
+      "id": "engine-softbody",
+      "kind": "repository",
+      "uri": "engine/sim/physics/gpu/GPUSoftBody.js",
+      "citation": "Engine rubber soft-body material preset"
+    },
+    {
+      "id": "nist-rubber",
+      "kind": "primary",
+      "uri": "https://www.nist.gov/publications/thermal-conductivity-measurements-eight-rubber-materials",
+      "citation": "NIST rubber-material measurement program",
+      "note": "Identity context only; no uncited specimen result is copied into this resource."
+    }
+  ],
+  "fieldSources": {
+    "identity.kind": ["nist-rubber"],
+    "identity.phaseAt293K": ["nist-rubber"],
+    "identity.description": ["engine-physical", "nist-rubber"],
+    "render.workflow": ["engine-render"],
+    "render.baseColorFactor": ["engine-render", "editor-render"],
+    "render.metallicFactor": ["engine-render", "editor-render"],
+    "render.roughnessFactor": ["engine-render", "editor-render"],
+    "render.emissiveFactor": ["engine-render"],
+    "render.alphaMode": ["engine-render"],
+    "render.alphaCutoff": ["engine-render"],
+    "render.doubleSided": ["engine-render"],
+    "physical.densityKgPerM3": ["engine-physical"],
+    "contact.staticFriction": ["engine-contact"],
+    "contact.dynamicFriction": ["engine-contact"],
+    "contact.restitution": ["engine-contact"],
+    "mechanical.youngsModulusPa": ["engine-softbody"],
+    "mechanical.poissonRatio": ["engine-softbody"],
+    "mechanical.elasticityNormalized": ["engine-physical"],
+    "mechanical.hardnessNormalized": ["engine-physical"],
+    "mechanical.tensileStrengthNormalized": ["engine-physical"],
+    "mechanical.brittlenessNormalized": ["engine-physical"],
+    "mechanical.deformable": ["engine-physical"],
+    "mechanical.breakable": ["engine-physical"]
+  }
+}

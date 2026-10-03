@@ -1,0 +1,583 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/* ============================================================================
+ * Material Studio - Overlay Panel Styles
+ * Follows the Sound Studio overlay pattern
+ * ============================================================================ */
+
+.material-studio-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    max-width: 1200px;
+    height: 70vh;
+    max-height: 800px;
+    min-width: 700px;
+    min-height: 450px;
+    background: #1a1a24;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    box-shadow: 0 16px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(107,138,253,0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 9000;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #ccc;
+    font-size: 12px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+
+.material-studio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    cursor: grab;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.material-studio-header:active {
+    cursor: grabbing;
+}
+
+.material-studio-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0f0;
+    letter-spacing: 0.5px;
+}
+
+.material-studio-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.material-studio-controls button {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #888;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.material-studio-controls button:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-color: rgba(255,255,255,0.2);
+}
+
+/* ── Body Layout ────────────────────────────────────────────────── */
+
+.material-studio-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── Library Panel (Left) ───────────────────────────────────────── */
+
+.mat-library {
+    width: 200px;
+    min-width: 160px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.15);
+}
+
+.mat-library-header {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.mat-library-search {
+    width: 100%;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: #ccc;
+    font-size: 11px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.mat-library-search:focus {
+    border-color: rgba(107,138,253,0.5);
+    background: rgba(255,255,255,0.08);
+}
+
+.mat-library-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.mat-library-actions button {
+    flex: 1;
+    padding: 4px 6px;
+    background: rgba(107,138,253,0.15);
+    border: 1px solid rgba(107,138,253,0.25);
+    border-radius: 5px;
+    color: #a0b0ff;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mat-library-actions button:hover {
+    background: rgba(107,138,253,0.3);
+    color: #c0d0ff;
+}
+
+.mat-library-grid {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mat-library-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s;
+    user-select: none;
+}
+
+.mat-library-item:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.mat-library-item.selected {
+    background: rgba(107,138,253,0.2);
+    outline: 1px solid rgba(107,138,253,0.4);
+}
+
+.mat-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
+}
+
+.mat-library-label {
+    flex: 1;
+    font-size: 11px;
+    color: #bbb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mat-library-item.selected .mat-library-label {
+    color: #e0e8ff;
+}
+
+.mat-library-tag {
+    font-size: 9px;
+    color: #666;
+    background: rgba(255,255,255,0.05);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* ── Inspector Panel (Center) ───────────────────────────────────── */
+
+.mat-inspector {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.mat-inspector-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.1);
+}
+
+.mat-inspector-tab {
+    padding: 7px 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #888;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mat-inspector-tab:hover {
+    color: #bbb;
+    background: rgba(255,255,255,0.03);
+}
+
+.mat-inspector-tab.active {
+    color: #c0d0ff;
+    border-bottom-color: #6b8afd;
+}
+
+.mat-inspector-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px 14px;
+}
+
+/* ── Node Graph Container ──────────────────────────────────────── */
+
+.mat-graph-content {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+    background: #0d0d14;
+}
+
+.mat-graph-content canvas {
+    display: block;
+}
+
+.mat-inspector-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #555;
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* ── Property Rows ──────────────────────────────────────────────── */
+
+.mat-section {
+    margin-bottom: 14px;
+}
+
+.mat-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.mat-prop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.mat-prop-label {
+    width: 90px;
+    font-size: 11px;
+    color: #999;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.mat-prop-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Color input */
+.mat-color-input {
+    width: 32px;
+    height: 24px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+    background: none;
+    flex-shrink: 0;
+}
+
+.mat-color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.mat-color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 3px;
+}
+
+/* Slider */
+.mat-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+.mat-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #6b8afd;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #1a1a24;
+    box-shadow: 0 0 4px rgba(107,138,253,0.3);
+}
+
+.mat-slider:hover::-webkit-slider-thumb {
+    background: #8ba0ff;
+}
+
+.mat-slider-value {
+    width: 36px;
+    font-size: 10px;
+    color: #888;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* Texture dropzone */
+.mat-texture-slot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.mat-texture-dropzone {
+    flex: 1;
+    height: 36px;
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 10px;
+    color: #555;
+    overflow: hidden;
+    background: rgba(0,0,0,0.15);
+}
+
+.mat-texture-dropzone:hover {
+    border-color: rgba(107,138,253,0.4);
+    background: rgba(107,138,253,0.05);
+    color: #888;
+}
+
+.mat-texture-dropzone.has-texture {
+    border-style: solid;
+    border-color: rgba(255,255,255,0.15);
+}
+
+.mat-texture-dropzone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.mat-texture-clear {
+    width: 20px;
+    height: 20px;
+    background: rgba(255,80,80,0.15);
+    border: 1px solid rgba(255,80,80,0.3);
+    border-radius: 4px;
+    color: #f88;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+}
+
+.mat-texture-clear:hover {
+    background: rgba(255,80,80,0.3);
+    color: #fbb;
+}
+
+/* ── Preview Panel (Right) ──────────────────────────────────────── */
+
+.mat-preview {
+    width: 220px;
+    min-width: 180px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.15);
+}
+
+.mat-preview-canvas-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    min-height: 0;
+}
+
+.mat-preview-canvas {
+    width: 100%;
+    aspect-ratio: 1;
+    max-height: 200px;
+    border-radius: 10px;
+    background: #111118;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.mat-preview-shapes {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.mat-preview-shape-btn {
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    color: #888;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mat-preview-shape-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: #bbb;
+}
+
+.mat-preview-shape-btn.active {
+    background: rgba(107,138,253,0.2);
+    border-color: rgba(107,138,253,0.4);
+    color: #c0d0ff;
+}
+
+.mat-preview-actions {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.mat-apply-btn {
+    width: 100%;
+    padding: 7px 12px;
+    background: linear-gradient(135deg, rgba(107,138,253,0.3), rgba(167,139,250,0.3));
+    border: 1px solid rgba(107,138,253,0.4);
+    border-radius: 6px;
+    color: #d0d8ff;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mat-apply-btn:hover {
+    background: linear-gradient(135deg, rgba(107,138,253,0.45), rgba(167,139,250,0.45));
+    color: #fff;
+}
+
+.mat-apply-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+
+.mat-library-grid::-webkit-scrollbar,
+.mat-inspector-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.mat-library-grid::-webkit-scrollbar-track,
+.mat-inspector-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mat-library-grid::-webkit-scrollbar-thumb,
+.mat-inspector-content::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+}
+
+.mat-library-grid::-webkit-scrollbar-thumb:hover,
+.mat-inspector-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ── Select dropdown ────────────────────────────────────────────── */
+
+.mat-select {
+    flex: 1;
+    padding: 4px 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 5px;
+    color: #ccc;
+    font-size: 11px;
+    outline: none;
+    cursor: pointer;
+}
+
+.mat-select:focus {
+    border-color: rgba(107,138,253,0.5);
+}
+
+/* ── Checkbox ───────────────────────────────────────────────────── */
+
+.mat-checkbox {
+    accent-color: #6b8afd;
+    cursor: pointer;
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/error.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "error v1",
+  "description": "Cloneable error metadata. Codes identify categories; binary/native details require projection. Error text is not executable.",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "message": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "details": {
+      "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+    }
+  },
+  "required": [
+    "code",
+    "message"
+  ],
+  "additionalProperties": false
+}

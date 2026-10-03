@@ -1,0 +1,22 @@
+{
+  "MANIFEST": {
+    "id": 0,
+    "description": "Canonical JHC manifest (JHC canonical JSON profile)."
+  },
+  "RAW_RESOURCE": {
+    "id": 1,
+    "description": "Raw resource bytes (canonical, uncompressed)."
+  },
+  "SOURCE_MAP": {
+    "id": 2,
+    "description": "Source map data (VLQ/mappings)."
+  },
+  "LICENSE": {
+    "id": 3,
+    "description": "License text for the package."
+  },
+  "SIGNATURE": {
+    "id": 4,
+    "description": "Detached signature over the canonical package."
+  }
+}

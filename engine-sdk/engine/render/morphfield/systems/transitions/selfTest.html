@@ -1,0 +1,33 @@
+<!doctype html>
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>MorphField transition self-test</title>
+</head>
+<body>
+  <pre id="result">Running MorphField transition self-tests...</pre>
+  <script type="module">
+    import { runMorphFieldTransitionSelfTests } from './selfTest.js';
+
+    const resultElement = document.getElementById('result');
+    try {
+      const result = runMorphFieldTransitionSelfTests();
+      window.__morphFieldTransitionSelfTest = result;
+      document.documentElement.dataset.testStatus = 'passed';
+      resultElement.textContent = JSON.stringify(result, null, 2);
+    } catch (error) {
+      const failure = { passed: false, name: error.name, message: error.message, stack: error.stack };
+      window.__morphFieldTransitionSelfTest = failure;
+      document.documentElement.dataset.testStatus = 'failed';
+      resultElement.textContent = JSON.stringify(failure, null, 2);
+    }
+  </script>
+</body>
+</html>

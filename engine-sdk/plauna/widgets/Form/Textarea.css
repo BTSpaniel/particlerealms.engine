@@ -1,0 +1,127 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Textarea Component Styles
+ * Modular CSS for Textarea form control
+ */
+
+.textarea {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+  color: var(--input-text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+.textarea:hover:not(:disabled):not(:read-only) {
+  border-color: var(--color-primary-500);
+}
+
+.textarea:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.textarea:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.textarea:read-only {
+  background: var(--bg-tertiary);
+  cursor: default;
+}
+
+/* Size Variants */
+.textarea--sm {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  min-height: 80px;
+}
+
+.textarea--md {
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  min-height: 100px;
+}
+
+.textarea--lg {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  min-height: 150px;
+}
+
+/* Validation States */
+.textarea--valid {
+  border-color: var(--color-success);
+}
+
+.textarea--valid:focus {
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.textarea--invalid {
+  border-color: var(--color-error);
+}
+
+.textarea--invalid:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.textarea--warning {
+  border-color: var(--color-warning);
+}
+
+.textarea--warning:focus {
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Character Count */
+.textarea-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.textarea-count {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.textarea-count--warning {
+  color: var(--color-warning);
+}
+
+.textarea-count--error {
+  color: var(--color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .textarea--lg {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+    min-height: 120px;
+  }
+}

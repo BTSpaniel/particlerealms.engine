@@ -1,0 +1,82 @@
+{
+  "schema": "engine.composite-material",
+  "schemaVersion": "1.0.0",
+  "copyright": "Copyright (c) 2026 Jake Wehmeier (BTSpaniel)",
+  "license": "LicenseRef-ParticleRealms-Alpha",
+  "id": "builtin.material.fiber.hemp",
+  "logicalPath": "material/fiber/natural/bast/hemp.json",
+  "name": "Hemp Fiber",
+  "category": "fiber",
+  "facets": {
+    "identity": {
+      "kind": "natural-bast-fiber",
+      "phaseAt293K": "solid",
+      "description": "Hemp bast fiber for rope and fiber assemblies."
+    },
+    "thermal": {
+      "ignitionTemperatureK": 570,
+      "structuralBreakTemperatureK": 650
+    },
+    "substance": {
+      "normalizedThermalConductivity": 0.2,
+      "flammabilityNormalized": 0.7,
+      "moistureCapacityNormalized": 0.6,
+      "corrosionRateNormalized": 0.25
+    },
+    "fiber": {
+      "bendingStiffnessNormalized": 0.5,
+      "elasticityNormalized": 0.02,
+      "dampingNormalized": 0.93,
+      "anisotropyNormalized": 0.25,
+      "sheenStrengthNormalized": 0.5,
+      "roughnessNormalized": 0.8,
+      "moistureCapacityNormalized": 0.6,
+      "wetMassMultiplier": 2,
+      "wetStiffnessMultiplier": 0.75
+    }
+  },
+  "missingFacets": ["chemistry", "render", "physical", "contact", "mechanical", "electrical", "fabrication", "audio"],
+  "notApplicableFacets": [],
+  "sources": [
+    {
+      "id": "engine-rope",
+      "kind": "repository",
+      "uri": "engine/sim/particles/RopeMaterial.js",
+      "citation": "Engine hemp rope interaction-material preset",
+      "note": "The source's unitless thermalConductivity is preserved only as normalizedThermalConductivity and is never promoted to SI."
+    },
+    {
+      "id": "editor-rope",
+      "kind": "repository",
+      "uri": "editor/js/spawnables/physics/RopeSchema.js",
+      "citation": "Editor hemp fiber preset",
+      "note": "Copied into immutable Engine-owned data; RealmForge has no runtime Editor dependency."
+    },
+    {
+      "id": "hemp-spectroscopy",
+      "kind": "primary",
+      "uri": "https://doi.org/10.1366/000370206777670602",
+      "citation": "Applied Spectroscopy research on hemp bast fiber"
+    }
+  ],
+  "fieldSources": {
+    "identity.kind": ["hemp-spectroscopy"],
+    "identity.phaseAt293K": ["hemp-spectroscopy"],
+    "identity.description": ["hemp-spectroscopy"],
+    "thermal.ignitionTemperatureK": ["engine-rope"],
+    "thermal.structuralBreakTemperatureK": ["engine-rope"],
+    "substance.normalizedThermalConductivity": ["engine-rope"],
+    "substance.flammabilityNormalized": ["engine-rope"],
+    "substance.moistureCapacityNormalized": ["engine-rope"],
+    "substance.corrosionRateNormalized": ["engine-rope"],
+    "fiber.bendingStiffnessNormalized": ["editor-rope"],
+    "fiber.elasticityNormalized": ["editor-rope"],
+    "fiber.dampingNormalized": ["editor-rope"],
+    "fiber.anisotropyNormalized": ["editor-rope"],
+    "fiber.sheenStrengthNormalized": ["editor-rope"],
+    "fiber.roughnessNormalized": ["editor-rope"],
+    "fiber.moistureCapacityNormalized": ["engine-rope"],
+    "fiber.wetMassMultiplier": ["engine-rope"],
+    "fiber.wetStiffnessMultiplier": ["engine-rope"]
+  }
+}

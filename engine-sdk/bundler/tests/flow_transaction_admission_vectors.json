@@ -1,0 +1,796 @@
+{
+  "purpose": "TEST-ONLY admission vectors, not new runtime execution evidence. Cases originated in standalone historical proofs; added physicalScales are derived for validator mutation tests only.",
+  "origins": {
+    "rebase": {
+      "sha256": "e6333740147be92ec3fb26f4e3a14c4977ec0c3379c1f2ec2075f2c3dd8fec41",
+      "filename": "flow-rebase-engine-02.json"
+    },
+    "momentum": {
+      "sha256": "68bcd67b295f64ec2cccc63b302a110019168adf55ebbc6aedb5309bce9e8604",
+      "filename": "flow-momentum-lifecycle-02.json"
+    }
+  },
+  "proofs": {
+    "rebase": {
+      "result": {
+        "cases": [
+          {
+            "name": "rebase-invalid-shift-is-atomic",
+            "status": "PASS",
+            "evidence": {
+              "invalidCases": 4,
+              "frames": 3,
+              "period": [
+                16,
+                8,
+                8
+              ]
+            }
+          },
+          {
+            "name": "rebase-preserves-atlas-integrals-and-gather",
+            "status": "PASS",
+            "evidence": {
+              "shift": [
+                32,
+                -24,
+                8
+              ],
+              "period": [
+                16,
+                8,
+                8
+              ],
+              "atlasBytes": [
+                6718464,
+                1152000
+              ],
+              "integral": [
+                0.0004687664755673439,
+                0.0009375329511346878,
+                0,
+                0.06981231828103773
+              ],
+              "result": {
+                "status": "REBASED",
+                "abi": 1,
+                "shift": [
+                  32,
+                  -24,
+                  8
+                ],
+                "coordinateEpoch": 1,
+                "advancedTime": 0
+              }
+            }
+          },
+          {
+            "name": "rebase-inverse-restores-exact-sparse-state",
+            "status": "PASS",
+            "evidence": {
+              "coordinateEpoch": 2
+            }
+          },
+          {
+            "name": "rebase-preserves-source-and-summary-motion-history",
+            "status": "PASS",
+            "evidence": {
+              "integrals": [
+                [
+                  0.001093502271628514,
+                  0.002187004543257028,
+                  0,
+                  0.11415403673890978
+                ],
+                [
+                  0.0010935022355168834,
+                  0.002187004471033767,
+                  0,
+                  0.11415406432934105
+                ]
+              ],
+              "velocityMaximumDifference": 1.9371509552001953e-07
+            }
+          },
+          {
+            "name": "rebase-supports-commensurate-native-layers",
+            "status": "PASS",
+            "evidence": {
+              "period": [
+                32,
+                16,
+                16
+              ],
+              "layers": [
+                0,
+                2
+              ]
+            }
+          }
+        ],
+        "cleanup": {
+          "status": "PASS",
+          "nativeContextsBefore": 0,
+          "nativeContextsAfter": 0,
+          "ownedGpuResources": 0
+        }
+      },
+      "engineResult": {
+        "cases": [
+          {
+            "name": "rebase-pending-and-invalid-preparation-rejected",
+            "status": "PASS",
+            "evidence": {
+              "shift": [
+                4096,
+                -2048,
+                1024
+              ],
+              "invalidUnmutated": true,
+              "pendingRejected": true
+            }
+          },
+          {
+            "name": "rebase-prepared-tokens-reject-source-body-contact-origin-staleness",
+            "status": "PASS",
+            "evidence": {
+              "rejections": 5
+            }
+          },
+          {
+            "name": "rebase-cache-publication-geometry-and-hierarchy-rejections-are-atomic",
+            "status": "PASS",
+            "evidence": {
+              "rejections": 8
+            }
+          },
+          {
+            "name": "rebase-native-physx-flow-origin-commit-is-one-coordinate-transaction",
+            "status": "PASS",
+            "evidence": {
+              "receipt": {
+                "status": "REBASED",
+                "abi": 1,
+                "shift": [
+                  4096,
+                  -2048,
+                  1024
+                ],
+                "coordinateEpoch": 1,
+                "advancedTime": 0,
+                "maximumPoseRoundingMetres": 0,
+                "bodies": 1
+              },
+              "mass": 2,
+              "framesBefore": 3,
+              "framesAtCommit": 4,
+              "beforeBody": [
+                0.875,
+                0.25,
+                0.25,
+                0,
+                0,
+                0,
+                1,
+                0.5,
+                0.25,
+                -0.125,
+                0.20000000298023224,
+                -0.10000000149011612,
+                0.30000001192092896
+              ],
+              "afterBody": [
+                -4095.125,
+                2048.25,
+                -1023.75,
+                0,
+                0,
+                0,
+                1,
+                0.5,
+                0.25,
+                -0.125,
+                0.20000000298023224,
+                -0.10000000149011612,
+                0.30000001192092896
+              ],
+              "atlasBytes": [
+                3483648,
+                614400
+              ],
+              "notified": 1
+            }
+          },
+          {
+            "name": "rebase-shared-clock-resumes-after-native-coordinate-commit",
+            "status": "PASS",
+            "evidence": {
+              "frame": 5,
+              "bodyPosition": [
+                -4095.1171875,
+                2048.25390625,
+                -1023.751953125
+              ]
+            }
+          }
+        ],
+        "cleanup": {
+          "status": "PASS",
+          "nativeContextsBefore": 0,
+          "nativeContextsAfter": 0,
+          "bodies": 0,
+          "ownedGpuResources": 0
+        }
+      }
+    },
+    "momentum": {
+      "result": {
+        "cases": [
+          {
+            "name": "momentum-analytic-two-mass-and-angular-work",
+            "status": "PASS",
+            "evidence": {
+              "translation": {
+                "abi": 1,
+                "mode": "terminal-paired-normal-impulses",
+                "gasCells": 1,
+                "bodies": 1,
+                "contacts": 1,
+                "sweeps": 1,
+                "maximumClosingVelocity": 0,
+                "appliedMaximumClosingVelocity": 0,
+                "maximumRoundingVelocity": 0,
+                "velocityTolerance": 1e-07,
+                "angularOriginMetres": [
+                  0,
+                  0,
+                  0
+                ],
+                "heatObligationJ": 3,
+                "ideal": {
+                  "gasImpulseNs": [
+                    -3,
+                    0,
+                    0
+                  ],
+                  "bodyImpulseNs": [
+                    3,
+                    0,
+                    0
+                  ],
+                  "gasAngularImpulseNms": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "bodyAngularImpulseNms": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "gasWorkJ": -3.75,
+                  "bodyWorkJ": 0.75
+                },
+                "applied": {
+                  "gasImpulseNs": [
+                    -3,
+                    0,
+                    0
+                  ],
+                  "bodyImpulseNs": [
+                    3,
+                    0,
+                    0
+                  ],
+                  "gasAngularImpulseNms": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "bodyAngularImpulseNms": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "gasWorkJ": -3.75,
+                  "bodyWorkJ": 0.75
+                },
+                "idealEnergyResidualJ": 0,
+                "appliedEnergyResidualJ": 0,
+                "budgets": {
+                  "roundingVelocityTolerance": 1e-05,
+                  "momentumRelativeTolerance": 2e-05,
+                  "angularRelativeTolerance": 2e-05,
+                  "energyRelativeTolerance": 2e-05,
+                  "linearImpulseNs": 6.000000000000001e-05,
+                  "angularImpulseNms": 0,
+                  "energyJ": 0.00015000000000000001
+                },
+                "linearError": 0,
+                "angularError": 0,
+                "energyError": 0,
+                "kineticRoundingJ": 0,
+                "roundingImpulseNs": [
+                  0,
+                  0,
+                  0
+                ],
+                "roundingAngularImpulseNms": [
+                  0,
+                  0,
+                  0
+                ],
+                "physicalScales": {
+                  "linearImpulseNs": 3.0,
+                  "angularImpulseNms": 0.0,
+                  "energyJ": 7.5
+                }
+              },
+              "rotation": {
+                "abi": 1,
+                "mode": "terminal-paired-normal-impulses",
+                "gasCells": 1,
+                "bodies": 1,
+                "contacts": 1,
+                "sweeps": 1,
+                "maximumClosingVelocity": 0,
+                "appliedMaximumClosingVelocity": 0,
+                "maximumRoundingVelocity": 2.9802322165650708e-08,
+                "velocityTolerance": 1e-07,
+                "angularOriginMetres": [
+                  0,
+                  0,
+                  0
+                ],
+                "heatObligationJ": 0.7714285714285716,
+                "ideal": {
+                  "gasImpulseNs": [
+                    -0.5142857142857143,
+                    0,
+                    0
+                  ],
+                  "bodyImpulseNs": [
+                    0.5142857142857143,
+                    0,
+                    0
+                  ],
+                  "gasAngularImpulseNms": [
+                    0,
+                    0,
+                    1.0285714285714287
+                  ],
+                  "bodyAngularImpulseNms": [
+                    0,
+                    0,
+                    -1.0285714285714285
+                  ],
+                  "gasWorkJ": -1.0138775510204083,
+                  "bodyWorkJ": 0.24244897959183673
+                },
+                "applied": {
+                  "gasImpulseNs": [
+                    -0.5142857134342194,
+                    0,
+                    0
+                  ],
+                  "bodyImpulseNs": [
+                    0.5142857432365417,
+                    0,
+                    0
+                  ],
+                  "gasAngularImpulseNms": [
+                    0,
+                    0,
+                    1.0285714268684387
+                  ],
+                  "bodyAngularImpulseNms": [
+                    0,
+                    0,
+                    -1.028571456670761
+                  ],
+                  "gasWorkJ": -1.01387755021757,
+                  "bodyWorkJ": 0.24244899667039244
+                },
+                "idealEnergyResidualJ": 0,
+                "appliedEnergyResidualJ": 1.7881393921115318e-08,
+                "budgets": {
+                  "roundingVelocityTolerance": 1e-05,
+                  "momentumRelativeTolerance": 2e-05,
+                  "angularRelativeTolerance": 2e-05,
+                  "energyRelativeTolerance": 2e-05,
+                  "linearImpulseNs": 1.0285714285714288e-05,
+                  "angularImpulseNms": 2.0571428571428576e-05,
+                  "energyJ": 4.0555102040816335e-05
+                },
+                "linearError": 2.9802322387695312e-08,
+                "angularError": 2.9802322387695312e-08,
+                "energyError": 1.7881393921115318e-08,
+                "kineticRoundingJ": 1.7881393948870894e-08,
+                "roundingImpulseNs": [
+                  2.9802322387695312e-08,
+                  0,
+                  0
+                ],
+                "roundingAngularImpulseNms": [
+                  0,
+                  0,
+                  -2.9802322387695312e-08
+                ],
+                "physicalScales": {
+                  "linearImpulseNs": 0.5142857142857143,
+                  "angularImpulseNms": 1.0285714285714287,
+                  "energyJ": 2.0277551020408167
+                }
+              },
+              "roundingFailure": "Error: Native f32 paired exchange exceeds its configured physical accuracy budget"
+            }
+          },
+          {
+            "name": "momentum-resident-gpu-cells-and-two-finite-native-bodies",
+            "status": "PASS",
+            "evidence": {
+              "receipt": {
+                "abi": 1,
+                "mode": "terminal-paired-normal-impulses",
+                "gasCells": 20,
+                "bodies": 2,
+                "contacts": 20,
+                "sweeps": 3,
+                "maximumClosingVelocity": 6.657263629250565e-11,
+                "appliedMaximumClosingVelocity": 8.215173583070445e-09,
+                "maximumRoundingVelocity": 2.2936300247966557e-08,
+                "velocityTolerance": 1e-07,
+                "angularOriginMetres": [
+                  0.75,
+                  -0.375,
+                  0
+                ],
+                "heatObligationJ": 0.08272454065436305,
+                "ideal": {
+                  "gasImpulseNs": [
+                    -0.12083444818120717,
+                    0.005799892824370629,
+                    -1.6040058680868476e-05
+                  ],
+                  "bodyImpulseNs": [
+                    0.12083444818120714,
+                    -0.00579989282437063,
+                    1.6040058680868537e-05
+                  ],
+                  "gasAngularImpulseNms": [
+                    -1.4888804631007016e-05,
+                    7.1580413489985e-06,
+                    0.04629178157748258
+                  ],
+                  "bodyAngularImpulseNms": [
+                    1.4888804631005722e-05,
+                    -7.158041349000468e-06,
+                    -0.04629178157748261
+                  ],
+                  "gasWorkJ": -0.05358578018441765,
+                  "bodyWorkJ": -0.02913876046994547
+                },
+                "applied": {
+                  "gasImpulseNs": [
+                    -0.12083444836316631,
+                    0.0057998931035399435,
+                    -1.603950513526676e-05
+                  ],
+                  "bodyImpulseNs": [
+                    0.1208344716578722,
+                    -0.005799892824143171,
+                    1.604005819899612e-05
+                  ],
+                  "gasAngularImpulseNms": [
+                    -1.4888416626490479e-05,
+                    7.158285006881541e-06,
+                    0.046291781510808504
+                  ],
+                  "bodyAngularImpulseNms": [
+                    1.4888804253042646e-05,
+                    -7.1580413028562106e-06,
+                    -0.046291781880718474
+                  ],
+                  "gasWorkJ": -0.05358578031353689,
+                  "bodyWorkJ": -0.02913877434894156
+                },
+                "idealEnergyResidualJ": -6.938893903907228e-17,
+                "appliedEnergyResidualJ": -1.4008115403751908e-08,
+                "budgets": {
+                  "roundingVelocityTolerance": 1e-05,
+                  "momentumRelativeTolerance": 2e-05,
+                  "angularRelativeTolerance": 2e-05,
+                  "energyRelativeTolerance": 2e-05,
+                  "linearImpulseNs": 3.1565681010487774e-06,
+                  "angularImpulseNms": 2.3890638151156825e-06,
+                  "energyJ": 3.308981626174523e-06
+                },
+                "linearError": 2.3476665062468347e-08,
+                "angularError": 5.886249929604804e-10,
+                "energyError": 1.4008115403751908e-08,
+                "kineticRoundingJ": -1.400811533436297e-08,
+                "roundingImpulseNs": [
+                  2.3294705886467426e-08,
+                  2.793967722111712e-10,
+                  5.530637293624241e-10
+                ],
+                "roundingAngularImpulseNms": [
+                  3.876265521670502e-10,
+                  2.437040253302526e-10,
+                  -3.6990997070995846e-10
+                ],
+                "status": "EXCHANGED",
+                "cells": 20,
+                "advancedTime": 0,
+                "actualExchange": {
+                  "deltaP": [
+                    2.3294705886467426e-08,
+                    2.793967722111712e-10,
+                    5.530637293624241e-10
+                  ],
+                  "deltaL": [
+                    3.876265521670502e-10,
+                    2.437040253302526e-10,
+                    -3.6990997070995846e-10
+                  ],
+                  "gasWork": -0.05358578031353689,
+                  "bodyWork": -0.02913877434894156
+                },
+                "densitiesKgPerM3": [
+                  [
+                    0,
+                    1.2
+                  ]
+                ],
+                "heatDisposition": "unapplied-explicit-obligation",
+                "scope": "terminal-normal-exchange-only",
+                "physicalScales": {
+                  "linearImpulseNs": 0.15782840505243886,
+                  "angularImpulseNms": 0.11945319075578412,
+                  "energyJ": 0.16544908130872615
+                }
+              },
+              "actual": [
+                {
+                  "position": [
+                    0.75,
+                    -0.375,
+                    0
+                  ],
+                  "mass": 2,
+                  "velocity": [
+                    -0.47024375200271606,
+                    0,
+                    0
+                  ],
+                  "angularVelocity": [
+                    0,
+                    -0.00022832941613160074,
+                    0
+                  ],
+                  "inertia": [
+                    0.0833333358168602,
+                    0.0442708358168602,
+                    0.0442708358168602
+                  ]
+                },
+                {
+                  "position": [
+                    0.75,
+                    0.375,
+                    0
+                  ],
+                  "mass": 3,
+                  "velocity": [
+                    0.020440658554434776,
+                    -0.0019332976080477238,
+                    5.34668606633204e-06
+                  ],
+                  "angularVelocity": [
+                    3.8116806535981596e-05,
+                    3.9337235648417845e-05,
+                    2.9959959983825684
+                  ],
+                  "inertia": [
+                    0.07500000298023224,
+                    0.07500000298023224,
+                    0.07500000298023224
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "momentum-overflow-stale-invalid-and-consumed-admission-is-atomic",
+            "status": "PASS",
+            "evidence": {
+              "residentCells": 20,
+              "contacts": 20,
+              "scalarBytes": 6718464
+            }
+          },
+          {
+            "name": "momentum-post-readback-native-mass-inertia-configuration-and-cache-rejection",
+            "status": "PASS",
+            "evidence": {
+              "interventions": [
+                {
+                  "name": "mass",
+                  "rejection": "Error: Paired body mass, inertia, pose, velocity or geometry changed"
+                },
+                {
+                  "name": "principal-inertia",
+                  "rejection": "Error: Paired body mass, inertia, pose, velocity or geometry changed"
+                },
+                {
+                  "name": "native-velocity",
+                  "rejection": "Error: Paired body mass, inertia, pose, velocity or geometry changed"
+                },
+                {
+                  "name": "density-configuration",
+                  "rejection": "Error: Paired body topology or physical controls changed during gas readback"
+                },
+                {
+                  "name": "frozen-public-cache",
+                  "rejection": "Error: Paired velocity cache changed during preparation"
+                }
+              ],
+              "actualGpuBytesAndNativeBodyStateUnchangedAfterEachIntervention": true
+            }
+          },
+          {
+            "name": "momentum-native-halo-and-subsequent-step-lifecycle",
+            "status": "PASS",
+            "evidence": {
+              "receipt": {
+                "abi": 1,
+                "mode": "terminal-paired-normal-impulses",
+                "gasCells": 20,
+                "bodies": 2,
+                "contacts": 20,
+                "sweeps": 3,
+                "maximumClosingVelocity": 9.153721183818853e-12,
+                "appliedMaximumClosingVelocity": 0,
+                "maximumRoundingVelocity": 3.671349446676686e-08,
+                "velocityTolerance": 1e-07,
+                "angularOriginMetres": [
+                  0.75,
+                  -0.375,
+                  0
+                ],
+                "heatObligationJ": 0.15191154799197384,
+                "ideal": {
+                  "gasImpulseNs": [
+                    -0.16545006987146166,
+                    0.005237954276605079,
+                    -7.53183491234927e-05
+                  ],
+                  "bodyImpulseNs": [
+                    0.16545006987146166,
+                    -0.005237954276605076,
+                    7.5318349123495e-05
+                  ],
+                  "gasAngularImpulseNms": [
+                    -5.261483325070919e-05,
+                    -1.167147142312416e-05,
+                    0.06875125502096606
+                  ],
+                  "bodyAngularImpulseNms": [
+                    5.26148332507116e-05,
+                    1.1671471423123451e-05,
+                    -0.06875125502096605
+                  ],
+                  "gasWorkJ": -0.12087893669556878,
+                  "bodyWorkJ": -0.031032611296405083
+                },
+                "applied": {
+                  "gasImpulseNs": [
+                    -0.16545007349923252,
+                    0.005237954123003874,
+                    -7.531773881055536e-05
+                  ],
+                  "bodyImpulseNs": [
+                    0.16545008681714535,
+                    -0.005237953970208764,
+                    7.531834808105486e-05
+                  ],
+                  "gasAngularImpulseNms": [
+                    -5.261446294753131e-05,
+                    -1.1671178071994098e-05,
+                    0.06875125758651847
+                  ],
+                  "bodyAngularImpulseNms": [
+                    5.261483243497922e-05,
+                    1.167147136400293e-05,
+                    -0.06875125962455897
+                  ],
+                  "gasWorkJ": -0.12087894100501949,
+                  "bodyWorkJ": -0.03103262704052895
+                },
+                "idealEnergyResidualJ": -2.7755575615628914e-17,
+                "appliedEnergyResidualJ": -2.0053574606437863e-08,
+                "budgets": {
+                  "roundingVelocityTolerance": 1e-05,
+                  "momentumRelativeTolerance": 2e-05,
+                  "angularRelativeTolerance": 2e-05,
+                  "energyRelativeTolerance": 2e-05,
+                  "linearImpulseNs": 4.458264493864116e-06,
+                  "angularImpulseNms": 3.5571053824046366e-06,
+                  "energyJ": 6.076461919678955e-06
+                },
+                "linearError": 1.694845348385768e-08,
+                "angularError": 4.603592996186873e-09,
+                "energyError": 2.0053574606437863e-08,
+                "kineticRoundingJ": -2.0053574592560075e-08,
+                "roundingImpulseNs": [
+                  1.3317912828103573e-08,
+                  1.5279510989785194e-10,
+                  6.092704995033782e-10
+                ],
+                "roundingAngularImpulseNms": [
+                  3.694874479076224e-10,
+                  2.9329200883163053e-10,
+                  -2.038040500251803e-09
+                ],
+                "status": "EXCHANGED",
+                "cells": 20,
+                "advancedTime": 0,
+                "actualExchange": {
+                  "deltaP": [
+                    1.3317912828103573e-08,
+                    1.5279510989785194e-10,
+                    6.092704995033782e-10
+                  ],
+                  "deltaL": [
+                    3.694874479076224e-10,
+                    2.9329200883205405e-10,
+                    -2.038040500251803e-09
+                  ],
+                  "gasWork": -0.12087894100501949,
+                  "bodyWork": -0.03103262704052895
+                },
+                "densitiesKgPerM3": [
+                  [
+                    0,
+                    1.2
+                  ]
+                ],
+                "heatDisposition": "unapplied-explicit-obligation",
+                "scope": "terminal-normal-exchange-only",
+                "physicalScales": {
+                  "linearImpulseNs": 0.22291322469320576,
+                  "angularImpulseNms": 0.1778552691202318,
+                  "energyJ": 0.30382309598394774
+                }
+              },
+              "scatters": [
+                {
+                  "cells": 20,
+                  "halos": 24,
+                  "velocityAtlasBytes": 1152000
+                },
+                {
+                  "cells": 20,
+                  "halos": 24,
+                  "velocityAtlasBytes": 1152000
+                },
+                {
+                  "cells": 20,
+                  "halos": 24,
+                  "velocityAtlasBytes": 1152000
+                }
+              ]
+            }
+          }
+        ],
+        "cleanup": {
+          "status": "PASS",
+          "nativeContextsBefore": 0,
+          "nativeContextsAfter": 0,
+          "ownedGpuResources": 0,
+          "bodies": 0
+        }
+      }
+    }
+  }
+}

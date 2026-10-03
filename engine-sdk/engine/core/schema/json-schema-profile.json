@@ -1,0 +1,7 @@
+{
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "dialect": "https://json-schema.org/draft/2020-12/schema",
+  "types": ["null", "boolean", "integer", "number", "string", "array", "object"],
+  "annotations": ["$schema", "$id", "$comment", "title", "description", "default", "examples", "deprecated", "readOnly", "writeOnly", "format"],
+  "keywords": ["$ref", "$defs", "type", "properties", "required", "additionalProperties", "items", "prefixItems", "minLength", "maxLength", "pattern", "minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf", "minItems", "maxItems", "uniqueItems", "minProperties", "maxProperties", "const", "enum", "oneOf", "anyOf", "allOf", "not", "if", "then", "else", "dependentRequired"]
+}

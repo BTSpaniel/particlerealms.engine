@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Render Surfaces — Verification</title>
+  <style>
+    body { font: 14px ui-monospace, Consolas, monospace; background: #0a0e17; color: #cdd9ea; margin: 0; padding: 24px; }
+    h1 { font-size: 18px; margin: 0 0 4px; }
+    .sub { color: #6b7488; margin-bottom: 14px; }
+    .summary { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+    .pill { border-radius: 999px; padding: 5px 14px; font-weight: 700; font-size: 13px; }
+    .tot { background: #1b2740; } .ok { background: #11512f; color: #9be58b; } .bad { background: #5a1f24; color: #ff9a93; }
+    button { font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 7px 16px; border: none; background: #2a3550; color: #cdd9ea; }
+    table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    td, th { text-align: left; padding: 6px 10px; border-bottom: 1px solid #ffffff12; vertical-align: top; }
+    td.s { width: 64px; font-weight: 700; } .PASS { color: #9be58b; } .FAIL { color: #ff9a93; }
+    .grp { color: #9fb4d8; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+    .detail { color: #ff9a93; } .ms { color: #6b7488; }
+    code { background: rgba(255,255,255,.06); padding: 1px 6px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Render Surfaces — Verification</h1>
+  <div class="sub">Serve the repo and open <code>/engine/surfaces/verify.html</code>. Re-run after each edit.</div>
+  <div class="summary">
+    <span id="pill-total" class="pill tot">…</span>
+    <span id="pill-pass" class="pill ok">…</span>
+    <span id="pill-fail" class="pill bad">…</span>
+    <button id="rerun">Re-run</button>
+    <span id="time" class="ms"></span>
+  </div>
+  <table>
+    <thead><tr><th class="s">Status</th><th>Gate</th><th>Detail</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+<script type="module">
+import {
+  SURFACE_SOURCE, UPDATE_MODE, createRenderSurface, markSurfaceDirty, resizeSurface, surfaceNeedsUpload,
+} from './RenderSurface.js';
+import { createSurfaceManager } from './SurfaceManager.js';
+import { createCanvasSurface } from './CanvasSurface.js';
+import { createCodeSurface } from './CodeSurface.js';
+import { createTerminalSurface } from './TerminalSurface.js';
+import {
+  SURFACE_SLOT, createSurfaceMaterial, surfaceIdFromTextureId, materialSurfaceBinding,
+} from './RenderSurfaceMaterial.js';
+import { createSurfaceInputMapper, uvToPixel } from './SurfaceInputMapper.js';
+
+const VERSION = 'surfaces v0.1.0-alpha';
+
+// A canvas-backed source bound to a fresh RenderSurface, for manager tests.
+function makeCanvasBacked(mode) {
+  const source = createCanvasSurface({ width: 32, height: 32, draw: (ctx) => { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 32, 32); } });
+  const surface = createRenderSurface({ id: 'srf', width: 32, height: 32, updateMode: mode, source });
+  return { surface, source };
+}
+
+async function runAll() {
+  const results = [];
+  let group = '';
+  const G = (name) => { group = name; };
+  const assert = (cond, msg) => { if (!cond) throw new Error(msg || 'assertion failed'); };
+  const t = (name, fn) => {
+    try { fn(); results.push({ group, name, status: 'PASS' }); }
+    catch (e) { results.push({ group, name, status: 'FAIL', detail: e?.message ?? String(e) }); }
+  };
+
+  // ── RenderSurface schema + policy ────────────────────────────────────────────
+  G('Surfaces · Schema & policy');
+
+  t('a fresh surface is dirty, visible, ungpu, input-denied by default', () => {
+    const s = createRenderSurface({ width: 100, height: 50 });
+    assert(s.dirty && s.visible, 'starts dirty + visible');
+    assert(s.gpu === null && s.uploads === 0, 'no gpu yet');
+    assert(s.permissions.input === false, 'input denied by default (safety)');
+    assert(s.updateMode === UPDATE_MODE.DIRTY && s.sourceType === SURFACE_SOURCE.CANVAS, 'sane defaults');
+  });
+
+  t('surfaceNeedsUpload follows each update mode', () => {
+    const s = createRenderSurface({ updateMode: UPDATE_MODE.DIRTY });
+    assert(surfaceNeedsUpload(s, 0) === true, 'no gpu → upload');
+    s.gpu = { width: s.width, height: s.height }; s.dirty = false;
+    assert(surfaceNeedsUpload(s, 0) === false, 'dirty-mode clean → skip');
+    markSurfaceDirty(s); assert(surfaceNeedsUpload(s, 0) === true, 'dirtied → upload');
+
+    const r = createRenderSurface({ updateMode: UPDATE_MODE.REALTIME }); r.gpu = {}; r.dirty = false;
+    assert(surfaceNeedsUpload(r, 0) === true, 'realtime visible → upload');
+    r.visible = false; assert(surfaceNeedsUpload(r, 0) === false, 'off-screen → sleep');
+
+    const iv = createRenderSurface({ updateMode: UPDATE_MODE.INTERVAL, intervalMs: 100 }); iv.gpu = {}; iv.dirty = false; iv.lastUploadMs = 0;
+    assert(surfaceNeedsUpload(iv, 50) === false, 'interval not due → skip');
+    assert(surfaceNeedsUpload(iv, 150) === true, 'interval due → upload');
+
+    const st = createRenderSurface({ updateMode: UPDATE_MODE.STATIC }); st.gpu = {}; st.dirty = false; st.uploads = 1;
+    assert(surfaceNeedsUpload(st, 999) === false, 'static after first upload → skip');
+  });
+
+  t('resize forces texture reallocation + dirty', () => {
+    const s = createRenderSurface({ width: 10, height: 10, source: createCanvasSurface({ width: 10, height: 10 }) });
+    s.gpu = { width: 10, height: 10 }; s.dirty = false;
+    resizeSurface(s, 20, 30);
+    assert(s.width === 20 && s.height === 30 && s.gpu === null && s.dirty, 'resized + invalidated');
+    assert(s.source.width === 20 && s.source.height === 30, 'source resized too');
+  });
+
+  // ── SurfaceManager scheduling (headless via injected uploader) ────────────────
+  G('Surfaces · Manager scheduling');
+
+  t('dirty mode uploads once, then only after a change', () => {
+    let count = 0;
+    const mgr = createSurfaceManager(null, { uploader: () => { count++; return true; } });
+    const { surface } = makeCanvasBacked(UPDATE_MODE.DIRTY);
+    mgr.register(surface);
+    mgr.tick(0, 0); assert(count === 1, `first tick uploads (${count})`);
+    mgr.tick(16, 0); assert(count === 1, 'no change → no upload');
+    markSurfaceDirty(surface); mgr.tick(32, 0); assert(count === 2, 'dirtied → upload');
+  });
+
+  t('a source flagging itself dirty triggers an upload (keystroke bridge)', () => {
+    let count = 0;
+    const mgr = createSurfaceManager(null, { uploader: () => { count++; return true; } });
+    const { surface, source } = makeCanvasBacked(UPDATE_MODE.DIRTY);
+    mgr.register(surface); mgr.tick(0, 0); assert(count === 1, 'initial');
+    source.dirty = true; mgr.tick(16, 0); assert(count === 2, 'source.dirty bridged to upload');
+  });
+
+  t('off-screen realtime surfaces sleep (no upload)', () => {
+    let count = 0;
+    const mgr = createSurfaceManager(null, { uploader: () => { count++; return true; } });
+    const { surface } = makeCanvasBacked(UPDATE_MODE.REALTIME);
+    mgr.register(surface); mgr.tick(0, 0); assert(count === 1, 'visible realtime uploads');
+    mgr.setVisible(surface.id, false); mgr.tick(16, 0); mgr.tick(32, 0);
+    assert(count === 1, 'hidden → throttled to zero');
+  });
+
+  t('interval mode caps upload frequency', () => {
+    let count = 0;
+    const mgr = createSurfaceManager(null, { uploader: () => { count++; return true; } });
+    const { surface } = makeCanvasBacked(UPDATE_MODE.INTERVAL); surface.intervalMs = 100;
+    mgr.register(surface);
+    mgr.tick(0, 0); assert(count === 1, 'first');
+    mgr.tick(50, 0); assert(count === 1, 'before interval → skip');
+    mgr.tick(150, 0); assert(count === 2, 'after interval → upload');
+  });
+
+  // ── Code & terminal sources ──────────────────────────────────────────────────
+  G('Surfaces · Code & terminal');
+
+  t('CodeSurface edits text via keystrokes (type, Enter, backspace)', () => {
+    const c = createCodeSurface({ width: 256, height: 128, text: '', editable: true });
+    for (const k of ['a', 'b']) c.onKey({ key: k });
+    c.onKey({ key: 'Enter' });
+    c.onKey({ key: 'c' });
+    assert(c.getText() === 'ab\nc', `got ${JSON.stringify(c.getText())}`);
+    c.onKey({ key: 'Backspace' });
+    assert(c.getText() === 'ab\n', 'backspace removes char');
+    assert(c.dirty, 'edits flag dirty');
+  });
+
+  t('TerminalSurface echoes input and runs onCommand on Enter', () => {
+    let ran = null;
+    const term = createTerminalSurface({ width: 256, height: 128, onCommand: (cmd) => { ran = cmd; return 'pong'; } });
+    for (const k of ['p', 'i', 'n', 'g']) term.onKey({ key: k });
+    term.onKey({ key: 'Enter' });
+    assert(ran === 'ping', `command ran (${ran})`);
+    assert(term.dirty, 'output flags dirty');
+  });
+
+  // ── Material binding ─────────────────────────────────────────────────────────
+  G('Surfaces · Material binding');
+
+  t('createSurfaceMaterial binds a surface as an unlit emissive screen', () => {
+    const s = createRenderSurface({ id: 'screen0' });
+    const mat = createSurfaceMaterial(s);
+    assert(mat.workflow === 'unlit', 'screens are unlit');
+    assert(mat.textures.emissive?.textureId === 'surface://screen0', 'emissive bound to surface');
+    const bind = materialSurfaceBinding(mat);
+    assert(bind && bind.surfaceId === 'screen0' && bind.slot === SURFACE_SLOT.EMISSIVE, 'surface binding block present');
+    assert(surfaceIdFromTextureId('surface://screen0') === 'screen0', 'id round-trips');
+    assert(surfaceIdFromTextureId('texture:3') === null, 'non-surface ids ignored');
+  });
+
+  // ── Input mapping ────────────────────────────────────────────────────────────
+  G('Surfaces · Input mapping');
+
+  t('UV maps to surface pixels', () => {
+    const s = createRenderSurface({ width: 100, height: 40 });
+    const p = uvToPixel(s, 0.5, 0.25);
+    assert(p.x === 50 && p.y === 10, `center maps to (${p.x},${p.y})`);
+  });
+
+  t('input is denied unless the surface grants permission', () => {
+    let got = null;
+    const source = { onPointer: (e) => { got = e; }, onKey: () => {} };
+    const inert = createRenderSurface({ id: 'a', width: 100, height: 100, source });
+    const live = createRenderSurface({ id: 'b', width: 100, height: 100, source, permissions: { input: true } });
+    const map = createSurfaceInputMapper({ surfaces: [inert, live] });
+    assert(map.pointer('a', { type: 'down', u: 0.5, v: 0.5 }) === false, 'inert surface rejects input');
+    assert(got === null, 'no dispatch to inert surface');
+    assert(map.pointer('b', { type: 'down', u: 0.5, v: 0.5 }) === true, 'permissioned surface accepts');
+    assert(got && got.x === 50 && got.y === 50, 'pointer dispatched with pixel coords');
+  });
+
+  t('clicking focuses a surface; keys route to the focused one', () => {
+    const keysA = []; const keysB = [];
+    const a = createRenderSurface({ id: 'a', width: 10, height: 10, permissions: { input: true }, source: { onKey: (e) => keysA.push(e.key), onPointer: () => {} } });
+    const b = createRenderSurface({ id: 'b', width: 10, height: 10, permissions: { input: true }, source: { onKey: (e) => keysB.push(e.key), onPointer: () => {} } });
+    const map = createSurfaceInputMapper({ surfaces: [a, b] });
+    assert(map.key({ key: 'x' }) === false, 'no focus → no keyboard');
+    map.pointer('b', { type: 'down', u: 0.1, v: 0.1 });
+    map.key({ key: 'h' }); map.key({ key: 'i' });
+    assert(keysB.join('') === 'hi' && keysA.length === 0, 'keys go to focused surface only');
+  });
+
+  return results;
+}
+
+async function render() {
+  const start = performance.now();
+  const results = await runAll();
+  const ms = (performance.now() - start).toFixed(2);
+  const pass = results.filter((r) => r.status === 'PASS').length;
+  const fail = results.length - pass;
+  document.getElementById('pill-total').textContent = `${results.length} gates`;
+  document.getElementById('pill-pass').textContent = `${pass} passed`;
+  document.getElementById('pill-fail').textContent = `${fail} failed`;
+  document.getElementById('pill-fail').classList.toggle('ok', fail === 0);
+  document.getElementById('pill-fail').classList.toggle('bad', fail !== 0);
+  document.getElementById('time').textContent = `${VERSION} · ran in ${ms} ms`;
+  const rows = document.getElementById('rows');
+  rows.innerHTML = '';
+  let lastGroup = null;
+  for (const r of results) {
+    if (r.group !== lastGroup) {
+      lastGroup = r.group;
+      const gr = document.createElement('tr');
+      gr.innerHTML = `<td></td><td class="grp" colspan="2">${r.group}</td>`;
+      rows.appendChild(gr);
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="s ${r.status}">${r.status}</td><td>${r.name}</td><td class="detail">${r.detail ? r.detail : ''}</td>`;
+    rows.appendChild(tr);
+  }
+}
+
+document.getElementById('rerun').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>

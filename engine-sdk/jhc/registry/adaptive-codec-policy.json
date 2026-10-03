@@ -1,0 +1,90 @@
+{
+  "features": [
+    "log2_bytes",
+    "ascii_ratio",
+    "whitespace_ratio",
+    "identifier_ratio",
+    "unique_byte_ratio",
+    "repeated_quad_ratio"
+  ],
+  "integrity": {
+    "algorithm": "SHA-256",
+    "payloadSha256": "0389392c2e7659358628c85ea1916ce9fd5805ac2537986f5032be538a484c28"
+  },
+  "model": {
+    "feature": "whitespace_ratio",
+    "leaf": false,
+    "left": {
+      "feature": "unique_byte_ratio",
+      "leaf": false,
+      "left": {
+        "leaf": true,
+        "probability": 1.0,
+        "samples": 14,
+        "tryToken": true
+      },
+      "right": {
+        "leaf": true,
+        "probability": 0.333333,
+        "samples": 6,
+        "tryToken": false
+      },
+      "threshold": 0.267108122
+    },
+    "right": {
+      "feature": "repeated_quad_ratio",
+      "leaf": false,
+      "left": {
+        "feature": "repeated_quad_ratio",
+        "leaf": false,
+        "left": {
+          "feature": "identifier_ratio",
+          "leaf": false,
+          "left": {
+            "leaf": true,
+            "probability": 0.0,
+            "samples": 6,
+            "tryToken": false
+          },
+          "right": {
+            "leaf": true,
+            "probability": 0.5,
+            "samples": 4,
+            "tryToken": true
+          },
+          "threshold": 0.639092274
+        },
+        "right": {
+          "leaf": true,
+          "probability": 1.0,
+          "samples": 8,
+          "tryToken": true
+        },
+        "threshold": 0.099137931
+      },
+      "right": {
+        "leaf": true,
+        "probability": 0.0,
+        "samples": 39,
+        "tryToken": false
+      },
+      "threshold": 0.129614094
+    },
+    "threshold": 0.140031537
+  },
+  "safety": {
+    "advisoryOnly": true,
+    "measureCandidateBeforeUse": true,
+    "neverExpand": true
+  },
+  "schema": "jhc-adaptive-policy-v1",
+  "training": {
+    "corpusSha256": "1493d53f51f4030cf1dd299b8dd394dfbacb97ae73767d4d3ca8336ffb5d1101",
+    "files": 77,
+    "maxDepth": 4,
+    "minLeaf": 4,
+    "rawWins": 51,
+    "tokenWins": 26,
+    "trainingAccuracy": 0.948052
+  }
+}

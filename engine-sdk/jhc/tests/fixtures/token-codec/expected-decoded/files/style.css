@@ -1,0 +1,6 @@
+.app {
+  display: flex;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 16px;
+}

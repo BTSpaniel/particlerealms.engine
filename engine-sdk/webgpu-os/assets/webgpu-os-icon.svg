@@ -1,0 +1,64 @@
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Particle Realms WebGPU OS">
+  <defs>
+    <radialGradient id="backdrop" cx="50%" cy="46%" r="66%">
+      <stop stop-color="#18295c"/>
+      <stop offset=".45" stop-color="#0d1737"/>
+      <stop offset="1" stop-color="#070c20"/>
+    </radialGradient>
+    <radialGradient id="aura" cx="50%" cy="50%" r="50%">
+      <stop stop-color="#f4ffff" stop-opacity=".38"/>
+      <stop offset=".12" stop-color="#57e6ff" stop-opacity=".55"/>
+      <stop offset=".38" stop-color="#7c6cff" stop-opacity=".34"/>
+      <stop offset=".72" stop-color="#ef4ba8" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#7c6cff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="core" cx="36%" cy="31%" r="72%">
+      <stop stop-color="#fff"/>
+      <stop offset=".24" stop-color="#eaffff"/>
+      <stop offset=".5" stop-color="#8ff2ff"/>
+      <stop offset=".76" stop-color="#7278ff"/>
+      <stop offset="1" stop-color="#ef4ba8"/>
+    </radialGradient>
+    <linearGradient id="cube" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#eaffff"/>
+      <stop offset=".48" stop-color="#78eaff"/>
+      <stop offset="1" stop-color="#8a75ff"/>
+    </linearGradient>
+    <linearGradient id="orbit" x1=".15" y1=".1" x2=".85" y2=".9">
+      <stop stop-color="#5879c9" stop-opacity=".34"/>
+      <stop offset=".48" stop-color="#57e6ff" stop-opacity=".88"/>
+      <stop offset=".8" stop-color="#ef4ba8" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#5879c9" stop-opacity=".3"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#7697e6" stroke-opacity=".055" stroke-width="1"/>
+    </pattern>
+    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="pointGlow" x="-500%" y="-500%" width="1000%" height="1000%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <filter id="cubeGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#backdrop)"/>
+  <rect width="512" height="512" rx="112" fill="url(#grid)"/>
+  <circle cx="256" cy="256" r="157" fill="url(#aura)" opacity=".48" filter="url(#softGlow)"/>
+  <circle cx="256" cy="256" r="142" fill="none" stroke="url(#orbit)" stroke-width="2"/>
+  <circle cx="323" cy="131" r="14" fill="#57e6ff" opacity=".32" filter="url(#pointGlow)"/>
+  <circle cx="323" cy="131" r="6" fill="#75efff"/>
+  <circle cx="155" cy="356" r="14" fill="#ef4ba8" opacity=".3" filter="url(#pointGlow)"/>
+  <circle cx="155" cy="356" r="6" fill="#ef4ba8"/>
+  <rect x="207" y="207" width="98" height="98" fill="#6be9ff" opacity=".08"/>
+  <rect x="209" y="209" width="94" height="94" fill="none" stroke="#57e6ff" stroke-opacity=".62" stroke-width="11" filter="url(#softGlow)"/>
+  <rect x="209" y="209" width="94" height="94" fill="none" stroke="url(#cube)" stroke-width="4" filter="url(#cubeGlow)"/>
+  <path d="m209 209 47 23 47-23M256 232v71" fill="none" stroke="#b9f8ff" stroke-opacity=".42" stroke-width="2"/>
+  <circle cx="256" cy="256" r="58" fill="url(#aura)" opacity=".7" filter="url(#softGlow)"/>
+  <circle cx="256" cy="256" r="18" fill="#8ff2ff" opacity=".62" filter="url(#pointGlow)"/>
+  <circle cx="256" cy="256" r="10" fill="url(#core)"/>
+</svg>

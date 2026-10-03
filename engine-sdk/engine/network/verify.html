@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Particle Global OS Network Layer — Verification</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; font: 14px/1.5 Inter, system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #16203a, #07090f 60%); color: #e7ecf3; min-height: 100vh;
+  }
+  h1 { font-size: 20px; margin: 0 0 2px; }
+  .sub { color: #9aa6b8; font-size: 12px; margin-bottom: 18px; }
+  .summary { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .pill { border-radius: 999px; padding: 5px 14px; font-weight: 700; font-size: 13px; }
+  .pill.ok   { background: rgba(63,185,80,.16);  color: #56d364; border: 1px solid rgba(63,185,80,.4); }
+  .pill.bad  { background: rgba(248,81,73,.16);  color: #ff7b72; border: 1px solid rgba(248,81,73,.4); }
+  .pill.tot  { background: rgba(88,166,255,.14); color: #79c0ff; border: 1px solid rgba(88,166,255,.35); }
+  button {
+    font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 7px 16px;
+    background: linear-gradient(135deg,#5eead4,#38bdf8); color: #04111a; border: none;
+  }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 13px; }
+  th { color: #9aa6b8; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+  td.s { width: 64px; font-weight: 700; }
+  td.s.PASS { color: #56d364; }
+  td.s.FAIL { color: #ff7b72; }
+  .grp { color: #79c0ff; font-weight: 700; padding-top: 14px; }
+  .detail { color: #ff9a93; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+  .ms { color: #6b7488; font-size: 11px; }
+  code { background: rgba(255,255,255,.06); padding: 1px 6px; border-radius: 5px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>Particle Global OS Network Layer — Verification</h1>
+  <div class="sub">
+    Manual gate runner for network/ Phase 1 (protocol foundation). Serve the repo and open
+    <code>/engine/network/verify.html</code>. Re-run after each edit. Uses real IndexedDB-backed
+    identities (engine/collab/CollabIdentity.js) — first run may prompt nothing but will persist
+    keys under the <code>collab-identity</code> database.
+  </div>
+  <div class="summary">
+    <span id="pill-total" class="pill tot">…</span>
+    <span id="pill-pass"  class="pill ok">…</span>
+    <span id="pill-fail"  class="pill bad">…</span>
+    <button id="rerun">Re-run</button>
+    <span id="time" class="ms"></span>
+  </div>
+  <table>
+    <thead><tr><th class="s">Status</th><th>Gate</th><th>Detail</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+<script type="module">
+import {
+  PROTOCOL_VERSIONS, isKnownProtocol, makeEnvelope, assertKnownProtocol,
+  signEnvelope, verifyEnvelope,
+} from './protocol.js';
+import {
+  createDeviceIdentity, createProfileIdentity, createMembershipIdentity,
+  peerIdFromSigner, verifyWithKey,
+} from './identity/NetworkIdentity.js';
+import {
+  ROUTE_ACTIONS, makeRouteCapability, attenuateRouteCapability, authorizesRoute,
+  createRouteCapabilityRegistry,
+} from './capability/RouteCapability.js';
+import {
+  createRouteTable, attachRoute, heartbeatRoute, detachRoute, pruneExpiredRoutes,
+  isRouteAttached, getRoute, listRoutes,
+} from './routes/RouteTable.js';
+import {
+  normalizeMasterServerList, pickNextMasterServer, buildConnectionOrder,
+} from './routes/MasterServerList.js';
+import {
+  createReconnectBackoff, nextBackoffDelay, isBackoffExhausted, resetBackoff,
+} from './routes/ReconnectBackoff.js';
+import {
+  createRouteSessionManager, ensureRouteSession, getRouteSession, teardownRouteSession, listRouteSessions,
+} from './routes/RouteSessionManager.js';
+import {
+  makeInvite, encodeInvite, decodeInvite, verifyInvite, createInviteRegistry, isInviteConsumed, consumeInvite,
+} from './invites/InvitePacket.js';
+import { requestJoin, verifyJoinRequest, grantJoinCapability } from './invites/JoinFlow.js';
+import { GOVERNANCE_MODES, createGovernancePolicy } from './groupLedger/GovernancePolicy.js';
+import {
+  createGroupLedger, genesisGroup, castVote, getVotes, proposeGroupEvent, verifyGroupLedger,
+} from './groupLedger/GroupLedger.js';
+import {
+  createGroupCrypto, startEpoch, getCurrentEpoch, isEpochErased, sealForEpoch, openEnvelope,
+  rotateEpoch, makeWelcomePacket, openWelcomePacket,
+} from './groupCrypto/GroupEpoch.js';
+import { createDeviceEncryptionKeyPair } from './groupCrypto/DeviceEncryptionKey.js';
+import {
+  makePeerTicket, verifyPeerTicket, sealPeerTicketToDevice, openSealedPeerTicket,
+  sealPeerTicketToEpoch, openSealedPeerTicketFromEpoch,
+} from './peerTickets/PeerTicket.js';
+import {
+  createPeerTicketStore, addPeerTicket, getPeerTicket, removePeerTicket,
+  pruneExpiredPeerTickets, listPeerTicketsByFreshness,
+} from './peerTickets/PeerTicketStore.js';
+import { buildPeerReconnectOrder } from './peerTickets/ReconnectOrder.js';
+import { SYNC_SCOPE, SYNC_CATEGORIES } from './syncManager/SyncCategory.js';
+import {
+  createSyncManager, setSyncRule, getSyncRule, listSyncRules, shouldSync,
+} from './syncManager/SyncManager.js';
+import {
+  createWorkstationState, pinApp, unpinApp, addFolder, setWindowLayout, getWindowLayout,
+  setWallpaper, mergeWorkstationState, snapshotWorkstationState,
+} from './workstation/WorkstationState.js';
+import {
+  createWorkstation, mergeWorkstation, computeWorkstationStateRoot, buildWorkstationCheckpointPayload,
+} from './workstation/Workstation.js';
+import { MAX_CHUNK_BYTES, DEFAULT_FRAGMENT_BYTES } from './chunks/ChunkLimits.js';
+import {
+  splitIntoChunks, splitChunkIntoFragments, reassembleFragments, reassembleChunks,
+} from './chunks/ChunkFragmenter.js';
+import { hashFragment, computeChunkHash, computeFragmentHashes, computeMerkleRoot } from './chunks/MerkleFragments.js';
+import { verifyChunkFragments, reassembleAndVerifyChunk } from './chunks/ChunkVerifier.js';
+import { buildManifest, verifyManifest, manifestTotalSize, manifestChunkIds } from './chunks/Manifest.js';
+import { planSwarmFetch } from './chunks/SwarmScheduler.js';
+import {
+  createFlowControl, tryReserveCredit, releaseCredit, availableCredit,
+  PRIORITY_LANE, createPriorityQueue, enqueue, dequeue, isQueueEmpty,
+} from './chunks/FlowControl.js';
+import { createDedupeCache, hasSeen, markSeen, checkAndMark, pruneDedupeCache } from './chunks/DedupeCache.js';
+import { buildSealedPacket, peelSealedPacket } from './carrier/SealedPacket.js';
+import {
+  makeCarrierPacket, decrementCarrierTtl, isCarrierPacketExpired, isCarrierTtlExhausted,
+} from './carrier/CarrierPacket.js';
+import {
+  ANONYMITY_MODE, selectAnonymityMode, transportTruthLabel, allowsDirectTransport,
+} from './carrier/AnonymityMode.js';
+import { createRateLimiter, tryConsume as tryConsumeToken, availableTokens } from './carrier/RateLimiter.js';
+import { evaluateForward } from './carrier/CarrierForwarder.js';
+import {
+  makeFindPeerMessage, makeFindRouteMessage, makeFindProvidersMessage,
+  makeAnnounceProviderMessage, makeAnnounceRouteMessage, makePeerExchangeMessage,
+} from './dht/DhtMessages.js';
+import {
+  createDhtNode, rememberPeer, handleFindPeer, handleFindRoute, handleFindProviders,
+  handleAnnounceProvider, handlePeerExchange, providersMapForKeys, pruneDhtNode,
+} from './dht/DhtNode.js';
+import {
+  createBootstrapSource, createBootstrapRegistry, registerBootstrapSource, runBootstrap, flattenBootstrapResults,
+} from './dht/BootstrapSource.js';
+
+async function runAll() {
+  const results = [];
+  let group = '';
+  const G = (name) => { group = name; };
+  const assert = (cond, msg) => { if (!cond) throw new Error(msg || 'assertion failed'); };
+  const t = (name, fn) => {
+    try { fn(); results.push({ group, name, status: 'PASS' }); }
+    catch (e) { results.push({ group, name, status: 'FAIL', detail: e?.message ?? String(e) }); }
+  };
+  const ta = async (name, fn) => {
+    try { await fn(); results.push({ group, name, status: 'PASS' }); }
+    catch (e) { results.push({ group, name, status: 'FAIL', detail: e?.message ?? String(e) }); }
+  };
+
+  // ── Protocol envelopes (spec §34) ────────────────────────────────────────
+  G('Protocol · envelopes');
+
+  t('isKnownProtocol accepts every PROTOCOL_VERSIONS entry', () => {
+    for (const v of Object.values(PROTOCOL_VERSIONS)) {
+      assert(isKnownProtocol(v), `${v} should be known`);
+    }
+  });
+
+  t('isKnownProtocol rejects unversioned/unknown namespaces', () => {
+    assert(!isKnownProtocol('particle-route'), 'missing version should be rejected');
+    assert(!isKnownProtocol('not-a-protocol/1'), 'unknown namespace should be rejected');
+    assert(!isKnownProtocol(null), 'null should be rejected');
+  });
+
+  t('makeEnvelope builds a frozen envelope with issuedAt', () => {
+    const env = makeEnvelope({ protocol: PROTOCOL_VERSIONS.ROUTE, type: 'ATTACH_ROUTE', payload: { routeId: 'r1' } });
+    assert(env.protocol === PROTOCOL_VERSIONS.ROUTE, 'protocol should round-trip');
+    assert(env.type === 'ATTACH_ROUTE', 'type should round-trip');
+    assert(typeof env.issuedAt === 'number', 'issuedAt should be a timestamp');
+    assert(Object.isFrozen(env), 'envelope should be frozen');
+  });
+
+  t('makeEnvelope throws on unknown protocol (rejects unversioned packets)', () => {
+    let threw = false;
+    try { makeEnvelope({ protocol: 'particle-route', type: 'X' }); } catch (_) { threw = true; }
+    assert(threw, 'expected makeEnvelope to throw');
+  });
+
+  t('makeEnvelope throws when type is missing', () => {
+    let threw = false;
+    try { makeEnvelope({ protocol: PROTOCOL_VERSIONS.ROUTE }); } catch (_) { threw = true; }
+    assert(threw, 'expected makeEnvelope to throw without a type');
+  });
+
+  t('assertKnownProtocol passes through well-formed messages', () => {
+    const env = makeEnvelope({ protocol: PROTOCOL_VERSIONS.SIGNAL, type: 'PING' });
+    assert(assertKnownProtocol(env) === env, 'should return the same message');
+  });
+
+  t('assertKnownProtocol rejects malformed/foreign messages', () => {
+    let threw = false;
+    try { assertKnownProtocol({ protocol: 'evil/1', type: 'X' }); } catch (_) { threw = true; }
+    assert(threw, 'expected rejection of unknown protocol');
+    threw = false;
+    try { assertKnownProtocol({ protocol: PROTOCOL_VERSIONS.SIGNAL }); } catch (_) { threw = true; }
+    assert(threw, 'expected rejection of missing type');
+  });
+
+  // ── Identity (spec §11 — profile / device / membership) ─────────────────
+  G('Identity · profile/device/membership');
+
+  let deviceSigner, profileSignerA, profileSignerB, membershipSignerA, membershipSignerA2, membershipSignerOtherGroup;
+
+  await ta('createDeviceIdentity produces a usable signer', async () => {
+    deviceSigner = await createDeviceIdentity();
+    assert(deviceSigner && typeof deviceSigner.sign === 'function', 'signer should have .sign()');
+    assert(typeof deviceSigner.fingerprint === 'string' && deviceSigner.fingerprint.length > 0, 'signer should have a fingerprint');
+  });
+
+  await ta('createProfileIdentity is stable across calls for the same profileId', async () => {
+    profileSignerA = await createProfileIdentity('verify-profile-a');
+    const again = await createProfileIdentity('verify-profile-a');
+    assert(profileSignerA.fingerprint === again.fingerprint, 'same profileId should yield the same persisted key');
+  });
+
+  await ta('different profileIds get unlinkable (different) keys', async () => {
+    profileSignerB = await createProfileIdentity('verify-profile-b');
+    assert(profileSignerA.fingerprint !== profileSignerB.fingerprint, 'distinct profiles must not share a fingerprint');
+  });
+
+  await ta('profile identity is distinct from the device identity', async () => {
+    assert(profileSignerA.fingerprint !== deviceSigner.fingerprint, 'profile key must differ from device key');
+  });
+
+  await ta('createMembershipIdentity is stable for the same (profile, group) pair', async () => {
+    membershipSignerA = await createMembershipIdentity('verify-profile-a', 'verify-group-1');
+    membershipSignerA2 = await createMembershipIdentity('verify-profile-a', 'verify-group-1');
+    assert(membershipSignerA.fingerprint === membershipSignerA2.fingerprint, 'same (profile, group) should be stable');
+  });
+
+  await ta('membership identity differs per group (unlinkable across groups)', async () => {
+    membershipSignerOtherGroup = await createMembershipIdentity('verify-profile-a', 'verify-group-2');
+    assert(membershipSignerA.fingerprint !== membershipSignerOtherGroup.fingerprint, 'different groups must not share a fingerprint');
+    assert(membershipSignerA.fingerprint !== profileSignerA.fingerprint, 'membership key must differ from the owning profile key');
+  });
+
+  t('peerIdFromSigner returns the signer fingerprint', () => {
+    assert(peerIdFromSigner(deviceSigner) === deviceSigner.fingerprint, 'peer id should equal fingerprint');
+  });
+
+  await ta('a signature from one signer verifies against its own public key via verifyWithKey', async () => {
+    const msg = 'verify-network-identity-message';
+    const sig = await profileSignerA.sign(msg);
+    const ok = await verifyWithKey(profileSignerA.publicKeyHex, msg, sig);
+    assert(ok, 'cross-actor verification against the signer\'s own public key should succeed');
+  });
+
+  await ta('a signature does not verify against a different signer\'s public key', async () => {
+    const msg = 'verify-network-identity-message-2';
+    const sig = await profileSignerA.sign(msg);
+    const ok = await verifyWithKey(profileSignerB.publicKeyHex, msg, sig);
+    assert(!ok, 'verification against an unrelated public key must fail');
+  });
+
+  // ── Signed envelopes (canonical signing over protocol.js) ────────────────
+  G('Protocol · signed envelopes');
+
+  await ta('signEnvelope + verifyEnvelope round-trips against the embedded public key', async () => {
+    const env = makeEnvelope({ protocol: PROTOCOL_VERSIONS.INVITE, type: 'INVITE_CREATED', payload: { groupId: 'g1' } });
+    const signed = await signEnvelope(env, profileSignerA);
+    assert(signed.signature, 'signed envelope should carry a signature');
+    assert(signed.signerPublicKeyHex === profileSignerA.publicKeyHex, 'signerPublicKeyHex should be embedded');
+    const ok = await verifyEnvelope(signed);
+    assert(ok, 'verifyEnvelope should verify using the embedded public key');
+  });
+
+  await ta('verifyEnvelope also accepts an explicit signer (same-principal round-trip)', async () => {
+    const env = makeEnvelope({ protocol: PROTOCOL_VERSIONS.SESSION, type: 'HELLO' });
+    const signed = await signEnvelope(env, deviceSigner);
+    const ok = await verifyEnvelope(signed, deviceSigner);
+    assert(ok, 'verifyEnvelope with an explicit signer should succeed');
+  });
+
+  await ta('verifyEnvelope fails closed when the payload is tampered with', async () => {
+    const env = makeEnvelope({ protocol: PROTOCOL_VERSIONS.ROUTE, type: 'ATTACH_ROUTE', payload: { routeId: 'r1' } });
+    const signed = await signEnvelope(env, profileSignerA);
+    const tampered = { ...signed, payload: { routeId: 'r1-EVIL' } };
+    const ok = await verifyEnvelope(tampered);
+    assert(!ok, 'tampered payload must fail verification');
+  });
+
+  await ta('verifyEnvelope fails closed with no signature', async () => {
+    const env = makeEnvelope({ protocol: PROTOCOL_VERSIONS.ROUTE, type: 'DETACH_ROUTE' });
+    const ok = await verifyEnvelope(env);
+    assert(!ok, 'unsigned envelope must not verify');
+  });
+
+  // ── Route capabilities (spec §10 — UCAN-style, narrowing-only) ───────────
+  G('Capability · route access');
+
+  t('a freshly minted capability authorizes its default allow-list', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1' });
+    const okAttach = authorizesRoute(cap, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.ATTACH });
+    const okSub = authorizesRoute(cap, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.SUBSCRIBE });
+    assert(okAttach.ok, `attach should be allowed: ${okAttach.reason}`);
+    assert(okSub.ok, `subscribe should be allowed: ${okSub.reason}`);
+  });
+
+  t('a capability denies actions outside its allow-list', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1' }); // attach+subscribe only
+    const okPublish = authorizesRoute(cap, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.PUBLISH });
+    assert(!okPublish.ok, 'publish should be denied by default allow-list');
+  });
+
+  t('a capability denies a different principal or route', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1' });
+    const wrongPrincipal = authorizesRoute(cap, { principal: 'peer-B', routeId: 'route-1', action: ROUTE_ACTIONS.ATTACH });
+    const wrongRoute = authorizesRoute(cap, { principal: 'peer-A', routeId: 'route-2', action: ROUTE_ACTIONS.ATTACH });
+    assert(!wrongPrincipal.ok, 'wrong principal should be denied');
+    assert(!wrongRoute.ok, 'wrong route should be denied');
+  });
+
+  t('a capability denies actions after its expiry epoch', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1', expiresAt: 100 });
+    const stillValid = authorizesRoute(cap, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.ATTACH, epoch: 50 });
+    const expired = authorizesRoute(cap, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.ATTACH, epoch: 150 });
+    assert(stillValid.ok, 'should be valid before expiry');
+    assert(!expired.ok, 'should be denied after expiry');
+  });
+
+  t('attenuateRouteCapability narrows the allow-list', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1', allow: [ROUTE_ACTIONS.ATTACH, ROUTE_ACTIONS.SUBSCRIBE, ROUTE_ACTIONS.PUBLISH] });
+    const narrowed = attenuateRouteCapability(cap, { allow: [ROUTE_ACTIONS.SUBSCRIBE] });
+    const okSub = authorizesRoute(narrowed, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.SUBSCRIBE });
+    const noPublish = authorizesRoute(narrowed, { principal: 'peer-A', routeId: 'route-1', action: ROUTE_ACTIONS.PUBLISH });
+    assert(okSub.ok, 'narrowed capability should still allow subscribe');
+    assert(!noPublish.ok, 'narrowed capability must no longer allow publish');
+  });
+
+  t('attenuateRouteCapability refuses to widen beyond the parent allow-list', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1', allow: [ROUTE_ACTIONS.SUBSCRIBE] });
+    let threw = false;
+    try { attenuateRouteCapability(cap, { allow: [ROUTE_ACTIONS.SUBSCRIBE, ROUTE_ACTIONS.PUBLISH] }); }
+    catch (_) { threw = true; }
+    assert(threw, 'widening the allow-list must throw');
+  });
+
+  t('a non-delegable capability cannot be attenuated', () => {
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1', delegable: false });
+    let threw = false;
+    try { attenuateRouteCapability(cap, { allow: [ROUTE_ACTIONS.SUBSCRIBE] }); } catch (_) { threw = true; }
+    assert(threw, 'attenuating a non-delegable capability must throw');
+  });
+
+  t('CapabilityRegistry: issue -> check -> revoke -> check flow', () => {
+    const reg = createRouteCapabilityRegistry();
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'route-1' });
+    reg.issue(cap);
+    const before = reg.check(cap.id, { principal: 'peer-A', object: 'route-1', action: ROUTE_ACTIONS.ATTACH, context: { action: ROUTE_ACTIONS.ATTACH } });
+    assert(before.ok, `should authorize before revoke: ${before.reason}`);
+    reg.revoke(cap.id);
+    const after = reg.check(cap.id, { principal: 'peer-A', object: 'route-1', action: ROUTE_ACTIONS.ATTACH, context: { action: ROUTE_ACTIONS.ATTACH } });
+    assert(!after.ok && after.reason === 'revoked', `should be revoked, got: ${after.reason}`);
+  });
+
+  t('CapabilityRegistry: single-use invite capability is consumed after use', () => {
+    const reg = createRouteCapabilityRegistry();
+    const invite = makeRouteCapability({
+      principal: 'joiner-1', routeId: 'invite-route-1', allow: [ROUTE_ACTIONS.ATTACH], singleUse: true,
+    });
+    reg.issue(invite);
+    const req = { principal: 'joiner-1', object: 'invite-route-1', action: ROUTE_ACTIONS.ATTACH, context: { action: ROUTE_ACTIONS.ATTACH } };
+    const first = reg.check(invite.id, req);
+    assert(first.ok, `first use should be authorized: ${first.reason}`);
+    reg.consume(invite.id);
+    const second = reg.check(invite.id, req);
+    assert(!second.ok && second.reason === 'already-consumed', `second use should be denied, got: ${second.reason}`);
+  });
+
+  // ── Route table (spec §9 — dynamic routes, no server-owned rooms) ────────
+  G('Routes · RouteTable');
+
+  t('attachRoute creates a route on first attach when authorized', () => {
+    const table = createRouteTable({ selfPeerId: 'peer-A' });
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    const res = attachRoute(table, { routeId: 'r1', principal: 'peer-A', capability: cap });
+    assert(res.ok, `expected attach to succeed: ${res.reason}`);
+    assert(isRouteAttached(table, 'r1'), 'route should be attached');
+    assert(getRoute(table, 'r1').subscriberCount === 1, 'should have exactly 1 subscriber');
+  });
+
+  t('attachRoute is denied without a valid capability', () => {
+    const table = createRouteTable();
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    const res = attachRoute(table, { routeId: 'r1', principal: 'peer-B', capability: cap }); // wrong principal
+    assert(!res.ok, 'attach with mismatched principal should be denied');
+    assert(!isRouteAttached(table, 'r1'), 'route should not exist after a denied attach');
+  });
+
+  t('multiple principals can attach to the same route', () => {
+    const table = createRouteTable();
+    const capA = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    const capB = makeRouteCapability({ principal: 'peer-B', routeId: 'r1' });
+    attachRoute(table, { routeId: 'r1', principal: 'peer-A', capability: capA });
+    attachRoute(table, { routeId: 'r1', principal: 'peer-B', capability: capB });
+    assert(getRoute(table, 'r1').subscriberCount === 2, 'route should have 2 subscribers');
+  });
+
+  t('heartbeatRoute extends the lease; detachRoute removes it', () => {
+    const table = createRouteTable();
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    attachRoute(table, { routeId: 'r1', principal: 'peer-A', capability: cap, ttlMs: 1000 });
+    const hb = heartbeatRoute(table, { routeId: 'r1', principal: 'peer-A', ttlMs: 5000 });
+    assert(hb.ok, `heartbeat should succeed: ${hb.reason}`);
+    assert(detachRoute(table, { routeId: 'r1', principal: 'peer-A' }), 'detach should report removal');
+    assert(!isRouteAttached(table, 'r1'), 'route should be gone after last subscriber detaches');
+  });
+
+  t('heartbeatRoute fails for an unattached principal', () => {
+    const table = createRouteTable();
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    attachRoute(table, { routeId: 'r1', principal: 'peer-A', capability: cap });
+    const hb = heartbeatRoute(table, { routeId: 'r1', principal: 'peer-B' });
+    assert(!hb.ok && hb.reason === 'not-attached', `expected not-attached, got ${hb.reason}`);
+  });
+
+  t('pruneExpiredRoutes removes stale leases and empties the route', () => {
+    const table = createRouteTable();
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    attachRoute(table, { routeId: 'r1', principal: 'peer-A', capability: cap, ttlMs: 10 });
+    const removed = pruneExpiredRoutes(table, Date.now() + 1000);
+    assert(removed.length === 1 && removed[0].routeId === 'r1', 'expected the stale lease to be pruned');
+    assert(!isRouteAttached(table, 'r1'), 'route should be gone after pruning its only lease');
+  });
+
+  t('listRoutes reports opaque summaries only (no capability objects)', () => {
+    const table = createRouteTable();
+    const cap = makeRouteCapability({ principal: 'peer-A', routeId: 'r1' });
+    attachRoute(table, { routeId: 'r1', principal: 'peer-A', capability: cap, meta: { routeType: 'private_group' } });
+    const list = listRoutes(table);
+    assert(list.length === 1 && list[0].routeId === 'r1', 'should list the route');
+    assert(list[0].meta.routeType === 'private_group', 'meta should round-trip');
+    assert(!('capability' in list[0]), 'capability objects must not leak into the summary');
+  });
+
+  // ── Master server list (spec §4) ─────────────────────────────────────────
+  G('Routes · MasterServerList');
+
+  t('normalizeMasterServerList sorts by priority and drops malformed entries', () => {
+    const norm = normalizeMasterServerList({
+      master_servers: [
+        { url: 'wss://b.example/v1/ws', priority: 2 },
+        { url: 'wss://a.example/v1/ws', priority: 1 },
+        { priority: 3 }, // missing url -> dropped
+      ],
+    });
+    assert(norm.masterServers.length === 2, `expected 2 valid servers, got ${norm.masterServers.length}`);
+    assert(norm.masterServers[0].url === 'wss://a.example/v1/ws', 'lowest priority should sort first');
+  });
+
+  t('normalizeMasterServerList fills in default fallbacks', () => {
+    const norm = normalizeMasterServerList({});
+    assert(norm.fallbacks.cachedPeers === true, 'cachedPeers should default true');
+    assert(norm.fallbacks.particleDht === false, 'particleDht should default false (future)');
+  });
+
+  t('pickNextMasterServer returns the highest-priority enabled server, honoring exclusions', () => {
+    const norm = normalizeMasterServerList({
+      master_servers: [
+        { url: 'wss://a.example/v1/ws', priority: 1 },
+        { url: 'wss://b.example/v1/ws', priority: 2 },
+      ],
+    });
+    const first = pickNextMasterServer(norm.masterServers);
+    assert(first.url === 'wss://a.example/v1/ws', 'expected the priority-1 server first');
+    const next = pickNextMasterServer(norm.masterServers, { excluded: [first.url] });
+    assert(next.url === 'wss://b.example/v1/ws', 'expected fallback to the next server when the first is excluded');
+  });
+
+  t('pickNextMasterServer skips disabled servers and returns null when none remain', () => {
+    const norm = normalizeMasterServerList({ master_servers: [{ url: 'wss://a.example/v1/ws', enabled: false }] });
+    assert(pickNextMasterServer(norm.masterServers) === null, 'expected no eligible server');
+  });
+
+  t('buildConnectionOrder matches the network-plan §4 priority sequence', () => {
+    const norm = normalizeMasterServerList({
+      master_servers: [{ url: 'wss://a.example/v1/ws', priority: 1 }],
+      fallbacks: { particleDht: true },
+    });
+    const order = buildConnectionOrder(norm).map((o) => o.stage);
+    assert(JSON.stringify(order) === JSON.stringify(['cachedPeers', 'lan', 'groupGossip', 'masterServer', 'carrier', 'dht']),
+      `unexpected order: ${order.join(',')}`);
+  });
+
+  t('buildConnectionOrder omits disabled fallback stages', () => {
+    const norm = normalizeMasterServerList({ fallbacks: { cachedPeers: false, lanDiscovery: false, groupGossip: false, publicCarrier: false } });
+    const order = buildConnectionOrder(norm).map((o) => o.stage);
+    assert(order.length === 0, `expected no stages, got ${order.join(',')}`);
+  });
+
+  // ── Reconnect backoff (spec §8: 0.5s→30s + jitter) ───────────────────────
+  G('Routes · ReconnectBackoff');
+
+  t('nextBackoffDelay grows exponentially up to the cap', () => {
+    const backoff = createReconnectBackoff({ jitterRatio: 0, random: () => 0.5 });
+    const d1 = nextBackoffDelay(backoff);
+    const d2 = nextBackoffDelay(backoff);
+    const d3 = nextBackoffDelay(backoff);
+    assert(d1.delayMs === 1000, `expected 1000ms, got ${d1.delayMs}`);
+    assert(d2.delayMs === 2000, `expected 2000ms, got ${d2.delayMs}`);
+    assert(d3.delayMs === 4000, `expected 4000ms, got ${d3.delayMs}`);
+  });
+
+  t('nextBackoffDelay is capped at maxMs', () => {
+    const backoff = createReconnectBackoff({ baseMs: 1000, maxMs: 30000, jitterRatio: 0 });
+    let last;
+    for (let i = 0; i < 10; i++) last = nextBackoffDelay(backoff);
+    assert(last.delayMs === 30000, `expected the delay to cap at 30000ms, got ${last.delayMs}`);
+  });
+
+  t('backoff reports exhausted after maxAttempts', () => {
+    const backoff = createReconnectBackoff({ maxAttempts: 2, jitterRatio: 0 });
+    nextBackoffDelay(backoff);
+    const second = nextBackoffDelay(backoff);
+    assert(!second.exhausted, 'should not be exhausted at exactly maxAttempts');
+    assert(isBackoffExhausted(backoff) === false, 'isBackoffExhausted should agree at the boundary');
+    const third = nextBackoffDelay(backoff);
+    assert(third.exhausted, 'should be exhausted beyond maxAttempts');
+  });
+
+  t('resetBackoff clears the attempt counter', () => {
+    const backoff = createReconnectBackoff();
+    nextBackoffDelay(backoff);
+    nextBackoffDelay(backoff);
+    resetBackoff(backoff);
+    assert(backoff.attempts === 0, 'attempts should reset to 0');
+  });
+
+  // ── Route session manager (one session per route, CollabCore stays single-room) ──
+  G('Routes · RouteSessionManager');
+
+  t('ensureRouteSession creates exactly one session per routeId', () => {
+    let created = 0;
+    const manager = createRouteSessionManager({ createSession: (routeId) => { created++; return { routeId }; } });
+    const s1 = ensureRouteSession(manager, 'r1');
+    const s2 = ensureRouteSession(manager, 'r1');
+    assert(s1 === s2, 'second call should return the same session instance');
+    assert(created === 1, `factory should only run once, ran ${created} times`);
+  });
+
+  t('different routeIds get independent sessions', () => {
+    const manager = createRouteSessionManager({ createSession: (routeId) => ({ routeId }) });
+    ensureRouteSession(manager, 'r1');
+    ensureRouteSession(manager, 'r2');
+    assert(listRouteSessions(manager).sort().join(',') === 'r1,r2', 'expected sessions for both routes');
+  });
+
+  t('teardownRouteSession removes the session and calls destroySession', () => {
+    let destroyed = null;
+    const manager = createRouteSessionManager({
+      createSession: (routeId) => ({ routeId }),
+      destroySession: (session) => { destroyed = session.routeId; },
+    });
+    ensureRouteSession(manager, 'r1');
+    const ok = teardownRouteSession(manager, 'r1');
+    assert(ok, 'teardown should report success');
+    assert(getRouteSession(manager, 'r1') === null, 'session should be gone');
+    assert(destroyed === 'r1', 'destroySession callback should have fired for r1');
+  });
+
+  // ── Invites (spec §13 — one-time/expiring doorway, not automatic membership) ──
+  G('Invites · InvitePacket');
+
+  let inviterSigner, joinerSigner, otherJoinerSigner;
+  await ta('set up inviter/joiner identities for invite tests', async () => {
+    inviterSigner = await createMembershipIdentity('verify-inviter', 'verify-invite-group');
+    joinerSigner = await createProfileIdentity('verify-joiner');
+    otherJoinerSigner = await createProfileIdentity('verify-other-joiner');
+  });
+
+  let plainInvite;
+  await ta('makeInvite produces a signed, verifiable invite', async () => {
+    plainInvite = await makeInvite({ groupId: 'g1', routeId: 'meet-route-1', inviterSigner });
+    const verdict = await verifyInvite(plainInvite);
+    assert(verdict.ok, `expected invite to verify: ${verdict.reason}`);
+  });
+
+  await ta('encodeInvite/decodeInvite round-trips and still verifies', async () => {
+    const code = encodeInvite(plainInvite);
+    assert(typeof code === 'string' && !/[+/=]/.test(code), 'encoded invite should be URL-safe base64');
+    const decoded = decodeInvite(code);
+    const verdict = await verifyInvite(decoded);
+    assert(verdict.ok, `decoded invite should still verify: ${verdict.reason}`);
+    assert(decoded.payload.groupId === 'g1', 'payload should round-trip');
+  });
+
+  await ta('verifyInvite rejects an expired invite', async () => {
+    const expired = await makeInvite({ groupId: 'g1', routeId: 'meet-route-1', inviterSigner, expiresAt: Date.now() - 1000 });
+    const verdict = await verifyInvite(expired);
+    assert(!verdict.ok && verdict.reason === 'expired', `expected expired, got ${verdict.reason}`);
+  });
+
+  await ta('verifyInvite rejects a tampered invite payload', async () => {
+    const tampered = { ...plainInvite, payload: { ...plainInvite.payload, roleOffer: 'admin' } };
+    const verdict = await verifyInvite(tampered);
+    assert(!verdict.ok && verdict.reason === 'bad-signature', `expected bad-signature, got ${verdict.reason}`);
+  });
+
+  t('InviteRegistry tracks one-time consumption', () => {
+    const registry = createInviteRegistry();
+    assert(!isInviteConsumed(registry, 'invite:x'), 'should start unconsumed');
+    consumeInvite(registry, 'invite:x');
+    assert(isInviteConsumed(registry, 'invite:x'), 'should be consumed after consumeInvite');
+  });
+
+  // ── Join flow ─────────────────────────────────────────────────────────────
+  G('Invites · JoinFlow');
+
+  let joinRequest;
+  await ta('requestJoin builds a signed join request referencing the invite', async () => {
+    joinRequest = await requestJoin({ signedInvite: plainInvite, joinerSigner });
+    assert(joinRequest.payload.inviteId === plainInvite.payload.inviteId, 'join request should reference the invite id');
+  });
+
+  await ta('verifyJoinRequest accepts a genuine invite + join request pair', async () => {
+    const verdict = await verifyJoinRequest({ signedInvite: plainInvite, joinRequest });
+    assert(verdict.ok, `expected join request to verify: ${verdict.reason}`);
+    assert(verdict.joinerPrincipal === joinerSigner.principal, 'should report the real joiner principal');
+  });
+
+  await ta('verifyJoinRequest rejects a request for a different invite', async () => {
+    const otherInvite = await makeInvite({ groupId: 'g1', routeId: 'meet-route-2', inviterSigner });
+    const verdict = await verifyJoinRequest({ signedInvite: otherInvite, joinRequest }); // joinRequest references plainInvite
+    assert(!verdict.ok && verdict.reason === 'invite-mismatch', `expected invite-mismatch, got ${verdict.reason}`);
+  });
+
+  await ta('verifyJoinRequest rejects a request once the invite registry marks it consumed', async () => {
+    const registry = createInviteRegistry();
+    consumeInvite(registry, plainInvite.payload.inviteId);
+    const verdict = await verifyJoinRequest({ signedInvite: plainInvite, joinRequest, inviteRegistry: registry });
+    assert(!verdict.ok && verdict.reason === 'invite-already-consumed', `expected already-consumed, got ${verdict.reason}`);
+  });
+
+  t('grantJoinCapability mints a working route capability and consumes a one-time invite', () => {
+    const registry = createInviteRegistry();
+    const cap = grantJoinCapability({
+      signedInvite: plainInvite, joinerPrincipal: joinerSigner.principal, groupRouteId: 'group-route-1', inviteRegistry: registry,
+    });
+    const verdict = authorizesRoute(cap, { principal: joinerSigner.principal, routeId: 'group-route-1', action: ROUTE_ACTIONS.ATTACH });
+    assert(verdict.ok, `granted capability should authorize attach: ${verdict.reason}`);
+    assert(isInviteConsumed(registry, plainInvite.payload.inviteId), 'one-time invite should be consumed after granting');
+  });
+
+  // ── Group ledger (spec §15 — private append-only governance receipts) ────
+  G('GroupLedger · basics');
+
+  let founderSigner, memberBSigner, memberCSigner, ledger;
+  await ta('set up group identities and genesis a majority-mode ledger', async () => {
+    founderSigner = await createMembershipIdentity('verify-founder', 'verify-gov-group');
+    memberBSigner = await createMembershipIdentity('verify-member-b', 'verify-gov-group');
+    memberCSigner = await createMembershipIdentity('verify-member-c', 'verify-gov-group');
+    ledger = createGroupLedger({ groupId: 'verify-gov-group', mode: GOVERNANCE_MODES.MAJORITY });
+    const entry = await genesisGroup(ledger, { founderSigner });
+    assert(entry.type === 'GROUP_GENESIS', 'first entry should be GROUP_GENESIS');
+    assert(ledger.members.has(founderSigner.principal), 'founder should be registered as a member');
+  });
+
+  await ta('a safe/low-risk event (MEMBER_ADDED) commits immediately without votes', async () => {
+    const res = await proposeGroupEvent(ledger, {
+      type: 'MEMBER_ADDED',
+      payload: { membershipId: memberBSigner.principal, role: 'member', publicKeyHex: memberBSigner.publicKeyHex },
+      signer: founderSigner,
+    });
+    assert(res.accepted, `expected MEMBER_ADDED to commit: ${res.reason}`);
+    assert(ledger.members.has(memberBSigner.principal), 'new member should be tracked');
+  });
+
+  await ta('an irreversible event (MEMBER_REVOKED) is rejected without enough approvals', async () => {
+    await proposeGroupEvent(ledger, {
+      type: 'MEMBER_ADDED',
+      payload: { membershipId: memberCSigner.principal, role: 'member' },
+      signer: founderSigner,
+    });
+    const res = await proposeGroupEvent(ledger, {
+      type: 'MEMBER_REVOKED',
+      payload: { membershipId: memberCSigner.principal },
+      signer: founderSigner,
+      proposalId: 'revoke-c-1',
+    });
+    assert(!res.accepted && res.reason === 'requires-approval', `expected requires-approval, got ${res.reason}`);
+    assert(ledger.members.has(memberCSigner.principal), 'member should still be present after a rejected proposal');
+  });
+
+  await ta('the same event commits once majority votes are cast', async () => {
+    // 3 members total (founder, B, C) -> majority needs > 1 vote.
+    castVote(ledger, 'revoke-c-1', founderSigner.principal);
+    castVote(ledger, 'revoke-c-1', memberBSigner.principal);
+    assert(getVotes(ledger, 'revoke-c-1').size === 2, 'expected 2 recorded votes');
+    const res = await proposeGroupEvent(ledger, {
+      type: 'MEMBER_REVOKED',
+      payload: { membershipId: memberCSigner.principal },
+      signer: founderSigner,
+      proposalId: 'revoke-c-1',
+    });
+    assert(res.accepted, `expected MEMBER_REVOKED to commit with majority votes: ${res.reason}`);
+    assert(!ledger.members.has(memberCSigner.principal), 'revoked member should be removed');
+  });
+
+  t('verifyGroupLedger confirms the hash chain is intact after several events', () => {
+    const verdict = verifyGroupLedger(ledger);
+    assert(verdict.ok, `expected the ledger chain to be intact, brokenAt=${verdict.brokenAt}`);
+  });
+
+  t('founder-protected mode only accepts votes from a founder', () => {
+    const gov = createGovernancePolicy({
+      mode: GOVERNANCE_MODES.FOUNDER_PROTECTED,
+      founders: () => new Set(['founder-1']),
+      memberCount: () => 5,
+    });
+    assert(gov.isApproved({ approvals: new Set(['founder-1']) }), 'a founder vote should approve');
+    assert(!gov.isApproved({ approvals: new Set(['member-2', 'member-3', 'member-4']) }), 'non-founder votes alone should not approve');
+  });
+
+  t('threshold mode requires the configured number of approvals', () => {
+    const gov = createGovernancePolicy({ mode: GOVERNANCE_MODES.THRESHOLD, threshold: 3, memberCount: () => 10 });
+    assert(!gov.isApproved({ approvals: new Set(['a', 'b']) }), '2 approvals should be insufficient for threshold 3');
+    assert(gov.isApproved({ approvals: new Set(['a', 'b', 'c']) }), '3 approvals should satisfy threshold 3');
+  });
+
+  // ── Group encryption epochs (spec §14 group security, §39 key rotation) ──
+  G('GroupCrypto · epochs');
+
+  let gcA;
+  await ta('createGroupCrypto + startEpoch produces a usable epoch', async () => {
+    gcA = createGroupCrypto({ groupId: 'crypto-group-1' });
+    const epoch = await startEpoch(gcA);
+    assert(epoch === 1, `expected first epoch to be 1, got ${epoch}`);
+    assert(getCurrentEpoch(gcA) === 1, 'getCurrentEpoch should report 1');
+    assert(!isEpochErased(gcA, 1), 'a freshly started epoch should not be erased');
+  });
+
+  let sealedUnderEpoch1;
+  await ta('sealForEpoch + openEnvelope round-trips the plaintext', async () => {
+    sealedUnderEpoch1 = await sealForEpoch(gcA, 1, 'hello group');
+    const opened = await openEnvelope(gcA, sealedUnderEpoch1);
+    assert(opened === 'hello group', `expected round-trip plaintext, got ${JSON.stringify(opened)}`);
+  });
+
+  await ta('openEnvelope fails closed on a tampered ciphertext', async () => {
+    const tampered = { ...sealedUnderEpoch1, ciphertext: sealedUnderEpoch1.ciphertext.slice(0, -2) + '00' };
+    const opened = await openEnvelope(gcA, tampered);
+    assert(opened === null, 'tampered ciphertext must fail to open');
+  });
+
+  await ta('openEnvelope fails closed for a mismatched groupId', async () => {
+    const foreign = { ...sealedUnderEpoch1, groupId: 'someone-elses-group' };
+    const opened = await openEnvelope(gcA, foreign);
+    assert(opened === null, 'mismatched groupId must fail to open');
+  });
+
+  await ta('rotateEpoch crypto-erases the old epoch and starts a fresh one', async () => {
+    const { oldEpoch, newEpoch } = await rotateEpoch(gcA);
+    assert(oldEpoch === 1 && newEpoch === 2, `expected 1 -> 2, got ${oldEpoch} -> ${newEpoch}`);
+    assert(isEpochErased(gcA, 1), 'old epoch should now be erased');
+    const opened = await openEnvelope(gcA, sealedUnderEpoch1);
+    assert(opened === null, 'content sealed under the erased epoch must no longer open, even from the original holder');
+  });
+
+  await ta('makeWelcomePacket refuses to wrap an erased epoch\'s key', async () => {
+    const device = await createDeviceEncryptionKeyPair();
+    let threw = false;
+    try { await makeWelcomePacket({ gc: gcA, epoch: 1, recipientEcdhPublicKeyRaw: device.publicKeyRaw }); }
+    catch (_) { threw = true; }
+    assert(threw, 'wrapping an erased epoch should throw');
+  });
+
+  // ── Welcome packets: a new member receives the CURRENT epoch key ─────────
+  G('GroupCrypto · welcome packets');
+
+  let joinerDevice, gcJoiner, welcomePacket;
+  await ta('a new member generates their own device encryption keypair', async () => {
+    joinerDevice = await createDeviceEncryptionKeyPair();
+    assert(joinerDevice && joinerDevice.publicKeyRaw, 'expected a usable ECDH keypair');
+    gcJoiner = createGroupCrypto({ groupId: 'crypto-group-1' });
+  });
+
+  await ta('inviter builds a welcome packet for the current epoch', async () => {
+    welcomePacket = await makeWelcomePacket({ gc: gcA, epoch: 2, recipientEcdhPublicKeyRaw: joinerDevice.publicKeyRaw });
+    assert(welcomePacket.epoch === 2, 'welcome packet should target the current epoch');
+    assert(welcomePacket.groupId === 'crypto-group-1', 'welcome packet should carry the group id');
+  });
+
+  await ta('joiner opens the welcome packet and can now decrypt current-epoch content', async () => {
+    const ok = await openWelcomePacket({ gc: gcJoiner, welcomePacket, recipientPrivateKey: joinerDevice.privateKey });
+    assert(ok, 'opening a genuine welcome packet should succeed');
+    assert(getCurrentEpoch(gcJoiner) === 2, 'joiner should now track epoch 2 as current');
+    const sealed = await sealForEpoch(gcA, 2, 'welcome to the group');
+    const opened = await openEnvelope(gcJoiner, sealed);
+    assert(opened === 'welcome to the group', `joiner should decrypt epoch-2 content, got ${JSON.stringify(opened)}`);
+  });
+
+  await ta('a third party without the welcome packet cannot decrypt the same content', async () => {
+    const outsider = createGroupCrypto({ groupId: 'crypto-group-1' });
+    const sealed = await sealForEpoch(gcA, 2, 'still secret');
+    const opened = await openEnvelope(outsider, sealed);
+    assert(opened === null, 'an outsider with no epoch key must not be able to decrypt');
+  });
+
+  await ta('openWelcomePacket fails closed for the wrong recipient private key', async () => {
+    const wrongDevice = await createDeviceEncryptionKeyPair();
+    const outsider = createGroupCrypto({ groupId: 'crypto-group-1' });
+    const ok = await openWelcomePacket({ gc: outsider, welcomePacket, recipientPrivateKey: wrongDevice.privateKey });
+    assert(!ok, 'unwrapping with the wrong private key must fail');
+  });
+
+  // ── Peer tickets (spec §38 — encrypted reconnect memory) ─────────────────
+  G('PeerTickets · PeerTicket');
+
+  let ticketIssuer, plainTicket;
+  await ta('makePeerTicket produces a signed, verifiable ticket', async () => {
+    ticketIssuer = await createMembershipIdentity('verify-ticket-issuer', 'verify-ticket-group');
+    plainTicket = await makePeerTicket({
+      peerId: 'peer-xyz', deviceId: 'device-1', profileId: 'profile-1', groupId: 'g1',
+      services: ['sync', 'chunks'], routeHints: ['route-a'], issuerSigner: ticketIssuer,
+    });
+    const verdict = await verifyPeerTicket(plainTicket);
+    assert(verdict.ok, `expected ticket to verify: ${verdict.reason}`);
+  });
+
+  await ta('verifyPeerTicket rejects an expired ticket', async () => {
+    const expired = await makePeerTicket({ peerId: 'peer-xyz', expiresAt: Date.now() - 1000, issuerSigner: ticketIssuer });
+    const verdict = await verifyPeerTicket(expired);
+    assert(!verdict.ok && verdict.reason === 'expired', `expected expired, got ${verdict.reason}`);
+  });
+
+  await ta('verifyPeerTicket rejects a tampered ticket', async () => {
+    const tampered = { ...plainTicket, payload: { ...plainTicket.payload, services: ['sync', 'EVIL'] } };
+    const verdict = await verifyPeerTicket(tampered);
+    assert(!verdict.ok && verdict.reason === 'bad-signature', `expected bad-signature, got ${verdict.reason}`);
+  });
+
+  await ta('sealPeerTicketToDevice/openSealedPeerTicket round-trips to the right recipient only', async () => {
+    const recipientDevice = await createDeviceEncryptionKeyPair();
+    const sealed = await sealPeerTicketToDevice(plainTicket, recipientDevice.publicKeyRaw);
+    const opened = await openSealedPeerTicket(sealed, recipientDevice.privateKey);
+    assert(opened && opened.payload.peerId === 'peer-xyz', 'recipient should recover the original ticket');
+
+    const wrongDevice = await createDeviceEncryptionKeyPair();
+    const failedOpen = await openSealedPeerTicket(sealed, wrongDevice.privateKey);
+    assert(failedOpen === null, 'a different device key must not be able to open the sealed ticket');
+  });
+
+  await ta('sealPeerTicketToEpoch/openSealedPeerTicketFromEpoch round-trips for group members', async () => {
+    const gc = createGroupCrypto({ groupId: 'ticket-epoch-group' });
+    const epoch = await startEpoch(gc);
+    const sealed = await sealPeerTicketToEpoch(gc, epoch, plainTicket);
+    const opened = await openSealedPeerTicketFromEpoch(gc, sealed);
+    assert(opened && opened.payload.peerId === 'peer-xyz', 'group member should recover the ticket from the epoch seal');
+
+    const outsider = createGroupCrypto({ groupId: 'ticket-epoch-group' });
+    const failedOpen = await openSealedPeerTicketFromEpoch(outsider, sealed);
+    assert(failedOpen === null, 'an outsider without the epoch key must not be able to open the epoch-sealed ticket');
+  });
+
+  // ── Peer ticket store + reconnect ordering ────────────────────────────────
+  G('PeerTickets · PeerTicketStore & reconnect order');
+
+  t('addPeerTicket/getPeerTicket/removePeerTicket basic lifecycle', () => {
+    const store = createPeerTicketStore();
+    addPeerTicket(store, plainTicket);
+    assert(getPeerTicket(store, 'peer-xyz') === plainTicket, 'should retrieve the same ticket object');
+    assert(removePeerTicket(store, 'peer-xyz'), 'remove should report success');
+    assert(getPeerTicket(store, 'peer-xyz') === null, 'ticket should be gone after removal');
+  });
+
+  await ta('pruneExpiredPeerTickets removes only expired tickets', async () => {
+    const store = createPeerTicketStore();
+    const fresh = await makePeerTicket({ peerId: 'peer-fresh', expiresAt: Date.now() + 100000, issuerSigner: ticketIssuer });
+    const stale = await makePeerTicket({ peerId: 'peer-stale', expiresAt: Date.now() - 1, issuerSigner: ticketIssuer });
+    addPeerTicket(store, fresh);
+    addPeerTicket(store, stale);
+    const removed = pruneExpiredPeerTickets(store);
+    assert(removed.length === 1 && removed[0] === 'peer-stale', `expected only peer-stale pruned, got ${removed.join(',')}`);
+    assert(getPeerTicket(store, 'peer-fresh') !== null, 'fresh ticket should remain');
+  });
+
+  await ta('listPeerTicketsByFreshness orders most-recently-received first', async () => {
+    const store = createPeerTicketStore();
+    const t1 = await makePeerTicket({ peerId: 'peer-1', issuerSigner: ticketIssuer });
+    addPeerTicket(store, t1);
+    await new Promise((r) => setTimeout(r, 5));
+    const t2 = await makePeerTicket({ peerId: 'peer-2', issuerSigner: ticketIssuer });
+    addPeerTicket(store, t2);
+    const list = listPeerTicketsByFreshness(store);
+    assert(list[0].peerId === 'peer-2', `expected peer-2 (most recent) first, got ${list[0].peerId}`);
+  });
+
+  await ta('buildPeerReconnectOrder puts cached peer tickets before master-server-list stages', async () => {
+    const store = createPeerTicketStore();
+    addPeerTicket(store, await makePeerTicket({ peerId: 'peer-cached', issuerSigner: ticketIssuer }));
+    const norm = normalizeMasterServerList({ master_servers: [{ url: 'wss://a.example/v1/ws', priority: 1 }] });
+    const order = buildPeerReconnectOrder(store, norm);
+    assert(order[0].stage === 'peerTicket' && order[0].peerId === 'peer-cached', 'first stage should be the cached peer ticket');
+    const stageNames = order.map((o) => o.stage);
+    assert(stageNames.includes('masterServer'), 'master server stage should still be present after peer tickets');
+  });
+
+  // ── Sync Manager (spec §20 — per-category rules, no bytes moved here) ────
+  G('SyncManager · rules');
+
+  t('createSyncManager ships sensible defaults', () => {
+    const mgr = createSyncManager();
+    assert(getSyncRule(mgr, 'desktop').scope === SYNC_SCOPE.MY_DEVICES, 'desktop should default to my_devices');
+    assert(getSyncRule(mgr, 'ai').enabled === true, 'ai sync should default enabled (to my devices)');
+    assert(getSyncRule(mgr, 'developer').enabled === false, 'developer sync should default disabled');
+  });
+
+  t('setSyncRule updates scope/enabled and rejects unknown categories', () => {
+    const mgr = createSyncManager();
+    const updated = setSyncRule(mgr, 'files', { scope: SYNC_SCOPE.PRIVATE_GROUP, enabled: true });
+    assert(updated.scope === SYNC_SCOPE.PRIVATE_GROUP && updated.enabled === true, 'rule should reflect the update');
+    let threw = false;
+    try { setSyncRule(mgr, 'not-a-real-category', { enabled: true }); } catch (_) { threw = true; }
+    assert(threw, 'unknown category should throw');
+  });
+
+  t('shouldSync gates on both enabled and matching scope', () => {
+    const mgr = createSyncManager();
+    setSyncRule(mgr, 'worlds', { scope: SYNC_SCOPE.PRIVATE_GROUP, enabled: false });
+    assert(!shouldSync(mgr, 'worlds', SYNC_SCOPE.PRIVATE_GROUP), 'disabled category should never sync');
+    setSyncRule(mgr, 'worlds', { enabled: true });
+    assert(shouldSync(mgr, 'worlds', SYNC_SCOPE.PRIVATE_GROUP), 'enabled + matching scope should sync');
+    assert(!shouldSync(mgr, 'worlds', SYNC_SCOPE.PUBLIC_PROFILE), 'enabled but wrong target scope should not sync');
+  });
+
+  t('listSyncRules reports every category', () => {
+    const mgr = createSyncManager();
+    const list = listSyncRules(mgr);
+    assert(SYNC_CATEGORIES.every((c) => list.some((r) => r.category === c)), 'every category should be listed');
+  });
+
+  // ── Group workstation CRDT state (spec §18/§19) ──────────────────────────
+  G('Workstation · CRDT state');
+
+  t('pinApp/unpinApp are add-wins ORSet semantics', () => {
+    let state = createWorkstationState();
+    state = pinApp(state, 'app-a');
+    state = pinApp(state, 'app-b');
+    assert(JSON.stringify(snapshotWorkstationState(state).pinnedApps) === JSON.stringify(['app-a', 'app-b']), 'both apps should be pinned');
+    state = unpinApp(state, 'app-a');
+    assert(JSON.stringify(snapshotWorkstationState(state).pinnedApps) === JSON.stringify(['app-b']), 'app-a should be unpinned');
+  });
+
+  t('setWindowLayout/getWindowLayout round-trips a layout object', () => {
+    let state = createWorkstationState();
+    state = setWindowLayout(state, 'win-1', { x: 10, y: 20, w: 400, h: 300 }, 100, 'node-a');
+    const layout = getWindowLayout(state, 'win-1');
+    assert(layout.x === 10 && layout.w === 400, 'layout should round-trip');
+  });
+
+  t('mergeWorkstationState converges independent-of-order (CRDT join)', () => {
+    let stateA = createWorkstationState();
+    stateA = pinApp(stateA, 'app-a');
+    stateA = setWindowLayout(stateA, 'win-1', { x: 0 }, 10, 'a');
+    let stateB = createWorkstationState();
+    stateB = pinApp(stateB, 'app-b');
+    stateB = setWindowLayout(stateB, 'win-1', { x: 99 }, 20, 'b'); // later timestamp wins
+    const mergedAB = mergeWorkstationState(stateA, stateB);
+    const mergedBA = mergeWorkstationState(stateB, stateA);
+    const snapAB = snapshotWorkstationState(mergedAB);
+    const snapBA = snapshotWorkstationState(mergedBA);
+    assert(JSON.stringify(snapAB) === JSON.stringify(snapBA), 'merge should be order-independent');
+    assert(snapAB.pinnedApps.includes('app-a') && snapAB.pinnedApps.includes('app-b'), 'both pins should survive the merge');
+    assert(snapAB.windowLayout['win-1'].x === 99, 'higher-timestamp layout write should win the LWW merge');
+  });
+
+  t('setWallpaper resolves ties deterministically by node id', () => {
+    let stateA = createWorkstationState();
+    stateA = setWallpaper(stateA, 'wall-a', 50, 'node-z');
+    let stateB = createWorkstationState();
+    stateB = setWallpaper(stateB, 'wall-b', 50, 'node-a'); // same ts, lower node id
+    const merged = mergeWorkstationState(stateA, stateB);
+    assert(snapshotWorkstationState(merged).wallpaper === 'wall-a', 'higher node id should win the timestamp tie');
+  });
+
+  // ── Workstation + checkpoint payload (feeds GroupLedger WORKSTATION_CHECKPOINTED) ──
+  G('Workstation · checkpoint');
+
+  let workstationOwner, checkpointLedger;
+  await ta('set up a workstation-backed group ledger', async () => {
+    workstationOwner = await createMembershipIdentity('verify-ws-founder', 'verify-ws-group');
+    checkpointLedger = createGroupLedger({ groupId: 'verify-ws-group' });
+    await genesisGroup(checkpointLedger, { founderSigner: workstationOwner });
+  });
+
+  t('computeWorkstationStateRoot changes when state changes, stable when it does not', () => {
+    let ws = createWorkstation({ groupId: 'verify-ws-group' });
+    const rootEmpty1 = computeWorkstationStateRoot(ws);
+    const rootEmpty2 = computeWorkstationStateRoot(ws);
+    assert(rootEmpty1 === rootEmpty2, 'state root should be stable for unchanged state');
+    ws = { ...ws, state: pinApp(ws.state, 'app-a') };
+    const rootAfterPin = computeWorkstationStateRoot(ws);
+    assert(rootAfterPin !== rootEmpty1, 'state root should change once state changes');
+  });
+
+  await ta('buildWorkstationCheckpointPayload feeds a WORKSTATION_CHECKPOINTED ledger event', async () => {
+    let ws = createWorkstation({ groupId: 'verify-ws-group' });
+    ws = { ...ws, state: pinApp(ws.state, 'app-a') };
+    const payload = buildWorkstationCheckpointPayload(ws, { governanceHead: checkpointLedger.eventLog.head, appRegistryHash: 'reg-hash-1' });
+    assert(payload.groupId === 'verify-ws-group', 'payload should carry the group id');
+    assert(payload.desktopStateRoot === computeWorkstationStateRoot(ws), 'payload should carry the current state root');
+    const res = await proposeGroupEvent(checkpointLedger, { type: 'WORKSTATION_CHECKPOINTED', payload, signer: workstationOwner });
+    assert(res.accepted, `expected WORKSTATION_CHECKPOINTED to commit: ${res.reason}`);
+    assert(res.entry.type === 'WORKSTATION_CHECKPOINTED', 'ledger entry should record the checkpoint type');
+  });
+
+  t('mergeWorkstation merges another replica\'s state into a Workstation wrapper', () => {
+    const wsA = createWorkstation({ groupId: 'verify-ws-group' });
+    const otherState = pinApp(createWorkstationState(), 'app-remote');
+    const merged = mergeWorkstation(wsA, otherState);
+    assert(snapshotWorkstationState(merged.state).pinnedApps.includes('app-remote'), 'merged workstation should include the remote pin');
+  });
+
+  // ── Chunk fragmentation (spec §27/§31/§32) ────────────────────────────────
+  G('Chunks · fragmentation');
+
+  function randomBytes(n) {
+    const b = new Uint8Array(n);
+    const MAX_PER_CALL = 65536; // crypto.getRandomValues() rejects larger views
+    for (let offset = 0; offset < n; offset += MAX_PER_CALL) {
+      crypto.getRandomValues(b.subarray(offset, Math.min(offset + MAX_PER_CALL, n)));
+    }
+    return b;
+  }
+
+  t('splitIntoChunks + reassembleChunks round-trips arbitrary bytes', () => {
+    const original = randomBytes(50_000);
+    const chunks = splitIntoChunks(original, 20_000);
+    assert(chunks.length === 3, `expected 3 chunks of 20000, got ${chunks.length}`);
+    const rebuilt = reassembleChunks(chunks);
+    assert(rebuilt.length === original.length, 'rebuilt length should match');
+    assert(rebuilt.every((b, i) => b === original[i]), 'rebuilt bytes should match exactly');
+  });
+
+  t('splitIntoChunks rejects a chunkSize above the 4MB ceiling', () => {
+    let threw = false;
+    try { splitIntoChunks(randomBytes(10), MAX_CHUNK_BYTES + 1); } catch (_) { threw = true; }
+    assert(threw, 'exceeding MAX_CHUNK_BYTES should throw');
+  });
+
+  t('splitChunkIntoFragments + reassembleFragments round-trips one chunk', () => {
+    const chunk = randomBytes(150_000);
+    const fragments = splitChunkIntoFragments(chunk, DEFAULT_FRAGMENT_BYTES);
+    assert(fragments.length === Math.ceil(150_000 / DEFAULT_FRAGMENT_BYTES), 'expected ceil(size/fragmentSize) fragments');
+    const rebuilt = reassembleFragments(fragments);
+    assert(rebuilt.length === chunk.length && rebuilt.every((b, i) => b === chunk[i]), 'reassembled fragment bytes should match');
+  });
+
+  // ── Merkle fragment hashing (spec §32) ────────────────────────────────────
+  G('Chunks · merkle verification');
+
+  let sampleChunk, sampleFragments, sampleFragmentRoot, sampleChunkId;
+  await ta('computeMerkleRoot is deterministic for the same fragments', async () => {
+    sampleChunk = randomBytes(200_000);
+    sampleFragments = splitChunkIntoFragments(sampleChunk, DEFAULT_FRAGMENT_BYTES);
+    sampleChunkId = await computeChunkHash(sampleChunk);
+    const hashesA = await computeFragmentHashes(sampleFragments);
+    const hashesB = await computeFragmentHashes(sampleFragments);
+    sampleFragmentRoot = await computeMerkleRoot(hashesA);
+    const rootB = await computeMerkleRoot(hashesB);
+    assert(sampleFragmentRoot === rootB, 'merkle root should be deterministic for identical fragments');
+  });
+
+  await ta('verifyChunkFragments accepts genuine fragments and rejects a corrupted one', async () => {
+    const ok = await verifyChunkFragments(sampleFragments, sampleFragmentRoot);
+    assert(ok, 'genuine fragments should verify against the declared root');
+    const corrupted = sampleFragments.map((f) => f.slice());
+    corrupted[0] = new Uint8Array(corrupted[0]); corrupted[0][0] ^= 0xff; // flip a bit
+    const bad = await verifyChunkFragments(corrupted, sampleFragmentRoot);
+    assert(!bad, 'a corrupted fragment must fail merkle verification');
+  });
+
+  await ta('reassembleAndVerifyChunk returns bytes on match, null on mismatch', async () => {
+    const bytes = await reassembleAndVerifyChunk(sampleFragments, sampleChunkId);
+    assert(bytes && bytes.length === sampleChunk.length, 'should reassemble and verify successfully');
+    const failed = await reassembleAndVerifyChunk(sampleFragments, 'deadbeef'.repeat(8));
+    assert(failed === null, 'wrong expected chunkId should fail closed with null');
+  });
+
+  // ── Manifests (spec §31) ──────────────────────────────────────────────────
+  G('Chunks · Manifest');
+
+  let manifestSigner, signedManifest;
+  await ta('buildManifest produces a signed, verifiable manifest', async () => {
+    manifestSigner = await createProfileIdentity('verify-manifest-owner');
+    signedManifest = await buildManifest({
+      objectId: 'obj-1', scope: 'group_dev_lab',
+      chunks: [{ chunkId: sampleChunkId, size: sampleChunk.length, fragmentRoot: sampleFragmentRoot }],
+      signer: manifestSigner,
+    });
+    const verdict = await verifyManifest(signedManifest);
+    assert(verdict.ok, `expected manifest to verify: ${verdict.reason}`);
+  });
+
+  await ta('buildManifest rejects a chunk larger than MAX_CHUNK_BYTES', async () => {
+    let threw = false;
+    try {
+      await buildManifest({ objectId: 'obj-2', chunks: [{ chunkId: 'x', size: MAX_CHUNK_BYTES + 1, fragmentRoot: 'y' }], signer: manifestSigner });
+    } catch (_) { threw = true; }
+    assert(threw, 'oversized chunk should be rejected');
+  });
+
+  await ta('verifyManifest rejects a tampered manifest', async () => {
+    const tampered = { ...signedManifest, payload: { ...signedManifest.payload, objectId: 'obj-EVIL' } };
+    const verdict = await verifyManifest(tampered);
+    assert(!verdict.ok && verdict.reason === 'bad-signature', `expected bad-signature, got ${verdict.reason}`);
+  });
+
+  t('manifestTotalSize/manifestChunkIds report accurate summary info', () => {
+    assert(manifestTotalSize(signedManifest) === sampleChunk.length, 'total size should match the chunk size');
+    assert(manifestChunkIds(signedManifest).length === 1 && manifestChunkIds(signedManifest)[0] === sampleChunkId, 'chunk ids should round-trip');
+  });
+
+  // ── Swarm fetch scheduling (spec §31) ─────────────────────────────────────
+  G('Chunks · SwarmScheduler');
+
+  t('planSwarmFetch load-balances across available providers', () => {
+    const providers = new Map([
+      ['c1', ['peer-A', 'peer-B']],
+      ['c2', ['peer-A', 'peer-B']],
+      ['c3', ['peer-B']],
+      ['c4', []],
+    ]);
+    const { plan, unresolved, peerLoad } = planSwarmFetch({ chunkIds: ['c1', 'c2', 'c3', 'c4'], providers });
+    assert(plan.length === 3, `expected 3 resolved assignments, got ${plan.length}`);
+    assert(unresolved.length === 1 && unresolved[0] === 'c4', 'c4 has no providers and should be unresolved');
+    assert(peerLoad['peer-A'] >= 1 && peerLoad['peer-B'] >= 1, 'load should be spread across both peers');
+  });
+
+  t('planSwarmFetch groups assignments into lanes of maxLanes', () => {
+    const providers = new Map(['c1', 'c2', 'c3', 'c4', 'c5'].map((id) => [id, ['peer-A']]));
+    const { lanes } = planSwarmFetch({ chunkIds: [...providers.keys()], providers, maxLanes: 2 });
+    assert(lanes.length === 3 && lanes[0].length === 2 && lanes[2].length === 1, `expected lanes [2,2,1], got ${lanes.map((l) => l.length).join(',')}`);
+  });
+
+  // ── Flow control + priority lanes (spec §28) ──────────────────────────────
+  G('Chunks · FlowControl');
+
+  t('tryReserveCredit/releaseCredit enforce the in-flight byte window', () => {
+    const fc = createFlowControl({ maxInFlightBytes: 1000 });
+    assert(tryReserveCredit(fc, 600), 'first reservation within budget should succeed');
+    assert(!tryReserveCredit(fc, 500), 'second reservation exceeding budget should fail');
+    assert(availableCredit(fc) === 400, `expected 400 bytes available, got ${availableCredit(fc)}`);
+    releaseCredit(fc, 600);
+    assert(availableCredit(fc) === 1000, 'releasing credit should restore the full window');
+  });
+
+  t('priority queue always drains the lowest lane number first', () => {
+    const pq = createPriorityQueue();
+    enqueue(pq, PRIORITY_LANE.BULK, 'bulk-item');
+    enqueue(pq, PRIORITY_LANE.NORMAL, 'normal-item');
+    enqueue(pq, PRIORITY_LANE.GOVERNANCE, 'governance-item');
+    assert(dequeue(pq) === 'governance-item', 'governance lane should be served first');
+    assert(dequeue(pq) === 'normal-item', 'normal lane next');
+    assert(dequeue(pq) === 'bulk-item', 'bulk lane last');
+    assert(isQueueEmpty(pq), 'queue should be empty after draining everything');
+  });
+
+  // ── Dedupe cache (spec §29) ────────────────────────────────────────────────
+  G('Chunks · DedupeCache');
+
+  t('markSeen/hasSeen respects TTL expiry', () => {
+    const cache = createDedupeCache();
+    const now = 1_000_000;
+    markSeen(cache, 'pkt-1', 5000, now);
+    assert(hasSeen(cache, 'pkt-1', now + 1000), 'should still be seen within TTL');
+    assert(!hasSeen(cache, 'pkt-1', now + 6000), 'should expire after TTL');
+  });
+
+  t('checkAndMark returns true only for genuinely new keys', () => {
+    const cache = createDedupeCache();
+    assert(checkAndMark(cache, 'evt-1', 60000) === true, 'first sighting should be new');
+    assert(checkAndMark(cache, 'evt-1', 60000) === false, 'second sighting should be a duplicate');
+  });
+
+  t('pruneDedupeCache removes only expired entries', () => {
+    const cache = createDedupeCache();
+    const now = 2_000_000;
+    markSeen(cache, 'fresh', 60000, now);
+    markSeen(cache, 'stale', 1, now);
+    const removed = pruneDedupeCache(cache, now + 1000);
+    assert(removed === 1, `expected exactly 1 pruned, got ${removed}`);
+    assert(hasSeen(cache, 'fresh', now + 1000), 'fresh entry should remain');
+  });
+
+  // ── Multi-hop sealed packets (spec §24/§26 onion routing) ────────────────
+  G('Carrier · SealedPacket');
+
+  let hop0Device, hop1Device, finalDevice;
+  await ta('set up 3 hop identities (relay, relay, final recipient)', async () => {
+    hop0Device = await createDeviceEncryptionKeyPair();
+    hop1Device = await createDeviceEncryptionKeyPair();
+    finalDevice = await createDeviceEncryptionKeyPair();
+  });
+
+  let sealedOuter;
+  await ta('buildSealedPacket wraps a payload through 2 relay hops', async () => {
+    sealedOuter = await buildSealedPacket({
+      hops: [
+        { peerId: 'hop-0', ecdhPublicKeyRaw: hop0Device.publicKeyRaw },
+        { peerId: 'hop-1', ecdhPublicKeyRaw: hop1Device.publicKeyRaw },
+        { peerId: 'final', ecdhPublicKeyRaw: finalDevice.publicKeyRaw },
+      ],
+      payload: { message: 'hello via onion route' },
+    });
+    assert(sealedOuter && sealedOuter.ciphertext, 'should produce a sealed outer layer');
+  });
+
+  await ta('hop-0 can only see the next hop, never the payload', async () => {
+    const peeled = await peelSealedPacket(sealedOuter, hop0Device.privateKey);
+    assert(peeled && peeled.done === false, 'hop-0 should not be the final recipient');
+    assert(peeled.nextHopPeerId === 'hop-1', `expected next hop hop-1, got ${peeled.nextHopPeerId}`);
+    assert(JSON.stringify(peeled).indexOf('hello via onion route') === -1, 'hop-0 must not see the plaintext payload');
+    globalThis.__verify_forward1 = peeled.forward; // stash for the next test
+  });
+
+  await ta('hop-1 forwards onward without seeing the payload either', async () => {
+    const peeled = await peelSealedPacket(globalThis.__verify_forward1, hop1Device.privateKey);
+    assert(peeled && peeled.done === false, 'hop-1 should not be the final recipient');
+    assert(peeled.nextHopPeerId === 'final', `expected next hop 'final', got ${peeled.nextHopPeerId}`);
+    globalThis.__verify_forward2 = peeled.forward;
+  });
+
+  await ta('the final recipient recovers the original payload', async () => {
+    const peeled = await peelSealedPacket(globalThis.__verify_forward2, finalDevice.privateKey);
+    assert(peeled && peeled.done === true, 'final hop should report done');
+    assert(peeled.payload.message === 'hello via onion route', 'final recipient should recover the exact payload');
+    delete globalThis.__verify_forward1; delete globalThis.__verify_forward2;
+  });
+
+  await ta('a hop cannot peel a layer that was not addressed to it', async () => {
+    const peeled = await peelSealedPacket(sealedOuter, finalDevice.privateKey); // wrong key for the outer layer
+    assert(peeled === null, 'peeling with the wrong hop key must fail closed');
+  });
+
+  // ── Carrier outer envelope (TTL/expiry) ──────────────────────────────────
+  G('Carrier · CarrierPacket');
+
+  t('makeCarrierPacket wraps a sealed packet with visible routing metadata', () => {
+    const packet = makeCarrierPacket({ routeId: 'carrier-route-1', ttl: 3, sealed: { ciphertext: 'x', channelId: [1, 2, 3] } });
+    assert(packet.payload.routeId === 'carrier-route-1' && packet.payload.ttl === 3, 'metadata should round-trip');
+  });
+
+  t('decrementCarrierTtl reduces ttl without mutating the original packet', () => {
+    const packet = makeCarrierPacket({ routeId: 'r1', ttl: 2, sealed: { ciphertext: 'x' } });
+    const next = decrementCarrierTtl(packet);
+    assert(next.payload.ttl === 1 && packet.payload.ttl === 2, 'original should be unchanged, new packet should be decremented');
+  });
+
+  t('isCarrierPacketExpired / isCarrierTtlExhausted report correctly', () => {
+    const expired = makeCarrierPacket({ routeId: 'r1', ttl: 1, expiresAt: Date.now() - 1000, sealed: { ciphertext: 'x' } });
+    assert(isCarrierPacketExpired(expired), 'should be expired');
+    const outOfHops = makeCarrierPacket({ routeId: 'r1', ttl: 0, sealed: { ciphertext: 'x' } });
+    assert(isCarrierTtlExhausted(outOfHops), 'ttl 0 should be exhausted');
+  });
+
+  // ── Anonymity mode selection (spec §25/§42) ───────────────────────────────
+  G('Carrier · AnonymityMode');
+
+  t('selectAnonymityMode follows the network-plan §25 policy table', () => {
+    assert(selectAnonymityMode({}) === ANONYMITY_MODE.ANONYMOUS, 'default (unknown peer) should be anonymous');
+    assert(selectAnonymityMode({ trustPending: true }) === ANONYMITY_MODE.TRUST_PENDING, 'pending invite should be trust_pending');
+    assert(selectAnonymityMode({ groupApproved: true }) === ANONYMITY_MODE.TRUSTED_DIRECT, 'group-approved should be trusted_direct');
+    assert(selectAnonymityMode({ isSelfDevice: true }) === ANONYMITY_MODE.MY_DEVICES, 'own device should be my_devices');
+    assert(selectAnonymityMode({ groupApproved: true, highRiskOverride: true }) === ANONYMITY_MODE.HIGH_RISK, 'high-risk override should always win');
+  });
+
+  t('transportTruthLabel never overstates privacy, allowsDirectTransport matches the mode', () => {
+    assert(transportTruthLabel(ANONYMITY_MODE.ANONYMOUS) === 'Anonymous route', 'label should be honest for anonymous');
+    assert(!allowsDirectTransport(ANONYMITY_MODE.ANONYMOUS), 'anonymous mode must not allow direct transport');
+    assert(allowsDirectTransport(ANONYMITY_MODE.TRUSTED_DIRECT), 'trusted_direct should allow direct transport');
+    assert(allowsDirectTransport(ANONYMITY_MODE.MY_DEVICES), 'my_devices should allow direct transport');
+  });
+
+  // ── Spam controls: rate limiting + forwarding decision (spec §35/§36) ────
+  G('Carrier · RateLimiter & CarrierForwarder');
+
+  t('token bucket allows bursts up to capacity, then blocks until refill', () => {
+    const limiter = createRateLimiter({ capacity: 3, refillPerSecond: 1 });
+    const now = 1_000_000;
+    assert(tryConsumeToken(limiter, 1, now), '1st token should succeed');
+    assert(tryConsumeToken(limiter, 1, now), '2nd token should succeed');
+    assert(tryConsumeToken(limiter, 1, now), '3rd token should succeed (capacity)');
+    assert(!tryConsumeToken(limiter, 1, now), '4th token should fail (bucket empty)');
+    assert(tryConsumeToken(limiter, 1, now + 1000), 'token should be available again after 1s refill');
+  });
+
+  t('availableTokens reflects refill over elapsed time', () => {
+    const limiter = createRateLimiter({ capacity: 10, refillPerSecond: 5 });
+    const now = 2_000_000;
+    tryConsumeToken(limiter, 10, now); // drain
+    assert(availableTokens(limiter, now + 1000) === 5, `expected 5 tokens after 1s at 5/s, got ${availableTokens(limiter, now + 1000)}`);
+  });
+
+  t('evaluateForward rejects expired, ttl-exhausted, duplicate, and rate-limited packets', () => {
+    const dedupeCache = createDedupeCache();
+    const rateLimiter = createRateLimiter({ capacity: 1, refillPerSecond: 0 });
+    const now = 3_000_000;
+
+    const expired = makeCarrierPacket({ routeId: 'r1', ttl: 2, expiresAt: now - 1, sealed: { ciphertext: 'a', channelId: [1] } });
+    assert(evaluateForward({ packet: expired, dedupeCache, rateLimiter, now }).reason === 'expired', 'expired packet should be rejected');
+
+    const noHops = makeCarrierPacket({ routeId: 'r1', ttl: 0, sealed: { ciphertext: 'b', channelId: [2] } });
+    assert(evaluateForward({ packet: noHops, dedupeCache, rateLimiter, now }).reason === 'ttl-exhausted', 'ttl-exhausted packet should be rejected');
+
+    const fresh = makeCarrierPacket({ routeId: 'r1', ttl: 3, sealed: { ciphertext: 'c', channelId: [3] } });
+    const first = evaluateForward({ packet: fresh, dedupeCache, rateLimiter, now });
+    assert(first.forward === true && first.packet.payload.ttl === 2, 'first genuine packet should forward with ttl decremented');
+
+    const dup = evaluateForward({ packet: fresh, dedupeCache, rateLimiter, now });
+    assert(dup.reason === 'duplicate', 'the exact same packet again should be deduped');
+
+    const another = makeCarrierPacket({ routeId: 'r1', ttl: 3, sealed: { ciphertext: 'd', channelId: [4] } });
+    const rl = evaluateForward({ packet: another, dedupeCache, rateLimiter, now });
+    assert(rl.reason === 'rate-limited', 'a new (non-duplicate) packet should still hit the exhausted rate limit');
+  });
+
+  // ── DHT message primitives (spec §47) ─────────────────────────────────────
+  G('DHT · message primitives');
+
+  t('DHT message builders produce well-formed particle-dht/1 envelopes', () => {
+    const findPeer = makeFindPeerMessage({ targetPeerId: 'peer-x', requesterPeerId: 'peer-me' });
+    assert(findPeer.type === 'FIND_PEER' && findPeer.payload.targetPeerId === 'peer-x', 'FIND_PEER should round-trip');
+    const findRoute = makeFindRouteMessage({ routeId: 'r1' });
+    assert(findRoute.type === 'FIND_ROUTE' && findRoute.payload.routeId === 'r1', 'FIND_ROUTE should round-trip');
+    const findProviders = makeFindProvidersMessage({ key: 'chunk-hash-1' });
+    assert(findProviders.type === 'FIND_PROVIDERS' && findProviders.payload.key === 'chunk-hash-1', 'FIND_PROVIDERS should round-trip');
+    const announceP = makeAnnounceProviderMessage({ key: 'chunk-hash-1', peerId: 'peer-x' });
+    assert(announceP.type === 'ANNOUNCE_PROVIDER', 'ANNOUNCE_PROVIDER should build');
+    const announceR = makeAnnounceRouteMessage({ routeId: 'r1', peerId: 'peer-x', services: ['sync'] });
+    assert(announceR.payload.services.includes('sync'), 'ANNOUNCE_ROUTE should carry services');
+    const exchange = makePeerExchangeMessage({ knownPeers: [{ peerId: 'peer-y' }] });
+    assert(exchange.payload.knownPeers.length === 1, 'PEER_EXCHANGE should carry known peers');
+  });
+
+  t('DHT message builders reject missing required fields', () => {
+    let threw = false;
+    try { makeFindPeerMessage({}); } catch (_) { threw = true; }
+    assert(threw, 'FIND_PEER without targetPeerId should throw');
+  });
+
+  // ── Local DHT node (provider store + peer knowledge, local-only) ─────────
+  G('DHT · DhtNode (local view)');
+
+  t('rememberPeer + handleFindPeer answers from local knowledge', () => {
+    const node = createDhtNode({ selfPeerId: 'me' });
+    rememberPeer(node, 'peer-x', { routeHints: ['route-a', 'route-b'] });
+    const found = handleFindPeer(node, 'peer-x');
+    assert(found.found && found.routeHints.includes('route-a'), 'should find the remembered peer with its route hints');
+    const notFound = handleFindPeer(node, 'peer-unknown');
+    assert(!notFound.found, 'unknown peer should report not found');
+  });
+
+  t('handleAnnounceProvider + handleFindRoute/handleFindProviders work off the same store', () => {
+    const node = createDhtNode({ selfPeerId: 'me' });
+    handleAnnounceProvider(node, { key: 'route-1', peerId: 'peer-a' });
+    handleAnnounceProvider(node, { key: 'route-1', peerId: 'peer-b' });
+    handleAnnounceProvider(node, { key: 'chunk-1', peerId: 'peer-a' });
+    const routeProviders = handleFindRoute(node, 'route-1');
+    assert(routeProviders.length === 2, `expected 2 providers for route-1, got ${routeProviders.length}`);
+    const chunkProviders = handleFindProviders(node, 'chunk-1');
+    assert(chunkProviders.length === 1 && chunkProviders[0] === 'peer-a', 'expected peer-a as the sole chunk-1 provider');
+  });
+
+  t('handlePeerExchange ingests a batch of known peers', () => {
+    const node = createDhtNode({ selfPeerId: 'me' });
+    handlePeerExchange(node, [{ peerId: 'peer-x', routeHints: ['r1'] }, { peerId: 'peer-y', routeHints: [] }]);
+    assert(handleFindPeer(node, 'peer-x').found && handleFindPeer(node, 'peer-y').found, 'both exchanged peers should be known');
+  });
+
+  t('providersMapForKeys builds the shape SwarmScheduler.planSwarmFetch expects', () => {
+    const node = createDhtNode({ selfPeerId: 'me' });
+    handleAnnounceProvider(node, { key: 'c1', peerId: 'peer-a' });
+    const map = providersMapForKeys(node, ['c1', 'c2']);
+    assert(map.get('c1').includes('peer-a') && map.get('c2').length === 0, 'map should reflect known vs unknown providers');
+  });
+
+  t('pruneDhtNode removes expired provider records and stale peers', () => {
+    const node = createDhtNode({ selfPeerId: 'me' });
+    const now = 5_000_000;
+    handleAnnounceProvider(node, { key: 'c1', peerId: 'peer-a', ttlMs: 1 }, now);
+    rememberPeer(node, 'peer-stale', {}, now - 999_999_999);
+    const { removedProviders, removedPeers } = pruneDhtNode(node, { peerStaleMs: 1000 }, now + 100);
+    assert(removedProviders === 1, `expected 1 expired provider removed, got ${removedProviders}`);
+    assert(removedPeers === 1, `expected 1 stale peer removed, got ${removedPeers}`);
+  });
+
+  // ── Bootstrap sources (spec §37/§47/§48 — bootstrap is always required) ──
+  G('DHT · BootstrapSource registry');
+
+  await ta('runBootstrap tries every registered source and never throws on a failing one', async () => {
+    const registry = createBootstrapRegistry();
+    registerBootstrapSource(registry, createBootstrapSource({
+      id: 'cachedPeers', scan: async () => [{ peerId: 'peer-cached' }],
+    }));
+    registerBootstrapSource(registry, createBootstrapSource({
+      id: 'broken', scan: async () => { throw new Error('simulated failure'); },
+    }));
+    registerBootstrapSource(registry, createBootstrapSource({
+      id: 'lan', scan: async () => [{ peerId: 'peer-lan-1' }, { peerId: 'peer-lan-2' }],
+    }));
+    const results = await runBootstrap(registry);
+    assert(results.length === 3, 'all 3 sources should report a result even though one throws');
+    assert(results.find((r) => r.sourceId === 'broken').records.length === 0, 'a failing source should contribute zero records, not crash the run');
+    const flat = flattenBootstrapResults(results);
+    assert(flat.length === 3, `expected 3 total records across sources, got ${flat.length}`);
+    assert(flat.every((r) => r.sourceId), 'every flattened record should be tagged with its source');
+  });
+
+  t('createBootstrapSource requires an id and a scan function', () => {
+    let threwNoId = false;
+    try { createBootstrapSource({ scan: async () => [] }); } catch (_) { threwNoId = true; }
+    assert(threwNoId, 'missing id should throw');
+    let threwNoScan = false;
+    try { createBootstrapSource({ id: 'x' }); } catch (_) { threwNoScan = true; }
+    assert(threwNoScan, 'missing scan() should throw');
+  });
+
+  return results;
+}
+
+async function render() {
+  const start = performance.now();
+  const results = await runAll();
+  const ms = (performance.now() - start).toFixed(2);
+  const pass = results.filter((r) => r.status === 'PASS').length;
+  const fail = results.length - pass;
+
+  document.getElementById('pill-total').textContent = `${results.length} gates`;
+  document.getElementById('pill-pass').textContent = `${pass} passed`;
+  document.getElementById('pill-fail').textContent = `${fail} failed`;
+  document.getElementById('pill-fail').classList.toggle('ok', fail === 0);
+  document.getElementById('pill-fail').classList.toggle('bad', fail !== 0);
+  document.getElementById('time').textContent = `network Phase 1 · ran in ${ms} ms`;
+
+  const rows = document.getElementById('rows');
+  rows.innerHTML = '';
+  let lastGroup = null;
+  for (const r of results) {
+    if (r.group !== lastGroup) {
+      lastGroup = r.group;
+      const gr = document.createElement('tr');
+      gr.innerHTML = `<td></td><td class="grp" colspan="2">${r.group}</td>`;
+      rows.appendChild(gr);
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="s ${r.status}">${r.status}</td><td>${r.name}</td>` +
+      `<td class="detail">${r.detail ? r.detail : ''}</td>`;
+    rows.appendChild(tr);
+  }
+}
+
+document.getElementById('rerun').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>

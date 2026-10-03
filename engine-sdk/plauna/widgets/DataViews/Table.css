@@ -1,0 +1,119 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Table Component Styles
+ * Modular CSS for Table data view widget
+ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.table__head {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.table__header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-align: left;
+  user-select: none;
+}
+
+.table__header--sortable {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.table__header--sortable:hover {
+  background: var(--bg-quaternary);
+}
+
+.table__body {
+  display: table-row-group;
+}
+
+.table__row {
+  border-bottom: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+}
+
+.table__row:hover {
+  background: var(--bg-tertiary);
+}
+
+.table__row--selected {
+  background: var(--color-primary-100);
+}
+
+[data-theme="night"] .table__row--selected {
+  background: var(--color-primary-900);
+}
+
+.table__cell {
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.table__cell--numeric {
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+.table__cell--center {
+  text-align: center;
+}
+
+/* Size Variants */
+.table--sm .table__header,
+.table--sm .table__cell {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 11px;
+}
+
+.table--lg .table__header,
+.table--lg .table__cell {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-md);
+}
+
+/* Striped */
+.table--striped .table__row:nth-child(odd) {
+  background: var(--bg-tertiary);
+}
+
+.table--striped .table__row:nth-child(odd):hover {
+  background: var(--bg-quaternary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table {
+    font-size: 12px;
+  }
+
+  .table__header,
+  .table__cell {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .table--lg .table__header,
+  .table--lg .table__cell {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}

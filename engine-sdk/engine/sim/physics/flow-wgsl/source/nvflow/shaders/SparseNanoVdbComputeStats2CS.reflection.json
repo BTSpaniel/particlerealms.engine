@@ -1,0 +1,689 @@
+{
+    "parameters": [
+        {
+            "name": "paramsIn",
+            "binding": {"kind": "descriptorTableSlot", "index": 0},
+            "type": {
+                "kind": "constantBuffer",
+                "elementType": {
+                    "kind": "struct",
+                    "name": "SparseNanoVdbComputeStatsParams",
+                    "fields": [
+                        {
+                            "name": "blockIdxOffset0",
+                            "type": {
+                                "kind": "scalar",
+                                "scalarType": "uint32"
+                            },
+                            "binding": {"kind": "uniform", "offset": 0, "size": 4}
+                        },
+                        {
+                            "name": "blockIdxOffset1",
+                            "type": {
+                                "kind": "scalar",
+                                "scalarType": "uint32"
+                            },
+                            "binding": {"kind": "uniform", "offset": 4, "size": 4}
+                        },
+                        {
+                            "name": "blockIdxOffset2",
+                            "type": {
+                                "kind": "scalar",
+                                "scalarType": "uint32"
+                            },
+                            "binding": {"kind": "uniform", "offset": 8, "size": 4}
+                        },
+                        {
+                            "name": "blockIdxOffset3",
+                            "type": {
+                                "kind": "scalar",
+                                "scalarType": "uint32"
+                            },
+                            "binding": {"kind": "uniform", "offset": 12, "size": 4}
+                        },
+                        {
+                            "name": "nanoVdb",
+                            "type": {
+                                "kind": "struct",
+                                "name": "NvFlowSparseNanoVdbParams",
+                                "fields": [
+                                    {
+                                        "name": "nanovdb_size_without_leaves",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 0, "size": 8}
+                                    },
+                                    {
+                                        "name": "nanovdb_size_with_leaves",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 8, "size": 8}
+                                    },
+                                    {
+                                        "name": "list_tile_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 16, "size": 8}
+                                    },
+                                    {
+                                        "name": "list_upper_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 24, "size": 8}
+                                    },
+                                    {
+                                        "name": "list_lower_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 32, "size": 8}
+                                    },
+                                    {
+                                        "name": "list_leaf_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 40, "size": 8}
+                                    },
+                                    {
+                                        "name": "cache_tile_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 48, "size": 8}
+                                    },
+                                    {
+                                        "name": "cache_upper_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 56, "size": 8}
+                                    },
+                                    {
+                                        "name": "cache_lower_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 64, "size": 8}
+                                    },
+                                    {
+                                        "name": "cache_leaf_offset",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 72, "size": 8}
+                                    },
+                                    {
+                                        "name": "list_tile_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 80, "size": 4}
+                                    },
+                                    {
+                                        "name": "list_upper_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 84, "size": 4}
+                                    },
+                                    {
+                                        "name": "list_lower_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 88, "size": 4}
+                                    },
+                                    {
+                                        "name": "list_leaf_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 92, "size": 4}
+                                    },
+                                    {
+                                        "name": "cache_tile_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 96, "size": 4}
+                                    },
+                                    {
+                                        "name": "cache_upper_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 100, "size": 4}
+                                    },
+                                    {
+                                        "name": "cache_lower_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 104, "size": 4}
+                                    },
+                                    {
+                                        "name": "cache_leaf_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 108, "size": 4}
+                                    },
+                                    {
+                                        "name": "cache_size",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 2,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 112, "size": 8}
+                                    },
+                                    {
+                                        "name": "grid_count",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 120, "size": 4}
+                                    },
+                                    {
+                                        "name": "grid_type",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 124, "size": 4}
+                                    },
+                                    {
+                                        "name": "subGridDimLessOne",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 3,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 128, "size": 12}
+                                    },
+                                    {
+                                        "name": "pad3",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 140, "size": 4}
+                                    },
+                                    {
+                                        "name": "subGridDimBits",
+                                        "type": {
+                                            "kind": "vector",
+                                            "elementCount": 3,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            }
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 144, "size": 12}
+                                    },
+                                    {
+                                        "name": "pad4",
+                                        "type": {
+                                            "kind": "scalar",
+                                            "scalarType": "uint32"
+                                        },
+                                        "binding": {"kind": "uniform", "offset": 156, "size": 4}
+                                    }
+                                ]
+                            },
+                            "binding": {"kind": "uniform", "offset": 16, "size": 160}
+                        }
+                    ]
+                },
+                "containerVarLayout": {
+                    "binding": {"kind": "descriptorTableSlot", "index": 0}
+                },
+                "elementVarLayout": {
+                    "type": {
+                        "kind": "struct",
+                        "name": "SparseNanoVdbComputeStatsParams",
+                        "fields": [
+                            {
+                                "name": "blockIdxOffset0",
+                                "type": {
+                                    "kind": "scalar",
+                                    "scalarType": "uint32"
+                                },
+                                "binding": {"kind": "uniform", "offset": 0, "size": 4}
+                            },
+                            {
+                                "name": "blockIdxOffset1",
+                                "type": {
+                                    "kind": "scalar",
+                                    "scalarType": "uint32"
+                                },
+                                "binding": {"kind": "uniform", "offset": 4, "size": 4}
+                            },
+                            {
+                                "name": "blockIdxOffset2",
+                                "type": {
+                                    "kind": "scalar",
+                                    "scalarType": "uint32"
+                                },
+                                "binding": {"kind": "uniform", "offset": 8, "size": 4}
+                            },
+                            {
+                                "name": "blockIdxOffset3",
+                                "type": {
+                                    "kind": "scalar",
+                                    "scalarType": "uint32"
+                                },
+                                "binding": {"kind": "uniform", "offset": 12, "size": 4}
+                            },
+                            {
+                                "name": "nanoVdb",
+                                "type": {
+                                    "kind": "struct",
+                                    "name": "NvFlowSparseNanoVdbParams",
+                                    "fields": [
+                                        {
+                                            "name": "nanovdb_size_without_leaves",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 0, "size": 8}
+                                        },
+                                        {
+                                            "name": "nanovdb_size_with_leaves",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 8, "size": 8}
+                                        },
+                                        {
+                                            "name": "list_tile_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 16, "size": 8}
+                                        },
+                                        {
+                                            "name": "list_upper_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 24, "size": 8}
+                                        },
+                                        {
+                                            "name": "list_lower_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 32, "size": 8}
+                                        },
+                                        {
+                                            "name": "list_leaf_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 40, "size": 8}
+                                        },
+                                        {
+                                            "name": "cache_tile_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 48, "size": 8}
+                                        },
+                                        {
+                                            "name": "cache_upper_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 56, "size": 8}
+                                        },
+                                        {
+                                            "name": "cache_lower_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 64, "size": 8}
+                                        },
+                                        {
+                                            "name": "cache_leaf_offset",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 72, "size": 8}
+                                        },
+                                        {
+                                            "name": "list_tile_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 80, "size": 4}
+                                        },
+                                        {
+                                            "name": "list_upper_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 84, "size": 4}
+                                        },
+                                        {
+                                            "name": "list_lower_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 88, "size": 4}
+                                        },
+                                        {
+                                            "name": "list_leaf_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 92, "size": 4}
+                                        },
+                                        {
+                                            "name": "cache_tile_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 96, "size": 4}
+                                        },
+                                        {
+                                            "name": "cache_upper_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 100, "size": 4}
+                                        },
+                                        {
+                                            "name": "cache_lower_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 104, "size": 4}
+                                        },
+                                        {
+                                            "name": "cache_leaf_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 108, "size": 4}
+                                        },
+                                        {
+                                            "name": "cache_size",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 2,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 112, "size": 8}
+                                        },
+                                        {
+                                            "name": "grid_count",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 120, "size": 4}
+                                        },
+                                        {
+                                            "name": "grid_type",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 124, "size": 4}
+                                        },
+                                        {
+                                            "name": "subGridDimLessOne",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 3,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 128, "size": 12}
+                                        },
+                                        {
+                                            "name": "pad3",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 140, "size": 4}
+                                        },
+                                        {
+                                            "name": "subGridDimBits",
+                                            "type": {
+                                                "kind": "vector",
+                                                "elementCount": 3,
+                                                "elementType": {
+                                                    "kind": "scalar",
+                                                    "scalarType": "uint32"
+                                                }
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 144, "size": 12}
+                                        },
+                                        {
+                                            "name": "pad4",
+                                            "type": {
+                                                "kind": "scalar",
+                                                "scalarType": "uint32"
+                                            },
+                                            "binding": {"kind": "uniform", "offset": 156, "size": 4}
+                                        }
+                                    ]
+                                },
+                                "binding": {"kind": "uniform", "offset": 16, "size": 160}
+                            }
+                        ]
+                    },
+                    "binding": {"kind": "uniform", "offset": 0, "size": 176}
+                }
+            }
+        },
+        {
+            "name": "cacheIn",
+            "binding": {"kind": "descriptorTableSlot", "index": 1},
+            "type": {
+                "kind": "resource",
+                "baseShape": "structuredBuffer",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "uint32"
+                }
+            }
+        },
+        {
+            "name": "nanovdbInOut",
+            "binding": {"kind": "descriptorTableSlot", "index": 2},
+            "type": {
+                "kind": "resource",
+                "baseShape": "structuredBuffer",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "uint32"
+                }
+            }
+        }
+    ],
+    "entryPoints": [
+        {
+            "name": "main",
+            "stage": "compute",
+            "parameters": [
+                {
+                    "name": "dispatchThreadID",
+                    "semanticName": "SV_DISPATCHTHREADID",
+                    "type": {
+                        "kind": "vector",
+                        "elementCount": 3,
+                        "elementType": {
+                            "kind": "scalar",
+                            "scalarType": "uint32"
+                        }
+                    }
+                },
+                {
+                    "name": "groupID",
+                    "semanticName": "SV_GROUPID",
+                    "type": {
+                        "kind": "vector",
+                        "elementCount": 3,
+                        "elementType": {
+                            "kind": "scalar",
+                            "scalarType": "uint32"
+                        }
+                    }
+                }
+            ],
+            "threadGroupSize": [64, 1, 1],
+            "bindings": [
+                {
+                    "name": "paramsIn",
+                    "binding": {"kind": "descriptorTableSlot", "index": 0, "used": 1}
+                },
+                {
+                    "name": "cacheIn",
+                    "binding": {"kind": "descriptorTableSlot", "index": 1, "used": 1}
+                },
+                {
+                    "name": "nanovdbInOut",
+                    "binding": {"kind": "descriptorTableSlot", "index": 2, "used": 1}
+                }
+            ]
+        }
+    ]
+}

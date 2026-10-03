@@ -1,0 +1,123 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Number Component Styles
+ * Modular CSS for Number input widget
+ */
+
+.number-input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.number-input__field {
+  flex: 1;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-md);
+  font-family: 'Courier New', monospace;
+  line-height: var(--line-height-normal);
+  color: var(--input-text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+  outline: none;
+}
+
+.number-input__field::placeholder {
+  color: var(--input-placeholder);
+}
+
+.number-input__field:hover:not(:disabled) {
+  border-color: var(--color-primary-500);
+}
+
+.number-input__field:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.number-input__field:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Spinner Buttons */
+.number-input__spinner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--input-border);
+  border-left: none;
+  border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+  overflow: hidden;
+}
+
+.number-input__spinner-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  padding: 0;
+  background: var(--input-bg);
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 12px;
+  user-select: none;
+}
+
+.number-input__spinner-btn:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.number-input__spinner-btn:active:not(:disabled) {
+  background: var(--color-primary-100);
+}
+
+.number-input__spinner-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size Variants */
+.number-input--sm .number-input__field {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.number-input--sm .number-input__spinner-btn {
+  width: 28px;
+}
+
+.number-input--lg .number-input__field {
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+}
+
+.number-input--lg .number-input__spinner-btn {
+  width: 40px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .number-input--lg .number-input__field {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+  }
+
+  .number-input--lg .number-input__spinner-btn {
+    width: 32px;
+  }
+}

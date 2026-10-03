@@ -1,0 +1,554 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/* ============================================================================
+   Asset Panel - Bottom panel asset browser (Unity/Unreal-inspired)
+   ============================================================================ */
+
+/* ── Container ─────────────────────────────────────────────────── */
+#assets-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    gap: 0;
+}
+
+/* ── Toolbar (filters + search + view controls + import) ──────── */
+.asset-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.15);
+}
+
+.asset-filters {
+    display: flex;
+    gap: 2px;
+}
+
+.asset-filter-btn {
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.asset-filter-btn:hover {
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05);
+}
+
+.asset-filter-btn.active {
+    color: rgba(255,255,255,0.95);
+    background: rgba(107,138,253,0.18);
+    border-color: rgba(107,138,253,0.35);
+}
+
+/* ── Toolbar separator ────────────────────────────────────────── */
+.asset-toolbar-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.08);
+    flex-shrink: 0;
+}
+
+/* ── Search ────────────────────────────────────────────────────── */
+.asset-search {
+    flex: 1;
+    min-width: 100px;
+    position: relative;
+}
+
+.asset-search input {
+    width: 100%;
+    padding: 4px 8px 4px 26px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+}
+
+.asset-search input:focus {
+    border-color: rgba(107,138,253,0.5);
+    background: rgba(0,0,0,0.4);
+}
+
+.asset-search input::placeholder {
+    color: rgba(255,255,255,0.22);
+}
+
+.asset-search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    pointer-events: none;
+}
+
+/* ── View toggle (grid / list) ─────────────────────────────────── */
+.asset-view-toggle {
+    display: flex;
+    gap: 1px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.asset-view-btn {
+    padding: 3px 7px;
+    font-size: 12px;
+    line-height: 1;
+    color: rgba(255,255,255,0.3);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s;
+}
+
+.asset-view-btn:hover {
+    color: rgba(255,255,255,0.6);
+}
+
+.asset-view-btn.active {
+    color: rgba(255,255,255,0.9);
+    background: rgba(107,138,253,0.2);
+}
+
+/* ── Size slider ───────────────────────────────────────────────── */
+.asset-size-slider {
+    width: 60px;
+    flex-shrink: 0;
+    accent-color: rgba(107,138,253,0.8);
+    cursor: pointer;
+}
+
+/* ── Import button ─────────────────────────────────────────────── */
+.asset-import-btn {
+    padding: 4px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    background: rgba(107,138,253,0.25);
+    border: 1px solid rgba(107,138,253,0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.asset-import-btn:hover {
+    background: rgba(107,138,253,0.4);
+    border-color: rgba(107,138,253,0.6);
+}
+
+/* ── Main body: grid area + preview split ──────────────────────── */
+.asset-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── Asset Grid ────────────────────────────────────────────────── */
+.asset-grid-wrap {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px;
+    min-height: 0;
+}
+
+.asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--asset-card-size, 160px), 1fr));
+    gap: 6px;
+}
+
+.asset-grid-wrap.drag-over {
+    background: rgba(107,138,253,0.06);
+    outline: 2px dashed rgba(107,138,253,0.4);
+    outline-offset: -4px;
+}
+
+/* ── List view ─────────────────────────────────────────────────── */
+.asset-grid.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.asset-grid.list-view .asset-card {
+    flex-direction: row;
+    align-items: center;
+    min-height: 0;
+    padding: 4px 10px;
+    border-radius: 3px;
+    gap: 10px;
+}
+
+.asset-grid.list-view .asset-card-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.asset-grid.list-view .asset-card-name {
+    flex: 1;
+    text-align: left;
+    font-size: 11px;
+}
+
+.asset-grid.list-view .asset-card-meta {
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    flex-shrink: 0;
+}
+
+.asset-grid.list-view .asset-card-badge {
+    margin-top: 0;
+}
+
+/* ── Asset Card (grid view) ────────────────────────────────────── */
+.asset-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.asset-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+}
+
+.asset-card.selected {
+    background: rgba(107,138,253,0.1);
+    border-color: rgba(107,138,253,0.45);
+    box-shadow: 0 0 0 1px rgba(107,138,253,0.15);
+}
+
+/* ── Thumbnail area ────────────────────────────────────────────── */
+.asset-card-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(0,0,0,0.2);
+}
+
+/* Type-colored top accent stripe */
+.asset-card-thumb::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 4px 4px 0 0;
+    opacity: 0.7;
+}
+
+.asset-card[data-type="model"] .asset-card-thumb::before  { background: #6b8afd; }
+.asset-card[data-type="texture"] .asset-card-thumb::before { background: #50c878; }
+.asset-card[data-type="audio"] .asset-card-thumb::before   { background: #ffa03c; }
+.asset-card[data-type="script"] .asset-card-thumb::before  { background: #c878ff; }
+.asset-card[data-type="shader"] .asset-card-thumb::before  { background: #ff6b9d; }
+.asset-card[data-type="prefab"] .asset-card-thumb::before  { background: #38bdf8; }
+.asset-card[data-type="scene"] .asset-card-thumb::before   { background: #fbbf24; }
+.asset-card[data-type="data"] .asset-card-thumb::before    { background: #94a3b8; }
+.asset-card[data-type="font"] .asset-card-thumb::before    { background: #a78bfa; }
+
+/* Fallback icon inside thumbnail */
+.asset-card-thumb-icon {
+    font-size: 28px;
+    line-height: 1;
+    opacity: 0.5;
+    z-index: 1;
+}
+
+/* Actual image/canvas preview */
+.asset-card-thumb img,
+.asset-card-thumb canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+/* ── Card name ─────────────────────────────────────────────────── */
+.asset-card-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    line-height: 1.3;
+}
+
+/* ── Type badge ────────────────────────────────────────────────── */
+.asset-card-badge {
+    font-size: 8px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-top: 3px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.asset-card-badge.model   { background: rgba(107,138,253,0.15); color: rgba(140,170,255,0.85); }
+.asset-card-badge.texture { background: rgba(80,200,120,0.15);  color: rgba(120,220,150,0.85); }
+.asset-card-badge.audio   { background: rgba(255,160,60,0.15);  color: rgba(255,185,110,0.85); }
+.asset-card-badge.script  { background: rgba(200,120,255,0.15); color: rgba(210,155,255,0.85); }
+.asset-card-badge.shader  { background: rgba(255,107,157,0.15); color: rgba(255,140,180,0.85); }
+.asset-card-badge.prefab  { background: rgba(56,189,248,0.15);  color: rgba(100,200,250,0.85); }
+.asset-card-badge.scene   { background: rgba(251,191,36,0.15);  color: rgba(255,210,90,0.85);  }
+.asset-card-badge.data    { background: rgba(148,163,184,0.15); color: rgba(170,180,195,0.85); }
+.asset-card-badge.font    { background: rgba(167,139,250,0.15); color: rgba(180,160,255,0.85); }
+
+/* ── Preview pane — HORIZONTAL: canvas LEFT, info RIGHT ───────── */
+.asset-preview-pane {
+    width: 420px;
+    flex-shrink: 0;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: row;
+    background: rgba(6,6,12,0.5);
+    overflow: hidden;
+}
+
+.asset-preview-pane.hidden {
+    display: none;
+}
+
+/* ── Canvas (LEFT side, fills full height) ────────────────────── */
+.asset-preview-canvas-wrap {
+    width: 200px;
+    min-width: 200px;
+    flex-shrink: 0;
+    align-self: stretch;
+    background: radial-gradient(ellipse at 50% 45%, rgba(22,24,40,0.95) 0%, rgba(8,8,16,1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.asset-preview-canvas-wrap canvas,
+.asset-preview-canvas-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    image-rendering: auto;
+}
+
+.asset-preview-canvas-wrap .preview-placeholder {
+    font-size: 48px;
+    opacity: 0.12;
+}
+
+/* ── Info column (RIGHT side: name + path + details) ──────────── */
+.asset-preview-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-left: 1px solid rgba(255,255,255,0.06);
+}
+
+.asset-preview-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    padding: 10px 12px 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.2px;
+}
+
+.asset-preview-path {
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    padding: 2px 12px 8px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.asset-preview-details {
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.asset-preview-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 8px;
+}
+
+.asset-preview-detail-row:last-child {
+    border-bottom: none;
+}
+
+.asset-preview-detail-label {
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 9px;
+    flex-shrink: 0;
+}
+
+.asset-preview-detail-value {
+    color: rgba(255,255,255,0.85);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 10px;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* ── Empty State ───────────────────────────────────────────────── */
+.asset-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 30px 20px;
+    color: rgba(255,255,255,0.25);
+    font-size: 12px;
+    text-align: center;
+    height: 100%;
+}
+
+.asset-empty-icon {
+    font-size: 32px;
+    opacity: 0.3;
+}
+
+.asset-empty-hint {
+    font-size: 10px;
+    color: rgba(255,255,255,0.15);
+}
+
+/* ── Context Menu ──────────────────────────────────────────────── */
+.asset-context-menu {
+    position: fixed;
+    z-index: 10000;
+    min-width: 160px;
+    padding: 4px 0;
+    background: rgba(18,18,26,0.98);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.asset-context-item {
+    padding: 6px 16px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s, color 0.1s;
+}
+
+.asset-context-item:hover {
+    background: rgba(107,138,253,0.2);
+    color: rgba(255,255,255,0.95);
+}
+
+.asset-context-item.danger {
+    color: rgba(255,100,100,0.75);
+}
+
+.asset-context-item.danger:hover {
+    background: rgba(255,60,60,0.15);
+    color: rgba(255,120,120,0.95);
+}
+
+.asset-context-sep {
+    height: 1px;
+    margin: 4px 10px;
+    background: rgba(255,255,255,0.06);
+}
+
+/* ── Status Bar ────────────────────────────────────────────────── */
+.asset-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 10px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.1);
+}
+
+.asset-status-left {
+    display: flex;
+    gap: 12px;
+}
+
+.asset-status-right {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}

@@ -1,0 +1,6 @@
+{
+  "name": "too-many-sections",
+  "expectedCode": 118,
+  "expectedMessageFragment": "too many sections",
+  "size": 571
+}

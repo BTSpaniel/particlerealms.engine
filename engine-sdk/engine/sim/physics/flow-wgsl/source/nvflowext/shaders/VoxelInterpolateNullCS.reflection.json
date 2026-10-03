@@ -1,0 +1,343 @@
+{
+    "parameters": [
+        {
+            "name": "value0",
+            "binding": {"kind": "descriptorTableSlot", "index": 0},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value1",
+            "binding": {"kind": "descriptorTableSlot", "index": 1},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value2",
+            "binding": {"kind": "descriptorTableSlot", "index": 2},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value3",
+            "binding": {"kind": "descriptorTableSlot", "index": 3},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value4",
+            "binding": {"kind": "descriptorTableSlot", "index": 4},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value5",
+            "binding": {"kind": "descriptorTableSlot", "index": 5},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value6",
+            "binding": {"kind": "descriptorTableSlot", "index": 6},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "value7",
+            "binding": {"kind": "descriptorTableSlot", "index": 7},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    }
+                }
+            }
+        },
+        {
+            "name": "weight0",
+            "binding": {"kind": "descriptorTableSlot", "index": 8},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight1",
+            "binding": {"kind": "descriptorTableSlot", "index": 9},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight2",
+            "binding": {"kind": "descriptorTableSlot", "index": 10},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight3",
+            "binding": {"kind": "descriptorTableSlot", "index": 11},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight4",
+            "binding": {"kind": "descriptorTableSlot", "index": 12},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight5",
+            "binding": {"kind": "descriptorTableSlot", "index": 13},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight6",
+            "binding": {"kind": "descriptorTableSlot", "index": 14},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        },
+        {
+            "name": "weight7",
+            "binding": {"kind": "descriptorTableSlot", "index": 15},
+            "type": {
+                "kind": "resource",
+                "baseShape": "texture3D",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "float32"
+                }
+            }
+        }
+    ],
+    "entryPoints": [
+        {
+            "name": "main",
+            "stage": "compute",
+            "parameters": [
+                {
+                    "name": "dispatchThreadID",
+                    "semanticName": "SV_DISPATCHTHREADID",
+                    "type": {
+                        "kind": "vector",
+                        "elementCount": 3,
+                        "elementType": {
+                            "kind": "scalar",
+                            "scalarType": "uint32"
+                        }
+                    }
+                },
+                {
+                    "name": "groupID",
+                    "semanticName": "SV_GROUPID",
+                    "type": {
+                        "kind": "vector",
+                        "elementCount": 3,
+                        "elementType": {
+                            "kind": "scalar",
+                            "scalarType": "uint32"
+                        }
+                    }
+                }
+            ],
+            "threadGroupSize": [32, 1, 1],
+            "bindings": [
+                {
+                    "name": "value0",
+                    "binding": {"kind": "descriptorTableSlot", "index": 0, "used": 1}
+                },
+                {
+                    "name": "value1",
+                    "binding": {"kind": "descriptorTableSlot", "index": 1, "used": 1}
+                },
+                {
+                    "name": "value2",
+                    "binding": {"kind": "descriptorTableSlot", "index": 2, "used": 1}
+                },
+                {
+                    "name": "value3",
+                    "binding": {"kind": "descriptorTableSlot", "index": 3, "used": 1}
+                },
+                {
+                    "name": "value4",
+                    "binding": {"kind": "descriptorTableSlot", "index": 4, "used": 1}
+                },
+                {
+                    "name": "value5",
+                    "binding": {"kind": "descriptorTableSlot", "index": 5, "used": 1}
+                },
+                {
+                    "name": "value6",
+                    "binding": {"kind": "descriptorTableSlot", "index": 6, "used": 1}
+                },
+                {
+                    "name": "value7",
+                    "binding": {"kind": "descriptorTableSlot", "index": 7, "used": 1}
+                },
+                {
+                    "name": "weight0",
+                    "binding": {"kind": "descriptorTableSlot", "index": 8, "used": 1}
+                },
+                {
+                    "name": "weight1",
+                    "binding": {"kind": "descriptorTableSlot", "index": 9, "used": 1}
+                },
+                {
+                    "name": "weight2",
+                    "binding": {"kind": "descriptorTableSlot", "index": 10, "used": 1}
+                },
+                {
+                    "name": "weight3",
+                    "binding": {"kind": "descriptorTableSlot", "index": 11, "used": 1}
+                },
+                {
+                    "name": "weight4",
+                    "binding": {"kind": "descriptorTableSlot", "index": 12, "used": 1}
+                },
+                {
+                    "name": "weight5",
+                    "binding": {"kind": "descriptorTableSlot", "index": 13, "used": 1}
+                },
+                {
+                    "name": "weight6",
+                    "binding": {"kind": "descriptorTableSlot", "index": 14, "used": 1}
+                },
+                {
+                    "name": "weight7",
+                    "binding": {"kind": "descriptorTableSlot", "index": 15, "used": 1}
+                }
+            ]
+        }
+    ]
+}

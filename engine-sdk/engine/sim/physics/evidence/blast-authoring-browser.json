@@ -1,0 +1,228 @@
+{
+  "status": "PASS",
+  "unified": true,
+  "artifacts": {
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+  },
+  "bridgeSources": {
+    "addons/blast/pr_blast_wasm.cpp": "680611d8e7a13bec82f16c3b9e4f99cf98c72a23a305a94cc38cd26ead0ac003",
+    "addons/blast/emscripten_nv_compat.h": "53dbbab9a1ff899e41958ff81b8d838dd7d6800c9bb926400162c86b1523a787",
+    "addons/blast/emscripten_stress_device.h": "0b24bcf9980f1a3830eb828f52689b52868c74c7e7f3b1295902f74ba4ad7628",
+    "addons/blast/emscripten_stress_intrinsics.h": "24261a2f945f46e3adb5ce7104b89a1bdd6ddf6b7a72059b8198bfa89ed12291",
+    "addons/blast/tr1/type_traits": "dd134f07a312cd38a5ee494b222baf83f5313aef7df9f7f6c2fa6a366c6fb6be",
+    "addons/blast/prepare_stress_sources.py": "344e0893b0ce31018e9a01bd16ead6838d66b8fe1b66699b8b9c5cd84f8c3d16",
+    "addons/blast/pr_blast_memory.h": "9d72f0c9cb3961eac345b5e11720bbea083c62dcad1baee80aaffd66b15e956d",
+    "addons/blast/pr_blast_authoring.cpp": "2a91c6dd5409eb2abd8358078bbcab5e341b6340a4bd364c6917eb0ebb932fe8",
+    "addons/blast/prepare_authoring_sources.py": "acbd52da8a798fd232422feb36ed85846954e43467f729434a895f8616fbea9d"
+  },
+  "servedSourceHashes": {
+    "/authoring-runtime/physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "/authoring-runtime/physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
+    "/tests/physics/blast-authoring-acceptance.js": "64fdc515a38eddf642f7bd7001af72b063971532f1858e996c83b44d66ed896d",
+    "/engine/sim/destruction/BlastAuthoring.js": "c02c8d100a3816aab3d83e6666e6c55ed1691d3eabf4b22bdc5e8ea80e083783",
+    "/engine/sim/destruction/BlastFamily.js": "b347c5d36c88ad3a83704ca1915e8698d6a93bb8cdba3f38eb7492adc830efc3",
+    "/engine/sim/destruction/BlastGeometry.js": "f12e22646a2612bd063257eb87974eddbfe2543bb7b09342da1856b8fcdf1c7b"
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "browser": "153.0.8010.48",
+  "numerical": {
+    "passed": true,
+    "abi": 1,
+    "backend": "NVIDIA ExtAuthoring CPU/WASM",
+    "cases": [
+      {
+        "name": "convex-voronoi-volume",
+        "passed": true,
+        "detail": {
+          "symmetric": [
+            {
+              "position": [
+                -0.5,
+                1.6763806343078613e-08,
+                9.934107758624577e-09
+              ],
+              "volume": 4
+            },
+            {
+              "position": [
+                0.5,
+                -2.4835269396561444e-09,
+                7.450580596923828e-09
+              ],
+              "volume": 4
+            }
+          ],
+          "offsetVolumes": [
+            3,
+            5
+          ],
+          "obliqueVertices": [
+            60,
+            60
+          ]
+        }
+      },
+      {
+        "name": "closed-chunk-meshes",
+        "passed": true,
+        "detail": {
+          "totalTriangles": 120,
+          "interiorTriangles": 36
+        }
+      },
+      {
+        "name": "bond-area-normal-centroid",
+        "passed": true,
+        "detail": {
+          "offsetInterface": [
+            4,
+            0.25,
+            -2.7755575615628914e-17,
+            0,
+            1,
+            -0.0,
+            -0.0
+          ],
+          "obliqueNormal": [
+            0.8728715777397156,
+            0.4364358186721802,
+            0.2182178646326065
+          ]
+        }
+      },
+      {
+        "name": "authored-family-fracture",
+        "passed": true,
+        "detail": {
+          "partialAreaM2": 3,
+          "groups": [
+            0,
+            1
+          ],
+          "replayGroups": [
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "name": "authored-family-stress",
+        "passed": true,
+        "detail": {
+          "elastic": {
+            "backend": "cpu-wasm",
+            "solver": "NVIDIA ExtStress scalar",
+            "frame": 1,
+            "overstressed": 0,
+            "errorLinear": 0.0001787130895536393,
+            "errorAngular": 0.0001787130895536393,
+            "converged": true,
+            "solverBonds": 1,
+            "damageCadence": "per native update",
+            "healthUnits": "m2",
+            "stressUnits": "Pa",
+            "remainingAreasM2": [
+              4
+            ],
+            "groups": [
+              0,
+              0
+            ]
+          },
+          "partial": {
+            "backend": "cpu-wasm",
+            "solver": "NVIDIA ExtStress scalar",
+            "frame": 2,
+            "overstressed": 1,
+            "errorLinear": 0.00031274795765057206,
+            "errorAngular": 0.00013403485354501754,
+            "converged": true,
+            "solverBonds": 1,
+            "damageCadence": "per native update",
+            "healthUnits": "m2",
+            "stressUnits": "Pa",
+            "remainingAreasM2": [
+              1.9999988079071045
+            ],
+            "groups": [
+              0,
+              0
+            ]
+          },
+          "split": {
+            "backend": "cpu-wasm",
+            "solver": "NVIDIA ExtStress scalar",
+            "frame": 3,
+            "overstressed": 1,
+            "errorLinear": 0.0005026307771913707,
+            "errorAngular": 0.00036859585088677704,
+            "converged": true,
+            "solverBonds": 1,
+            "damageCadence": "per native update",
+            "healthUnits": "m2",
+            "stressUnits": "Pa",
+            "remainingAreasM2": [
+              0
+            ],
+            "groups": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "name": "deterministic-repeat",
+        "passed": true,
+        "detail": {
+          "chunks": 2,
+          "bonds": 1,
+          "multiChunks": 4,
+          "multiBonds": 6,
+          "translation": [
+            13,
+            -7,
+            4
+          ]
+        }
+      },
+      {
+        "name": "raw-abi-admission",
+        "passed": true,
+        "detail": {
+          "pointerBounds": true,
+          "finiteGeometry": true,
+          "watertight": true,
+          "convexOnly": true,
+          "explicitSites": true
+        }
+      },
+      {
+        "name": "cleanup",
+        "passed": true,
+        "detail": {
+          "liveResults": 0,
+          "liveFamilies": 0
+        }
+      }
+    ]
+  },
+  "blastAuthoringAbi": 1,
+  "artifactsAfter": {
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+  },
+  "bridgeSourcesAfter": {
+    "addons/blast/pr_blast_wasm.cpp": "680611d8e7a13bec82f16c3b9e4f99cf98c72a23a305a94cc38cd26ead0ac003",
+    "addons/blast/emscripten_nv_compat.h": "53dbbab9a1ff899e41958ff81b8d838dd7d6800c9bb926400162c86b1523a787",
+    "addons/blast/emscripten_stress_device.h": "0b24bcf9980f1a3830eb828f52689b52868c74c7e7f3b1295902f74ba4ad7628",
+    "addons/blast/emscripten_stress_intrinsics.h": "24261a2f945f46e3adb5ce7104b89a1bdd6ddf6b7a72059b8198bfa89ed12291",
+    "addons/blast/tr1/type_traits": "dd134f07a312cd38a5ee494b222baf83f5313aef7df9f7f6c2fa6a366c6fb6be",
+    "addons/blast/prepare_stress_sources.py": "344e0893b0ce31018e9a01bd16ead6838d66b8fe1b66699b8b9c5cd84f8c3d16",
+    "addons/blast/pr_blast_memory.h": "9d72f0c9cb3961eac345b5e11720bbea083c62dcad1baee80aaffd66b15e956d",
+    "addons/blast/pr_blast_authoring.cpp": "2a91c6dd5409eb2abd8358078bbcab5e341b6340a4bd364c6917eb0ebb932fe8",
+    "addons/blast/prepare_authoring_sources.py": "acbd52da8a798fd232422feb36ed85846954e43467f729434a895f8616fbea9d"
+  }
+}

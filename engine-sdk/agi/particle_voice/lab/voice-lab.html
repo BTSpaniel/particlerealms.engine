@@ -1,0 +1,1204 @@
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ParticleVoice — Speech Studio</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./voice-lab.css" />
+  </head>
+  <body>
+    <main class="studio-shell">
+      <header class="masthead">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M5 11v6m6-11v16m6-18v20m6-14v8" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg></span>
+          <div><div class="brand-name">ParticleVoice</div><div class="brand-caption">Speech studio</div></div>
+        </div>
+        <div class="masthead-meta">
+          <span class="badge"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" /><path d="M5 13h6M8 10.5V13" stroke="currentColor" stroke-linecap="round" /></svg>On-device synthesis</span>
+          <span class="badge experimental">Experimental voice</span>
+        </div>
+      </header>
+
+      <section class="welcome" aria-labelledby="studio-heading">
+        <div>
+          <span class="eyebrow">Speech Studio</span>
+          <h1 id="studio-heading">Listen. Adjust. Compare.</h1>
+          <p>Preview freely, test pronunciation, or compare a saved voice change.</p>
+        </div>
+      </section>
+
+      <div class="studio-toolbar">
+        <nav class="studio-nav" role="tablist" aria-label="Studio activity">
+          <button id="view-preview" role="tab" data-studio-view="preview" aria-controls="studio-preview" aria-selected="true">Preview</button>
+          <button id="view-listen" role="tab" data-studio-view="listen" aria-controls="studio-listen" aria-selected="false" tabindex="-1">Listening tests</button>
+          <button id="view-compare" role="tab" data-studio-view="compare" aria-controls="studio-compare" aria-selected="false" tabindex="-1">Compare changes</button>
+          <button id="view-advanced" role="tab" data-studio-view="advanced" aria-controls="studio-advanced" aria-selected="false" tabindex="-1">Advanced</button>
+        </nav>
+        <div class="audio-bar">
+          <p id="studio-status" role="status" aria-live="polite">Ready to preview. Audio starts when you choose Play.</p>
+          <div class="audio-controls" aria-label="Audio controls">
+            <button id="start" class="secondary">Enable audio</button>
+            <button id="stop" class="secondary" disabled>Stop audio</button>
+          </div>
+        </div>
+        <p id="studio-session-link" hidden><span>A listening session is still open.</span> <button class="quiet" id="studio-return-session">Return to session</button></p>
+      </div>
+
+      <section id="studio-preview" role="tabpanel" aria-labelledby="view-preview">
+        <div class="view-intro"><h2>Hear the voice. Try a change.</h2><p>Play your own text, adjust the voice, then preview the same words again.</p></div>
+        <div class="studio-grid">
+      <section class="practice surface" aria-labelledby="practice-heading">
+      <div class="practice-heading">
+        <div><span class="eyebrow">Preview text</span><h2 id="practice-heading">What should Navi say?</h2></div>
+        <div class="tabs" role="tablist" aria-label="Speech practice mode">
+          <button id="tab-neural" role="tab" aria-selected="true" aria-controls="panel-neural">Text to speech</button>
+          <button id="tab-manual" role="tab" aria-selected="false" aria-controls="panel-manual">Manual articulators</button>
+        </div>
+      </div>
+      <section class="panel" id="panel-neural">
+        <div class="row text-practice">
+          <input type="text" id="text" value="Hello there, my name is Zyra." aria-label="Text to speak" />
+          <button id="speak">Enable audio &amp; play</button>
+        </div>
+        <div class="preview-examples" role="group" aria-label="Preview examples">
+          <span>Try:</span>
+          <button class="secondary" data-preview-text="Hello there, my name is Zyra.">Greeting</button>
+          <button class="secondary" data-preview-text="The key is on the table.">A short sentence</button>
+          <button class="secondary" data-preview-text="Keep the cool coat.">K sounds</button>
+        </div>
+        <p id="preview-help">Choose an example or enter your own words, then Play. This preview is unscored.</p>
+        <div class="row letter-practice">
+          <span>Or explore a letter</span>
+          <button id="abcs" class="secondary" disabled>Say ABCs</button>
+          <select id="letter" aria-label="Letter to practice" disabled>
+            <option value="">Test letter…</option>
+          </select>
+          <button id="say-letter" class="secondary" disabled>Say letter</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-manual" hidden>
+        <div class="sliders" id="sliders"></div>
+        <div class="row" style="margin-top:12px">
+          <button id="phonate" disabled>Hold pose (0.6s)</button>
+          <button id="gesture" class="secondary" disabled>Closure → release gesture</button>
+        </div>
+      </section>
+
+      </section>
+
+      <aside class="tuning-card surface" aria-labelledby="tuning-heading">
+        <div class="tuning-heading">
+          <div><span class="eyebrow">Voice settings</span><h2 id="tuning-heading">Shape the voice.</h2></div>
+          <svg class="tuning-glyph" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 5v22M16 5v22M25 5v22" stroke="currentColor" stroke-width="1.5" /><path d="M3 12h8M12 21h8M21 10h8" stroke="currentColor" stroke-width="4" stroke-linecap="round" /></svg>
+        </div>
+        <p>Small changes. Your ears decide.</p>
+        <section id="voice-tuning" aria-label="Simple voice tuning"></section>
+      </aside>
+
+        </div>
+        <div id="voice-tone-comparison"></div>
+      </section>
+      <section id="studio-listen" role="tabpanel" aria-labelledby="view-listen" hidden>
+        <div class="view-intro"><h2>Help find the sounds that need work.</h2><p>Listen and answer one item at a time. Your results are saved here; training changes require a separate review.</p></div>
+      <section class="lesson surface" id="alphabet-lesson" aria-labelledby="lesson-heading">
+        <div class="card-heading">
+          <div><span class="eyebrow">01 / The listening classroom</span><h2 id="lesson-heading">Which letter do you hear?</h2></div>
+          <div class="lesson-count" id="lesson-count" aria-label="26 letters"><strong id="lesson-count-value">26</strong><span id="lesson-count-unit">letters</span></div>
+        </div>
+        <div class="lesson-picker">
+          <label for="lesson-mode">Choose a listening test</label>
+          <select id="lesson-mode" aria-describedby="lesson-description">
+            <option value="alphabet">Letters · 26 sounds</option>
+            <option value="words">Word pronunciation · 12 words</option>
+            <option value="contrasts">Sound pairs · 12 pairs</option>
+            <option value="sentences">Short sentences · 10 sentences</option>
+            <option value="balanced">Balanced contrasts · 24 sounds</option>
+            <option value="blending">Words into sentences · 12 trials</option>
+            <option value="generated">Fresh sentences · 12 sentences</option>
+            <option value="storylets">Storylet scenes · 6 scenes</option>
+          </select>
+        </div>
+        <p class="lesson-intro" id="lesson-description">One sound at a time. Listen, choose your answer, then discover the letter. There’s no rush, and replays are always welcome.</p>
+        <div id="lesson-generated-settings" class="lesson-generated-settings" hidden>
+          <label for="lesson-session-type">How would you like to listen?</label>
+          <select id="lesson-session-type"><option value="practice">Practice · feedback and optional replay</option><option value="evaluation">Evaluation · one listen, feedback at the end</option></select>
+          <label for="lesson-seed">Repeatable test number (optional)</label>
+          <input id="lesson-seed" type="text" inputmode="numeric" maxlength="10" placeholder="Leave blank for a new selection" aria-describedby="lesson-generated-help" />
+          <p id="lesson-generated-help">Record your first answer before replaying. Each block keeps its wording and settings fixed. Sentence and scene evaluation use separate wording; contrast and blending targets are shared. Scores from different modes stay separate.</p>
+          <button id="lesson-warmup" type="button" class="secondary" disabled>Try an unscored example</button>
+          <p id="lesson-warmup-status" role="status"></p>
+        </div>
+        <div class="lesson-path" id="lesson-render-settings" hidden>
+          <label for="lesson-render-mode">Pronunciation path</label>
+          <select id="lesson-render-mode" aria-describedby="lesson-render-help"><option value="text">Normal words</option><option value="explicit">Reviewed sounds</option></select>
+          <p id="lesson-render-help">Normal words checks spelling and speech together. Reviewed sounds bypasses spelling to focus on the voice.</p>
+        </div>
+        <button id="lesson-enable-audio">Enable audio to begin</button>
+        <div class="lesson-setup">
+          <input id="lesson-listener" type="text" maxlength="80" aria-label="Optional classroom listener label" placeholder="Your session label (optional)" />
+          <button id="lesson-start" aria-describedby="lesson-session-note" disabled>Start new lesson</button>
+        </div>
+        <p id="lesson-action-status" role="status" aria-live="polite"></p>
+        <details id="lesson-repeat-settings">
+          <summary>Repeat targets or work on missed answers</summary>
+          <p>Use your last lesson here, or paste an earlier results JSON after updating the voice. Repeating holds the targets and choices steady; missed practice keeps only previously wrong or unclear answers. Skipped items are excluded.</p>
+          <label for="lesson-baseline-json">Earlier practice report (optional)</label>
+          <textarea id="lesson-baseline-json" rows="3" maxlength="2000000" spellcheck="false" placeholder="Paste the complete results JSON"></textarea>
+          <button id="lesson-load-baseline" class="secondary">Load previous results</button>
+          <p id="lesson-baseline-status" role="status" aria-live="polite">Finish a lesson or load a report to enable repeat practice.</p>
+          <div class="row">
+            <button id="lesson-repeat" class="secondary" disabled>Repeat answered targets</button>
+            <button id="lesson-missed" class="secondary" disabled>Practice missed targets</button>
+            <button id="lesson-adaptive" class="secondary" disabled>New practice for missed sounds</button>
+          </div>
+          <p>New practice for missed sounds creates balanced contrasts, or focused scenes when Storylet scenes is selected. Repeated listening and feedback can help recognition. Compare the same targets, then use fresh listening evidence to judge whether the voice improved. Completed results are saved in this browser for experiments; nothing is uploaded.</p>
+        </details>
+        <div class="listening-stage" id="lesson-stage" hidden>
+          <p id="lesson-progress" role="status" aria-live="polite">Enable audio, then start your lesson.</p>
+          <button id="lesson-play" disabled>Play sound</button>
+          <p class="listen-hint" id="lesson-answer-hint">Listen first. Your choices appear after the sound.</p>
+          <div class="lesson-secondary">
+            <button id="lesson-skip" class="quiet" disabled>Skip (unscored)</button>
+            <button id="lesson-end" class="quiet" disabled>End incomplete</button>
+          </div>
+        </div>
+        <div id="lesson-listener-feedback" hidden></div>
+        <div id="lesson-options" role="group" aria-label="Which letter did you hear?" hidden></div>
+        <form id="lesson-answer-form" hidden>
+          <label for="lesson-answer">Type the words you heard</label>
+          <textarea id="lesson-answer" maxlength="2000" rows="2" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Write the words you understood. It is OK to miss some." disabled></textarea>
+          <div class="row">
+            <button id="lesson-submit" type="submit" disabled>Record my answer</button>
+            <button id="lesson-unclear" type="button" class="secondary" disabled>I couldn’t tell</button>
+          </div>
+        </form>
+        <div id="lesson-response-review" hidden>
+          <p id="lesson-initial-status" role="status"></p>
+          <div id="lesson-comprehension-field" hidden>
+            <label id="lesson-comprehension-question" for="lesson-comprehension">What happened?</label>
+            <select id="lesson-comprehension"><option value="">Choose an answer</option></select>
+            <p>Story understanding is scored separately from the words you heard.</p>
+          </div>
+          <button id="lesson-keep-answer" type="button" class="secondary" hidden disabled>Keep my answer and continue</button>
+        </div>
+        <p id="lesson-feedback" aria-live="polite"></p>
+        <div id="lesson-more-feedback-host" hidden></div>
+        <button id="lesson-next" hidden disabled>Next sound</button>
+        <div id="lesson-results" hidden>
+          <h3>Your lesson results</h3>
+          <p id="lesson-summary"></p>
+          <div id="lesson-measures"></div>
+          <details id="lesson-feedback-summary" hidden>
+            <summary>Your sound feedback</summary>
+            <p>Use these observations alongside correctness to choose sounds to inspect. Each rating and problem report keeps its own timing.</p>
+            <div data-feedback-results></div>
+          </details>
+          <div class="row">
+            <button id="lesson-audio-download" disabled>Download WAVs + results</button>
+            <button id="lesson-copy" disabled>Copy results JSON</button>
+            <button id="lesson-download" class="secondary" disabled>Download JSON</button>
+          </div>
+          <p id="lesson-copy-status" role="status" aria-live="polite"></p>
+          <details><summary>View complete results JSON</summary>
+          <label for="lesson-json">Complete report for manual copying</label>
+          <textarea id="lesson-json" readonly spellcheck="false"></textarea>
+          </details>
+        </div>
+        <details class="lesson-help"><summary>How practice, replays, and saved results work</summary><p class="lesson-footnote" id="lesson-session-note"><strong>Honest answers help.</strong> “I couldn’t tell” is always available. Practice allows replays and reveals answers after submission; evaluation allows one completed play and reveals results at the end. New lessons are shuffled; repeat practice keeps the recorded order. Z is “zee.” Completed reports are saved locally for experiments. Download JSON for a separate copy; nothing is uploaded. These original practice activities assess Navi’s output; classroom scores are separate from the advanced listening gates.</p></details>
+      </section>
+
+        <p id="lesson-audio-status" class="audio-archive-status" role="status" aria-live="polite">Test audio will save here automatically.</p>
+        <details id="saved-test-audio">
+          <summary>Saved tests · WAV audio and results</summary>
+          <p>Keep the generated clips alongside your answers, voice settings, and playback history. WAVs contain the model output; they do not record your microphone or speakers.</p>
+          <label for="saved-audio-select">Saved test</label>
+          <div class="row">
+            <select id="saved-audio-select" disabled><option value="">No saved audio yet</option></select>
+            <button id="saved-audio-download" disabled>Download WAVs + results</button>
+            <button id="saved-audio-delete" class="secondary" disabled>Delete saved test</button>
+          </div>
+          <div id="saved-audio-delete-confirmation" hidden>
+            <p>Delete this test’s saved audio and report from this browser? Download a copy first if you want to keep it.</p>
+            <button id="saved-audio-confirm-delete" class="secondary">Delete this saved test</button>
+            <button id="saved-audio-cancel-delete" class="secondary">Keep it</button>
+          </div>
+          <p>Up to 32 tests and 512 MiB of audio stay locally. Download a backup, then delete old tests to free space. Older JSON-only reports cannot recover audio that was never saved. Downloads unlock after you finish or end the current listening test.</p>
+        </details>
+      </section>
+      <section id="studio-compare" role="tabpanel" aria-labelledby="view-compare" hidden>
+      <section id="voice-experiments" class="surface" aria-label="Saved voice experiments"></section>
+
+      </section>
+
+      <section class="advanced-section" id="studio-advanced" role="tabpanel" aria-labelledby="view-advanced" hidden>
+      <div class="section-divider"><h2 id="advanced-heading">Under the hood</h2><p>Pronunciation tools, careful measurements, and deeper listening.</p></div>
+
+      <details id="listening-methods">
+        <summary>Why words, sound pairs, and sentences?</summary>
+        <p>Speech assessments use single words and connected speech because a sound can be clear on its own and harder to understand in a sentence. They also check sounds at the beginning, middle, and end of words. Listening tasks can offer choices or ask the listener to supply what they heard.</p>
+        <p>These short, original activities adapt those formats for listening to Navi. Word and pair scores measure choices; sentence scores count word edits, including extra and missing words. They do not score a child, diagnose a speech disorder, or measure individual phonemes directly.</p>
+        <p>For focused practice, start with sound pairs, check familiar words, then try sentences. A correct word does not establish that the same sound is clear in connected speech. Letter names are a separate exercise. Repeat missed targets when needed; progression is your choice, not an automatic clinical score.</p>
+        <p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4987026/" target="_blank" rel="noopener noreferrer">Research on variability in children’s speech intelligibility scores</a> found that listeners could improve on repeated presentations of the same speech. Our repeat reports compare the same targets and identify unchanged generated audio when available; practice gains alone do not prove an acoustic repair.</p>
+        <p>Sources: <a href="https://www.asha.org/practice-portal/clinical-topics/articulation-and-phonology/" target="_blank" rel="noopener noreferrer">ASHA: speech sound assessment</a> and <a href="https://www.asha.org/practice-portal/clinical-topics/hearing-loss-in-children/" target="_blank" rel="noopener noreferrer">ASHA: children’s speech perception assessment</a>.</p>
+      </details>
+
+      <details id="voice-runtime">
+        <summary>Voice configuration and playback evidence · <span id="voice-runtime-state">not-started</span></summary>
+        <p>Values come from this lab's active model and audio output. Null means unavailable, not a default. Queued audio is not completed playback; drained audio is not proof of intelligibility. Text playback starts with the first ready sentence while later sentences are generated. Speaking speed is unchanged; startup and GPU readback timings appear here.</p>
+        <pre id="voice-runtime-config">Audio has not been initialized.</pre>
+        <pre id="voice-runtime-diagnostics" role="status" aria-live="polite">No synthesis or playback has started.</pre>
+      </details>
+
+      <details id="speech-diagnostics">
+        <summary>Pronunciation diagnostics and reviewed overrides</summary>
+        <p>Inspect the pronunciation used by Speak or the selected letter. Playback shows the latest rendered unit and its timing. Compare explicit phones through the same tract to separate spelling errors from articulation problems.</p>
+        <div class="row">
+          <button id="inspect-text" class="secondary">Inspect text above</button>
+          <button id="inspect-letter" class="secondary">Inspect selected letter</button>
+        </div>
+        <pre id="pronunciation-trace" aria-live="polite">No pronunciation inspected.</pre>
+        <div class="row">
+          <input id="explicit-phones" type="text" value="N AA2 V IY | EH2 K OW" aria-label="Explicit diagnostic phonemes" maxlength="16384" />
+          <button id="explicit-speak" disabled>Speak explicit phones</button>
+        </div>
+        <p>Use uppercase phone symbols; 2 = primary stress, 1 = secondary, 0 = unstressed. Separate words with | (no added pause). A is EY2, not AA2.</p>
+        <div class="row">
+          <input id="override-word" type="text" value="navi" maxlength="64" aria-label="Word pronunciation to override" />
+          <input id="override-phones" type="text" value="N AA2 V IY" maxlength="512" aria-label="Reviewed word phonemes" />
+          <button id="override-preview" class="secondary">Validate candidate</button>
+        </div>
+        <div class="row">
+          <label><input id="override-reviewed" type="checkbox" /> I reviewed this pronunciation</label>
+          <button id="override-apply">Apply for this session</button>
+          <button id="override-clear" class="secondary">Clear overrides</button>
+        </div>
+        <p id="diagnostic-status" role="status">Overrides are local to this lab session and are never learned automatically from a conversation.</p>
+      </details>
+
+      <details id="listening-evaluation">
+        <summary>Blind listening evaluation: 20 minimal pairs + 50 held-out sentences</summary>
+        <p>Targets stay hidden until you submit. Playback must finish before answering. Do not use this held-out corpus for tuning. No results exist until a person listens and answers. Proposed gates: 85% pairs, 90% word recognition; one listener is not a production-readiness claim.</p>
+        <div class="row">
+          <input id="evaluation-listener" type="text" maxlength="80" aria-label="Listener label for exported report" placeholder="Listener label (no personal details needed)" />
+          <select id="evaluation-mode" aria-label="Minimal pair render path"><option value="text">Text pipeline pairs</option><option value="explicit">Explicit-phone pairs (isolate articulation)</option></select>
+          <button id="evaluation-start" disabled>Start new evaluation</button>
+        </div>
+        <p id="evaluation-progress" role="status">No listening evidence has been recorded.</p>
+        <div class="row">
+          <button id="evaluation-play" disabled>Play hidden trial</button>
+          <button id="evaluation-skip" class="secondary" disabled>Skip (unscored)</button>
+          <button id="evaluation-end" class="secondary" disabled>End incomplete</button>
+        </div>
+        <div id="evaluation-listener-feedback" hidden></div>
+        <div id="evaluation-options" class="row"></div>
+        <div class="row">
+          <input id="evaluation-answer" type="text" maxlength="2000" aria-label="What you heard" placeholder="Type what you heard" disabled />
+          <button id="evaluation-submit" disabled>Record answer and next</button>
+        </div>
+        <p id="evaluation-feedback" aria-live="polite"></p>
+        <div id="evaluation-more-feedback-host" hidden></div>
+        <pre id="evaluation-report"></pre>
+        <button id="evaluation-export" class="secondary" disabled>Export local results JSON</button>
+        <button id="evaluation-audio-download" disabled>Download WAVs + results</button>
+        <p id="evaluation-audio-status" class="audio-archive-status" role="status"></p>
+      </details>
+
+      <details class="airflow-details">
+        <summary>Airflow snapshots from the voice box</summary>
+        <div class="airflow-heading">
+          <p>Measured solver snapshots from the latest rendered speech unit, not a live playback waveform.</p>
+          <span class="checkbox"><input type="checkbox" id="viz" checked /><label for="viz">Visualization</label></span>
+        </div>
+        <canvas id="scope" width="1040" height="150"></canvas>
+        <p>Text uses a dictionary and spelling rules; manual mode drives articulators directly. Both use the same <code>renderPhysiology()</code> path. No new speech service or pretrained model is used.</p>
+      </details>
+      </section>
+
+      <details class="session-log"><summary>Session details</summary><div id="log">Ready when you are. Choose <strong>Play</strong> to enable sound.</div></details>
+      <footer class="studio-footer"><span><strong>Made of particles. Shaped by listening.</strong></span><span>Experimental synthesis · Local session · No automatic training</span></footer>
+    </main>
+
+    <script type="module">
+      import { GpuDevice } from '/engine/core/gpu/GpuDevice.js';
+      import { ParticleVoiceModel } from '/agi/particle_voice/model/ParticleVoiceModel.js';
+      import { VoicePlayback } from '/agi/particle_voice/streaming/VoicePlayback.js';
+      import { PolyphaseResampler } from '/agi/particle_voice/streaming/PolyphaseResampler.js';
+      import { G2PModel, textToPhonemeSequence } from '/agi/particle_voice/frontend/G2PModel.js';
+      import { normalizeText } from '/agi/particle_voice/frontend/TextNormalizer.js';
+      import { PronunciationLexicon, LETTER_NAMES } from '/agi/particle_voice/frontend/PronunciationLexicon.js';
+      import {
+        ManualArticulator, POSE_CONTROLS, DEFAULT_POSE, normalizePose,
+      } from '/agi/particle_voice/lab/ManualArticulator.js';
+      import { channelSeries } from '/agi/particle_voice/articulatory/TractStateSnapshot.js';
+      import { installVoiceLabDiagnostics, voiceLabConfiguration } from '/agi/particle_voice/lab/VoiceLabDiagnostics.js';
+      import { createVoiceLabTuningSnapshot, mountVoiceLabTuning } from '/agi/particle_voice/lab/VoiceLabTuning.js';
+      import { VoiceExperimentStore } from '/agi/particle_voice/lab/VoiceExperimentStore.js';
+      import { VoiceExperimentRunner } from '/agi/particle_voice/lab/VoiceExperimentRunner.js';
+      import { mountVoiceExperimentPanel } from '/agi/particle_voice/lab/VoiceExperimentPanel.js';
+      import { VoiceLessonAudioArchive } from '/agi/particle_voice/lab/VoiceLessonAudioArchive.js';
+      import { mountVoiceLessonAudioPanel } from '/agi/particle_voice/lab/VoiceLessonAudioPanel.js';
+      import { mountVoiceTonePanel } from '/agi/particle_voice/lab/VoiceTonePanel.js';
+
+      const el = (id) => document.getElementById(id);
+      const logEl = el('log');
+      const log = (html) => {
+        logEl.innerHTML = html;
+        const firstLine = logEl.innerText.split(/\n| — /)[0];
+        el('studio-status').textContent = firstLine;
+        el('studio-status').dataset.state = logEl.querySelector('.bad') ? 'error' : 'info';
+      };
+
+      const VISUAL_FRAMES_PER_CHUNK = 8;
+      const WORKLET_URL = new URL('/agi/particle_voice/worklet/ParticleVoiceProcessor.js', location.href).href;
+
+      /**
+       * Own the complete lab graph as one revocable unit. The model only
+       * borrows the wrapper's raw GPUDevice; this controller remains the sole
+       * owner of the GpuDevice wrapper and retires it after every dependent.
+       * Dependency seams keep the lifecycle executable without real GPU/audio
+       * hardware in the focused browser test.
+       */
+      function createVoiceLabRuntime(dependencies = {}) {
+        const deps = {
+          createGpuDevice: (options) => GpuDevice.create(options),
+          createModel: (device, options) => new ParticleVoiceModel(device, options),
+          createManual: (options) => new ManualArticulator(options),
+          createAudioContext: () => {
+            const AudioContextCtor = globalThis.AudioContext ?? globalThis.webkitAudioContext;
+            if (!AudioContextCtor) throw new Error('Web Audio is unavailable in this browser.');
+            return new AudioContextCtor({ latencyHint: 'interactive' });
+          },
+          addWorkletModule: (context, url) => context.audioWorklet.addModule(url),
+          createPlayback: (options) => new VoicePlayback(options),
+          createWorkletNode: (context, options) => new AudioWorkletNode(
+            context,
+            'particle-voice-processor',
+            options,
+          ),
+          connectNode: (node, destination) => node.connect(destination),
+          resumeAudioContext: (context) => context.resume(),
+          ...dependencies,
+        };
+
+        let activeGraph = null;
+        let pendingGraph = null;
+        let startPromise = null;
+        let destroyPromise = null;
+        let lifecycleGeneration = 0;
+        let destroyed = false;
+
+        const modelOptions = (options, previous = null) => {
+          const prior = previous?.config ?? {};
+          const resolved = { ...prior, visualFramesPerChunk: options.visualFramesPerChunk ?? prior.visualFramesPerChunk ?? 0 };
+          if (previous?.g2p) resolved.g2p = previous.g2p;
+          const tuning = options.tuning ? createVoiceLabTuningSnapshot(options.tuning)
+            : options.voicePreset !== undefined ? createVoiceLabTuningSnapshot(undefined, options.voicePreset) : null;
+          if (previous || tuning) {
+            resolved.prosodyPlanner = undefined;
+            resolved.articulationHead = undefined;
+            resolved.prosodyConfig = { ...previous?.prosody?.config };
+            resolved.articulationConfig = { ...previous?.articulation?.config };
+          }
+          if (tuning) {
+            resolved.voicePreset = tuning.voicePreset;
+            Object.assign(resolved, tuning.actual.model);
+            Object.assign(resolved.prosodyConfig, tuning.actual.prosody);
+            Object.assign(resolved.articulationConfig, tuning.actual.articulation);
+          }
+          return resolved;
+        };
+        const manualOptions = (model) => ({ sampleRate: model.config.sampleRate,
+          numSections: model.config.numSections, lfShape: model.articulation?.config ?? {} });
+
+        const cleanupGraph = (graph) => {
+          if (!graph) return Promise.resolve();
+
+          // Snapshot-and-null first: pagehide may clean a partial candidate,
+          // and a resource acquired after that revocation must be eligible for
+          // a later exact cleanup without touching an earlier snapshot twice.
+          const playback = graph.playback;
+          const node = graph.node;
+          const audioContext = graph.audioContext;
+          const model = graph.model;
+          const gpuDevice = graph.gpuDevice;
+          graph.playback = null;
+          graph.node = null;
+          graph.audioContext = null;
+          graph.manual = null;
+          graph.model = null;
+          graph.gpuDevice = null;
+
+          // Invoke all teardown operations synchronously and in dependency
+          // order. AudioContext.close() is asynchronous, but starting it must
+          // not delay model/device retirement during pagehide.
+          try { playback?.cancel?.(); } catch (error) { console.warn('Voice Lab playback cancel failed', error); }
+          try { playback?.destroy?.(); } catch (error) { console.warn('Voice Lab playback destroy failed', error); }
+          try { node?.disconnect?.(); } catch (error) { console.warn('Voice Lab node disconnect failed', error); }
+
+          let closePromise = Promise.resolve();
+          try { closePromise = Promise.resolve(audioContext?.close?.()); } catch (error) {
+            console.warn('Voice Lab AudioContext close failed', error);
+          }
+          closePromise = closePromise.catch((error) => {
+            console.warn('Voice Lab AudioContext close rejected', error);
+          });
+
+          try { model?.destroy?.(); } catch (error) { console.warn('Voice Lab model destroy failed', error); }
+          try { gpuDevice?.destroy?.(); } catch (error) { console.warn('Voice Lab GPU owner destroy failed', error); }
+
+          const priorCleanup = graph.cleanupPromise ?? Promise.resolve();
+          graph.cleanupPromise = Promise.allSettled([priorCleanup, closePromise]).then(() => undefined);
+          return graph.cleanupPromise;
+        };
+
+        const assertCurrent = (generation) => {
+          if (destroyed || generation !== lifecycleGeneration) {
+            throw new Error('ParticleVoice Voice Lab start was superseded.');
+          }
+        };
+
+        const start = (options = {}) => {
+          if (destroyed) return Promise.reject(new Error('ParticleVoice Voice Lab is destroyed.'));
+          if (activeGraph) return Promise.resolve(activeGraph);
+          if (startPromise) return startPromise;
+
+          const generation = ++lifecycleGeneration;
+          const candidate = {
+            gpuDevice: null,
+            model: null,
+            manual: null,
+            audioContext: null,
+            playback: null,
+            node: null,
+            cleanupPromise: null,
+          };
+          pendingGraph = candidate;
+          let transferred = false;
+          let trackedPromise;
+          const operation = (async () => {
+            try {
+              candidate.gpuDevice = await deps.createGpuDevice({ label: 'ParticleVoice Voice Lab' });
+              assertCurrent(generation);
+              candidate.model = deps.createModel(candidate.gpuDevice.device, modelOptions(options));
+              assertCurrent(generation);
+              candidate.manual = deps.createManual(manualOptions(candidate.model));
+              candidate.audioContext = deps.createAudioContext();
+              assertCurrent(generation);
+              await deps.addWorkletModule(candidate.audioContext, WORKLET_URL);
+              assertCurrent(generation);
+              candidate.playback = deps.createPlayback({
+                modelSampleRate: candidate.model.config.sampleRate,
+                outputSampleRate: Math.round(candidate.audioContext.sampleRate),
+                capacitySeconds: 4,
+              });
+              candidate.node = deps.createWorkletNode(candidate.audioContext, {
+                numberOfOutputs: 1,
+                outputChannelCount: [1],
+                processorOptions: candidate.playback.processorOptions,
+              });
+              deps.connectNode(candidate.node, candidate.audioContext.destination);
+              await deps.resumeAudioContext(candidate.audioContext);
+              assertCurrent(generation);
+              candidate.playback.attach(candidate.node);
+              assertCurrent(generation);
+
+              activeGraph = candidate;
+              if (pendingGraph === candidate) pendingGraph = null;
+              transferred = true;
+              return activeGraph;
+            } finally {
+              if (!transferred) {
+                await cleanupGraph(candidate);
+                if (pendingGraph === candidate) pendingGraph = null;
+              }
+            }
+          })();
+          trackedPromise = operation.finally(() => {
+            if (startPromise === trackedPromise) startPromise = null;
+          });
+          startPromise = trackedPromise;
+          return trackedPromise;
+        };
+
+        const replaceModel = (options = {}) => {
+          if (destroyed || !activeGraph) throw new Error('ParticleVoice Voice Lab is not ready.');
+          const graph = activeGraph;
+          const previous = graph.model;
+          const replacement = deps.createModel(graph.gpuDevice.device, modelOptions(options, previous));
+          let manual;
+          try {
+            // Build both dependents before committing: a changed oral section
+            // count must never leave manual poses on the old tract geometry.
+            manual = deps.createManual(manualOptions(replacement));
+            if (destroyed || graph !== activeGraph) {
+              throw new Error('ParticleVoice Voice Lab model replacement was superseded.');
+            }
+          } catch (error) {
+            replacement.destroy();
+            throw error;
+          }
+          graph.model = replacement;
+          graph.manual = manual;
+          try { previous.destroy(); } catch (error) { console.warn('Voice Lab previous model cleanup failed', error); }
+          return replacement;
+        };
+
+        const destroy = () => {
+          if (destroyPromise) return destroyPromise;
+          destroyed = true;
+          lifecycleGeneration += 1;
+          const graph = activeGraph;
+          const candidate = pendingGraph;
+          activeGraph = null;
+          pendingGraph = null;
+          // Do not wait for a user-agent promise that may never settle. Both
+          // currently reachable graphs are revoked synchronously; any later
+          // acquisition is retired by the start operation's finally block.
+          destroyPromise = Promise.allSettled([
+            cleanupGraph(graph),
+            candidate === graph ? Promise.resolve() : cleanupGraph(candidate),
+          ]).then(() => undefined);
+          return destroyPromise;
+        };
+
+        return Object.freeze({
+          start,
+          replaceModel,
+          destroy,
+          get model() { return activeGraph?.model ?? null; },
+          get playback() { return activeGraph?.playback ?? null; },
+          get manual() { return activeGraph?.manual ?? null; },
+          get audioContext() { return activeGraph?.audioContext ?? null; },
+          get gpuDevice() { return activeGraph?.gpuDevice ?? null; },
+          get ready() { return activeGraph !== null; },
+          get destroyed() { return destroyed; },
+        });
+      }
+
+      // A public constructor is useful for diagnostics and makes ownership
+      // behavior testable without requesting a real adapter or audio device.
+      globalThis.createParticleVoiceLabRuntime = createVoiceLabRuntime;
+      const runtime = createVoiceLabRuntime();
+      let busy = false;
+      let busyRevision = 0;
+      let diagnostics = null;
+      let tuning = null;
+      let tuningApplying = false;
+      let experiments = null;
+      let experimentRunner = null;
+      let audioCapture = null;
+      let toneComparison = null;
+      let speechOperation = null;
+      let audioStarting = false;
+      let activeStudioView = 'preview';
+      const viewButtons = [...document.querySelectorAll('[data-studio-view]')];
+
+      function showStudioView(view, { focus = false } = {}) {
+        if (!viewButtons.some(button => button.dataset.studioView === view)) view = 'preview';
+        activeStudioView = view;
+        for (const button of viewButtons) {
+          const selected = button.dataset.studioView === view;
+          button.setAttribute('aria-selected', String(selected));
+          button.tabIndex = selected ? 0 : -1;
+          el(button.getAttribute('aria-controls')).hidden = !selected;
+          if (selected && focus) button.focus();
+        }
+        if (location.hash !== `#${view}`) history.replaceState(null, '', `#${view}`);
+        if (!busy && !tuningApplying && !audioStarting && !diagnostics?.evaluationActive && !experiments?.active) {
+          el('studio-status').textContent = runtime.ready ? 'Audio ready.' : {
+            preview: 'Choose Play to enable audio and hear your text.',
+            listen: 'Choose a listening test, then enable audio.',
+            compare: 'Import a comparison, or enable audio to create one.',
+            advanced: 'Tools for inspecting pronunciation and playback.',
+          }[view];
+        }
+        refreshSessionLink();
+      }
+      function refreshSessionLink() {
+        const sessionView = experiments?.active ? 'compare' : diagnostics?.evaluationActive
+          ? (diagnostics.classroomActive ? 'listen' : 'advanced') : null;
+        el('studio-session-link').hidden = !sessionView || sessionView === activeStudioView;
+        el('studio-return-session').dataset.destination = sessionView ?? '';
+      }
+      viewButtons.forEach((button, index) => {
+        button.addEventListener('click', () => showStudioView(button.dataset.studioView));
+        button.addEventListener('keydown', event => {
+          let next;
+          if (event.key === 'ArrowRight') next = (index + 1) % viewButtons.length;
+          if (event.key === 'ArrowLeft') next = (index + viewButtons.length - 1) % viewButtons.length;
+          if (event.key === 'Home') next = 0;
+          if (event.key === 'End') next = viewButtons.length - 1;
+          if (next === undefined) return;
+          event.preventDefault(); showStudioView(viewButtons[next].dataset.studioView, { focus: true });
+        });
+      });
+      el('studio-return-session').addEventListener('click', () => showStudioView(el('studio-return-session').dataset.destination, { focus: true }));
+      window.addEventListener('hashchange', () => showStudioView(location.hash.slice(1)));
+      showStudioView(location.hash.slice(1));
+      const pose = { ...DEFAULT_POSE };
+
+      // ── Manual-mode sliders, generated from POSE_CONTROLS so the UI cannot
+      // drift from the pose definition it edits.
+      const slidersEl = el('sliders');
+      for (const control of POSE_CONTROLS) {
+        const label = document.createElement('label');
+        label.className = 'slider';
+        const name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = control.label;
+        const value = document.createElement('span');
+        value.className = 'value';
+        const input = document.createElement('input');
+        input.type = 'range';
+        input.min = String(control.min);
+        input.max = String(control.max);
+        input.step = String(control.step);
+        input.value = String(pose[control.key]);
+        const unit = document.createElement('span');
+        unit.className = 'unit';
+        unit.textContent = control.unit;
+        const render = () => { value.textContent = Number(input.value).toFixed(control.step < 1 ? 2 : 0); };
+        input.addEventListener('input', () => { pose[control.key] = Number(input.value); render(); });
+        render();
+        label.append(name, value, input, unit);
+        slidersEl.append(label);
+      }
+      // Voicing is boolean, so it gets a checkbox rather than a slider.
+      const voicedLabel = document.createElement('label');
+      voicedLabel.className = 'slider';
+      const voicedBox = document.createElement('input');
+      voicedBox.type = 'checkbox';
+      voicedBox.checked = pose.voiced;
+      voicedBox.addEventListener('change', () => { pose.voiced = voicedBox.checked; });
+      const voicedName = document.createElement('span');
+      voicedName.className = 'name';
+      voicedName.textContent = 'Voiced (glottal source on)';
+      voicedLabel.append(voicedName, voicedBox);
+      slidersEl.append(voicedLabel);
+
+      // ── Tabs
+      const setMode = (mode) => {
+        el('tab-neural').setAttribute('aria-selected', String(mode === 'neural'));
+        el('tab-manual').setAttribute('aria-selected', String(mode === 'manual'));
+        el('tab-neural').tabIndex = mode === 'neural' ? 0 : -1;
+        el('tab-manual').tabIndex = mode === 'manual' ? 0 : -1;
+        el('panel-neural').hidden = mode !== 'neural';
+        el('panel-manual').hidden = mode !== 'manual';
+      };
+      el('tab-neural').addEventListener('click', () => setMode('neural'));
+      el('tab-manual').addEventListener('click', () => setMode('manual'));
+      for (const id of ['tab-neural', 'tab-manual']) el(id).addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const mode = event.key === 'Home' ? 'neural' : event.key === 'End' ? 'manual' : id === 'tab-neural' ? 'manual' : 'neural';
+        setMode(mode); el(mode === 'neural' ? 'tab-neural' : 'tab-manual').focus();
+      });
+
+      // ── ABCs / single-letter tester
+      // The lexicon maps each lowercase letter to its letter-name
+      // pronunciation. Periods turn each letter into its own phrase, so every
+      // letter gets pre-boundary lengthening and a full terminal silence
+      // rather than a quick comma pause. This makes the letters sustained and
+      // distinct instead of a rapid machine-gun burst.
+      const ALPHABET_TEXT = 'a. b. c. d. e. f. g. h. i. j. k. l. m. n. o. p. q. r. s. t. u. v. w. x. y. z.';
+      const letterSelect = el('letter');
+      for (const ch of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+        const opt = document.createElement('option');
+        opt.value = ch.toLowerCase();
+        opt.textContent = ch;
+        letterSelect.append(opt);
+      }
+
+      // Override the article-pronunciation fallback for single letters in the
+      // lab so the ABCs and the single-letter dropdown actually say letter
+      // names (A -> "ay", B -> "bee", etc.) instead of article/consonant sounds.
+      const LETTER_G2P = new G2PModel({
+        lexicon: new PronunciationLexicon({ entries: LETTER_NAMES }),
+      });
+
+      // One resolution rule for every preview and inspection path. Punctuation
+      // separates explicit letter lists; prose articles retain ordinary G2P.
+      function practiceTextRequest(text) {
+        const single = text.trim().toLowerCase().replace(/[^a-z]+$/, '');
+        if (single.length === 1 && single >= 'a' && single <= 'z') {
+          return { text: `${single}.`, label: `Letter ${single.toUpperCase()}`, g2p: LETTER_G2P, renderPath: 'single letter name' };
+        }
+        if (/^[a-z](?:\s*[.,;:!?]+\s*[a-z])+(?:\s*[.,;:!?]+)?$/i.test(text.trim())) {
+          return { text: text.trim(), label: 'Letters', g2p: LETTER_G2P, renderPath: 'letter names' };
+        }
+        return { text, label: 'Text', g2p: null, renderPath: 'text' };
+      }
+
+      function letterSequence(letter) {
+        if (!/^[a-z]$/i.test(letter)) throw new Error('Select a letter to inspect.');
+        return textToPhonemeSequence(normalizeText(`${letter.toLowerCase()}.`), { g2p: LETTER_G2P });
+      }
+
+      async function speakText(text, label, g2p = null) {
+        if (busy || tuningApplying || audioStarting || experiments?.active || diagnostics?.evaluationActive || !runtime.ready) return;
+        const controller = new AbortController();
+        speechOperation = controller;
+        const generation = diagnostics?.beginSynthesis();
+        setBusy(true);
+        const activeModel = runtime.model;
+        const savedG2p = g2p ? activeModel?.g2p : null;
+        try {
+          if (!activeModel) throw new Error('Voice Lab is not ready.');
+          el('text').value = text;
+          log('Preparing the first sentence…');
+          if (g2p) activeModel.g2p = g2p;
+          const unresolved = new Set();
+          let firstUnit = true;
+          // Reuse the production sentence stream. This retains sentence-level
+          // loudness normalization without waiting for a whole paragraph/ABCs.
+          async function* observedSentences() {
+            for await (const render of activeModel.streamSentences(text, { signal: controller.signal })) {
+              diagnostics?.recordSynthesis(render, generation);
+              diagnostics?.recordPronunciation(render, generation, g2p === LETTER_G2P ? 'letter names' : 'text');
+              drawSnapshots(render.visualSnapshots);
+              for (const word of render.plan.sequence.unresolved) unresolved.add(word);
+              if (firstUnit) diagnostics?.playbackState('queueing', {}, generation);
+              firstUnit = false;
+              yield render;
+            }
+          }
+          const result = await runtime.playback.playSentenceStream(observedSentences(), {
+            signal: controller.signal,
+            onPlaybackStart: (event) => {
+              diagnostics?.playbackState('playing', { firstConsumedMs: event.elapsedMs }, generation);
+              log('Playing; generating the next sentence as needed…');
+            },
+          });
+          diagnostics?.playbackState('drained', {
+            writtenSamples: result.outputSamples,
+            resampledSamples: result.outputSamples,
+            remainingSamples: 0,
+            sentenceCount: result.sentenceCount,
+            firstQueuedMs: result.diagnostics.firstQueuedMs,
+            firstConsumedMs: result.diagnostics.firstConsumedMs,
+            synthesisMs: result.diagnostics.synthesisMs,
+            durationMs: result.modelSamples / result.modelSampleRate * 1000,
+          }, generation);
+          log(`<span class="ok">${label}</span> — ${(result.modelSamples / result.modelSampleRate).toFixed(2)}s, `
+            + `${result.sentenceCount} sentence/letter units, fully drained.`
+            + `<br>First audio consumed: ${result.diagnostics.firstConsumedMs?.toFixed(0) ?? 'unavailable'} ms `
+            + `(includes planned leading silence; speaker/device latency is additional).`);
+          el('studio-status').textContent = 'Preview finished. Play again or adjust the voice.';
+          if (unresolved.size > 0) {
+            const warning = document.createElement('span');
+            warning.className = 'warn';
+            warning.textContent = ` unresolved: ${[...unresolved].join(', ')}`;
+            logEl.append(warning);
+          }
+        } catch (error) {
+          diagnostics?.failed(error, generation);
+          if (error?.name === 'AbortError') log('Audio stopped. Ready to play again.');
+          else {
+            log(`<span class="bad">Speak failed:</span> ${error?.message ?? error}`);
+            console.error(error);
+          }
+        } finally {
+          if (speechOperation === controller) speechOperation = null;
+          if (g2p && runtime.model === activeModel) activeModel.g2p = savedG2p;
+          setBusy(false);
+        }
+      }
+
+      el('abcs').addEventListener('click', () => {
+        const request = practiceTextRequest(ALPHABET_TEXT);
+        speakText(request.text, 'ABCs', request.g2p);
+      });
+      el('say-letter').addEventListener('click', () => {
+        const letter = letterSelect.value;
+        if (!letter) return;
+        // The trailing period makes it a phrase terminal, so the letter gets
+        // the same pre-boundary lengthening as the full ABC sequence.
+        const request = practiceTextRequest(letter);
+        speakText(request.text, request.label, request.g2p);
+      });
+      letterSelect.addEventListener('change', () => {
+        el('say-letter').disabled = busy || tuningApplying || audioStarting || diagnostics?.evaluationActive
+          || experiments?.active || !runtime.ready || !letterSelect.value;
+      });
+
+      // ── Visualization: draws ParticleTract's own decimated field.
+      const canvas = el('scope');
+      const ctx = canvas.getContext('2d');
+      const CHANNEL_STYLE = [
+        { name: 'oral radiated', color: '#7dd3a0' },
+        { name: 'nasal tap', color: '#7ea8ff' },
+        { name: 'nasal radiated', color: '#f0a35e' },
+      ];
+
+      function drawSnapshots(snapshots) {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#010409';
+        ctx.fillRect(0, 0, w, h);
+        if (!snapshots || snapshots.length === 0) {
+          ctx.fillStyle = '#56637a';
+          ctx.font = '12px ui-monospace, monospace';
+          ctx.fillText('visualization disabled', 10, 20);
+          return;
+        }
+        // Flatten each channel across all chunks into one series.
+        const channels = CHANNEL_STYLE.map((_, c) => {
+          const out = [];
+          for (const snap of snapshots) for (const v of channelSeries(snap, c)) out.push(v);
+          return out;
+        });
+        let peak = 0;
+        for (const series of channels) for (const v of series) peak = Math.max(peak, Math.abs(v));
+        const scale = peak > 0 ? (h / 2 - 8) / peak : 0;
+
+        ctx.strokeStyle = '#30363d';
+        ctx.beginPath();
+        ctx.moveTo(0, h / 2);
+        ctx.lineTo(w, h / 2);
+        ctx.stroke();
+
+        channels.forEach((series, c) => {
+          if (series.length < 2) return;
+          ctx.strokeStyle = CHANNEL_STYLE[c].color;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          for (let i = 0; i < series.length; i++) {
+            const x = (i / (series.length - 1)) * w;
+            const y = h / 2 - series[i] * scale;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        });
+
+        ctx.font = '11px ui-monospace, monospace';
+        CHANNEL_STYLE.forEach((style, c) => {
+          ctx.fillStyle = style.color;
+          ctx.fillText(style.name, 10 + c * 130, 16);
+        });
+        ctx.fillStyle = '#56637a';
+        ctx.fillText(`${snapshots.length} chunks · peak ${peak.toExponential(2)}`, w - 190, 16);
+      }
+
+      function setBusy(state) {
+        busyRevision += 1;
+        busy = state;
+        if (tuningApplying) el('studio-status').textContent = 'Applying voice settings…';
+        else if (state) el('studio-status').textContent = 'Working… Progress appears in the current activity.';
+        else if (['Working… Progress appears in the current activity.', 'Applying voice settings…'].includes(el('studio-status').textContent)) {
+          el('studio-status').textContent = runtime.ready ? 'Audio ready.' : 'Enable audio when you are ready.';
+        }
+        const ready = runtime.ready;
+        const occupied = busy || tuningApplying || diagnostics?.evaluationActive || experiments?.active;
+        el('speak').disabled = occupied || audioStarting;
+        el('speak').textContent = ready ? 'Play preview' : audioStarting ? 'Enabling audio…' : 'Enable audio & play';
+        el('start').textContent = ready ? 'Audio enabled' : audioStarting ? 'Enabling audio…' : 'Enable audio';
+        el('start').disabled = ready || audioStarting || occupied || runtime.destroyed;
+        el('lesson-enable-audio').hidden = ready;
+        el('lesson-enable-audio').disabled = audioStarting || occupied;
+        el('preview-help').textContent = occupied && diagnostics?.evaluationActive
+          ? 'Finish the current listening test before changing or previewing the voice.'
+          : occupied && experiments?.active ? 'End the comparison review before previewing other words.'
+          : 'Choose an example or enter your own words, then Play. This preview is unscored.';
+        for (const button of document.querySelectorAll('[data-preview-text]')) button.disabled = occupied || audioStarting;
+        el('abcs').disabled = occupied || !ready;
+        el('say-letter').disabled = occupied || !ready || !letterSelect.value;
+        el('letter').disabled = occupied || !ready;
+        el('phonate').disabled = occupied || !ready;
+        el('gesture').disabled = occupied || !ready;
+        el('stop').disabled = !ready;
+        el('viz').disabled = occupied;
+        for (const input of slidersEl.querySelectorAll('input')) input.disabled = occupied;
+        diagnostics?.refresh();
+        tuning?.refresh();
+        experiments?.refresh();
+        audioCapture?.refresh();
+        toneComparison?.refresh();
+        refreshSessionLink();
+      }
+
+      async function play(render, label, signal, generation) {
+        const activePlayback = runtime.playback;
+        if (!activePlayback) throw new Error('Voice Lab playback is unavailable.');
+        diagnostics?.playbackState('queueing', {}, generation);
+        const { written, resampled, cancelled, timedOut } = await activePlayback.enqueue(render.pcm, { signal });
+        if (timedOut) throw new Error('Playback stopped receiving audio; queued samples were discarded.');
+        if (cancelled || written !== resampled) throw new DOMException('Playback was interrupted.', 'AbortError');
+        diagnostics?.playbackState('queued', { writtenSamples: written, resampledSamples: resampled }, generation);
+        drawSnapshots(render.visualSnapshots);
+        const seconds = (render.pcm.length / render.sampleRate).toFixed(2);
+        const truncated = written < resampled ? ` <span class="warn">(truncated ${resampled - written} samples)</span>` : '';
+        const runway = activePlayback.runway();
+        // Level is shown because "I can't hear anything" is otherwise
+        // indistinguishable from "it rendered nothing": the solver's raw output
+        // sits far below full scale, so the applied gain is the number that
+        // tells you whether normalization is doing its job.
+        let peak = 0;
+        let sumSq = 0;
+        for (const v of render.pcm) { const a = Math.abs(v); if (a > peak) peak = a; sumSq += v * v; }
+        const outRms = Math.sqrt(sumSq / Math.max(1, render.pcm.length));
+        const dbfs = (x) => (x > 0 ? `${(20 * Math.log10(x)).toFixed(1)} dBFS` : '-inf');
+        log(`<span class="ok">${label}</span> — ${seconds}s, ${render.chunks} chunks, ${render.visualSnapshots.length} visual snapshots, `
+          + `buffered ${runway.bufferedAheadMs.toFixed(0)}ms (${runway.tier})${truncated}`
+          + `<br><span style="color:#56637a">level: raw rms ${render.rawRms.toExponential(2)} `
+          + `\u00d7${render.appliedGain.toFixed(1)} \u2192 out rms ${outRms.toFixed(3)} (${dbfs(outRms)}), peak ${peak.toFixed(3)}</span>`);
+        await diagnostics.finishPlayback(activePlayback, signal, generation);
+      }
+
+      async function startAudio() {
+        if (tuningApplying) return false;
+        if (runtime.ready) return true;
+        if (audioStarting || runtime.destroyed || busy || diagnostics?.evaluationActive || experiments?.active) return false;
+        audioStarting = true;
+        setBusy(true);
+        diagnostics?.playbackState('initializing');
+        try {
+          if (typeof SharedArrayBuffer === 'undefined') {
+            throw new Error('SharedArrayBuffer unavailable — this page must be served cross-origin-isolated (COOP/COEP headers).');
+          }
+          log('Initialising WebGPU and the audio graph…');
+          await runtime.start({
+            visualFramesPerChunk: el('viz').checked ? VISUAL_FRAMES_PER_CHUNK : 0,
+            tuning: tuning?.snapshot(),
+          });
+          diagnostics?.syncOverrides();
+
+          log(`<span class="ok">Ready.</span> Model ${runtime.model.config.sampleRate} Hz → output ${Math.round(runtime.audioContext.sampleRate)} Hz `
+            + `(resampler L=${runtime.playback.resampler.L}/M=${runtime.playback.resampler.M}). Visualization ${runtime.model.visualizationEnabled ? 'on' : 'off'}.`);
+          el('studio-status').textContent = 'Audio ready.';
+          return true;
+        } catch (error) {
+          diagnostics?.failed(error);
+          if (!runtime.destroyed) el('start').disabled = false;
+          log(`<span class="bad">Failed to start:</span> ${error?.message ?? error}`);
+          console.error(error);
+          return false;
+        } finally {
+          audioStarting = false;
+          setBusy(false);
+        }
+      }
+      el('start').addEventListener('click', startAudio);
+      el('lesson-enable-audio').addEventListener('click', async () => {
+        if (await startAudio()) el('lesson-start').focus();
+      });
+
+      // Toggling visualization rebuilds the model, since ParticleTract allocates
+      // its visualization buffers at construction (that is what makes "disabled"
+      // structural rather than a runtime branch).
+      el('viz').addEventListener('change', () => {
+        if (busy || tuningApplying || audioStarting || experiments?.active || diagnostics?.evaluationActive || !runtime.ready) return;
+        try {
+          const replacement = runtime.replaceModel({
+            visualFramesPerChunk: el('viz').checked ? VISUAL_FRAMES_PER_CHUNK : 0,
+          });
+          diagnostics?.syncOverrides();
+          log(`Visualization ${replacement.visualizationEnabled ? 'enabled' : 'disabled'} — PCM is byte-identical either way.`);
+        } catch (error) {
+          log(`<span class="bad">Visualization change failed:</span> ${error?.message ?? error}`);
+          console.error(error);
+        }
+      });
+
+      el('speak').addEventListener('click', async () => {
+        if (busy || tuningApplying || audioStarting || experiments?.active || diagnostics?.evaluationActive || runtime.destroyed) return;
+        if (!el('text').value.trim()) {
+          el('studio-status').textContent = 'Enter some words or choose an example first.';
+          el('text').focus(); return;
+        }
+        if (!runtime.ready && !await startAudio()) return;
+        const request = practiceTextRequest(el('text').value);
+        speakText(request.text, request.label, request.g2p);
+      });
+      el('text').addEventListener('keydown', event => {
+        if (event.key === 'Enter' && !el('speak').disabled) { event.preventDefault(); el('speak').click(); }
+      });
+      for (const button of document.querySelectorAll('[data-preview-text]')) button.addEventListener('click', () => {
+        if (busy || tuningApplying || audioStarting || experiments?.active || diagnostics?.evaluationActive) return;
+        el('text').value = button.dataset.previewText;
+        el('speak').focus();
+      });
+
+      el('phonate').addEventListener('click', async () => {
+        if (busy || tuningApplying || audioStarting || experiments?.active || diagnostics?.evaluationActive || !runtime.ready) return;
+        const controller = new AbortController();
+        speechOperation = controller;
+        const generation = diagnostics?.beginSynthesis();
+        setBusy(true);
+        try {
+          const activeModel = runtime.model;
+          const activeManual = runtime.manual;
+          if (!activeModel || !activeManual) throw new Error('Voice Lab is not ready.');
+          const render = await activeModel.renderPhysiology(activeManual.hold(normalizePose(pose), 0.6), { signal: controller.signal });
+          diagnostics?.recordSynthesis(render, generation);
+          await play(render, 'Held pose', controller.signal, generation);
+        } catch (error) {
+          diagnostics?.failed(error, generation);
+          log(`<span class="bad">Manual render failed:</span> ${error?.message ?? error}`);
+          console.error(error);
+        } finally {
+          if (speechOperation === controller) speechOperation = null;
+          setBusy(false);
+        }
+      });
+
+      el('gesture').addEventListener('click', async () => {
+        if (busy || tuningApplying || audioStarting || experiments?.active || diagnostics?.evaluationActive || !runtime.ready) return;
+        const controller = new AbortController();
+        speechOperation = controller;
+        const generation = diagnostics?.beginSynthesis();
+        setBusy(true);
+        try {
+          const activeModel = runtime.model;
+          const activeManual = runtime.manual;
+          if (!activeModel || !activeManual) throw new Error('Voice Lab is not ready.');
+          const open = normalizePose(pose);
+          // Collapse the constriction to a closure and reopen — the
+          // closure/release gesture, driven purely by area.
+          const closed = normalizePose({ ...pose, constrictionArea: 0.03 });
+          const render = await activeModel.renderPhysiology(activeManual.glide([open, closed, open], 0.7), { signal: controller.signal });
+          diagnostics?.recordSynthesis(render, generation);
+          await play(render, 'Closure → release', controller.signal, generation);
+        } catch (error) {
+          diagnostics?.failed(error, generation);
+          log(`<span class="bad">Gesture failed:</span> ${error?.message ?? error}`);
+          console.error(error);
+        } finally {
+          if (speechOperation === controller) speechOperation = null;
+          setBusy(false);
+        }
+      });
+
+      el('stop').addEventListener('click', () => {
+        speechOperation?.abort();
+        if (experiments?.active) experiments.cancel();
+        toneComparison?.cancel();
+        diagnostics?.cancel();
+        const activePlayback = runtime.playback;
+        if (!activePlayback) return;
+        // Ring + resampler reset in lockstep, so the next utterance starts clean.
+        activePlayback.cancel();
+        log('<span class="warn">Audio stopped.</span> — You can play again when ready.');
+      });
+
+      const teardownPage = () => {
+        speechOperation?.abort();
+        experiments?.dispose();
+        toneComparison?.dispose();
+        audioCapture?.dispose();
+        diagnostics?.cancel();
+        busy = false;
+        void runtime.destroy();
+        tuning?.dispose();
+        diagnostics?.refresh();
+      };
+      globalThis.addEventListener('pagehide', teardownPage, { once: true });
+      globalThis.addEventListener('unload', teardownPage, { once: true });
+
+      audioCapture = mountVoiceLessonAudioPanel({ document, archive: new VoiceLessonAudioArchive(),
+        isBlocked: () => busy || tuningApplying || !!diagnostics?.evaluationActive || !!experiments?.active,
+        onError: (error) => console.warn('[ParticleVoice][saved-audio]', error),
+      });
+      diagnostics = installVoiceLabDiagnostics({
+        document, getModel: () => runtime.model, play,
+        getTuningSnapshot: () => tuning?.snapshot() ?? null,
+        renderLetter: (letter, signal) => runtime.model.speakSequence(letterSequence(letter), { signal }),
+        inspectText: (text, g2p) => {
+          const request = practiceTextRequest(text);
+          return { sequence: textToPhonemeSequence(normalizeText(request.text), { g2p: request.g2p ?? g2p }),
+            renderPath: request.renderPath };
+        },
+        inspectLetter: () => letterSequence(letterSelect.value),
+        getOutputSampleRate: () => runtime.audioContext?.sampleRate ?? null,
+        isReady: () => runtime.ready, isBusy: () => busy || tuningApplying || !!experiments?.active, setBusy,
+        onReport: (report) => experimentRunner?.archiveReport(report),
+        audioCapture,
+        onError: (error) => console.error('[ParticleVoice][lab][diagnostics]', error),
+      });
+      tuning = mountVoiceLabTuning({
+        container: el('voice-tuning'),
+        isBusy: () => busy || tuningApplying || !!experiments?.active, isReady: () => runtime.ready,
+        isEvaluationActive: () => !!diagnostics?.evaluationActive,
+        onApplyingChange: value => { tuningApplying = value; if (!runtime.destroyed) setBusy(busy); },
+        onApply: (snapshot) => {
+          if (busy || diagnostics?.evaluationActive || experiments?.active || !runtime.ready) throw new Error('Finish or stop the current listening operation before tuning.');
+          runtime.replaceModel({ tuning: snapshot });
+          diagnostics?.syncOverrides();
+          log('Voice tuning applied to a fresh idle model. Pronunciation overrides and visualization settings are preserved.');
+        },
+        onPreview: () => {
+          const request = practiceTextRequest(el('text').value);
+          return speakText(request.text, 'Tuning preview', request.g2p);
+        },
+        onError: (error) => {
+          log(`<span class="bad">Tuning failed:</span> ${error?.message ?? error}`);
+          console.error('[ParticleVoice][lab][tuning]', error);
+        },
+      });
+      const experimentStore = new VoiceExperimentStore();
+      experimentRunner = new VoiceExperimentRunner({
+        store: experimentStore, getModel: () => runtime.model,
+        getConfiguration: () => voiceLabConfiguration(runtime.model, {
+          ready: runtime.ready, outputSampleRate: runtime.audioContext?.sampleRate ?? null,
+        }),
+        getTuningSnapshot: () => tuning?.snapshot() ?? null,
+        onChange: () => experiments?.refresh(),
+      });
+      experiments = mountVoiceExperimentPanel({
+        container: el('voice-experiments'), store: experimentStore, runner: experimentRunner,
+        isReady: () => runtime.ready, isBusy: () => busy || tuningApplying,
+        isEvaluationActive: () => !!diagnostics?.evaluationActive,
+        setBusy, startAudio, audioContext: () => runtime.audioContext,
+        play: playSavedComparison,
+        onError: (error) => console.warn('[ParticleVoice][experiment]', error),
+      });
+      async function playSavedComparison(render, { signal } = {}) {
+          const playback = runtime.playback;
+          if (!playback) throw new Error('Enable audio before reviewing saved candidates.');
+          // Reference decoding uses the actual AudioContext rate. Adapt it into
+          // the same model-rate input of the shared playback path explicitly.
+          const inputRate = render.sampleRate;
+          const adapted = inputRate === playback.modelSampleRate ? render : {
+            ...render, sampleRate: playback.modelSampleRate,
+            pcm: new PolyphaseResampler(inputRate, playback.modelSampleRate).process(render.pcm),
+          };
+          const receipt = await playback.playSentenceStream([adapted], { signal });
+          return { state: 'drained', inputSampleRate: inputRate,
+            referenceAdapted: inputRate !== playback.modelSampleRate, ...receipt };
+      }
+      toneComparison = mountVoiceTonePanel({
+        container: el('voice-tone-comparison'), store: experimentStore,
+        getModel: () => runtime.model, getText: () => el('text').value,
+        planText: (model, text) => {
+          const request = practiceTextRequest(text);
+          const normalized = request.g2p ? normalizeText(request.text) : null;
+          return { plan: request.g2p ? model.planSequence(textToPhonemeSequence(normalized, {g2p: request.g2p}), {normalized})
+            : model.plan(request.text), renderPath: request.renderPath };
+        },
+        getConfiguration: () => ({...voiceLabConfiguration(runtime.model, {ready: runtime.ready,
+          outputSampleRate: runtime.audioContext?.sampleRate ?? null}), tuning: tuning?.snapshot() ?? null}),
+        isReady: () => runtime.ready,
+        isBlocked: () => busy || tuningApplying || audioStarting || runtime.destroyed || !!diagnostics?.evaluationActive || !!experiments?.active,
+        isEvaluationActive: () => !!diagnostics?.evaluationActive,
+        startAudio, play: playSavedComparison,
+        acquireBusy: () => {
+          if (busy || tuningApplying || audioStarting || runtime.destroyed || diagnostics?.evaluationActive || experiments?.active) return null;
+          setBusy(true);
+          const revision = busyRevision;
+          return () => { if (revision === busyRevision) setBusy(false); };
+        },
+        onError: error => console.warn('[ParticleVoice][tone-comparison]', error),
+      });
+      drawSnapshots(null);
+      setBusy(false);
+    </script>
+  </body>
+</html>

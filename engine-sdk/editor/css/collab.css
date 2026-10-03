@@ -1,0 +1,640 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/* collab.css — Collaboration panel */
+
+/* ── Panel shell ── */
+.cp {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    font-size: 13px;
+    color: #c9cdd4;
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* ── Status hero ── */
+.cp-hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 14px;
+    border-bottom: 1px solid #1e1e28;
+}
+
+.cp-hero-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cp-hero--on  .cp-hero-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e99; animation: cp-pulse 2.5s ease-in-out infinite; }
+.cp-hero--search .cp-hero-dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b88; animation: cp-pulse 1.2s ease-in-out infinite; }
+.cp-hero--idle .cp-hero-dot { background: #555; }
+.cp-hero--idle .cp-hero-text strong { color: #888; }
+.cp-hero--off .cp-hero-dot { background: #444; }
+
+@keyframes cp-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.cp-hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1;
+}
+
+.cp-hero-text strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e2e5ea;
+}
+
+.cp-hero-text span {
+    font-size: 11px;
+    color: #666;
+}
+
+.cp-hero--on  .cp-hero-text strong { color: #22c55e; }
+.cp-hero--search .cp-hero-text strong { color: #f59e0b; }
+
+/* ── Banners ── */
+.cp-banner {
+    padding: 7px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+}
+
+.cp-banner--play {
+    background: #0d1f0d;
+    color: #4ade80;
+    border-color: #166534;
+}
+
+.cp-banner--warn {
+    background: #1f110a;
+    color: #fb923c;
+    border-color: #7c2d12;
+    cursor: default;
+}
+
+/* ── Fields ── */
+.cp-field {
+    padding: 12px 14px;
+    border-bottom: 1px solid #1a1a22;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cp-field-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #555;
+}
+
+.cp-field-hint {
+    font-size: 11px;
+    color: #484858;
+    line-height: 1.4;
+    margin-top: -2px;
+}
+
+.cp-field-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ── Inputs ── */
+.cp-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #13131c;
+    border: 1px solid #2a2a38;
+    border-radius: 5px;
+    color: #d4d8e0;
+    font-size: 13px;
+    padding: 7px 9px;
+    outline: none;
+    transition: border-color 0.15s;
+    font-family: inherit;
+}
+
+.cp-input:focus {
+    border-color: #5b7cf6;
+    background: #15151f;
+}
+
+.cp-input--mono {
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+}
+
+.cp-input-row {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.cp-input-row .cp-input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Buttons ── */
+.cp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 7px 12px;
+    background: #1c1c28;
+    border: 1px solid #2e2e3e;
+    border-radius: 5px;
+    color: #9099aa;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    box-sizing: border-box;
+}
+
+.cp-btn:hover:not(:disabled) {
+    background: #222236;
+    border-color: #5b7cf6;
+    color: #d4d8e0;
+}
+
+.cp-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.cp-btn--primary {
+    background: #1e2a4a;
+    border-color: #3b5bdb;
+    color: #93b4ff;
+    font-weight: 500;
+}
+
+.cp-btn--primary:hover:not(:disabled) {
+    background: #253460;
+    border-color: #5b7cf6;
+    color: #c0d0ff;
+}
+
+.cp-btn--ghost {
+    background: transparent;
+    border-color: #2a2a38;
+    width: auto;
+    flex-shrink: 0;
+    padding: 7px 9px;
+    color: #666;
+}
+
+.cp-btn--ghost:hover:not(:disabled) {
+    background: #1c1c28;
+    border-color: #5b7cf6;
+    color: #93b4ff;
+}
+
+.cp-btn--icon {
+    width: auto;
+    flex-shrink: 0;
+    padding: 7px 10px;
+}
+
+.cp-btn--warn {
+    border-color: #7c2d1244;
+    color: #fb923c;
+}
+
+.cp-btn--warn:hover:not(:disabled) {
+    background: #1f110a;
+    border-color: #fb923c;
+    color: #fdba74;
+}
+
+/* ── Sections ── */
+.cp-section {
+    padding: 12px 14px;
+    border-bottom: 1px solid #1a1a22;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cp-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+/* ── Color picker ── */
+.cp-color-picker {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: 2px solid #2a2a3a;
+    border-radius: 6px;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    flex-shrink: 0;
+}
+.cp-color-picker::-webkit-color-swatch-wrapper { padding: 2px; }
+.cp-color-picker::-webkit-color-swatch { border-radius: 3px; border: none; }
+
+/* ── Sub-labels (Word Key / Number Key) ── */
+.cp-field-label--sub {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #484858;
+    margin-top: 4px;
+    margin-bottom: -2px;
+}
+
+/* ── Kick button ── */
+.cp-btn--kick {
+    opacity: 0;
+    transition: opacity 0.15s;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.cp-peer:hover .cp-btn--kick {
+    opacity: 1;
+}
+
+.cp-btn--kick:hover {
+    background: #2a1015 !important;
+    border-color: #ef4444 !important;
+}
+
+/* ── Peer cards ── */
+.cp-peer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #13131c;
+    border: 1px solid #1e1e2a;
+    border-radius: 6px;
+}
+
+.cp-peer-av {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+.cp-peer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.cp-peer-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #d4d8e0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cp-peer-meta {
+    font-size: 11px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Viewport camera ghost overlays ── */
+.collab-camera-ghost {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transform: translate(-50%, -100%);
+    z-index: 100;
+}
+
+.collab-camera-ghost__label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    white-space: nowrap;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.5);
+}
+
+.collab-camera-ghost__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.6);
+}
+
+/* ── Quick Join status ── */
+.cp-quick-status {
+    font-size: 11px;
+    min-height: 16px;
+    line-height: 1.4;
+    transition: color 0.15s;
+}
+
+.cp-quick-status--ok {
+    color: #22c55e;
+    font-weight: 500;
+}
+
+.cp-quick-status--err {
+    color: #ef4444;
+}
+
+/* ── Divider ── */
+.cp-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 14px;
+    color: #3a3a4a;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.cp-divider::before,
+.cp-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #1e1e28;
+}
+
+/* ── Invite code button ── */
+.cp-btn--invite {
+    background: #162040;
+    border-color: #3b5bdb;
+    color: #93b4ff;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.cp-btn--invite:hover:not(:disabled) {
+    background: #1e2c58;
+    border-color: #5b7cf6;
+    color: #c0d0ff;
+}
+
+/* ── Button row (side by side) ── */
+.cp-btn-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.cp-btn-row .cp-btn {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Stats grid ── */
+.cp-stats-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 12px;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.cp-stat-label {
+    color: #555;
+    white-space: nowrap;
+}
+
+.cp-stat-value {
+    color: #9aa0b0;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 11px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Peer reputation score badge ── */
+.cp-peer-score {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 1px;
+}
+
+.cp-score-num {
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.cp-score-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+    line-height: 1;
+}
+
+.cp-tier-pill {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 1px 5px;
+    border: 1px solid;
+    border-radius: 3px;
+    line-height: 1;
+    margin-left: 2px;
+    white-space: nowrap;
+}
+
+/* ── Room info (connected state) ── */
+.cp-room-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    margin-bottom: 6px;
+}
+
+.cp-room-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: #e0e0e0;
+}
+
+.cp-room-tag {
+    font-size: 11px;
+    color: #6b8afd;
+    background: #6b8afd18;
+    border: 1px solid #6b8afd33;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-family: 'Consolas', 'SF Mono', monospace;
+}
+
+/* ── Integrity alerts ── */
+.cp-integrity-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    background: #1a0f0f;
+    border: 1px solid #7c2d1233;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.cp-integrity-peer {
+    color: #fb923c;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.cp-integrity-count {
+    color: #ef4444;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.cp-integrity-code {
+    color: #666;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 10px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+/* ── Cryptographic identity ── */
+.cp-self-identity {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    margin-top: 4px;
+}
+
+.cp-peer-identity {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    margin-bottom: 1px;
+}
+
+.cp-fingerprint {
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 10px;
+    color: #8b95a5;
+    letter-spacing: 0.5px;
+}
+
+.cp-host-tag {
+    display: inline-block;
+    padding: 0 4px;
+    background: #22c55e22;
+    color: #22c55e;
+    border: 1px solid #22c55e33;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 14px;
+}
+
+.cp-consensus {
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+.cp-trust-pill {
+    display: inline-block;
+    padding: 0 4px;
+    border: 1px solid;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    line-height: 14px;
+    margin-left: 2px;
+}
+
+/* ── Anonymous mode toggle ── */
+.cp-anon-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 6px 8px;
+    background: rgba(107, 138, 253, 0.08);
+    border: 1px solid rgba(107, 138, 253, 0.15);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #aaa;
+}
+.cp-anon-toggle input[type="checkbox"] {
+    margin-top: 2px;
+    accent-color: #6b8afd;
+}
+.cp-anon-toggle strong {
+    color: #ccc;
+}
+
+/* ── Entity editing indicator ── */
+.collab-entity-editing {
+    outline: 2px solid var(--collab-peer-color, #5b7cf6);
+    outline-offset: 2px;
+}

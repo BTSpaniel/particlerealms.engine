@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engine Guide — WebGPU OS</title>
+  <meta name="description" content="Learn the WebGPU OS engine through verified setup, architecture, GPU, ECS, rendering, simulation, Editor, and Playground guides.">
+  <link id="canonical-link" rel="canonical" href="https://particlerealms.online/guide/">
+  <link id="markdown-alternate" rel="alternate" type="text/markdown" href="/MD/index.md" title="Guide source as Markdown">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="AI discovery index">
+  <link rel="alternate" type="application/x-ndjson" href="/docs-chunks.jsonl" title="Documentation chunks">
+  <link rel="alternate" type="application/x-ndjson" href="/api-symbols.jsonl" title="API modules and symbols">
+  <link rel="stylesheet" href="../common/docs.css">
+  <link rel="stylesheet" href="/MD/assets/vendor/highlight/github-dark.min.css">
+  <link rel="stylesheet" href="/MD/viewer/viewer.css">
+  <link rel="stylesheet" href="../common/docs-portal.css">
+  <script src="/plauna/motion/MPAFallback.js"></script>
+  <script type="module" src="/plauna/motion/PageTransitionManager.js" blocking="render"></script>
+  <script id="page-structured-data" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "headline": "WebGPU OS Engine Guide",
+        "description": "Verified guides for learning the WebGPU OS engine and its GPU, ECS, rendering, simulation, Editor, and Playground workflows.",
+        "url": "https://particlerealms.online/guide/",
+        "inLanguage": "en",
+        "mentions": { "@id": "https://github.com/BTSpaniel/particlerealms.engine#distribution" },
+        "author": { "@type": "Person", "name": "Jake Wehmeier" },
+        "isPartOf": { "@type": "WebSite", "name": "WebGPU OS", "url": "https://particlerealms.online/" }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://github.com/BTSpaniel/particlerealms.engine#distribution",
+        "name": "WebGPU OS platform downloads",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any browser with WebGPU support",
+        "downloadUrl": "https://github.com/BTSpaniel/particlerealms.engine"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/BTSpaniel/particlerealms.engine-master-server#service",
+        "name": "Particle Realms master server",
+        "description": "Separate discovery, admission, encrypted signaling, TURN, and trusted-node service. It is never gameplay authority.",
+        "codeRepository": "https://github.com/BTSpaniel/particlerealms.engine-master-server",
+        "additionalProperty": { "@type": "PropertyValue", "name": "Gameplay authority", "value": false }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://particlerealms.online/" },
+          { "@type": "ListItem", "position": 2, "name": "Guide", "item": "https://particlerealms.online/guide/" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="docs-portal-page portal-guide">
+  <a class="portal-skip-link" href="#docs-workspace">Skip to documentation</a>
+  <header class="doc-header">
+    <a href="../index.html" class="logo">Particle <span>Realms</span></a>
+    <nav aria-label="Product navigation">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="../learn/" class="nav-link">Learn</a>
+      <a href="./" class="nav-link active" aria-current="page">Guide</a>
+      <a href="../api/" class="nav-link">API</a>
+      <a href="../playground/" class="nav-link">Playground</a>
+      <a href="https://chromewebstore.google.com/detail/webgpu-os-companion/pbibggeclfjpmmbfmjagmngefonepbjj" class="nav-link" target="_blank" rel="noopener noreferrer">Companion ↗</a>
+    </nav>
+  </header>
+
+  <main class="portal">
+    <section class="portal-hero" aria-labelledby="guide-title">
+      <span class="portal-kicker">Knowledge dive / Guide</span>
+      <h1 id="guide-title">Understand the system. Then make it move.</h1>
+      <p class="portal-lead">Start with one verified frame, follow the GPU and ECS data paths, and surface the same work through the Playground, Editor, and WebGPU OS. The full Markdown remains directly readable even when the interactive viewer is unavailable.</p>
+      <div class="portal-actions">
+        <a class="portal-action primary" href="../learn/">Enter Engine Academy</a>
+        <a class="portal-action" href="#docs-workspace">Explore the complete guide</a>
+        <a class="portal-action" href="/MD/getting-started/install.md">Read raw setup Markdown</a>
+      </div>
+    </section>
+
+    <section class="route-grid" aria-label="Recommended learning routes">
+      <article class="route-card">
+        <span class="route-index">ROUTE 01</span>
+        <h2>First successful run</h2>
+        <p>Serve the repository on port 9001, verify the adapter, and launch the stack over HTTP.</p>
+        <a href="https://github.com/BTSpaniel/particlerealms.engine" target="_blank" rel="noopener noreferrer">Platform downloads →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">ROUTE 02</span>
+        <h2>Engine foundations</h2>
+        <p>Trace the shared GPU device, frame lifecycle, ECS world, and rendering boundaries.</p>
+        <a href="/MD/engine/getting-started.md">Engine getting started →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">ROUTE 03</span>
+        <h2>Architecture map</h2>
+        <p>See how Engine, Editor, Plauna, AGI, and WebGPU OS compose without hiding subsystem ownership.</p>
+        <a href="/MD/concepts/architecture-overview.md">Read the architecture →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">ROUTE 04</span>
+        <h2>Machine navigation</h2>
+        <p>Give an agent the curated discovery index and enriched source-backed ES-module catalog.</p>
+        <a href="/api-index.json">Open API catalog →</a>
+      </article>
+      <article class="route-card">
+        <span class="route-index">ROUTE 05</span>
+        <h2>Optional network service</h2>
+        <p>Deploy the separate discovery, admission, encrypted-signaling, TURN, and trusted-node service. It is never gameplay authority.</p>
+        <a href="https://github.com/BTSpaniel/particlerealms.engine-master-server" target="_blank" rel="noopener noreferrer">Master server repository →</a>
+      </article>
+    </section>
+
+    <section id="docs-workspace" class="portal-docs-workspace" aria-labelledby="workspace-heading" tabindex="-1">
+      <header class="portal-docs-toolbar">
+        <span class="viewer-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <strong id="workspace-heading" class="brand-text">WebGPU OS Docs</strong>
+        <button id="sidebar-toggle" class="icon-btn" type="button" aria-label="Toggle documentation navigation" aria-expanded="true">&#9776;</button>
+        <div class="search-wrap">
+          <label class="portal-sr-only" for="search-input">Search documentation</label>
+          <input id="search-input" type="search" placeholder="Search docs (Ctrl+K)" autocomplete="off">
+          <ul id="search-results" class="search-results" aria-live="polite" hidden></ul>
+        </div>
+        <span id="version-badge" class="version-badge">v0.1.0</span>
+        <a class="portal-docs-source" href="/MD/index.md">Markdown source ↗</a>
+      </header>
+
+      <div id="read-progress" class="read-progress" role="progressbar" aria-label="Documentation reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      <div class="layout portal-docs-layout">
+        <nav id="sidebar" class="sidebar" aria-label="Documentation navigation">
+          <div class="sidebar-tools">
+            <label class="portal-sr-only" for="nav-filter">Filter documentation navigation</label>
+            <input id="nav-filter" type="search" placeholder="Filter pages…" autocomplete="off">
+            <button id="nav-collapse-all" class="nav-tool-btn" type="button" title="Collapse all" aria-label="Collapse all sections">&#10697;</button>
+          </div>
+          <div id="nav-tree" class="nav-tree"></div>
+        </nav>
+
+        <section class="main portal-docs-main" aria-label="Guide document">
+          <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+          <article id="doc-content" class="doc-content" tabindex="-1">
+            <section class="portal-docs-static">
+              <h2>The documentation is readable before the navigator loads.</h2>
+              <p>This interface reads the canonical Markdown and generated search data directly. If JavaScript is unavailable, use these source routes without losing the setup or architecture path.</p>
+              <ul>
+                <li><a href="/MD/getting-started/install.md">Install and run over HTTP</a></li>
+                <li><a href="/MD/engine/getting-started.md">Build the first engine frame</a></li>
+                <li><a href="/MD/concepts/architecture-overview.md">Map the five-subsystem architecture</a></li>
+                <li><a href="/MD/api/index.md">Continue into the API reference</a></li>
+              </ul>
+            </section>
+          </article>
+          <nav class="page-nav" aria-label="Document navigation">
+            <a id="prev-link" class="page-nav-link" rel="prev" hidden></a>
+            <a id="next-link" class="page-nav-link page-nav-next" rel="next" hidden></a>
+          </nav>
+          <footer class="doc-footer">
+            <span id="source-path">Source: <a href="/MD/index.md">MD/index.md</a></span>
+            <span class="footer-credit">Platform downloads: <a href="https://github.com/BTSpaniel/particlerealms.engine" target="_blank" rel="noopener noreferrer">particlerealms.engine</a></span>
+          </footer>
+        </section>
+
+        <aside id="toc" class="toc" aria-label="On this page">
+          <h2 class="toc-title">On this page</h2>
+          <ul id="toc-list" class="toc-list"></ul>
+        </aside>
+      </div>
+      <div id="nav-backdrop" class="nav-backdrop" hidden></div>
+      <button id="back-to-top" class="back-to-top" type="button" title="Back to top" aria-label="Back to top" hidden>&#8593;</button>
+      <noscript><p class="portal-noscript">Interactive search needs JavaScript; every route card and Markdown source link above remains available.</p></noscript>
+    </section>
+
+    <p class="machine-paths">Crawler routes: <a href="/MD/index.md">documentation home</a> · <a href="/llms.txt">llms.txt</a> · <a href="/llms-full.txt">llms-full.txt</a> · <a href="/docs-chunks.jsonl">documentation chunks JSONL</a> · <a href="/api-symbols.jsonl">API symbols JSONL</a> · <a href="/api-index.json">API catalog JSON</a> · <a href="/sitemap.xml">XML sitemap</a>. The Companion is optional OS integration; it is not WebGPU compatibility mode and cannot add browser GPU support.</p>
+  </main>
+  <script src="/MD/assets/vendor/marked/marked.min.js"></script>
+  <script src="/MD/assets/vendor/highlight/highlight.min.js"></script>
+  <script src="/MD/viewer/viewer.js" data-doc-root="/MD/" data-default-doc="index.md" data-default-kind="guide" data-inline="true" data-portal-canonical="https://particlerealms.online/guide/" data-platform-repository="https://github.com/BTSpaniel/particlerealms.engine" data-master-server-repository="https://github.com/BTSpaniel/particlerealms.engine-master-server"></script>
+</body>
+</html>

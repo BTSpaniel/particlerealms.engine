@@ -1,0 +1,6 @@
+{
+  "name": "too-short",
+  "expectedCode": 201,
+  "expectedMessageFragment": "Container too short",
+  "size": 10
+}

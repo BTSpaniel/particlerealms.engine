@@ -1,0 +1,182 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * File Component Styles
+ * Modular CSS for File input widget
+ */
+
+.file-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.file-input__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  border: 2px dashed var(--border-medium);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.file-input__trigger:hover {
+  border-color: var(--color-primary-500);
+  background: var(--bg-quaternary);
+}
+
+.file-input__trigger.drag-over {
+  border-color: var(--color-primary-500);
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.file-input__input {
+  display: none;
+}
+
+.file-input__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+}
+
+.file-input__icon {
+  font-size: 32px;
+  color: var(--text-secondary);
+}
+
+.file-input__label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.file-input__hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* File List */
+.file-input__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.file-input__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.file-input__item-icon {
+  font-size: 20px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.file-input__item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.file-input__item-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-input__item-size {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.file-input__item-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-quaternary);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+}
+
+.file-input__item-progress-bar {
+  height: 100%;
+  background: var(--color-primary-500);
+  border-radius: var(--border-radius-full);
+  transition: width var(--transition-base);
+}
+
+.file-input__item-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.file-input__item-remove:hover {
+  background: var(--color-error);
+  color: white;
+}
+
+/* Size Variants */
+.file-input--sm .file-input__trigger {
+  padding: var(--spacing-md);
+}
+
+.file-input--sm .file-input__label {
+  font-size: var(--font-size-sm);
+}
+
+.file-input--lg .file-input__trigger {
+  padding: var(--spacing-xl);
+}
+
+.file-input--lg .file-input__icon {
+  font-size: 48px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .file-input__trigger {
+    padding: var(--spacing-md);
+  }
+
+  .file-input__icon {
+    font-size: 24px;
+  }
+
+  .file-input__label {
+    font-size: var(--font-size-sm);
+  }
+}

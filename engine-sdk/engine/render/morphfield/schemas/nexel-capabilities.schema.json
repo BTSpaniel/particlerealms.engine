@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/nexel-capabilities.schema.json",
+  "title": "MorphField R2 Nexel capability profile",
+  "description": "An honest, versioned declaration of semantic admission, compilation, CPU reference, GPU query, and renderer coverage by source kind.",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "type": "object",
+  "required": ["$schema", "schema", "version", "jsonSchemaDialect", "fieldletFamilies", "queryKinds", "sourceKinds", "invariants"],
+  "properties": {
+    "$schema": { "const": "https://particlerealms.online/schemas/morphfield/v2/nexel-capabilities.schema.json" },
+    "schema": { "const": "morphfield-nexel-capabilities" },
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "jsonSchemaDialect": { "const": "https://json-schema.org/draft/2020-12/schema" },
+    "fieldletFamilies": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/family0" },
+        { "$ref": "#/$defs/family1" },
+        { "$ref": "#/$defs/family2" },
+        { "$ref": "#/$defs/family3" }
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "queryKinds": {
+      "const": ["bound", "surface", "medium", "material", "motion", "collision"]
+    },
+    "sourceKinds": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/sphereCapability" },
+        { "$ref": "#/$defs/boxCapability" },
+        { "$ref": "#/$defs/capsuleCapability" },
+        { "$ref": "#/$defs/csgCapability" },
+        { "$ref": "#/$defs/sampledFieldCapability" },
+        { "$ref": "#/$defs/sparseResidualCapability" },
+        { "$ref": "#/$defs/orientedSamplesCapability" },
+        { "$ref": "#/$defs/indexedSurfaceCapability" },
+        { "$ref": "#/$defs/mediumCapability" }
+      ],
+      "items": false,
+      "minItems": 9,
+      "maxItems": 9
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "queryKind": { "enum": ["bound", "surface", "medium", "material", "motion", "collision"] },
+    "compilerMode": { "enum": ["certified-analytic-execution", "certified-field-execution", "certificate-record", "packed-marker", "unavailable"] },
+    "gpuQueryMode": { "enum": ["conservative-bound", "certified-surface", "material-table", "certificate-envelope", "certificate-majorant", "certified-collision", "unavailable"] },
+    "gpuQueryModes": {
+      "type": "object",
+      "required": ["bound", "surface", "medium", "material", "motion", "collision"],
+      "properties": {
+        "bound": { "$ref": "#/$defs/gpuQueryMode" },
+        "surface": { "$ref": "#/$defs/gpuQueryMode" },
+        "medium": { "$ref": "#/$defs/gpuQueryMode" },
+        "material": { "$ref": "#/$defs/gpuQueryMode" },
+        "motion": { "$ref": "#/$defs/gpuQueryMode" },
+        "collision": { "$ref": "#/$defs/gpuQueryMode" }
+      },
+      "additionalProperties": false
+    },
+    "sourceKind": { "enum": ["sphere", "box", "capsule", "csg", "sampled-field", "sparse-residual", "oriented-samples", "indexed-surface", "medium"] },
+    "familyName": { "enum": ["analytic", "sparse-residual", "oriented-kernel", "cached-surface"] },
+    "familyBase": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "name": { "$ref": "#/$defs/familyName" }
+      },
+      "additionalProperties": false
+    },
+    "family0": {
+      "allOf": [
+        { "$ref": "#/$defs/familyBase" },
+        { "properties": { "id": { "const": 0 }, "name": { "const": "analytic" } } }
+      ]
+    },
+    "family1": {
+      "allOf": [
+        { "$ref": "#/$defs/familyBase" },
+        { "properties": { "id": { "const": 1 }, "name": { "const": "sparse-residual" } } }
+      ]
+    },
+    "family2": {
+      "allOf": [
+        { "$ref": "#/$defs/familyBase" },
+        { "properties": { "id": { "const": 2 }, "name": { "const": "oriented-kernel" } } }
+      ]
+    },
+    "family3": {
+      "allOf": [
+        { "$ref": "#/$defs/familyBase" },
+        { "properties": { "id": { "const": 3 }, "name": { "const": "cached-surface" } } }
+      ]
+    },
+    "sourceCapabilityBase": {
+      "type": "object",
+      "required": ["kind", "family", "familyName", "semanticAdmission", "cpuReference", "cpuReferenceMode", "compiler", "compilerMode", "renderer", "potentialQueries", "gpuQueries", "gpuQueryModes", "limitations"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/sourceKind" },
+        "family": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "familyName": { "$ref": "#/$defs/familyName" },
+        "semanticAdmission": { "const": true },
+        "cpuReference": { "const": true },
+        "cpuReferenceMode": { "enum": ["complete", "source-axis-only"] },
+        "compiler": { "const": true },
+        "compilerMode": { "$ref": "#/$defs/compilerMode" },
+        "renderer": { "enum": ["direct-field", "marker-only"] },
+        "potentialQueries": {
+          "type": "array",
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/queryKind" }
+        },
+        "gpuQueries": {
+          "type": "array",
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/queryKind" }
+        },
+        "gpuQueryModes": { "$ref": "#/$defs/gpuQueryModes" },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "analyticSurfaceCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/sourceCapabilityBase" },
+        {
+          "properties": {
+            "family": { "const": 0 },
+            "familyName": { "const": "analytic" },
+            "cpuReferenceMode": { "const": "complete" },
+            "compilerMode": { "const": "certified-analytic-execution" },
+            "renderer": { "const": "direct-field" },
+            "potentialQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueryModes": { "const": { "bound": "conservative-bound", "surface": "certified-surface", "medium": "unavailable", "material": "material-table", "motion": "certificate-envelope", "collision": "certified-collision" } }
+          }
+        }
+      ]
+    },
+    "sphereCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticSurfaceCapability" },
+        { "properties": { "kind": { "const": "sphere" } } }
+      ]
+    },
+    "boxCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticSurfaceCapability" },
+        { "properties": { "kind": { "const": "box" } } }
+      ]
+    },
+    "capsuleCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticSurfaceCapability" },
+        { "properties": { "kind": { "const": "capsule" } } }
+      ]
+    },
+    "csgCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/analyticSurfaceCapability" },
+        { "properties": { "kind": { "const": "csg" }, "limitations": { "minItems": 1 } } }
+      ]
+    },
+    "sampledFieldCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/sourceCapabilityBase" },
+        {
+          "properties": {
+            "kind": { "const": "sampled-field" },
+            "family": { "const": 1 },
+            "familyName": { "const": "sparse-residual" },
+            "cpuReferenceMode": { "const": "complete" },
+            "compilerMode": { "const": "certified-field-execution" },
+            "renderer": { "const": "direct-field" },
+            "potentialQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueryModes": { "const": { "bound": "conservative-bound", "surface": "certified-surface", "medium": "unavailable", "material": "material-table", "motion": "certificate-envelope", "collision": "certified-collision" } },
+            "limitations": { "minItems": 1 }
+          }
+        }
+      ]
+    },
+    "sparseResidualCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/sourceCapabilityBase" },
+        {
+          "properties": {
+            "kind": { "const": "sparse-residual" },
+            "family": { "const": 1 },
+            "familyName": { "const": "sparse-residual" },
+            "cpuReferenceMode": { "const": "complete" },
+            "compilerMode": { "const": "certified-field-execution" },
+            "renderer": { "const": "direct-field" },
+            "potentialQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueryModes": { "const": { "bound": "conservative-bound", "surface": "certified-surface", "medium": "unavailable", "material": "material-table", "motion": "certificate-envelope", "collision": "certified-collision" } },
+            "limitations": { "minItems": 1 }
+          }
+        }
+      ]
+    },
+    "orientedSamplesCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/sourceCapabilityBase" },
+        {
+          "properties": {
+            "kind": { "const": "oriented-samples" },
+            "family": { "const": 2 },
+            "familyName": { "const": "oriented-kernel" },
+            "cpuReferenceMode": { "const": "source-axis-only" },
+            "compilerMode": { "const": "certificate-record" },
+            "renderer": { "const": "marker-only" },
+            "potentialQueries": { "const": ["bound", "surface", "material", "motion", "collision"] },
+            "gpuQueries": { "const": ["bound", "material", "motion"] },
+            "gpuQueryModes": { "const": { "bound": "conservative-bound", "surface": "unavailable", "medium": "unavailable", "material": "material-table", "motion": "certificate-envelope", "collision": "unavailable" } },
+            "limitations": { "minItems": 1 }
+          }
+        }
+      ]
+    },
+    "indexedSurfaceCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/sourceCapabilityBase" },
+        {
+          "properties": {
+            "kind": { "const": "indexed-surface" },
+            "family": { "const": 3 },
+            "familyName": { "const": "cached-surface" },
+            "cpuReferenceMode": { "const": "complete" },
+            "compilerMode": { "const": "packed-marker" },
+            "renderer": { "const": "marker-only" },
+            "potentialQueries": { "const": ["bound", "surface", "material", "motion"] },
+            "gpuQueries": { "const": ["bound", "material", "motion"] },
+            "gpuQueryModes": { "const": { "bound": "conservative-bound", "surface": "unavailable", "medium": "unavailable", "material": "material-table", "motion": "certificate-envelope", "collision": "unavailable" } },
+            "limitations": { "minItems": 1 }
+          }
+        }
+      ]
+    },
+    "mediumCapability": {
+      "allOf": [
+        { "$ref": "#/$defs/sourceCapabilityBase" },
+        {
+          "properties": {
+            "kind": { "const": "medium" },
+            "family": { "const": 0 },
+            "familyName": { "const": "analytic" },
+            "cpuReferenceMode": { "const": "complete" },
+            "compilerMode": { "const": "certificate-record" },
+            "renderer": { "const": "marker-only" },
+            "potentialQueries": { "const": ["bound", "medium", "motion"] },
+            "gpuQueries": { "const": ["bound", "medium", "motion"] },
+            "gpuQueryModes": { "const": { "bound": "conservative-bound", "surface": "unavailable", "medium": "certificate-majorant", "material": "unavailable", "motion": "certificate-envelope", "collision": "unavailable" } },
+            "limitations": { "minItems": 1 }
+          }
+        }
+      ]
+    }
+  }
+}

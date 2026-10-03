@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "id": "_base",
+  "name": "Base",
+  "description": "Foundation theme — defines all available variables. Every other theme extends this.",
+  "author": "Plauna",
+  "version": "1.0.0",
+  "extends": null,
+
+  "vars": {
+    "--bg-primary":      "#0a0a0f",
+    "--bg-secondary":    "#0f0f17",
+    "--bg-tertiary":     "#171723",
+    "--bg-quaternary":   "#1f1f2e",
+
+    "--text-primary":    "#e4e4e7",
+    "--text-secondary":  "#d1d5db",
+    "--text-tertiary":   "#9ca3af",
+    "--text-disabled":   "#6b7280",
+
+    "--border-light":    "#2a2a3a",
+    "--border-medium":   "#3a3a4a",
+    "--border-dark":     "#4a4a5a",
+    "--border-subtle":   "#1a1a28",
+
+    "--color-primary":   "#0ea5e9",
+    "--color-success":   "#10b981",
+    "--color-warning":   "#f59e0b",
+    "--color-error":     "#ef4444",
+    "--color-info":      "#3b82f6",
+
+    "--shadow-sm":       "0 1px 2px 0 rgba(0,0,0,0.3)",
+    "--shadow-md":       "0 4px 6px -1px rgba(0,0,0,0.4)",
+    "--shadow-lg":       "0 10px 15px -3px rgba(0,0,0,0.4)",
+    "--shadow-xl":       "0 20px 25px -5px rgba(0,0,0,0.4)",
+
+    "--spacing-xs":      "4px",
+    "--spacing-sm":      "8px",
+    "--spacing-md":      "12px",
+    "--spacing-lg":      "16px",
+    "--spacing-xl":      "24px",
+    "--spacing-2xl":     "32px",
+    "--spacing-3xl":     "48px",
+
+    "--font-size-xs":    "11px",
+    "--font-size-sm":    "13px",
+    "--font-size-md":    "15px",
+    "--font-size-lg":    "18px",
+    "--font-size-xl":    "22px",
+    "--font-size-2xl":   "28px",
+
+    "--font-weight-normal":   "400",
+    "--font-weight-medium":   "500",
+    "--font-weight-semibold": "600",
+    "--font-weight-bold":     "700",
+
+    "--border-radius-sm":   "4px",
+    "--border-radius-md":   "6px",
+    "--border-radius-lg":   "10px",
+    "--border-radius-xl":   "16px",
+    "--border-radius-full": "9999px",
+
+    "--transition-fast":  "120ms ease",
+    "--transition-base":  "200ms ease",
+    "--transition-slow":  "300ms ease",
+
+    "--z-base":     "1",
+    "--z-dropdown": "100",
+    "--z-sticky":   "200",
+    "--z-overlay":  "300",
+    "--z-modal":    "400",
+    "--z-toast":    "500"
+  }
+}

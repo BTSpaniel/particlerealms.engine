@@ -1,0 +1,6 @@
+{
+  "name": "truncated",
+  "expectedCode": 203,
+  "expectedMessageFragment": "Section out of bounds",
+  "size": 567
+}

@@ -1,0 +1,259 @@
+{
+  "site": {
+    "title": "WebGPU OS Docs",
+    "version": "0.1.0",
+    "home": "index.md",
+    "repo": "https://github.com/BTSpaniel/particlerealms.engine",
+    "repoRole": "platform-downloads"
+  },
+  "sections": [
+    {
+      "title": "Getting Started",
+      "icon": "rocket",
+      "items": [
+        { "title": "Overview", "path": "getting-started/overview.md" },
+        { "title": "Install & Run", "path": "getting-started/install.md" },
+        { "title": "Quickstart", "path": "getting-started/quickstart.md" },
+        { "title": "Glossary", "path": "getting-started/glossary.md" },
+        { "title": "FAQ & Troubleshooting", "path": "getting-started/faq.md" }
+      ]
+    },
+    {
+      "title": "Guides (How-To)",
+      "icon": "book-open",
+      "items": [
+        { "title": "Capabilities — What You Can Build", "path": "guides/capabilities.md" },
+        { "title": "Engine Stack Usage", "path": "guides/engine-stack-usage.md" },
+        { "title": "SDK Distribution and Rebuilding", "path": "guides/sdk-distribution.md" },
+        { "title": "Global Testing Platform", "path": "guides/global-testing.md" },
+        { "title": "Global Testing Audit", "path": "guides/global-testing-audit.md" },
+        { "title": "Global Testing Review", "path": "guides/global-testing-review.md" },
+        { "title": "Shared Tools and Traces", "path": "guides/global-tooling.md" },
+        { "title": "Global Tooling Research", "path": "guides/global-tooling-research.md" },
+        { "title": "Global Tooling Review", "path": "guides/global-tooling-review.md" },
+        { "title": "Shared Test and Tool Queue", "path": "guides/global-tooling-queue.md" },
+        { "title": "Queue Review", "path": "guides/global-tooling-queue-review.md" }
+      ]
+    },
+    {
+      "title": "Concepts (Whole Stack)",
+      "icon": "layers",
+      "items": [
+        { "title": "Architecture Overview", "path": "concepts/architecture-overview.md" },
+        { "title": "Genesis Ecology", "path": "concepts/genesis-ecology.md" },
+        { "title": "History & Evolution", "path": "concepts/history-evolution.md" },
+        { "title": "Boot Sequence", "path": "concepts/boot-sequence.md" },
+        { "title": "GPU Device Sharing", "path": "concepts/gpu-device-sharing.md" },
+        { "title": "Security & Trust Model", "path": "concepts/security-model.md" },
+        { "title": "Data Flow", "path": "concepts/data-flow.md" },
+        { "title": "Schema Evolution & Expand-Contract", "path": "concepts/schema-evolution.md" },
+        { "title": "Particle State Channels", "path": "concepts/state-channels.md" }
+      ]
+    },
+    {
+      "title": "Engine",
+      "icon": "cpu",
+      "items": [
+        { "title": "Overview", "path": "engine/overview.md" },
+        { "title": "Architecture", "path": "engine/architecture.md" },
+        { "title": "Shared NPC intelligence", "path": "engine/shared-npc-intelligence.md" },
+        { "title": "Genesis Ecology Engine and ECS Plan", "path": "engine/genesis-ecology-engine-plan.md" },
+        { "title": "Virtual Realm M2 Engine and ECS Foundation", "path": "engine/virtual-realm-m2-engine-foundation.md" },
+        { "title": "Getting Started", "path": "engine/getting-started.md" },
+        { "title": "Virtual GPU (vGPU)", "path": "engine/vgpu.md" },
+        { "title": "Managed Compute and WebAssembly", "path": "engine/compute.md" },
+        { "title": "ECS v2", "path": "engine/ecs.md" },
+        { "title": "Rendering", "path": "engine/rendering.md" },
+        { "title": "Tetrahedral Cage Lab", "path": "engine/tetrahedral-cage-lab.md" },
+        { "title": "MorphField R2", "path": "engine/morphfield.md" },
+        { "title": "Shaders & WGSL", "path": "engine/shaders.md" },
+        { "title": "Particle System", "path": "engine/particles.md" },
+        { "title": "Adaptive Matter Continuum", "path": "engine/adaptive-matter-continuum.md" },
+        { "title": "Galaxy Mythic Spiral Atlas", "path": "engine/galaxy-mythic-spiral-atlas.md" },
+        { "title": "Curl Noise Flow Atlas", "path": "engine/curl-noise-flow-atlas.md" },
+        { "title": "Kuramoto Resonance Field", "path": "engine/kuramoto-resonance-field.md" },
+        { "title": "Particle Long-Range Solvers", "path": "engine/particle-long-range.md" },
+        { "title": "Physics & Simulation", "path": "engine/physics.md" },
+        { "title": "Surface Fields and Surface Lab", "path": "engine/surface-fields.md" },
+        { "title": "Fabmax PhysX API Review", "path": "engine/physx-fabmax-review.md" },
+        { "title": "GPU Physics Engine", "path": "engine/gpu-physics.md" },
+        { "title": "Math Library", "path": "engine/math.md" },
+        { "title": "Math Contract", "path": "engine/math-contract.md" },
+        { "title": "Audio", "path": "engine/audio.md" },
+        { "title": "Index", "path": "engine/index.md" }
+      ],
+      "groups": [
+        { "title": "API Reference", "auto": "engine/reference" }
+      ]
+    },
+    {
+      "title": "Editor",
+      "icon": "edit",
+      "items": [
+        { "title": "Overview", "path": "editor/overview.md" },
+        { "title": "Architecture", "path": "editor/architecture.md" },
+        { "title": "Getting Started", "path": "editor/getting-started.md" },
+        { "title": "Index", "path": "editor/index.md" }
+      ],
+      "groups": [
+        { "title": "API Reference", "auto": "editor/reference" }
+      ]
+    },
+    {
+      "title": "Plauna (UI Framework)",
+      "icon": "grid",
+      "items": [
+        { "title": "Overview", "path": "plauna/overview.md" },
+        { "title": "Architecture", "path": "plauna/architecture.md" },
+        { "title": "Getting Started", "path": "plauna/getting-started.md" },
+        { "title": "Index", "path": "plauna/index.md" }
+      ],
+      "groups": [
+        { "title": "API Reference", "auto": "plauna/reference" }
+      ]
+    },
+    {
+      "title": "AGI (AI / Rigging)",
+      "icon": "brain",
+      "items": [
+        { "title": "Overview", "path": "agi/overview.md" },
+        { "title": "Architecture", "path": "agi/architecture.md" },
+        { "title": "Getting Started", "path": "agi/getting-started.md" },
+        { "title": "Training Guide", "path": "agi/training-guide.md" },
+        { "title": "ParticleVoice Calibration", "path": "agi/particle-voice-calibration.md" },
+        { "title": "Text & Handwriting Research", "path": "agi/ocr-improvement-research.md" },
+        { "title": "Index", "path": "agi/index.md" }
+      ],
+      "groups": [
+        { "title": "API Reference", "auto": "agi/reference" }
+      ]
+    },
+    {
+      "title": "WebGPU OS",
+      "icon": "monitor",
+      "items": [
+        { "title": "Overview", "path": "webgpu-os/overview.md" },
+          { "title": "Architecture", "path": "webgpu-os/architecture.md" },
+          { "title": "Compute Service", "path": "webgpu-os/compute.md" },
+          { "title": "Shared App UI", "path": "webgpu-os/app-ui.md" },
+          { "title": "Navi Speech Milestone", "path": "webgpu-os/navi-speech-milestone.md" },
+          { "title": "Navi Growth and AI Gym", "path": "webgpu-os/navi-development.md" },
+          { "title": "Navi and Settings Renovation Proposal", "path": "webgpu-os/navi-settings-renovation-plan.md" },
+        { "title": "Genesis Ecology WebGPU OS Plan", "path": "webgpu-os/genesis-ecology-os-plan.md" },
+        { "title": "Installed System Releases", "path": "webgpu-os/installed-system-releases.md" },
+        { "title": "Runtime Handoff and Update Swarm", "path": "webgpu-os/runtime-handoff-and-update-swarm.md" },
+        { "title": "Setup Center State and Migration", "path": "webgpu-os/setup-center-state.md" },
+        { "title": "Realm Network", "path": "webgpu-os/realm-network.md" },
+        { "title": "Operator, SecureMesh, and Agent Boundaries", "path": "webgpu-os/operator-securemesh.md" },
+        { "title": "Navi Architecture and Delivery", "path": "webgpu-os/navi-architecture-and-delivery.md" },
+        { "title": "AI Echo Agent Extension Architecture", "path": "webgpu-os/agent-extension-architecture.md" },
+        { "title": "AI Echo Design and Knowledge Workflows", "path": "webgpu-os/ai-echo-design-and-knowledge-workflows.md" },
+        { "title": "Private Working Sets and Recovery", "path": "webgpu-os/private-working-sets.md" },
+        { "title": "AI Echo Live Patch", "path": "webgpu-os/ai-echo-live-patch.md" },
+          { "title": "AI Echo Artifact Studio", "path": "webgpu-os/ai-echo-artifact-studio.md" },
+          { "title": "System One decision models", "path": "webgpu-os/jev-decisions.md" },
+        { "title": "AI Echo Engine Demo Workflow", "path": "webgpu-os/ai-echo-engine-demo-workflow.md" },
+        { "title": "AI Echo Clicks and Clankers", "path": "webgpu-os/ai-echo-clicks-and-clankers.md" },
+        { "title": "AppForge Contracts", "path": "webgpu-os/appforge-contracts.md" },
+          { "title": "RealmForge Modular Workbench", "path": "webgpu-os/realmforge.md" },
+          { "title": "RealmForge Usable Interiors", "path": "webgpu-os/realmforge-interiors.md" },
+          { "title": "RealmForge Building Programs and Utilities", "path": "webgpu-os/realmforge-building-utilities.md" },
+          { "title": "RealmForge Object Actions and Animation", "path": "webgpu-os/realmforge-object-actions.md" },
+          { "title": "RealmForge Improvement Research", "path": "webgpu-os/realmforge-improvement-research.md" },
+          { "title": "RealmForge Electricity and Control Boards", "path": "webgpu-os/realmforge-electricity.md" },
+          { "title": "CircuitLab Design and Board Generation", "path": "webgpu-os/realmforge-circuitlab-design.md" },
+          { "title": "CircuitLab Analysis and Smith Lab Integration", "path": "webgpu-os/realmforge-circuitlab-analysis-plan.md" },
+        { "title": "SOUL browser learning and daily life", "path": "webgpu-os/soul.md" },
+        { "title": "SOUL civilization gaps and founder camp roadmap", "path": "webgpu-os/soul-civilization-roadmap.md" },
+        { "title": "RealmForge Genesis Ecology", "path": "webgpu-os/realmforge-genesis-ecology.md" },
+        { "title": "RealmForge RF-GE6 Projection and World Kits", "path": "webgpu-os/rf-ge6-projection-world-kits.md" },
+        { "title": "Getting Started", "path": "webgpu-os/getting-started.md" },
+        { "title": "App Catalog", "path": "webgpu-os/app-catalog.md" },
+        { "title": "Video Player and Watch Party", "path": "webgpu-os/video-player-watch-party.md" },
+        { "title": "Sewing Studio and Shared Factory Surfaces", "path": "webgpu-os/sewing-studio.md" },
+        { "title": "Sewing Studio v3 Integration Plan", "path": "webgpu-os/sewing-v3-integration.md" },
+        { "title": "Ambient Studio", "path": "webgpu-os/ambient-studio.md" },
+        { "title": "Modular Pinball Parts", "path": "webgpu-os/pinball-parts.md" },
+        { "title": "Smith Lab", "path": "webgpu-os/smith-lab.md" },
+        { "title": "Particle Realms Studio", "path": "webgpu-os/particle-realms-studio.md" },
+        { "title": "Particle Studio User Guide", "path": "webgpu-os/particle-studio-user-guide.md" },
+        { "title": "Particle Studio Architecture", "path": "webgpu-os/particle-studio-architecture.md" },
+        { "title": "Particle Studio Integration Map", "path": "webgpu-os/particle-studio-integration-map.md" },
+        { "title": "Particle Recipe Schema", "path": "webgpu-os/particle-recipe-schema.md" },
+        { "title": "Particle Studio Preset Authoring", "path": "webgpu-os/particle-studio-preset-authoring.md" },
+        { "title": "Particle Studio Fidelity and Validation", "path": "webgpu-os/particle-studio-fidelity-and-validation.md" },
+        { "title": "Particle Studio Telemetry", "path": "webgpu-os/particle-studio-telemetry.md" },
+        { "title": "Particle Studio External Studies", "path": "webgpu-os/particle-studio-external-studies.md" },
+        { "title": "Particle Studio Performance", "path": "webgpu-os/particle-studio-performance.md" },
+        { "title": "Particle Studio Test Plan", "path": "webgpu-os/particle-studio-test-plan.md" },
+        { "title": "Paint Studio Audit and Improvement Plan", "path": "webgpu-os/paint-studio-improvement-plan.md" },
+        { "title": "Paint Sprite and Animation Upgrade Plan", "path": "webgpu-os/paint-sprite-animation-plan.md" },
+        { "title": "Index", "path": "webgpu-os/index.md" }
+      ],
+      "groups": [
+        { "title": "API Reference", "auto": "webgpu-os/reference" }
+      ]
+    },
+    {
+      "title": "The Virtual Realm",
+      "icon": "globe",
+      "items": [
+        { "title": "Overview", "path": "webgpu-os/virtual-realm/index.md" },
+        { "title": "Architecture and Ownership", "path": "webgpu-os/virtual-realm/architecture.md" },
+        { "title": "Playground Clean-Room Foundations", "path": "webgpu-os/virtual-realm/playground-clean-room-foundations.md" },
+        { "title": "Contract Catalog", "path": "webgpu-os/virtual-realm/contracts.md" },
+        { "title": "RealmForge Bake Pipeline", "path": "webgpu-os/virtual-realm/realmforge-pipeline.md" },
+        { "title": "M1B Public and Refinement Packages", "path": "webgpu-os/virtual-realm/m1b-public-refinement-packages.md" },
+        { "title": "M1C Storylet and Reviewed Station Bake", "path": "webgpu-os/virtual-realm/m1c-storylet-station-bake.md" },
+        { "title": "Genesis Ecology Integration", "path": "webgpu-os/virtual-realm/genesis-ecology-integration.md" },
+        { "title": "M2 Runtime Foundation", "path": "webgpu-os/virtual-realm/m2-runtime-foundation.md" },
+        { "title": "M2A Runtime Composition", "path": "webgpu-os/virtual-realm/m2a-runtime-composition.md" },
+        { "title": "M2B Private-Bake Admission", "path": "webgpu-os/virtual-realm/m2b-private-bake-admission.md" },
+        { "title": "World Districts and Facilities", "path": "webgpu-os/virtual-realm/world-districts.md" },
+        { "title": "M3 Living City Runtime", "path": "webgpu-os/virtual-realm/m3-living-city-runtime.md" },
+        { "title": "M3A Observation Ingress", "path": "webgpu-os/virtual-realm/m3a-observation-ingress.md" },
+        { "title": "M3B Disclosure and Dynamic Projection", "path": "webgpu-os/virtual-realm/m3b-disclosure-projection.md" },
+        { "title": "World Projection Grammar", "path": "webgpu-os/virtual-realm/world-projection.md" },
+        { "title": "Local City Operations View", "path": "webgpu-os/virtual-realm/local-operator-view.md" },
+        { "title": "Code Matter", "path": "webgpu-os/virtual-realm/code-matter.md" },
+        { "title": "Cityforms and SecureMesh", "path": "webgpu-os/virtual-realm/cityforms-securemesh.md" },
+        { "title": "Cityform Encounter Runtime", "path": "webgpu-os/virtual-realm/cityform-encounter-runtime.md" },
+        { "title": "Storylets", "path": "webgpu-os/virtual-realm/storylets.md" },
+        { "title": "Rendering and Experience", "path": "webgpu-os/virtual-realm/rendering-experience.md" },
+        { "title": "Security and Privacy", "path": "webgpu-os/virtual-realm/security-privacy.md" },
+        { "title": "Implementation Roadmap", "path": "webgpu-os/virtual-realm/implementation-roadmap.md" },
+        { "title": "Certification Plan", "path": "webgpu-os/virtual-realm/certification-plan.md" },
+        { "title": "Research and Originality", "path": "webgpu-os/virtual-realm/research-originality.md" }
+      ]
+    },
+    {
+      "title": "API",
+      "icon": "code",
+      "items": [
+        { "title": "API Reference", "path": "api/index.md" }
+      ]
+    },
+    {
+      "title": "Contributing",
+      "icon": "book",
+      "items": [
+        { "title": "Docs Style Guide", "path": "contributing/docs-style-guide.md" },
+        { "title": "Writing Checklist", "path": "contributing/writing-checklist.md" },
+        { "title": "Page Templates", "path": "contributing/page-templates.md" },
+        { "title": "API Reference Standard", "path": "contributing/api-reference-standard.md" },
+        { "title": "AI & Accessibility", "path": "contributing/ai-and-accessibility.md" },
+        { "title": "Diagram Guide", "path": "contributing/diagram-guide.md" },
+        { "title": "Contribution Workflow", "path": "contributing/doc-contribution-workflow.md" },
+        { "title": "Agent Guide (AGENTS.md)", "path": "AGENTS.md" },
+        { "title": "Changelog", "path": "CHANGELOG.md" }
+      ]
+    },
+    {
+      "title": "About",
+      "icon": "user",
+      "items": [
+        { "title": "Author & Credits", "path": "about/credits.md" }
+      ]
+    }
+  ]
+}

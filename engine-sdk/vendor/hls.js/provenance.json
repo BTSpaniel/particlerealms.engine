@@ -1,0 +1,28 @@
+{
+  "package": "hls.js",
+  "version": "1.7.3",
+  "archive": "https://registry.npmjs.org/hls.js/-/hls.js-1.7.3.tgz",
+  "archiveIntegrity": "sha512-MsPlx6yVW4Qv4C7mEVou4/gk/5cN2dVxOTnrNjPSmyH2f0Ln+/UkG10Ax1PE6OvrmTVPKgQYozTtBaPOuCzq7A==",
+  "files": [
+    {
+      "path": "hls.mjs",
+      "byteLength": 1484971,
+      "sha256": "11e668e41247b44b5807a10264f36e2edd9eaaa681167c46c9a681bd3757059b"
+    },
+    {
+      "path": "hls.worker.js",
+      "byteLength": 118233,
+      "sha256": "42794b9ca89d78c54407c6a0e46cdcde9fbd976e476259428e506be857cb16ea"
+    },
+    {
+      "path": "LICENSE",
+      "byteLength": 1338,
+      "sha256": "ca8773cf798c7ed997d4dd7c8e23c348699f8d5b7462636694cc14de6cda12db"
+    },
+    {
+      "path": "distribution-metadata.json",
+      "byteLength": 6889,
+      "sha256": "bdcbb1e6ba4a7f643bc14494b1e9036792460561847696e0509688a27c5f7dad"
+    }
+  ]
+}

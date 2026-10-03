@@ -1,0 +1,501 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/* Canonical Particle Realms / WebGPU OS animated identity. */
+.particle-realms-mark {
+    --particle-realms-mark-cyan: #57e6ff;
+    --particle-realms-mark-magenta: #ef4ba8;
+    --particle-realms-mark-outcome: var(--particle-realms-mark-cyan);
+    --particle-realms-mark-scale: 1;
+    --particle-realms-mark-aura-opacity: 0.64;
+    --particle-realms-mark-aura-scale: 1;
+    --particle-realms-mark-orbit-opacity: 0.74;
+    --particle-realms-mark-spirit-mid-opacity: 0.48;
+    --particle-realms-mark-spirit-peak-opacity: 0.68;
+    --particle-realms-mark-reduced-spirit-opacity: 0.42;
+    --particle-realms-mark-core-halo-alpha: 0.46;
+    --particle-realms-mark-core-bloom-alpha: 0.24;
+    --particle-realms-mark-core-flare-alpha: 0.06;
+    --particle-realms-mark-core-glow-alpha: 0.72;
+    --particle-realms-mark-core-far-glow-alpha: 0.42;
+    --particle-realms-mark-core-flare-glow-alpha: 0.13;
+    --particle-realms-mark-core-scale: 1;
+    --particle-realms-mark-cube-face-alpha: 0.27;
+    --particle-realms-mark-cube-edge-alpha: 0.82;
+    --particle-realms-mark-cube-shine-alpha: 0.27;
+    --particle-realms-mark-cube-glow-alpha: 0.51;
+    --particle-realms-mark-cube-scale: 0.96;
+    position: relative;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 104px;
+    flex: none;
+    overflow: visible;
+    isolation: isolate;
+    pointer-events: none;
+}
+
+.particle-realms-mark[data-mark-outcome="verified"] {
+    --particle-realms-mark-outcome: #63f4c3;
+}
+
+.particle-realms-mark[data-mark-outcome="degraded"] {
+    --particle-realms-mark-outcome: #f6c65b;
+}
+
+.particle-realms-mark[data-mark-outcome="failed"] {
+    --particle-realms-mark-outcome: #ff7397;
+}
+
+.particle-realms-mark__stage {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.particle-realms-mark__scene {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 104px;
+    flex: none;
+    translate: -50% -50%;
+    scale: var(--particle-realms-mark-scale);
+    transform-origin: 50% 50%;
+    pointer-events: none;
+}
+
+.particle-realms-mark__aura,
+.particle-realms-mark__orbit,
+.particle-realms-mark__spirits {
+    position: absolute;
+    display: block;
+    inset: 50% auto auto 50%;
+    pointer-events: none;
+}
+
+.particle-realms-mark__aura {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(87, 230, 255, 0.25), rgba(112, 89, 255, 0.12) 37%, transparent 69%);
+    opacity: var(--particle-realms-mark-aura-opacity);
+    transform: translate3d(-50%, -50%, 0) scale(var(--particle-realms-mark-aura-scale));
+    transition: opacity 520ms ease, transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.particle-realms-mark__orbit {
+    width: 91px;
+    height: 91px;
+    border: 1px solid rgba(103, 173, 255, 0.34);
+    border-right-color: rgba(87, 230, 255, 0.92);
+    border-bottom-color: rgba(238, 75, 168, 0.48);
+    border-radius: 50%;
+    opacity: var(--particle-realms-mark-orbit-opacity);
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+    animation: particle-realms-mark-orbit 5.4s linear infinite;
+    will-change: transform;
+}
+
+.particle-realms-mark__orbit::before,
+.particle-realms-mark__orbit::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--particle-realms-mark-outcome);
+    box-shadow: 0 0 11px currentColor;
+}
+
+.particle-realms-mark__orbit::before {
+    top: 5px;
+    right: 12px;
+}
+
+.particle-realms-mark__orbit::after {
+    bottom: 7px;
+    left: 10px;
+    background: var(--particle-realms-mark-magenta);
+}
+
+.particle-realms-mark__spirits {
+    width: 1px;
+    height: 1px;
+}
+
+.particle-realms-mark__spirit {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    color: var(--particle-realms-mark-cyan);
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+    opacity: 0;
+    animation:
+        particle-realms-mark-spirit-gather
+        var(--particle-realms-spirit-duration, 3.4s)
+        linear
+        var(--particle-realms-spirit-delay, 0s)
+        infinite;
+    animation-play-state: paused;
+    will-change: transform, opacity;
+}
+
+.particle-realms-mark__spirit:nth-child(3n + 1) {
+    color: #a58bff;
+}
+
+.particle-realms-mark__spirit:nth-child(3n + 2) {
+    color: var(--particle-realms-mark-magenta);
+}
+
+.particle-realms-mark__spirit::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    width: 9px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor);
+    opacity: 0.54;
+    transform: translateY(-50%);
+}
+
+.particle-realms-mark__spirit.is-awake {
+    animation-play-state: running;
+}
+
+.particle-realms-mark__core {
+    position: relative;
+    z-index: 2;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle,
+            rgba(255, 255, 255, 0.36) 0 3%,
+            rgba(173, 246, 255, var(--particle-realms-mark-core-halo-alpha)) 8%,
+            rgba(87, 230, 255, var(--particle-realms-mark-core-halo-alpha)) 22%,
+            rgba(124, 108, 255, var(--particle-realms-mark-core-bloom-alpha)) 42%,
+            rgba(239, 75, 168, var(--particle-realms-mark-core-flare-alpha)) 57%,
+            transparent 72%);
+    perspective: 220px;
+    animation: particle-realms-mark-float 2.4s ease-in-out infinite;
+    will-change: transform;
+}
+
+.particle-realms-mark__core::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 36% 31%,
+            #ffffff 0 18%,
+            #eaffff 24%,
+            #8ff2ff 50%,
+            #7278ff 76%,
+            #ef4ba8 100%);
+    box-shadow:
+        0 0 4px 1px rgba(255, 255, 255, 0.94),
+        0 0 12px 4px rgba(87, 230, 255, var(--particle-realms-mark-core-glow-alpha)),
+        0 0 28px 10px rgba(124, 108, 255, var(--particle-realms-mark-core-far-glow-alpha)),
+        0 0 44px 18px rgba(239, 75, 168, var(--particle-realms-mark-core-flare-glow-alpha));
+    opacity: 0.94;
+    z-index: 1;
+    transform: translate3d(-50%, -50%, 0) scale(var(--particle-realms-mark-core-scale));
+    animation: particle-realms-mark-core-breathe 1.8s ease-in-out infinite;
+    will-change: transform, opacity;
+}
+
+.particle-realms-mark__cube {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    color: var(--particle-realms-mark-cyan);
+    transform-style: preserve-3d;
+    transform:
+        translate3d(-50%, -50%, 0)
+        rotateX(-22deg)
+        rotateY(34deg)
+        rotateZ(-2deg)
+        scale(var(--particle-realms-mark-cube-scale));
+    animation: particle-realms-mark-cube-rotate 7.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    will-change: transform;
+}
+
+.particle-realms-mark__cube-face {
+    --particle-realms-mark-cube-face-rgb: 87, 230, 255;
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    display: block;
+    border: 1px solid rgba(205, 251, 255, var(--particle-realms-mark-cube-edge-alpha));
+    background:
+        linear-gradient(45deg,
+            transparent 47%,
+            rgba(225, 253, 255, var(--particle-realms-mark-cube-shine-alpha)) 49% 51%,
+            transparent 53%),
+        linear-gradient(135deg,
+            rgba(255, 255, 255, var(--particle-realms-mark-cube-shine-alpha)) 0%,
+            transparent 43%),
+        linear-gradient(145deg,
+            rgba(var(--particle-realms-mark-cube-face-rgb), var(--particle-realms-mark-cube-face-alpha)),
+            rgba(91, 124, 255, var(--particle-realms-mark-cube-face-alpha)) 58%,
+            rgba(239, 75, 168, var(--particle-realms-mark-core-flare-alpha)));
+    box-shadow:
+        inset 0 0 8px rgba(var(--particle-realms-mark-cube-face-rgb), var(--particle-realms-mark-cube-glow-alpha)),
+        0 0 3px rgba(173, 246, 255, var(--particle-realms-mark-cube-shine-alpha));
+    backface-visibility: visible;
+}
+
+.particle-realms-mark__cube-face--front { transform: translateZ(16px); }
+.particle-realms-mark__cube-face--back {
+    --particle-realms-mark-cube-face-rgb: 124, 108, 255;
+    transform: rotateY(180deg) translateZ(16px);
+}
+.particle-realms-mark__cube-face--right {
+    --particle-realms-mark-cube-face-rgb: 91, 124, 255;
+    transform: rotateY(90deg) translateZ(16px);
+}
+.particle-realms-mark__cube-face--left {
+    --particle-realms-mark-cube-face-rgb: 43, 215, 197;
+    transform: rotateY(-90deg) translateZ(16px);
+}
+.particle-realms-mark__cube-face--top {
+    --particle-realms-mark-cube-face-rgb: 173, 246, 255;
+    transform: rotateX(90deg) translateZ(16px);
+}
+.particle-realms-mark__cube-face--bottom {
+    --particle-realms-mark-cube-face-rgb: 239, 75, 168;
+    transform: rotateX(-90deg) translateZ(16px);
+}
+
+.particle-realms-mark__core::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    z-index: 3;
+    border: 1px solid var(--particle-realms-mark-outcome);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.78);
+}
+
+.particle-realms-mark.is-checkpoint .particle-realms-mark__core::after {
+    animation: particle-realms-mark-checkpoint 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.particle-realms-mark.is-failed .particle-realms-mark__orbit,
+.particle-realms-mark.is-failed .particle-realms-mark__spirit,
+.particle-realms-mark.is-failed .particle-realms-mark__core,
+.particle-realms-mark.is-failed .particle-realms-mark__core::before,
+.particle-realms-mark.is-failed .particle-realms-mark__cube,
+.particle-realms-mark[data-mark-animated="false"] .particle-realms-mark__orbit,
+.particle-realms-mark[data-mark-animated="false"] .particle-realms-mark__spirit,
+.particle-realms-mark[data-mark-animated="false"] .particle-realms-mark__core,
+.particle-realms-mark[data-mark-animated="false"] .particle-realms-mark__core::before,
+.particle-realms-mark[data-mark-animated="false"] .particle-realms-mark__cube {
+    animation-play-state: paused;
+}
+
+.particle-realms-mark.is-complete .particle-realms-mark__aura {
+    animation: particle-realms-mark-complete-bloom 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.particle-realms-mark.is-complete .particle-realms-mark__orbit {
+    animation: particle-realms-mark-complete-orbit 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.particle-realms-mark.is-complete .particle-realms-mark__core::before {
+    animation: particle-realms-mark-core-complete 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.particle-realms-mark.is-complete .particle-realms-mark__spirit.is-awake {
+    animation: particle-realms-mark-spirit-complete 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes particle-realms-mark-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-4px) scale(1.025); }
+}
+
+@keyframes particle-realms-mark-core-breathe {
+    0%, 100% {
+        opacity: 0.9;
+        transform: translate3d(-50%, -50%, 0) scale(var(--particle-realms-mark-core-scale));
+    }
+    50% {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(calc(var(--particle-realms-mark-core-scale) + 0.1));
+    }
+}
+
+@keyframes particle-realms-mark-core-complete {
+    0% {
+        opacity: 0.94;
+        transform: translate3d(-50%, -50%, 0) scale(var(--particle-realms-mark-core-scale));
+    }
+    58% {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(calc(var(--particle-realms-mark-core-scale) + 0.26));
+    }
+    100% {
+        opacity: 0.96;
+        transform: translate3d(-50%, -50%, 0) scale(calc(var(--particle-realms-mark-core-scale) + 0.04));
+    }
+}
+
+@keyframes particle-realms-mark-cube-rotate {
+    0% {
+        transform: translate3d(-50%, -50%, 0) rotateX(-22deg) rotateY(34deg) rotateZ(-2deg)
+            scale(var(--particle-realms-mark-cube-scale));
+    }
+    25% {
+        transform: translate3d(-50%, -50%, 0) rotateX(13deg) rotateY(124deg) rotateZ(1deg)
+            scale(var(--particle-realms-mark-cube-scale));
+    }
+    50% {
+        transform: translate3d(-50%, -50%, 0) rotateX(22deg) rotateY(214deg) rotateZ(2deg)
+            scale(var(--particle-realms-mark-cube-scale));
+    }
+    75% {
+        transform: translate3d(-50%, -50%, 0) rotateX(-12deg) rotateY(304deg) rotateZ(-1deg)
+            scale(var(--particle-realms-mark-cube-scale));
+    }
+    100% {
+        transform: translate3d(-50%, -50%, 0) rotateX(-22deg) rotateY(394deg) rotateZ(-2deg)
+            scale(var(--particle-realms-mark-cube-scale));
+    }
+}
+
+@keyframes particle-realms-mark-orbit {
+    from { transform: translate3d(-50%, -50%, 0) rotate(0deg); }
+    to { transform: translate3d(-50%, -50%, 0) rotate(360deg); }
+}
+
+@keyframes particle-realms-mark-spirit-gather {
+    0% {
+        opacity: 0;
+        transform:
+            translate3d(var(--particle-realms-spirit-x), var(--particle-realms-spirit-y), 0)
+            scale(0.32);
+    }
+    20% { opacity: var(--particle-realms-mark-spirit-mid-opacity); }
+    76% { opacity: var(--particle-realms-mark-spirit-peak-opacity); }
+    100% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.16); }
+}
+
+@keyframes particle-realms-mark-checkpoint {
+    0% { opacity: 0; transform: scale(0.76); }
+    24% { opacity: 0.72; }
+    100% { opacity: 0; transform: scale(1.34); }
+}
+
+@keyframes particle-realms-mark-complete-bloom {
+    0% {
+        opacity: var(--particle-realms-mark-aura-opacity);
+        transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+    56% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1.28); }
+    100% { opacity: 0.42; transform: translate3d(-50%, -50%, 0) scale(0.92); }
+}
+
+@keyframes particle-realms-mark-complete-orbit {
+    0% { opacity: 0.9; transform: translate3d(-50%, -50%, 0) rotate(0deg) scale(1); }
+    100% { opacity: 0; transform: translate3d(-50%, -50%, 0) rotate(210deg) scale(0.58); }
+}
+
+@keyframes particle-realms-mark-spirit-complete {
+    0% {
+        opacity: 0.76;
+        transform:
+            translate3d(var(--particle-realms-spirit-x), var(--particle-realms-spirit-y), 0)
+            scale(0.7);
+    }
+    100% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.08); }
+}
+
+html.theme-light .particle-realms-mark[data-mark-outcome="working"] {
+    --particle-realms-mark-outcome: #146276;
+}
+html.theme-light .particle-realms-mark[data-mark-outcome="verified"] {
+    --particle-realms-mark-outcome: #087a58;
+}
+html.theme-light .particle-realms-mark[data-mark-outcome="degraded"] {
+    --particle-realms-mark-outcome: #8a5700;
+}
+html.theme-light .particle-realms-mark[data-mark-outcome="failed"] {
+    --particle-realms-mark-outcome: #b4234f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .particle-realms-mark,
+    .particle-realms-mark *,
+    .particle-realms-mark *::before,
+    .particle-realms-mark *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+    .particle-realms-mark__spirit.is-awake {
+        opacity: var(--particle-realms-mark-reduced-spirit-opacity);
+        transform:
+            translate3d(var(--particle-realms-spirit-x), var(--particle-realms-spirit-y), 0)
+            scale(0.62);
+    }
+}
+
+html.reduce-motion .particle-realms-mark,
+html.reduce-motion .particle-realms-mark *,
+html.reduce-motion .particle-realms-mark *::before,
+html.reduce-motion .particle-realms-mark *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
+html.reduce-motion .particle-realms-mark__spirit.is-awake,
+.particle-realms-mark[data-mark-animated="false"] .particle-realms-mark__spirit.is-awake {
+    opacity: var(--particle-realms-mark-reduced-spirit-opacity);
+    transform:
+        translate3d(var(--particle-realms-spirit-x), var(--particle-realms-spirit-y), 0)
+        scale(0.62);
+}
+
+@media (forced-colors: active) {
+    .particle-realms-mark__aura,
+    .particle-realms-mark__orbit,
+    .particle-realms-mark__spirits,
+    .particle-realms-mark__core::before,
+    .particle-realms-mark__core::after,
+    .particle-realms-mark__cube {
+        display: none;
+    }
+    .particle-realms-mark__core {
+        width: 14px;
+        height: 14px;
+        border: 2px solid CanvasText;
+        border-radius: 3px;
+        background: Highlight;
+        box-shadow: none;
+        animation: none;
+        forced-color-adjust: auto;
+    }
+}

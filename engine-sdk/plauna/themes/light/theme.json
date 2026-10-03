@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "light",
+  "name": "Light",
+  "description": "Clean light theme for bright environments.",
+  "author": "Plauna",
+  "version": "1.0.0",
+  "extends": "_base",
+
+  "vars": {
+    "--bg-primary":    "#ffffff",
+    "--bg-secondary":  "#f8fafc",
+    "--bg-tertiary":   "#f1f5f9",
+    "--bg-quaternary": "#e2e8f0",
+
+    "--text-primary":   "#0f172a",
+    "--text-secondary": "#475569",
+    "--text-tertiary":  "#64748b",
+    "--text-disabled":  "#94a3b8",
+
+    "--border-light":  "#e2e8f0",
+    "--border-medium": "#cbd5e1",
+    "--border-dark":   "#94a3b8",
+    "--border-subtle": "#f1f5f9",
+
+    "--shadow-sm": "0 1px 2px 0 rgba(0,0,0,0.05)",
+    "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.1)",
+    "--shadow-lg": "0 10px 15px -3px rgba(0,0,0,0.1)",
+    "--shadow-xl": "0 20px 25px -5px rgba(0,0,0,0.1)"
+  }
+}

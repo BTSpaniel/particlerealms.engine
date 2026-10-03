@@ -1,0 +1,158 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Checkbox Component Styles
+ * Modular CSS for Checkbox form control with custom styling
+ */
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox__input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  border: 2px solid var(--border-medium);
+  border-radius: var(--border-radius-sm);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.checkbox__input:hover:not(:disabled) {
+  border-color: var(--color-primary-500);
+}
+
+.checkbox__input:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.checkbox__input:checked {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.checkbox__input:checked::after {
+  content: '✓';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.checkbox__input:disabled {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.checkbox__input:indeterminate {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.checkbox__input:indeterminate::after {
+  content: '−';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Label */
+.checkbox__label {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin: 0;
+}
+
+.checkbox:has(.checkbox__input:disabled) .checkbox__label {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* Description */
+.checkbox__description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: var(--spacing-xs);
+  margin-left: 28px;
+}
+
+/* Size Variants */
+.checkbox--sm .checkbox__input {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.checkbox--sm .checkbox__label {
+  font-size: var(--font-size-sm);
+}
+
+.checkbox--lg .checkbox__input {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.checkbox--lg .checkbox__label {
+  font-size: var(--font-size-lg);
+}
+
+/* Color Variants */
+.checkbox--primary .checkbox__input:checked {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.checkbox--success .checkbox__input:checked {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.checkbox--warning .checkbox__input:checked {
+  background: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.checkbox--error .checkbox__input:checked {
+  background: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .checkbox {
+    gap: var(--spacing-sm);
+  }
+
+  .checkbox__label {
+    font-size: var(--font-size-sm);
+  }
+}

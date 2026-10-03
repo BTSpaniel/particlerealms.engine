@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "_comment": "Theme registry — add your theme folder name here to make it discoverable",
+  "themes": ["_base", "dark", "light", "high-contrast", "custom"]
+}

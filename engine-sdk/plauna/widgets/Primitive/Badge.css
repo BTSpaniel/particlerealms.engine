@@ -1,0 +1,167 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Badge Component Styles
+ * Modular CSS for Badge widget with size and color variants
+ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--border-radius-full);
+  border: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Size Variants */
+.badge--sm {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.badge--md {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+}
+
+.badge--lg {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+/* Color Variants */
+.badge--primary {
+  background: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+[data-theme="night"] .badge--primary {
+  background: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+.badge--success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #047857;
+}
+
+[data-theme="night"] .badge--success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.badge--warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #92400e;
+}
+
+[data-theme="night"] .badge--warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.badge--error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+}
+
+[data-theme="night"] .badge--error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.badge--info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+}
+
+[data-theme="night"] .badge--info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+/* Outline Variant */
+.badge--outline {
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+}
+
+.badge--outline-primary {
+  background: transparent;
+  border: 1px solid var(--color-primary-500);
+  color: var(--color-primary-600);
+}
+
+[data-theme="night"] .badge--outline-primary {
+  color: var(--color-primary-400);
+}
+
+/* Dot Indicator */
+.badge__dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: var(--spacing-xs);
+  background: currentColor;
+}
+
+/* Icon Support */
+.badge__icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: var(--spacing-xs);
+  font-size: 0.9em;
+}
+
+.badge__icon:last-child {
+  margin-right: 0;
+  margin-left: var(--spacing-xs);
+}
+
+/* Dismissible Badge */
+.badge--dismissible {
+  padding-right: 4px;
+}
+
+.badge__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: var(--spacing-xs);
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.badge__close:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="night"] .badge__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .badge--lg {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+}

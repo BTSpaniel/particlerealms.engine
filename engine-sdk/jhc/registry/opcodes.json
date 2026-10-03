@@ -1,0 +1,30 @@
+{
+  "JS_VAR": {
+    "code": 0,
+    "description": "Variable declaration."
+  },
+  "JS_CONST": {
+    "code": 1,
+    "description": "Constant declaration."
+  },
+  "JS_LET": {
+    "code": 2,
+    "description": "Let declaration."
+  },
+  "JS_FUNCTION": {
+    "code": 3,
+    "description": "Function declaration."
+  },
+  "JS_CLASS": {
+    "code": 4,
+    "description": "Class declaration."
+  },
+  "JS_IMPORT": {
+    "code": 5,
+    "description": "Import statement."
+  },
+  "JS_EXPORT": {
+    "code": 6,
+    "description": "Export statement."
+  }
+}

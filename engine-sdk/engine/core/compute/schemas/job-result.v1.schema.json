@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/job-result.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "job-result",
+  "description": "Metadata projection of a completed wait result. value and metrics are projectComputeContractValue projections; native typed arrays are dtype/byteLength/length descriptors and NaN, infinities and -0 use explicit markers. Actual wait() preserves those native values and returns issued handles in outputs; readCopy returns independently owned native arrays. This schema does not turn kernel payloads into JSON or establish numeric parity.",
+  "type": "object",
+  "properties": {
+    "value": {
+      "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+    },
+    "outputs": {
+      "type": "object",
+      "maxProperties": 64,
+      "additionalProperties": {
+        "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+      }
+    },
+    "backend": {
+      "enum": [
+        "js",
+        "wasm-scalar",
+        "wasm-simd",
+        "wasm-threads",
+        "wasm-threads-simd",
+        "webgpu"
+      ]
+    },
+    "metrics": {
+      "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+    }
+  },
+  "required": [
+    "value",
+    "outputs",
+    "backend",
+    "metrics"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "envelope": {
+      "description": "Runtime publication envelope. The value marker describes only the native root category, never its contents or numeric correctness. Existing native operation checks, output dtype/shape metadata, quotas and parity tests remain authoritative. Large waveform/document report arrays are deliberately not recursively copied or schema-scanned. outputs are issued handle metadata and metrics are a bounded native-value projection.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "$computeType": {
+              "const": "report"
+            },
+            "kind": {
+              "enum": [
+                "object",
+                "array",
+                "typed-array",
+                "array-buffer",
+                "number",
+                "string",
+                "boolean",
+                "null",
+                "undefined"
+              ]
+            }
+          },
+          "required": [
+            "$computeType",
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        "outputs": {
+          "$ref": "https://particlerealms.online/schemas/compute/job-result.v1.schema.json#/properties/outputs"
+        },
+        "backend": {
+          "$ref": "https://particlerealms.online/schemas/compute/job-result.v1.schema.json#/properties/backend"
+        },
+        "metrics": {
+          "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+        }
+      },
+      "required": [
+        "value",
+        "outputs",
+        "backend",
+        "metrics"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

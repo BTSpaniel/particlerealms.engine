@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "dark",
+  "name": "Dark",
+  "description": "Deep dark theme optimised for low-light environments.",
+  "author": "Plauna",
+  "version": "1.0.0",
+  "extends": "_base",
+
+  "vars": {
+    "--bg-primary":    "#0a0a0f",
+    "--bg-secondary":  "#0f0f17",
+    "--bg-tertiary":   "#171723",
+    "--bg-quaternary": "#1f1f2e",
+
+    "--text-primary":   "#e4e4e7",
+    "--text-secondary": "#d1d5db",
+    "--text-tertiary":  "#9ca3af",
+    "--text-disabled":  "#6b7280",
+
+    "--border-light":  "#2a2a3a",
+    "--border-medium": "#3a3a4a",
+    "--border-dark":   "#4a4a5a",
+    "--border-subtle": "#1a1a28",
+
+    "--shadow-sm": "0 1px 2px 0 rgba(0,0,0,0.3)",
+    "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.4)",
+    "--shadow-lg": "0 10px 15px -3px rgba(0,0,0,0.4)",
+    "--shadow-xl": "0 20px 25px -5px rgba(0,0,0,0.4)"
+  }
+}

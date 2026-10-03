@@ -1,0 +1,6 @@
+{
+  "name": "bad-header-len",
+  "expectedCode": 201,
+  "expectedMessageFragment": "Unsupported header length",
+  "size": 571
+}

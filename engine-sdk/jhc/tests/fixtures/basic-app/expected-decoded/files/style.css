@@ -1,0 +1,9 @@
+body {
+  font-family: system-ui, sans-serif;
+  color: #111;
+  background: #fff;
+}
+
+h1 {
+  font-size: 1.5rem;
+}

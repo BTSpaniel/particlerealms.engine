@@ -1,0 +1,209 @@
+{
+  "status": "PASS",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "unified": true,
+  "sourceHashes": {
+    "dist/candidate/physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "dist/candidate/physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
+    "addons/flow/pr_flow_host.cpp": "e4f34673e63b5a3d0a1a96f10318e4c6f80755633abe478b2586efc4f23b7595",
+    "addons/flow/flow_host_webgpu.mjs": "a5b83aa822f1bc408be7bd83d095f39e5ce6749d73e5333d1d12aa8217b79561",
+    "addons/flow/scene_oracle.mjs": "2de3b35d64fea18e44fff5c301a574d9620f7a78c9f990a4cab4c8c6f598ecc9",
+    "addons/flow/scene_browser_test.py": "9c40e64b362ad5d143952c574ed813720c0700ccedaf00df5cfb749c89c93f81",
+    "dist/flow-wgsl/manifest.json": "f1b355a76683bb7163db052af4f012b789ab4de3326f49ba9539e35fdcd74021"
+  },
+  "result": {
+    "flowSceneAbi": 1,
+    "layers": [
+      {
+        "id": 3,
+        "blockSizeWorld": [
+          3.200000047683716,
+          1.600000023841858,
+          1.600000023841858
+        ],
+        "layerAndLevel": 3
+      },
+      {
+        "id": 9,
+        "blockSizeWorld": [
+          4,
+          2,
+          2
+        ],
+        "layerAndLevel": 9
+      }
+    ],
+    "sphereVelocity": [
+      0.800000011920929,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.4000000059604645
+    ],
+    "rotatedBoxVelocity": [
+      0,
+      0,
+      0,
+      0,
+      -0.5999999642372131,
+      0,
+      0,
+      -0.6000000238418579,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "sourceRemovalResidual": [
+      0.6984162330627441,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.29995670914649963
+    ],
+    "invalidSceneCases": 12,
+    "nativeAtomicRejection": "PASS",
+    "layerRemoval": "PASS",
+    "layerControls": "PASS",
+    "busyMutation": "PASS",
+    "defaultLayerSelection": "PASS",
+    "multilayerVelocityIsolation": "PASS",
+    "rotatedBoxCoverage": "PASS",
+    "emitterRemoval": "PASS",
+    "zeroAllocationScale": "PASS",
+    "stats": {
+      "frames": 30,
+      "dispatches": 486,
+      "passes": {
+        "source/nvflow/shaders/SparseUploadCS.wgsl": 6,
+        "source/nvflow/shaders/SparseCS.wgsl": 6,
+        "source/nvflow/shaders/SparseClearTexture4CS.wgsl": 5,
+        "source/nvflow/shaders/SparseClearTexture1CS.wgsl": 2,
+        "source/nvflow/shaders/AdvectionDensity1CS.wgsl": 30,
+        "source/nvflow/shaders/AdvectionDensity2CS.wgsl": 30,
+        "source/nvflowext/shaders/EmitterSimpleCS.wgsl": 144,
+        "source/nvflowext/shaders/EmitterBoxCS.wgsl": 80,
+        "source/nvflow/shaders/AdvectionVelocity1CS.wgsl": 30,
+        "source/nvflow/shaders/AdvectionVelocity2CS.wgsl": 30,
+        "source/nvflow/shaders/SummaryCS.wgsl": 30,
+        "source/nvflow/shaders/SparseClearNew4CS.wgsl": 15,
+        "source/nvflow/shaders/SparseClearNew1CS.wgsl": 6,
+        "source/nvflow/shaders/Vorticity1CS.wgsl": 4,
+        "source/nvflow/shaders/Vorticity2CS.wgsl": 4,
+        "source/nvflow/shaders/PressureDivergenceCS.wgsl": 4,
+        "source/nvflow/shaders/PressureJacobiCS.wgsl": 32,
+        "source/nvflow/shaders/PressureResidualCS.wgsl": 8,
+        "source/nvflow/shaders/PressureRestrictCS.wgsl": 8,
+        "source/nvflow/shaders/PressureProlongCS.wgsl": 8,
+        "source/nvflow/shaders/PressureSubtractCS.wgsl": 4
+      },
+      "activeBlocks": 64,
+      "allocatedBytes": 114503460,
+      "collisionCount": 0,
+      "collisionEnabled": 0,
+      "collisionMode": "one-way-native-velocity-obstacle",
+      "uploadWrites": 757,
+      "uploadBytes": 49610752,
+      "uploadChunks": 76,
+      "uploadChunkReuses": 681,
+      "queueSubmissions": 30,
+      "textureAllocations": 22,
+      "textureReuses": 181,
+      "textureResets": 181,
+      "pooledTextureBytes": 65836800,
+      "velocitySamples": 54
+    },
+    "cleanup": "PASS",
+    "cases": [
+      {
+        "name": "sphere-box-multiple-emitters",
+        "status": "PASS"
+      },
+      {
+        "name": "multiple-layer-velocity-isolation",
+        "status": "PASS"
+      },
+      {
+        "name": "rotated-box-coverage",
+        "status": "PASS"
+      },
+      {
+        "name": "scene-transaction-rejection",
+        "status": "PASS"
+      },
+      {
+        "name": "independent-contexts",
+        "status": "PASS"
+      },
+      {
+        "name": "layer-controls-removal",
+        "status": "PASS"
+      },
+      {
+        "name": "source-removal",
+        "status": "PASS"
+      },
+      {
+        "name": "default-layer-selection",
+        "status": "PASS"
+      },
+      {
+        "name": "zero-allocation-scale",
+        "status": "PASS"
+      },
+      {
+        "name": "cleanup",
+        "status": "PASS"
+      }
+    ]
+  },
+  "gpuErrors": [],
+  "adapter": {
+    "vendor": "nvidia",
+    "architecture": "blackwell",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "flowSceneAbi": 1,
+  "artifactHashes": {
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+  },
+  "bridgeSha256": "a5b83aa822f1bc408be7bd83d095f39e5ce6749d73e5333d1d12aa8217b79561",
+  "hostSourceSha256": "e4f34673e63b5a3d0a1a96f10318e4c6f80755633abe478b2586efc4f23b7595",
+  "browser": "153.0.8010.48"
+}

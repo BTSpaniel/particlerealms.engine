@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "consoleErrors": [],
+  "result": {
+    "stats": {
+      "frames": 120,
+      "dispatches": 3273,
+      "passes": {
+        "source/nvflow/shaders/SparseUploadCS.wgsl": 6,
+        "source/nvflow/shaders/SparseCS.wgsl": 6,
+        "source/nvflow/shaders/SparseClearTexture4CS.wgsl": 5,
+        "source/nvflow/shaders/SparseClearTexture1CS.wgsl": 2,
+        "source/nvflow/shaders/AdvectionDensity1CS.wgsl": 120,
+        "source/nvflow/shaders/AdvectionDensity2CS.wgsl": 120,
+        "source/nvflowext/shaders/EmitterSimpleCS.wgsl": 480,
+        "source/nvflow/shaders/AdvectionVelocity1CS.wgsl": 120,
+        "source/nvflow/shaders/AdvectionVelocity2CS.wgsl": 120,
+        "source/nvflow/shaders/Vorticity1CS.wgsl": 120,
+        "source/nvflow/shaders/Vorticity2CS.wgsl": 120,
+        "source/nvflow/shaders/PressureDivergenceCS.wgsl": 120,
+        "source/nvflow/shaders/PressureJacobiCS.wgsl": 960,
+        "source/nvflow/shaders/PressureResidualCS.wgsl": 240,
+        "source/nvflow/shaders/PressureRestrictCS.wgsl": 240,
+        "source/nvflow/shaders/PressureProlongCS.wgsl": 240,
+        "source/nvflow/shaders/PressureSubtractCS.wgsl": 120,
+        "source/nvflow/shaders/SummaryCS.wgsl": 120,
+        "source/nvflow/shaders/SparseClearNew4CS.wgsl": 10,
+        "source/nvflow/shaders/SparseClearNew1CS.wgsl": 4
+      },
+      "activeBlocks": 32,
+      "allocatedBytes": 139068916,
+      "collisionCount": 0,
+      "collisionEnabled": 0,
+      "collisionMode": "one-way-native-velocity-obstacle",
+      "uploadWrites": 3148,
+      "uploadBytes": 206307328,
+      "uploadChunks": 46,
+      "uploadChunkReuses": 3102,
+      "queueSubmissions": 120,
+      "textureAllocations": 22,
+      "textureReuses": 2023,
+      "textureResets": 2023,
+      "pooledTextureBytes": 91123200,
+      "velocitySamples": 10
+    },
+    "density": {
+      "sum": 7306.286843099679,
+      "max": 4.533168315887451,
+      "dimensions": [
+        204,
+        90,
+        90
+      ]
+    },
+    "worldVelocity": [
+      -1.3481825590133667e-05,
+      3.2285361289978027,
+      -2.60770320892334e-08,
+      -1.0767951607704163e-05,
+      3.853839635848999,
+      3.7178397178649902e-06,
+      2.489052712917328e-05,
+      4.728817939758301,
+      1.5033408999443054e-05,
+      -5.4545700550079346e-05,
+      5.8235087394714355,
+      -4.487484693527222e-05,
+      0,
+      0,
+      0
+    ],
+    "gatherOracle": {
+      "checked": 15,
+      "maximumError": 0,
+      "negativeCoordinates": true,
+      "crossBlockInterpolation": true,
+      "missingBlocksZero": true
+    },
+    "cleanup": "PASS",
+    "isolatedContexts": "PASS",
+    "emitterStoppedFrames": 24
+  },
+  "unified": true,
+  "bridgeSha256": "a5b83aa822f1bc408be7bd83d095f39e5ce6749d73e5333d1d12aa8217b79561",
+  "hostSourceSha256": "e4f34673e63b5a3d0a1a96f10318e4c6f80755633abe478b2586efc4f23b7595",
+  "artifactHashes": {
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+  }
+}

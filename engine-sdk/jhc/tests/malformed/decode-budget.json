@@ -1,0 +1,6 @@
+{
+  "name": "decode-budget",
+  "expectedCode": 119,
+  "expectedMessageFragment": "decoded size limit",
+  "size": 571
+}

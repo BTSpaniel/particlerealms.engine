@@ -1,0 +1,121 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Card Component Styles
+ * Modular CSS for Card data view widget
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+.card__header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.card__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.card__subtitle {
+  margin: var(--spacing-sm) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.card__body {
+  flex: 1;
+  padding: var(--spacing-lg);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.card__footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-tertiary);
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+}
+
+/* Size Variants */
+.card--sm {
+  border-radius: var(--border-radius-md);
+}
+
+.card--sm .card__header,
+.card--sm .card__body,
+.card--sm .card__footer {
+  padding: var(--spacing-md);
+}
+
+.card--lg {
+  border-radius: var(--border-radius-xl);
+}
+
+.card--lg .card__header,
+.card--lg .card__body,
+.card--lg .card__footer {
+  padding: var(--spacing-xl);
+}
+
+/* Variant Styles */
+.card--elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+.card--elevated:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+.card--outlined {
+  background: transparent;
+  border: 2px solid var(--border-medium);
+}
+
+.card--filled {
+  background: var(--bg-tertiary);
+}
+
+/* Interactive */
+.card--clickable {
+  cursor: pointer;
+}
+
+.card--clickable:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card--lg .card__header,
+  .card--lg .card__body,
+  .card--lg .card__footer {
+    padding: var(--spacing-lg);
+  }
+
+  .card__footer {
+    flex-direction: column;
+  }
+}

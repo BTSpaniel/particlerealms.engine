@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/worker-message.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "worker-message v1",
+  "description": "Projected private worker envelopes. Native WebAssembly.Module/Memory are allowed only by the trusted provider init path and checked separately before instantiation. Message identity, readiness, job correlation, cancellation and transfer ownership are enforced by the worker pool. No app may submit executable bytes or module URLs.",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "init"
+        },
+        "workerId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "backend": {
+          "enum": [
+            "js",
+            "wasm-scalar",
+            "wasm-simd",
+            "wasm-threads",
+            "wasm-threads-simd"
+          ]
+        },
+        "variant": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "hasModule": {
+          "type": "boolean"
+        },
+        "hasMemory": {
+          "type": "boolean"
+        },
+        "shared": {
+          "type": "boolean"
+        },
+        "memoryBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 268435456
+        },
+        "memoryDescriptor": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "initial": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                }
+              },
+              "required": [
+                "initial",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "stackPointer": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 268435456
+        },
+        "arenaStart": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 268435456
+        },
+        "arenaEnd": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 268435456
+        },
+        "cancelOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 268435456
+        }
+      },
+      "required": [
+        "type",
+        "workerId",
+        "backend",
+        "variant",
+        "hasModule",
+        "hasMemory",
+        "shared",
+        "memoryBytes",
+        "memoryDescriptor",
+        "stackPointer",
+        "arenaStart",
+        "arenaEnd",
+        "cancelOffset"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "job"
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "taskType": {
+          "const": "compute"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "inputs": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+              }
+            },
+            "parameters": {
+              "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+            },
+            "policy": {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            "backend": {
+              "enum": [
+                "js",
+                "wasm-scalar",
+                "wasm-simd",
+                "wasm-threads",
+                "wasm-threads-simd"
+              ]
+            }
+          },
+          "required": [
+            "operation",
+            "inputs",
+            "parameters",
+            "policy",
+            "backend"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "jobId",
+        "taskType",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "ready"
+        },
+        "workerId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "variant": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "type",
+        "workerId",
+        "variant"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "init-error"
+        },
+        "workerId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "error": {
+          "$ref": "https://particlerealms.online/schemas/compute/error.v1.schema.json"
+        }
+      },
+      "required": [
+        "type",
+        "workerId",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "result"
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "error": {
+          "$ref": "https://particlerealms.online/schemas/compute/error.v1.schema.json"
+        }
+      },
+      "required": [
+        "type",
+        "jobId",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "result"
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "outputs": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+              }
+            },
+            "value": {
+              "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+            },
+            "metrics": {
+              "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+            }
+          },
+          "required": [
+            "outputs",
+            "metrics"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "jobId",
+        "result"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

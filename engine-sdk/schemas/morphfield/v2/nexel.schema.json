@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/nexel.schema.json",
+  "title": "MorphField R2 canonical Nexel descriptor",
+  "description": "A device-independent semantic Nexel after runtime normalization. Backend/family selection and authored certificates are intentionally absent.",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "type": "object",
+  "required": ["id", "source", "transform", "material", "motion", "collision", "simulation", "intent"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/stableId" },
+    "source": { "$ref": "source.schema.json" },
+    "transform": { "$ref": "common.schema.json#/$defs/transform" },
+    "material": { "$ref": "common.schema.json#/$defs/material" },
+    "motion": { "$ref": "common.schema.json#/$defs/motion" },
+    "collision": { "$ref": "common.schema.json#/$defs/collision" },
+    "simulation": { "$ref": "common.schema.json#/$defs/simulation" },
+    "intent": { "$ref": "common.schema.json#/$defs/intent" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": { "kind": { "enum": ["medium", "indexed-surface"] } },
+            "required": ["kind"]
+          }
+        },
+        "required": ["source"]
+      },
+      "then": { "properties": { "collision": { "type": "null" } } }
+    },
+    {
+      "if": { "properties": { "motion": { "type": "object" } }, "required": ["motion"] },
+      "then": {
+        "properties": {
+          "intent": {
+            "properties": { "updateClass": { "not": { "const": "static" } } },
+            "required": ["updateClass"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "simulation": {
+            "type": "object",
+            "properties": { "authority": { "const": "authoritative" } },
+            "required": ["authority"]
+          }
+        },
+        "required": ["simulation"]
+      },
+      "then": {
+        "properties": {
+          "intent": {
+            "properties": { "authoritative": { "const": true } },
+            "required": ["authoritative"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "simulation": {
+            "type": "object",
+            "properties": { "authority": { "const": "visual" } },
+            "required": ["authority"]
+          }
+        },
+        "required": ["simulation"]
+      },
+      "then": {
+        "properties": {
+          "intent": {
+            "properties": { "authoritative": { "const": false } },
+            "required": ["authoritative"]
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

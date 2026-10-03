@@ -1,0 +1,17 @@
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Particle Realms">
+  <defs>
+    <linearGradient id="field" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#58d6ff"/>
+      <stop offset="0.55" stop-color="#4995ff"/>
+      <stop offset="1" stop-color="#8a7dff"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#050b14"/>
+  <path d="M14 42 25 18h14l11 24-9 5-6-14h-6l-6 14z" fill="url(#field)"/>
+  <circle cx="32" cy="25" r="5" fill="#4de3a1"/>
+</svg>

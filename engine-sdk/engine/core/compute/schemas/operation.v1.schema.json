@@ -1,0 +1,530 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/operation.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "operation",
+  "description": "Approved operation discovery record. result and comparison describe native numeric/binary semantics; they are metadata, not executable JSON Schema or shape-expression code. parameterSchema identifies the effective-parameter projection; requestSchema and resultSchema identify metadata envelopes.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^math\\.[a-z][a-z0-9.-]*@1$"
+    },
+    "version": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]*$"
+    },
+    "domain": {
+      "enum": [
+        "numeric",
+        "geometry",
+        "image",
+        "audio",
+        "binary",
+        "compression"
+      ]
+    },
+    "moduleId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "inputs": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "cpuExports": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "parallel": {
+      "type": "boolean"
+    },
+    "deterministic": {
+      "const": true
+    },
+    "precisions": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "enum": [
+          "f64",
+          "f32",
+          "exact"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "defaultPrecision": {
+      "enum": [
+        "f64",
+        "f32",
+        "exact"
+      ]
+    },
+    "wasmVariants": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "enum": [
+          "scalar",
+          "simd",
+          "threads",
+          "threads-simd"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/$defs/value-description"
+        },
+        "outputs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "dtype": {
+                "enum": [
+                  "u8",
+                  "u8clamped",
+                  "i8",
+                  "u16",
+                  "i16",
+                  "u32",
+                  "i32",
+                  "f32",
+                  "f64"
+                ]
+              },
+              "dtypeByPrecision": {
+                "type": "object",
+                "properties": {
+                  "f64": {
+                    "enum": [
+                      "u8",
+                      "u8clamped",
+                      "i8",
+                      "u16",
+                      "i16",
+                      "u32",
+                      "i32",
+                      "f32",
+                      "f64"
+                    ]
+                  },
+                  "f32": {
+                    "enum": [
+                      "u8",
+                      "u8clamped",
+                      "i8",
+                      "u16",
+                      "i16",
+                      "u32",
+                      "i32",
+                      "f32",
+                      "f64"
+                    ]
+                  },
+                  "exact": {
+                    "enum": [
+                      "u8",
+                      "u8clamped",
+                      "i8",
+                      "u16",
+                      "i16",
+                      "u32",
+                      "i32",
+                      "f32",
+                      "f64"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              },
+              "shape": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    }
+                  ]
+                }
+              },
+              "layout": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "presentWhen": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              }
+            },
+            "required": [
+              "dtype",
+              "shape"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "semantics": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        }
+      },
+      "required": [
+        "value",
+        "outputs",
+        "semantics"
+      ],
+      "additionalProperties": false
+    },
+    "comparison": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/$defs/comparison"
+        },
+        "webgpu": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/$defs/comparison"
+        }
+      },
+      "required": [
+        "cpu"
+      ],
+      "additionalProperties": false
+    },
+    "gpuPrecisions": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "const": "f32"
+      },
+      "uniqueItems": true
+    },
+    "backends": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "enum": [
+          "js",
+          "wasm-scalar",
+          "wasm-simd",
+          "wasm-threads",
+          "wasm-threads-simd",
+          "webgpu"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "parameterSchema": {
+      "type": "string",
+      "pattern": "^https://particlerealms\\.online/schemas/compute/operation-parameters\\.v1\\.schema\\.json#/[\\$]defs/[a-z][a-z0-9.-]*$"
+    },
+    "requestSchema": {
+      "const": "https://particlerealms.online/schemas/compute/job-request.v1.schema.json"
+    },
+    "resultSchema": {
+      "const": "https://particlerealms.online/schemas/compute/job-result.v1.schema.json"
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "name",
+    "domain",
+    "moduleId",
+    "inputs",
+    "cpuExports",
+    "parallel",
+    "deterministic",
+    "precisions",
+    "defaultPrecision",
+    "wasmVariants",
+    "result",
+    "comparison",
+    "gpuPrecisions",
+    "backends",
+    "parameterSchema",
+    "requestSchema",
+    "resultSchema"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "comparison": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "exact"
+            },
+            "numberEquality": {
+              "const": "Object.is"
+            },
+            "nan": {
+              "const": "equal"
+            },
+            "signedZero": {
+              "const": "preserve"
+            },
+            "structure": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            }
+          },
+          "required": [
+            "mode",
+            "numberEquality",
+            "nan",
+            "signedZero",
+            "structure"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "absolute-relative"
+            },
+            "absoluteTolerance": {
+              "type": "number",
+              "minimum": 0
+            },
+            "relativeTolerance": {
+              "type": "number",
+              "minimum": 0
+            },
+            "formula": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "domain": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "nonFinite": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "signedZero": {
+              "const": "equivalent"
+            },
+            "structure": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "precision": {
+              "const": "f32"
+            },
+            "rejectionCode": {
+              "const": "COMPUTE_PRECISION_UNSUPPORTED"
+            },
+            "rejection": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            }
+          },
+          "required": [
+            "mode",
+            "absoluteTolerance",
+            "relativeTolerance",
+            "formula",
+            "domain",
+            "nonFinite",
+            "signedZero",
+            "structure"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "summary": {
+      "description": "Owner-free operation discovery summary returned by inspectCapabilities. This subset includes canonical parameter/request/result references; no owner identity or payload.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/id"
+        },
+        "name": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/name"
+        },
+        "domain": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/domain"
+        },
+        "moduleId": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/moduleId"
+        },
+        "inputs": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/inputs"
+        },
+        "precisions": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/precisions"
+        },
+        "defaultPrecision": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/defaultPrecision"
+        },
+        "backends": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/backends"
+        },
+        "wasmVariants": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/wasmVariants"
+        },
+        "gpuPrecisions": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/gpuPrecisions"
+        },
+        "result": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/result"
+        },
+        "comparison": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/comparison"
+        },
+        "parameterSchema": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/parameterSchema"
+        },
+        "requestSchema": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/requestSchema"
+        },
+        "resultSchema": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/properties/resultSchema"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "domain",
+        "moduleId",
+        "inputs",
+        "precisions",
+        "defaultPrecision",
+        "backends",
+        "wasmVariants",
+        "gpuPrecisions",
+        "result",
+        "comparison",
+        "parameterSchema",
+        "requestSchema",
+        "resultSchema"
+      ],
+      "additionalProperties": false
+    },
+    "value-description": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "dtype": {
+              "enum": [
+                "u8",
+                "u8clamped",
+                "i8",
+                "u16",
+                "i16",
+                "u32",
+                "i32",
+                "f32",
+                "f64"
+              ]
+            },
+            "shape": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  }
+                ]
+              }
+            },
+            "fields": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/$defs/value-description"
+              }
+            },
+            "items": {
+              "$ref": "https://particlerealms.online/schemas/compute/operation.v1.schema.json#/$defs/value-description"
+            },
+            "length": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ]
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

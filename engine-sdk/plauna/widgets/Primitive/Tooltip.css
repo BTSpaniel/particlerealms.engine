@@ -1,0 +1,150 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Tooltip Component Styles
+ * Modular CSS for Tooltip widget with positioning and animation
+ */
+
+.tooltip {
+  position: fixed;
+  z-index: var(--z-tooltip);
+  isolation: isolate;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(100% + 18px)) scale(0.985);
+  filter: blur(10px);
+  padding-top: 26px;
+  border: 1px solid rgba(99, 116, 141, 0.46);
+  border-radius: 22px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-base);
+}
+
+.tooltip--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(calc(100% + 8px)) scale(1);
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+/* Position Variants */
+.tooltip--top {
+  transform: translateX(-50%) translateY(calc(-100% - 18px)) scale(0.985);
+}
+
+.tooltip--top.tooltip--visible {
+  transform: translateX(-50%) translateY(calc(-100% - 8px)) scale(1);
+}
+
+.tooltip--left {
+  transform: translateX(calc(-100% - 18px)) translateY(-50%) scale(0.985);
+}
+
+.tooltip--left.tooltip--visible {
+  transform: translateX(calc(-100% - 8px)) translateY(-50%) scale(1);
+}
+
+.tooltip--right {
+  transform: translateX(calc(100% + 18px)) translateY(-50%) scale(0.985);
+}
+
+.tooltip--right.tooltip--visible {
+  transform: translateX(calc(100% + 8px)) translateY(-50%) scale(1);
+}
+
+/* Arrow */
+.tooltip::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border: 1px solid rgba(99, 116, 141, 0.46);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+
+.tooltip--bottom::before {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip--top::before {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip--left::before {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.tooltip--right::before {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Size Variants */
+.tooltip--sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 11px;
+}
+
+.tooltip--md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.tooltip--lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  white-space: normal;
+  max-width: 300px;
+}
+
+/* Color Variants */
+.tooltip--dark {
+  background: var(--bg-primary);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.tooltip--dark::before {
+  background: var(--bg-primary);
+  border-color: var(--border-medium);
+}
+
+.tooltip--light {
+  background: white;
+  border-color: var(--border-light);
+  color: var(--text-primary);
+}
+
+.tooltip--light::before {
+  background: white;
+  border-color: var(--border-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tooltip--lg {
+    max-width: 200px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}

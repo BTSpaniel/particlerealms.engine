@@ -1,0 +1,304 @@
+{
+  "status": "PASS",
+  "unified": true,
+  "artifacts": {
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+  },
+  "bridgeSources": {
+    "addons/blast/pr_blast_wasm.cpp": "680611d8e7a13bec82f16c3b9e4f99cf98c72a23a305a94cc38cd26ead0ac003",
+    "addons/blast/emscripten_nv_compat.h": "53dbbab9a1ff899e41958ff81b8d838dd7d6800c9bb926400162c86b1523a787",
+    "addons/blast/emscripten_stress_device.h": "0b24bcf9980f1a3830eb828f52689b52868c74c7e7f3b1295902f74ba4ad7628",
+    "addons/blast/emscripten_stress_intrinsics.h": "24261a2f945f46e3adb5ce7104b89a1bdd6ddf6b7a72059b8198bfa89ed12291",
+    "addons/blast/tr1/type_traits": "dd134f07a312cd38a5ee494b222baf83f5313aef7df9f7f6c2fa6a366c6fb6be",
+    "addons/blast/prepare_stress_sources.py": "344e0893b0ce31018e9a01bd16ead6838d66b8fe1b66699b8b9c5cd84f8c3d16",
+    "addons/blast/pr_blast_memory.h": "9d72f0c9cb3961eac345b5e11720bbea083c62dcad1baee80aaffd66b15e956d"
+  },
+  "servedSourceHashes": {
+    "/stress-runtime/physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "/stress-runtime/physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
+    "/tests/physics/blast-stress-acceptance.js": "fbcace572ee74d61d5f64db2abda898564f93097b1c212c8ca9d3a3964f8e29f",
+    "/engine/sim/destruction/BlastFamily.js": "b347c5d36c88ad3a83704ca1915e8698d6a93bb8cdba3f38eb7492adc830efc3"
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "browser": "153.0.8010.48",
+  "numerical": {
+    "passed": true,
+    "backend": "NVIDIA ExtStress scalar CPU/WASM",
+    "abi": 1,
+    "stressUnits": "Pa",
+    "forceUnits": "N",
+    "remainingHealthUnits": "m2",
+    "damageCadence": "per native update",
+    "cases": [
+      {
+        "name": "axial-force-area",
+        "passed": true,
+        "detail": {
+          "areaM2": 0.01,
+          "appliedForcesN": [
+            8,
+            10,
+            12
+          ],
+          "expectedStressPa": [
+            800,
+            1000,
+            1200
+          ],
+          "below": {
+            "frame": 1,
+            "overstressed": 0,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.009999999776482582,
+            "actorCount": 1
+          },
+          "middle": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          },
+          "above": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0,
+            "actorCount": 2
+          }
+        }
+      },
+      {
+        "name": "area-scaling",
+        "passed": true,
+        "detail": {
+          "frame": 1,
+          "overstressed": 0,
+          "errorLinear": 0,
+          "errorAngular": 0,
+          "converged": true,
+          "solverBonds": 1,
+          "remainingAreaM2": 0.019999999552965164,
+          "actorCount": 1
+        }
+      },
+      {
+        "name": "anchor-vs-freefall",
+        "passed": true,
+        "detail": {
+          "free": {
+            "frame": 1,
+            "overstressed": 0,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.009999999776482582,
+            "actorCount": 1
+          },
+          "supported": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          }
+        }
+      },
+      {
+        "name": "compression-tension-shear",
+        "passed": true,
+        "detail": {
+          "compression": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          },
+          "tension": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          },
+          "shear": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          }
+        }
+      },
+      {
+        "name": "partial-area-damage",
+        "passed": true,
+        "detail": {
+          "frame": 1,
+          "overstressed": 1,
+          "errorLinear": 0,
+          "errorAngular": 0,
+          "converged": true,
+          "solverBonds": 1,
+          "remainingAreaM2": 0.004499997012317181,
+          "actorCount": 1
+        }
+      },
+      {
+        "name": "transient-load-clear",
+        "passed": true,
+        "detail": {
+          "loaded": {
+            "frame": 1,
+            "overstressed": 1,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          },
+          "unloaded": {
+            "frame": 2,
+            "overstressed": 0,
+            "errorLinear": 0,
+            "errorAngular": 0,
+            "converged": true,
+            "solverBonds": 1,
+            "remainingAreaM2": 0.004999999888241291,
+            "actorCount": 1
+          }
+        }
+      },
+      {
+        "name": "split-lifecycle-cleanup",
+        "passed": true,
+        "detail": {
+          "frame": 1,
+          "overstressed": 1,
+          "errorLinear": 0,
+          "errorAngular": 0,
+          "converged": true,
+          "solverBonds": 1,
+          "remainingAreaM2": 0,
+          "actorCount": 2
+        }
+      },
+      {
+        "name": "raw-abi-admission",
+        "passed": true,
+        "detail": {
+          "heapBounds": true,
+          "alignment": true,
+          "finiteDerivedGeometry": true,
+          "finiteAccelerationAndInertia": true,
+          "rejectionPreservesState": true
+        }
+      }
+    ],
+    "family": {
+      "passed": true,
+      "cases": [
+        {
+          "name": "physical-schema-rejection",
+          "passed": true,
+          "detail": {
+            "invalidInputsRejectedBeforeMutation": true
+          }
+        },
+        {
+          "name": "ordered-stress-snapshot-replay",
+          "passed": true,
+          "detail": {
+            "partialAreaM2": 0.004499997012317181,
+            "replayedFrames": 3,
+            "continuation": {
+              "backend": "cpu-wasm",
+              "solver": "NVIDIA ExtStress scalar",
+              "frame": 4,
+              "overstressed": 1,
+              "errorLinear": 0,
+              "errorAngular": 0,
+              "converged": true,
+              "solverBonds": 1,
+              "damageCadence": "per native update",
+              "healthUnits": "m2",
+              "stressUnits": "Pa",
+              "remainingAreasM2": [
+                0
+              ],
+              "groups": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "name": "stress-readback-failure-replay",
+          "passed": true,
+          "detail": {
+            "committedFramePreserved": true,
+            "areaM2": 0.004999999888241291
+          }
+        },
+        {
+          "name": "iterative-warm-start-replay",
+          "passed": true,
+          "detail": {
+            "maximumIterationsPerFrame": 1,
+            "savedErrorLinear": 1.1288217306137085,
+            "savedErrorAngular": 1.5789474248886108,
+            "savedConverged": false,
+            "continuedFrames": 6
+          }
+        },
+        {
+          "name": "legacy-v1-preserved",
+          "passed": true,
+          "detail": {
+            "version": 1
+          }
+        }
+      ]
+    }
+  },
+  "artifactsAfter": {
+    "physx-pe.mjs": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f",
+    "physx-pe.wasm": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+  },
+  "bridgeSourcesAfter": {
+    "addons/blast/pr_blast_wasm.cpp": "680611d8e7a13bec82f16c3b9e4f99cf98c72a23a305a94cc38cd26ead0ac003",
+    "addons/blast/emscripten_nv_compat.h": "53dbbab9a1ff899e41958ff81b8d838dd7d6800c9bb926400162c86b1523a787",
+    "addons/blast/emscripten_stress_device.h": "0b24bcf9980f1a3830eb828f52689b52868c74c7e7f3b1295902f74ba4ad7628",
+    "addons/blast/emscripten_stress_intrinsics.h": "24261a2f945f46e3adb5ce7104b89a1bdd6ddf6b7a72059b8198bfa89ed12291",
+    "addons/blast/tr1/type_traits": "dd134f07a312cd38a5ee494b222baf83f5313aef7df9f7f6c2fa6a366c6fb6be",
+    "addons/blast/prepare_stress_sources.py": "344e0893b0ce31018e9a01bd16ead6838d66b8fe1b66699b8b9c5cd84f8c3d16",
+    "addons/blast/pr_blast_memory.h": "9d72f0c9cb3961eac345b5e11720bbea083c62dcad1baee80aaffd66b15e956d"
+  }
+}

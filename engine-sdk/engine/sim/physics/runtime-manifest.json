@@ -1,0 +1,938 @@
+{
+  "schema": "particle-physics-runtime/v1",
+  "sdkVersion": "5.11.0",
+  "moduleName": "physx-pe",
+  "upstreamTag": "ovphysx-0.6.3",
+  "upstreamCommit": "da950a3537927784951853c66618036f332ca0ce",
+  "bindingOrigin": "https://github.com/fabmax/PhysX/tree/52dab13147435e818bbf10bd4230c0067e024efc",
+  "capabilities": {
+    "rigidBodies": true,
+    "rustBulkAbi": 2,
+    "bulkApiAbi": 1,
+    "simd128": true,
+    "blastVersion": "5.0.6",
+    "blastFractureSelfTest": true,
+    "blastSceneApi": true,
+    "flowStagingAbi": 1,
+    "flowShaderModules": 97,
+    "flowSelectedPipelines": 96,
+    "flowSolver": true,
+    "flowHostAbi": 1,
+    "flowExcludedPipeline": "source/nvflowext/shaders/EmitterNanoVdbCS.wgsl",
+    "flowSceneAbi": 1,
+    "flowEmitterShapes": [
+      "sphere",
+      "box",
+      "points",
+      "mesh"
+    ],
+    "flowMultipleEmitters": true,
+    "flowLayers": true,
+    "flowGeometryAbi": 1,
+    "flowCollisionAbi": 1,
+    "flowColliderShapes": [
+      "sphere",
+      "box"
+    ],
+    "flowCollisionCoupling": "one-way-velocity",
+    "blastStressAbi": 1,
+    "blastStressBackend": "scalar-cpu-wasm",
+    "blastStressUnits": "Pa",
+    "blastAuthoringAbi": 1
+  },
+  "files": {
+    "PhysXWasm.idl": {
+      "bytes": 174550,
+      "sha256": "adb07496333d52a0366b8e585fddecd8179093854399a8f45374d6eabeaa03f0"
+    },
+    "addons/advection_smoke.mjs": {
+      "bytes": 6145,
+      "sha256": "0b1dd3527443ff047ded2b343623a1267c430766c9970090038f69bb3e6ce6da"
+    },
+    "addons/flow_host_webgpu.mjs": {
+      "bytes": 55255,
+      "sha256": "a5b83aa822f1bc408be7bd83d095f39e5ce6749d73e5333d1d12aa8217b79561"
+    },
+    "addons/mesh_scan_smoke.mjs": {
+      "bytes": 3330,
+      "sha256": "0b7df18e07280594ce30b59feee266d2b35c9ec0bb16de5ab61bd72c3b39144c"
+    },
+    "addons/physx-bulk-rust.mjs": {
+      "bytes": 483,
+      "sha256": "e12e47d3860179d8accdbba75aa858730f0143ba758d7237513a22729499f40f"
+    },
+    "addons/physx-bulk.mjs": {
+      "bytes": 5829,
+      "sha256": "60ecafb98afe8e522079f59923a4cf89a1fad977f69d2b8ce7947bef96776afe"
+    },
+    "addons/webgpu_bridge.mjs": {
+      "bytes": 8190,
+      "sha256": "7c7cc893363db9325f5f77084a1a35325711846c04b4364cab87cd90a74554a4"
+    },
+    "evidence/blast-authoring-browser.json": {
+      "bytes": 7860,
+      "sha256": "1ee92953a347a433824b2d366c343fd13b2a582df255107c5affe9acea6899ef"
+    },
+    "evidence/blast-stress-browser.json": {
+      "bytes": 9826,
+      "sha256": "632c3239a0e89023878f565002cd356699673d72e8a73cb2f46151ad79e75c03"
+    },
+    "evidence/candidate-browser.json": {
+      "bytes": 7613,
+      "sha256": "0a118f033078bddf4fc94cee2a35dd235c2953782edc5b8d1c71c11648063503"
+    },
+    "evidence/candidate-rust-build.json": {
+      "bytes": 27032,
+      "sha256": "b554880dccd80715cd02fccf49a4daf61ac3fc7227f89d6ac16e3d77fe36cdf6"
+    },
+    "evidence/engine-acceptance.json": {
+      "bytes": 82232,
+      "sha256": "a13eecceb1a7b748923f128768f3c445c959d3a2ffa290329f2515191e3e65d0"
+    },
+    "evidence/flow-collision-browser.json": {
+      "bytes": 63446,
+      "sha256": "67e83873f33ef4d8029bc8d586a24e8419bbda77312b636a44d35633e74f1abb"
+    },
+    "evidence/flow-geometry-browser.json": {
+      "bytes": 72676,
+      "sha256": "cfb0165c0d5ab60a8329e1c1fd290c3c4be9f0ee3e5fffaa9d2b39d357c0c18b"
+    },
+    "evidence/flow-host-browser.json": {
+      "bytes": 3170,
+      "sha256": "5abd5d0795f2fa73adc803f04b2b96cd783d599a95fda3180d269a594f35974b"
+    },
+    "evidence/flow-scene-browser.json": {
+      "bytes": 5749,
+      "sha256": "c9d0396638790af19055feaa038b4c88bffa77bd494e58f30e8820abdeb600ac"
+    },
+    "evidence/unified-browser.json": {
+      "bytes": 1529,
+      "sha256": "e9a3009042721c6da3de9d474b1edcc12c80e8094547261842a5e257e505c26c"
+    },
+    "evidence/upgrade-511.json": {
+      "bytes": 3530,
+      "sha256": "b33a32d85e7d4c31a8a916e904ac3b9278400000051c6525e5062c830bda5707"
+    },
+    "flow-wgsl/manifest.json": {
+      "bytes": 94234,
+      "sha256": "f1b355a76683bb7163db052af4f012b789ab4de3326f49ba9539e35fdcd74021"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionDensity1CS.reflection.json": {
+      "bytes": 78496,
+      "sha256": "7fa973260fc79f4d1d04f67e82873e76d6eb46eed1f73c377e2d5f6c77f3cb1d"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionDensity1CS.wgsl": {
+      "bytes": 19363,
+      "sha256": "16f77de574e926bffd1b9fe7b02b69dd25704dc41d94dac9a0e5c63c72507cb5"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionDensity2CS.reflection.json": {
+      "bytes": 79172,
+      "sha256": "6194a424db45baec9d1da30e2a95c353f6a776c1ed3339b0f978c165f4fe7609"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionDensity2CS.wgsl": {
+      "bytes": 27769,
+      "sha256": "cff749b5c95e56a33ed4c35cf6ff1b069515f941ce4b2d0c67189182f39e9a83"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionDownsampleCS.reflection.json": {
+      "bytes": 78761,
+      "sha256": "a0e0f7b927992057357eef56ec158439e53a2ba63e8b9558c6fe2e77b4fc724d"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionDownsampleCS.wgsl": {
+      "bytes": 13429,
+      "sha256": "8b875e46573e553b1ef4171759107ccb67f7cea26d8d6672532b36de4262e47d"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionFadeDensityCS.reflection.json": {
+      "bytes": 77451,
+      "sha256": "a29af36abb2e9fd49314f9eb17397cf5d0c2d9fddd66d2976b940732530a4fff"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionFadeDensityCS.wgsl": {
+      "bytes": 12840,
+      "sha256": "f7396ded7e8f8e9ef30e8bae326080580db624cdd68b0ed7097bd62d6c57c90c"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionFadeVelocityCS.reflection.json": {
+      "bytes": 78386,
+      "sha256": "67e22bab2346dd23f0a466faa44d0c38c2f5b1754720a4f03c0394618668f3e4"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionFadeVelocityCS.wgsl": {
+      "bytes": 12933,
+      "sha256": "bfd577f025e3c7f4bd19330d56834fa02763dba1d0505a1848849141a0339dab"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionSimpleCS.reflection.json": {
+      "bytes": 39852,
+      "sha256": "de1c9f0d1c9c02ec17c5b8ba99ba468e8c9b04076ffa56b4a746371fcfcad583"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionSimpleCS.wgsl": {
+      "bytes": 18422,
+      "sha256": "822a438049576a0c2098480782fa1bbe7f5799ff6cb92f4206d51ba28c036f9f"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionVelocity1CS.reflection.json": {
+      "bytes": 78753,
+      "sha256": "30461fd6943a601f7a4c0b1aac5f94f7118708133a8965fd0b833652cbbce565"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionVelocity1CS.wgsl": {
+      "bytes": 19389,
+      "sha256": "e858fead9eb4307be2f95dc2b18e05b0624149ce534b503573a44c4b7ab7d5e4"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionVelocity2CS.reflection.json": {
+      "bytes": 80834,
+      "sha256": "a10e6c89b986f6214a366f809a5c1cce56adc11985ac1e31a659509d62ddb5eb"
+    },
+    "flow-wgsl/source/nvflow/shaders/AdvectionVelocity2CS.wgsl": {
+      "bytes": 30159,
+      "sha256": "fa9157fe9fca0425607f4b61e70525a722163683aab9e9f2ab0b96ab3df9fac5"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureDivergenceCS.reflection.json": {
+      "bytes": 34375,
+      "sha256": "673f72d4cab009cf4e2be922e460c0b3baf4bbe14c2194df0a31643bab85f52e"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureDivergenceCS.wgsl": {
+      "bytes": 11792,
+      "sha256": "aef966aa8f84ca1b3963b416ff20afd280efcd26416aa6b09ae4cbddbee3b938"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureJacobiCS.reflection.json": {
+      "bytes": 34355,
+      "sha256": "28ba22b062936845fda33a5f64971efe5b0f45c2852a014847a8fb2e9f7954de"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureJacobiCS.wgsl": {
+      "bytes": 11947,
+      "sha256": "33e570c551020e05a6c65b1c90b37e7068651313dcccd37a57257bdd9c352ff8"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureProlongCS.reflection.json": {
+      "bytes": 62728,
+      "sha256": "b249763efac2cdcf25997e3dbd48b22d37dae16402de68d3141e34980806547e"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureProlongCS.wgsl": {
+      "bytes": 12352,
+      "sha256": "576ccc90a4d1140a49cbe11238a0ba5d6c8963de803a6a96b51c2e50a84ac5ed"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureResidualCS.reflection.json": {
+      "bytes": 34365,
+      "sha256": "1ed70a36c3c3a131127190effc4f977386196a1e3bca7a42ae008b68479f7e8e"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureResidualCS.wgsl": {
+      "bytes": 11958,
+      "sha256": "2221de1728355dd4a0bd4f11a026c27b47eb0608d15e211943230a65ebc01a4d"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureRestrictCS.reflection.json": {
+      "bytes": 62024,
+      "sha256": "70059438b9af6e7c24a7925d950f610d87166564ed1ff9f76393d60d45f2f6a0"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureRestrictCS.wgsl": {
+      "bytes": 11581,
+      "sha256": "cae83f8961144f936d7008086b958da7b67fda16192d27c9accddee3603a8e97"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureSubtractCS.reflection.json": {
+      "bytes": 35037,
+      "sha256": "7361b3a29c51a1feeaece340a1856caad99bbc15533d1fb4cb49b12f86197833"
+    },
+    "flow-wgsl/source/nvflow/shaders/PressureSubtractCS.wgsl": {
+      "bytes": 12263,
+      "sha256": "580fa763ad834a0d8c1403e8a26201d2bbed77bc1f56b69a56b150d521838ccb"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseCS.reflection.json": {
+      "bytes": 63195,
+      "sha256": "456a5559f234438363f3fd315e7ecd30b57976625e9e0e5f614ca50db4b256ea"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseCS.wgsl": {
+      "bytes": 11171,
+      "sha256": "9c2e478689ceff0855d134483feca5ad77659bfff1c1d9c2698c094aeea99ee7"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearLayers1CS.reflection.json": {
+      "bytes": 63309,
+      "sha256": "6f4ae6626302d97345c619f8da480444186e7203f0b51087e35c5ac3d9a36c90"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearLayers1CS.wgsl": {
+      "bytes": 10385,
+      "sha256": "cb02592dc9d3a1aa433d9ec9e6ced897eaad3c9220c1949798b104df6ccc5ebf"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearLayers2CS.reflection.json": {
+      "bytes": 63453,
+      "sha256": "57bc63e663b0a0d2bb375148227fecd66adf47854d214cef11d79a0fd0a4fb65"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearLayers2CS.wgsl": {
+      "bytes": 10435,
+      "sha256": "36f10e8654ac2914e0aa3fcb9acea4873c71c42594cceecbd7f5f385923b5876"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearLayers4CS.reflection.json": {
+      "bytes": 63453,
+      "sha256": "9c7fd33725ba9d7b32a65190e5b579323543affb389c231086a20d985702f8b0"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearLayers4CS.wgsl": {
+      "bytes": 10444,
+      "sha256": "b613e1f11cd0496742e82acfaf5fd51a00cabbaec079e3f2790ace27ba15ea68"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearNew1CS.reflection.json": {
+      "bytes": 33541,
+      "sha256": "d6c9915bcbe5a00079621d4cb4b8a7dd2d0d51eb51ebc999c8286030626b215b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearNew1CS.wgsl": {
+      "bytes": 9353,
+      "sha256": "a8848e1d7ae2247c81d87bce212562c319a36d4a861723bbb47dcbb01c4f631c"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearNew2CS.reflection.json": {
+      "bytes": 33685,
+      "sha256": "4d86b43ac3338eb2a561835043952972eeae5e29fd4d8610c378faab9d651e27"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearNew2CS.wgsl": {
+      "bytes": 9353,
+      "sha256": "f4b6848bcd815578da123167ee267ce87acf366f341c22cb356829e5de7f60c8"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearNew4CS.reflection.json": {
+      "bytes": 33685,
+      "sha256": "50ddc5de8f6d4436f71ec02e297d404e142888f97f14b2d71324b681e9bba1d1"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearNew4CS.wgsl": {
+      "bytes": 9231,
+      "sha256": "20647d149446e1a561bb79f9c25dcaa80042bb3d186e5f79a2209eaab9faa621"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearTexture1CS.reflection.json": {
+      "bytes": 6107,
+      "sha256": "d49279a1e6f4b171e81a0cf5f75dd88437a70826af2621a5cf65633a11fba33b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearTexture1CS.wgsl": {
+      "bytes": 2644,
+      "sha256": "4659359e5289782eafde9104104466f98e3d0c8c20107fd7aadd8f4f9acaed8c"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearTexture2CS.reflection.json": {
+      "bytes": 6251,
+      "sha256": "934ffc8dc91addef5abad3ebadafc1a75cd376b34bb32a222fa481acd8c1a14e"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearTexture2CS.wgsl": {
+      "bytes": 2659,
+      "sha256": "1dea638a1f8d36abd63258f2f7dbef4042e6868b494ed36594ca2615d3be2269"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearTexture4CS.reflection.json": {
+      "bytes": 6251,
+      "sha256": "ee3bc1804a884d06c63c46e047d817da51357987a67ef0fe3c41b22f71b32c70"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseClearTexture4CS.wgsl": {
+      "bytes": 2656,
+      "sha256": "61840dd668044752c89d6905cf12aeee98a53b765ca5f59d2eee2537f6d9c147"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4aCS.reflection.json": {
+      "bytes": 64663,
+      "sha256": "e5238b5dfe5ef04a9a2958998343831283adc23025b9b9061d66aeb37cdbdd5b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4aCS.wgsl": {
+      "bytes": 12245,
+      "sha256": "99fcf4d3bc342225c838de3d53a58c36bd1b08b7e1cfcbe92905f0110f388156"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4bCS.reflection.json": {
+      "bytes": 64125,
+      "sha256": "921419ccd60629b0ac467cb06159412a047b8b31335a265e32aa1dec88a6fff6"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4bCS.wgsl": {
+      "bytes": 10590,
+      "sha256": "8346efea0335fdc266086bd5e201d1cece28ca8ac591d96c41f512013203ec0f"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4cCS.reflection.json": {
+      "bytes": 64125,
+      "sha256": "921419ccd60629b0ac467cb06159412a047b8b31335a265e32aa1dec88a6fff6"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4cCS.wgsl": {
+      "bytes": 8203,
+      "sha256": "4871b1e41543751ee7319aa29f33ac2a96ce5f7d5beb7ba4bc18660dff37b344"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4dCS.reflection.json": {
+      "bytes": 64125,
+      "sha256": "921419ccd60629b0ac467cb06159412a047b8b31335a265e32aa1dec88a6fff6"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseInplaceRescale4dCS.wgsl": {
+      "bytes": 10434,
+      "sha256": "fb593848c9c45ed48aef910537d15998cfc6a207f961934a4cf72a1cbf934b3a"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats0CS.reflection.json": {
+      "bytes": 37684,
+      "sha256": "b39400f63d2d6a3c0633dcf9dddfd9318b3d4419a070c7a492c8540447ba2f4b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats0CS.wgsl": {
+      "bytes": 57042,
+      "sha256": "68fb33193d07793b694bc9c58ee8b8aa6f04fcacef79be1298aaee19aec764e3"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats1CS.reflection.json": {
+      "bytes": 37684,
+      "sha256": "b39400f63d2d6a3c0633dcf9dddfd9318b3d4419a070c7a492c8540447ba2f4b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats1CS.wgsl": {
+      "bytes": 87526,
+      "sha256": "a43f836c3fadfe460efcec0806b9fd649b776c814d1662565b15a2814398140e"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats2CS.reflection.json": {
+      "bytes": 37684,
+      "sha256": "b39400f63d2d6a3c0633dcf9dddfd9318b3d4419a070c7a492c8540447ba2f4b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats2CS.wgsl": {
+      "bytes": 87572,
+      "sha256": "7db8e30e51e3f0c56f567fe4ba2b9024ef75b3414106be77213de566c62dce7f"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats3CS.reflection.json": {
+      "bytes": 37684,
+      "sha256": "e2198be3cb937edaadaf7d154b92da9e0aae1d853666bdc73caa75d9549cb073"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbComputeStats3CS.wgsl": {
+      "bytes": 93456,
+      "sha256": "2f942f1bf308876232f0523202875950c879c966f8d9973e659d8838a152ecdc"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbExportDensityCS.reflection.json": {
+      "bytes": 227181,
+      "sha256": "a27e77270e399f19254292afe351f80f1013cc4a922a461f44c90e128829cd17"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbExportDensityCS.wgsl": {
+      "bytes": 91025,
+      "sha256": "bbae5a83d97f3d96b8cb44f598cf48e0a708f56367f4827a9f197ae3aa7dc011"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbExportVelocityCS.reflection.json": {
+      "bytes": 224897,
+      "sha256": "8f91faa4109cc46118657b13db8ef864b49e8fb566a0b933c4bae9b49e756267"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbExportVelocityCS.wgsl": {
+      "bytes": 86433,
+      "sha256": "f1b69790e91467cac019cf5203d433880875cb8d92fbbd2ca9f4b9f3178daf42"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbPruneLeavesCS.reflection.json": {
+      "bytes": 38229,
+      "sha256": "b632a5806ffea2955094d2c1572acfd21459c0548c36bb58b98c153dfcccfb16"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseNanoVdbPruneLeavesCS.wgsl": {
+      "bytes": 31190,
+      "sha256": "9d769fec51a17ae472469b43c8c9380edcc528ccca1dec74f291c078de6590a9"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseRescale1CS.reflection.json": {
+      "bytes": 64742,
+      "sha256": "c8db5ba647f3dcb8925e28a0bbaba55292a3f53317cf6ab8b70fe68f262f801e"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseRescale1CS.wgsl": {
+      "bytes": 15836,
+      "sha256": "f365ac1022575294e25d45ea28b12a83704eb9177ad2904da882cb48e2361d57"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseRescale2CS.reflection.json": {
+      "bytes": 65030,
+      "sha256": "90030548e34f1bb1bb73e0d215267d65e885391eb988d43e657dc5a718993fc1"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseRescale2CS.wgsl": {
+      "bytes": 15922,
+      "sha256": "35fadb5ea4b93eb2b00222c71c77881b30a11e1aa2558e1ccb27c565abe0564b"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseRescale4CS.reflection.json": {
+      "bytes": 65030,
+      "sha256": "1ccf9c879d2ab2a9bca15614645590eef26e76e2247fb612192adf6ec25ceadd"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseRescale4CS.wgsl": {
+      "bytes": 15940,
+      "sha256": "805941bc33e152a97e1a15382c75d354906e039a1945bcada4908a75caec83bc"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseUploadCS.reflection.json": {
+      "bytes": 63777,
+      "sha256": "6a0cc5c0d105820b33394f76a29128c059a1b97de67f3df5fa4eaf2799134a7f"
+    },
+    "flow-wgsl/source/nvflow/shaders/SparseUploadCS.wgsl": {
+      "bytes": 3928,
+      "sha256": "2bd7bbf8acbdbfaa17c33597a738bffa1f0d68bd73ef067fa14335174a901e3f"
+    },
+    "flow-wgsl/source/nvflow/shaders/SummaryCS.reflection.json": {
+      "bytes": 42390,
+      "sha256": "1d9468ea672e94bddf6f1b288f18878f52d2a2ad1ad662d39333d30d090c4b17"
+    },
+    "flow-wgsl/source/nvflow/shaders/SummaryCS.wgsl": {
+      "bytes": 18847,
+      "sha256": "8483a060ff3b8aa90bf7d1cc81aafb3fba862b0911069dd351a79b3e27c5ed46"
+    },
+    "flow-wgsl/source/nvflow/shaders/Vorticity1CS.reflection.json": {
+      "bytes": 40050,
+      "sha256": "43e643dc795ee9ce339a0629ac9432f60ef5b009cdd4b2a7f0e10c81103b9443"
+    },
+    "flow-wgsl/source/nvflow/shaders/Vorticity1CS.wgsl": {
+      "bytes": 15941,
+      "sha256": "14f7b5f8e7030e12fc922325222d34ac94200b4e6e790b2bf6186b7347852d6a"
+    },
+    "flow-wgsl/source/nvflow/shaders/Vorticity2CS.reflection.json": {
+      "bytes": 41375,
+      "sha256": "101d41c4da9163433081f8251dcf57bd1a9916a8b06f477e07c1cbf82a085dae"
+    },
+    "flow-wgsl/source/nvflow/shaders/Vorticity2CS.wgsl": {
+      "bytes": 15719,
+      "sha256": "d61233c6d1a1c3b65eed7d7bfd391fcb9017c18fb725e7d29523c178c5aa569a"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiBuildCS.reflection.json": {
+      "bytes": 22026,
+      "sha256": "c1448716ceab461b76cace67c08c9c88fc4e4c1c0e1dce904202708546694a0e"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiBuildCS.wgsl": {
+      "bytes": 6172,
+      "sha256": "d40512f2a95c2a044ba46dd854c944a40fcd14a09bf1468dc3caafe17fd4cc63"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiCS.reflection.json": {
+      "bytes": 25516,
+      "sha256": "d6031398bbd1e5b73767ceb090d8848420fa1ecb9b3492803fa31aae9ba2a931"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiCS.wgsl": {
+      "bytes": 11673,
+      "sha256": "5e2e6aaabfd3eaf830a53cb69c4425d9dd1c6262a80579072271b9d1dc64a1c4"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTextureUploadCS.reflection.json": {
+      "bytes": 1956,
+      "sha256": "a18fe46c1a1e4b97c55bd7b5a8e4247a962d998de4e6de84e376f2efbcdc290e"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTextureUploadCS.wgsl": {
+      "bytes": 2927,
+      "sha256": "5bfc0441ec9daeb12cf31d0f0b425247939cffa086cf6fcad73431cad2702c10"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTileCS.reflection.json": {
+      "bytes": 22056,
+      "sha256": "5e944d467c4feb756c1329db2faa6d50afcb32c23a60936dc78d93d4f8adf11c"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTileCS.wgsl": {
+      "bytes": 9292,
+      "sha256": "75185a140a28b75d72baf752fa92fc478906fbe76f5413da972f5fb0f3ba678e"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTileCountCS.reflection.json": {
+      "bytes": 18180,
+      "sha256": "9ba849d025e1629738eefb70db45af1325fe775cce02761a62e15d69b51904de"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTileCountCS.wgsl": {
+      "bytes": 10182,
+      "sha256": "04dde68696e894ae40fc86e16d1080773961283442e3318f10c1ecafbf777389"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTileScanCS.reflection.json": {
+      "bytes": 18090,
+      "sha256": "9827e1890ac01e563147f1c8bf9fde11131df622ca2078c96c0b0329723a5c22"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ImguiTileScanCS.wgsl": {
+      "bytes": 6302,
+      "sha256": "b2abfeb4c9ed68c8393891b8df9fbed451de09ffff555e5cc627679142401fd4"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ShapeCS.reflection.json": {
+      "bytes": 25190,
+      "sha256": "202da2f5547a7e4f1f1d8f0655984739a1b6fae7e73e9024cd72e422d4c46ce3"
+    },
+    "flow-wgsl/source/nvfloweditor/shaders/ShapeCS.wgsl": {
+      "bytes": 7474,
+      "sha256": "a24fc2a72285b2f8ae2bf192e623028f5f4985bf3fc978eea11faff5d1017371"
+    },
+    "flow-wgsl/source/nvflowext/shaders/CopyFP32toFP16CS.reflection.json": {
+      "bytes": 8850,
+      "sha256": "7d378c0dbcfefa47d00a331e548601730a9511a4c6a1b1d13b22e79f597822cb"
+    },
+    "flow-wgsl/source/nvflowext/shaders/CopyFP32toFP16CS.wgsl": {
+      "bytes": 3992,
+      "sha256": "cf1dbe15e3e3911e6f7f30b153a1b39613a4dc6a957e4cbd23dc07d890db49a3"
+    },
+    "flow-wgsl/source/nvflowext/shaders/DebugVolume2CS.reflection.json": {
+      "bytes": 69528,
+      "sha256": "5a65735d0fa87dfdbf1b508913b2f47ec9d0b57b4523daf82865431570c9995a"
+    },
+    "flow-wgsl/source/nvflowext/shaders/DebugVolume2CS.wgsl": {
+      "bytes": 12383,
+      "sha256": "aa08feece0754d9f2c874d427901a6e0daf75e35e17432958bf8005ccfb692f9"
+    },
+    "flow-wgsl/source/nvflowext/shaders/DebugVolumeCS.reflection.json": {
+      "bytes": 70194,
+      "sha256": "116935ecc711d79e6a1306da5f0b06dba4e7fee76d1d0c195f9bd076ba0ea23f"
+    },
+    "flow-wgsl/source/nvflowext/shaders/DebugVolumeCS.wgsl": {
+      "bytes": 17159,
+      "sha256": "ae1c51547f60e455b9e74d1a26cb10145a2e2a27fde01e14c0b29a0decdb40ee"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EllipsoidRasterCS.reflection.json": {
+      "bytes": 44929,
+      "sha256": "06f629e64ba1c8895efb7fd89f79509c2793f0e62c0468caee8f7e291bcf26dd"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EllipsoidRasterCS.wgsl": {
+      "bytes": 26839,
+      "sha256": "c8c90941daeedd7c2f45e14c74606b4463db37489428bb5299ca6f161b420f48"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EllipsoidRasterSmoothCS.reflection.json": {
+      "bytes": 35869,
+      "sha256": "4957c62272ef1cea3fb4f44289d21e0cde16310d58fee2122c97693544c9b25d"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EllipsoidRasterSmoothCS.wgsl": {
+      "bytes": 11958,
+      "sha256": "f51502c79563f73534a85709aa92541078334dd22ec1c5e35057fe9a4ff166a1"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterBoxCS.reflection.json": {
+      "bytes": 45991,
+      "sha256": "d3b27525ee1d67b03bf0e7c5d14f673f6682bdb3caf225a71fdd4ab43bed4bdc"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterBoxCS.wgsl": {
+      "bytes": 23093,
+      "sha256": "5fb70bd5351b9efbbe6b78af4286120bc4e8a4ce07a3dfd46497fd1c6f3953ca"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshApplyCS.reflection.json": {
+      "bytes": 92708,
+      "sha256": "3ef96fd96f712fbdb13ba86025c279143bd1b28dc8d42f7591379f78431be858"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshApplyCS.wgsl": {
+      "bytes": 32441,
+      "sha256": "4c6ed5f83e287d7cd89af860ec0f7dd1ad2e424a9cfa4ad78f00b7363c603304"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshBounds1CS.reflection.json": {
+      "bytes": 90983,
+      "sha256": "9b3580b62b2e793e9fcd6f51fc27112d13dabfddebc0c973849cdb84b50e4b04"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshBounds1CS.wgsl": {
+      "bytes": 13100,
+      "sha256": "eef1f0524e071c4760f1327891acd6e667fe7e7589f610040ccb542390a23b0c"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshBounds2CS.reflection.json": {
+      "bytes": 82078,
+      "sha256": "4f5387dc0b6840f2c68bb43d56df44e40c8df654583aac62a5ed16a0d2eaa21f"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshBounds2CS.wgsl": {
+      "bytes": 9079,
+      "sha256": "2ea2047ff0e2a6f0f35ba8daeb6467a9cef2c0bd137981a67b71fee1c10501d7"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshBounds3CS.reflection.json": {
+      "bytes": 82078,
+      "sha256": "4b30a2412accc02669405516bd9110fa726bf1d568c330063310af185009f710"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshBounds3CS.wgsl": {
+      "bytes": 9079,
+      "sha256": "88bb5712a180193e04c7c48bcf85d5c150270dd855f63c9abe0cc6510627a098"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshClosestCS.reflection.json": {
+      "bytes": 94630,
+      "sha256": "3fbb078bf8bcc666bb9576f7aafbc0d350043084cfbe1f2a01afb16ac9b29e0f"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshClosestCS.wgsl": {
+      "bytes": 33040,
+      "sha256": "30ab0e261e564402f388bb0abe1410b52f5231855e2515f28549a4c1dce008f9"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshGenSortKeysCS.reflection.json": {
+      "bytes": 92100,
+      "sha256": "543a85756c6fd1bb208ecf3b0683330892e940e3b8d30c5833bbe878b2e9b91d"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshGenSortKeysCS.wgsl": {
+      "bytes": 11347,
+      "sha256": "c2021b086feb63d3303afe1f3b99e18f0cf93c4aac85903877ea525454e20d10"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshTree1CS.reflection.json": {
+      "bytes": 92782,
+      "sha256": "7ef9550b896c76841b419e7b7b77507794a147bf250f494638d919c5fa3d0545"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterMeshTree1CS.wgsl": {
+      "bytes": 13585,
+      "sha256": "5fc44ddc1193d2aa10df62c21c19a620bec4f95ef40728f1d54f3c01d5990335"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterNanoVdb2CS.reflection.json": {
+      "bytes": 72955,
+      "sha256": "65d6d5773e3371a004cbaa02f22b3e2e5c7de5b1ab2695b67438f60b8b3b7a0e"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterNanoVdb2CS.wgsl": {
+      "bytes": 15554,
+      "sha256": "23bfb05fc7b921c74bd326d9c24ad20eddcbad9c71ff4c5610b31e7c148a50a8"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterNanoVdbCS.reflection.json": {
+      "bytes": 77932,
+      "sha256": "4acd420a5a6d1c3b627f2adef656c90454e7a4366600cc1a2a495801a5163d28"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterNanoVdbCS.wgsl": {
+      "bytes": 108113,
+      "sha256": "98809f69a4488e4375f48874d58cd5b3d62f8b138e41848425802188ab5400ce"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint1CS.reflection.json": {
+      "bytes": 110480,
+      "sha256": "315e5013c6282d2fe7c899c1e68482ed96783ea27571e1cf90911f3a80c820f4"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint1CS.wgsl": {
+      "bytes": 15611,
+      "sha256": "8d93d15446a91cddc5bd3c5c4a455ced772b0a282a91e3e8030dfd216dccf345"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint2CS.reflection.json": {
+      "bytes": 109094,
+      "sha256": "084e41a48e15dd277d4d5cb7171c4dd748fad2e4b588d5abae6f6ff185158615"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint2CS.wgsl": {
+      "bytes": 6357,
+      "sha256": "635bb0be0c8386fdd9256ab15ed394bb6d8c11445171b157a16fcf028a1aa36c"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint3CS.reflection.json": {
+      "bytes": 113551,
+      "sha256": "d8f10e33f60b5789bb70a416efc6db5e17e82888491cd10eb860fef2ec988350"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint3CS.wgsl": {
+      "bytes": 28796,
+      "sha256": "b85f9cc894aeee59df3ac8d1103226ada0894a4b76993dc18a5e8f652b4a7ba1"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint4CS.reflection.json": {
+      "bytes": 110723,
+      "sha256": "30565fbcc6d7cc280b1a215e3ed70618e40855b7d9acfd638328aa136e1a0525"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPoint4CS.wgsl": {
+      "bytes": 14351,
+      "sha256": "a832385ae51b124831e791997bfa5a458e994daea27b3f888b721ccdf6411a71"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointClearDownsampleCS.reflection.json": {
+      "bytes": 61000,
+      "sha256": "2de1bdc7783a382bf9aad01d6f2d803cc8682ee32e3b377e2ea4982231291bcd"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointClearDownsampleCS.wgsl": {
+      "bytes": 11482,
+      "sha256": "3c833a383ea0ae0b1894b5ce8592b4ee24cf34c936151820ee7761bc81e74c09"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointClearMarkedCS.reflection.json": {
+      "bytes": 60501,
+      "sha256": "6b6a9889e976369709023a8e5c18cf772b87065e8d4abd146e541bd4d96f5c91"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointClearMarkedCS.wgsl": {
+      "bytes": 11180,
+      "sha256": "c08edfb8aa22eb6aed53910625049b11d000aee0fd812e77b43d56ae77a16240"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointMarkCS.reflection.json": {
+      "bytes": 59829,
+      "sha256": "32f5c98fdb7a9966d1c72418cdfef02f8fe1ee0b13491a4a993b561c0063b944"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointMarkCS.wgsl": {
+      "bytes": 9492,
+      "sha256": "815c9809897ec7ee7d33ab2cf53f21c200dffc71120ab4a677d7ad0e82cf052b"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointReduce1CS.reflection.json": {
+      "bytes": 111742,
+      "sha256": "2c1bffb8c820c74227ad592e12423e624bff9097c846f06f83ec2973f0c07c26"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointReduce1CS.wgsl": {
+      "bytes": 18457,
+      "sha256": "b5851a6575ed9d6c924affc8ce07613062d4fbbfea6b682fc9f5a3110bddc64a"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointReduce2CS.reflection.json": {
+      "bytes": 111683,
+      "sha256": "766b7b123159c6915ede0e4cd3a38fe031c4049159e8c74646d038427ba1fd3b"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointReduce2CS.wgsl": {
+      "bytes": 12203,
+      "sha256": "afd3a74ff870fd1478fe92d8c537c84d114c42bc402f32e97b3babab9f020bad"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointReduce3CS.reflection.json": {
+      "bytes": 111683,
+      "sha256": "08acf160dfc01be466aed0fc61aaa242e6a00179bce931f8aed3f3775a75d439"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointReduce3CS.wgsl": {
+      "bytes": 12203,
+      "sha256": "0c190f235b5c111a643f5f954beac12f52cd1af02cc62b8ec55eaea8c5a1ea5d"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointScan1CS.reflection.json": {
+      "bytes": 113565,
+      "sha256": "e562ccb381ea6413b0cfd680a80c69e3ef1e307c74a214887278a1e6798a0ca6"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointScan1CS.wgsl": {
+      "bytes": 13159,
+      "sha256": "eefefe59692472971d29b1a5bbe18e1f1e05fb52cbb14aa4dc52d506211f0366"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointScan2CS.reflection.json": {
+      "bytes": 113565,
+      "sha256": "f05229a8d579af8f841fb64df04d869ae8ac452c8ec8232fa479a98e476d43e8"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointScan2CS.wgsl": {
+      "bytes": 13159,
+      "sha256": "c7681a6e194449c78d814f6e86a2629c17f00eb12ce99a1a02d4ebbc29b2179e"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointScan3CS.reflection.json": {
+      "bytes": 110954,
+      "sha256": "b54530dc5faa7c75aa1aa0d8e0be25fecaa11c46c69fce20d8c13046b3f91ed6"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterPointScan3CS.wgsl": {
+      "bytes": 13295,
+      "sha256": "19e4672765059fde668d22b8ee6d3e1823ac630d3805d9105c3a07da6aedf270"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterSimpleCS.reflection.json": {
+      "bytes": 84795,
+      "sha256": "fb1297c613759ee44d294b1608b2e7f5ca8c2108438de6406c2766d9233d6d4a"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterSimpleCS.wgsl": {
+      "bytes": 24094,
+      "sha256": "95e91c831af780723655185013a33457700fdf9482aa46c7d0686bd31f7dc7c7"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterTextureCS.reflection.json": {
+      "bytes": 70815,
+      "sha256": "8417200c3ca64243312d52c0765d83b407a48ee65c1dbe60148db85b477886b6"
+    },
+    "flow-wgsl/source/nvflowext/shaders/EmitterTextureCS.wgsl": {
+      "bytes": 26434,
+      "sha256": "b3923fbd251ce0234300ee0b9b9dc7677d7c1791cd665b86ec06a66d02da3c95"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSort1CS.reflection.json": {
+      "bytes": 8847,
+      "sha256": "7f6ddb3e6846917a058550f85c323c6ef6e70f9e66040a638f2c1ad2a3081c18"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSort1CS.wgsl": {
+      "bytes": 11346,
+      "sha256": "31270ecd3dc983075fa36a9d163cedfbba2318992952a5afca13150c065f8604"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSort2CS.reflection.json": {
+      "bytes": 9284,
+      "sha256": "39b37c5c2f8d05be1bd317a17c17200cefe3e20ee962458e9143ed839bc5d2b4"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSort2CS.wgsl": {
+      "bytes": 9770,
+      "sha256": "eae8c038998c4d696a970475d14af68db8ccc393c82b4ac3a5f2b12ef2cfb204"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSort3CS.reflection.json": {
+      "bytes": 10478,
+      "sha256": "063ab83cd0506c66d81a5c5f05240db33b487db034cb513d74ffcdadf1471494"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSort3CS.wgsl": {
+      "bytes": 9426,
+      "sha256": "b0b6dcc4e85dd5c0565a773e41b8f31376489f0d53004ec1c8c5e468faf51128"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSortBlockCS.reflection.json": {
+      "bytes": 9938,
+      "sha256": "1948cd8365d3ed40f92332d7cee0ef092b9e8ae3ad8d05d0d97247955503a8e4"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSortBlockCS.wgsl": {
+      "bytes": 8889,
+      "sha256": "d414a88917e50632fc06fa3e9b96a26f95403423db22e9befeeb5fb5c74008a3"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSortPadCS.reflection.json": {
+      "bytes": 8308,
+      "sha256": "f676e86c56597a867f8718567859a6ca398d408cca972b1cc70043f9bb8cbb16"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RadixSortPadCS.wgsl": {
+      "bytes": 2493,
+      "sha256": "6edd1fce87ba09c586ca778f3c86280aca231249120b89aebbac4f864c15b624"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchBlockCS.reflection.json": {
+      "bytes": 104910,
+      "sha256": "4ffb1777c3335b9eac9ea42fd004c9fe861ec0c8b964f9266865ad418ce155c7"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchBlockCS.wgsl": {
+      "bytes": 52134,
+      "sha256": "5ee698cb2dd0fc95d65746dcb263b932b978d54b123d1de24d0cb94bcbd57e9b"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchBlockIsosurfaceCS.reflection.json": {
+      "bytes": 95570,
+      "sha256": "d7597bfd50b2ad073842fb1717f696748a375f5493f322054bbce5fd7d60ba36"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchBlockIsosurfaceCS.wgsl": {
+      "bytes": 43907,
+      "sha256": "ed00530930bcc6fcd145649a2f3fbee39eaad6743a6f8944d12d927443c5254e"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchCopyTextureCS.reflection.json": {
+      "bytes": 5437,
+      "sha256": "ae3e594519c6979119ddb3c39fdb099172a69e1cc407e288fe6400d7f71d1bf3"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchCopyTextureCS.wgsl": {
+      "bytes": 2669,
+      "sha256": "a33b22710a56a939deae19f7c31a775104be8e7bd10a504691f9b71ab2aefc02"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchUpdateColormapCS.reflection.json": {
+      "bytes": 11577,
+      "sha256": "1c1517920133fcc063de92dc41ec065a4e252d6fbc0051c5964f4c93236c8a29"
+    },
+    "flow-wgsl/source/nvflowext/shaders/RayMarchUpdateColormapCS.wgsl": {
+      "bytes": 5582,
+      "sha256": "e26c43322ee6fa063ab0e4dd701e41306b15d7d9968f2c0a6c8aed6c03817f9f"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowCoarseApplyCS.reflection.json": {
+      "bytes": 91484,
+      "sha256": "a1005095f19b44231a636117980e029810f4c92470bef3d6a370611dd296708d"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowCoarseApplyCS.wgsl": {
+      "bytes": 15490,
+      "sha256": "b71b56bb0784fa4b77f6e07d45787758dfa15131b7493a026b2c465a3648493b"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowCoarseUpdateCS.reflection.json": {
+      "bytes": 90808,
+      "sha256": "74e2cde54bc9a3a68277f74f18efb366977173dee41dcd7094385aa93b40c246"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowCoarseUpdateCS.wgsl": {
+      "bytes": 47867,
+      "sha256": "101143de61d92f39af22ec9880ebc90eaba0c0e4198a76fd230ea3a0763f92b3"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowNullCS.reflection.json": {
+      "bytes": 1418,
+      "sha256": "64852504f22ec0d8b2f49861ee30ba8ebfc835176e35df87231382b57e394e69"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowNullCS.wgsl": {
+      "bytes": 2005,
+      "sha256": "a5697e92a211f7e3a8dc0df4e247bafe8913264570711ce6d0c81c3d7c9f0414"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowUpdateCS.reflection.json": {
+      "bytes": 90956,
+      "sha256": "6017f61bfcb742e7b4c6e3176c3e61f085890db49d173b43029230ae454827e4"
+    },
+    "flow-wgsl/source/nvflowext/shaders/ShadowUpdateCS.wgsl": {
+      "bytes": 48851,
+      "sha256": "a60dc55ece4f2826200ceb26f8900d8f9500347b1666a30fc6bcbc658f6c142e"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolateDownsampleCS.reflection.json": {
+      "bytes": 65215,
+      "sha256": "04e58f4e22d254ea1cb31791bd5ddfa664812e2a36f71241e19b2f7686964a20"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolateDownsampleCS.wgsl": {
+      "bytes": 15567,
+      "sha256": "9555db3c201498ad5ee9878a4ea554c8ff0fc3a4cd49d30d4255233d248c711d"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolateNullCS.reflection.json": {
+      "bytes": 11353,
+      "sha256": "7745ef206a8f46319ceb8d952deddc074f86f165abbde7725de673770b5715e4"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolateNullCS.wgsl": {
+      "bytes": 3177,
+      "sha256": "4f0575f89fb605f440d6a8603467bbf15e46d9a5890782e88154943fb61fb356"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolatePrepassCS.reflection.json": {
+      "bytes": 64854,
+      "sha256": "63f0c1acbec623d9be865fcc8a8272b572c6dd1946d42988de6570210f20302e"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolatePrepassCS.wgsl": {
+      "bytes": 18174,
+      "sha256": "a79ab32502cdf166cd4954fe8972d5961870a36e08ccd1decab374122f28868b"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolatePropagateCS.reflection.json": {
+      "bytes": 65215,
+      "sha256": "04e58f4e22d254ea1cb31791bd5ddfa664812e2a36f71241e19b2f7686964a20"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolatePropagateCS.wgsl": {
+      "bytes": 18170,
+      "sha256": "8f04821e3dfb58f2111d506141b0db899b0ef102f2cd2d679731288eb95bf56d"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolateUpsampleCS.reflection.json": {
+      "bytes": 66455,
+      "sha256": "ce3abd2e488debd2b7d3558456e318d21b8a4ea5cdaca58887045c62f1871fd3"
+    },
+    "flow-wgsl/source/nvflowext/shaders/VoxelInterpolateUpsampleCS.wgsl": {
+      "bytes": 17822,
+      "sha256": "5a5ebbd382464c1575addd55497c6c915ec15d0a8d54aae61ae17796c70ceb8c"
+    },
+    "notices/Flow-LICENSE.txt": {
+      "bytes": 1642,
+      "sha256": "3a697cf64ee8fe2090724e598a152c1b9d44722d37f3c5a8494b5d0b34f91e46"
+    },
+    "notices/PhysX-LICENSE.md": {
+      "bytes": 1517,
+      "sha256": "eb3e67b17b48c56ef26d8bf6634c0837503fefc28a916f98d4f02272eda50011"
+    },
+    "notices/PhysX-sdk-LICENSE.md": {
+      "bytes": 11359,
+      "sha256": "c1b9df1275e769f3dbab000d1e457a2d4b0f28eb5da6c77e48dc37eeba202ed7"
+    },
+    "notices/bindings-LICENSE.txt": {
+      "bytes": 1067,
+      "sha256": "0879a16adc700c9956ca0b60fbcac1fcb52310219feee827c03d7a0ab9886fbd"
+    },
+    "notices/bindings-NOTICE.md": {
+      "bytes": 1999,
+      "sha256": "2a7d60ff994150a8fc287fcc574322dff19f0a506493f9a36d6d179053f7ce7e"
+    },
+    "notices/blast-sdk-LICENSE.md": {
+      "bytes": 1562,
+      "sha256": "3f9ab13f4b26908285c8b86ae264d98916afaeeaf5bb0108190305cad7679273"
+    },
+    "notices/build-lab-LICENSE.txt": {
+      "bytes": 1483,
+      "sha256": "76130c226f47ab979af9e1fef67f9fd1e77b7a0ec54340919352718e8f627f0a"
+    },
+    "physx-pe.d.ts": {
+      "bytes": 224291,
+      "sha256": "eab1e5d62ec0d5f4d635be98f8b000fa88e0a12e7af7659c8d53f0e100affe9f"
+    },
+    "physx-pe.mjs": {
+      "bytes": 4837868,
+      "sha256": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f"
+    },
+    "physx-pe.wasm": {
+      "bytes": 6948292,
+      "sha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+    }
+  },
+  "legacyPackageMetadata": "package.json and README.md retain original fabmax distribution metadata; this manifest identifies the installed custom build."
+}

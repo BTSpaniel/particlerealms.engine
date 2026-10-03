@@ -1,0 +1,776 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/job-request.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "job-request",
+  "description": "Metadata projection admitted by submit after accessor/depth/byte guards and native handle lookup. operation is the separate submit argument; parameters is the effective projection and policy contains resolved defaults. inputs contains opaque issued handles, never source bytes. Native validators separately verify ownership, generation, dtype, shapes, precision availability and scratch budget.",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.stats.summary@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "values"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/stats.summary"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.robust.compensated-sum@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "values"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/robust.compensated-sum"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.geometry.attribute-bounds@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "positions": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "positions"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/geometry.attribute-bounds"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.geometry.transform-points@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "positions": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "matrix": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "positions",
+            "matrix"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/geometry.transform-points"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.image.histogram@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "image"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/image.histogram"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.image.luminance@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "image"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/image.luminance"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.image.document-analysis@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "image"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/image.document-analysis"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.matrix.multiply@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "a": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "b": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/matrix.multiply"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.signal.fft@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "real": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "imag": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "real"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/signal.fft"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.signal.ifft@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "real": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "imag": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "real",
+            "imag"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/signal.ifft"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.audio.waveform-peaks@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "samples": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "samples"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/audio.waveform-peaks"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.audio.windowed-rms@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "samples": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "samples"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/audio.windowed-rms"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.binary.crc32@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "bytes": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "bytes"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/binary.crc32"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.binary.histogram@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "bytes": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "bytes"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/binary.histogram"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.compression.entropy@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "bytes": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "bytes"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/compression.entropy"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "math.geometry.cloth-iteration@1"
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "positions": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "velocities": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "constraints": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "curves": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            },
+            "colors": {
+              "$ref": "https://particlerealms.online/schemas/compute/handle.v1.schema.json"
+            }
+          },
+          "required": [
+            "positions",
+            "velocities",
+            "constraints",
+            "curves",
+            "colors"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/geometry.cloth-iteration"
+        },
+        "policy": {
+          "allOf": [
+            {
+              "$ref": "https://particlerealms.online/schemas/compute/policy.v1.schema.json"
+            },
+            {
+              "required": [
+                "backend",
+                "outputLocation",
+                "precision",
+                "priority",
+                "timeoutMs"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "inputs",
+        "parameters",
+        "policy"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "names": [
+    "color", "background", "background-color", "border", "border-radius",
+    "display", "position", "width", "height", "top", "left", "right", "bottom",
+    "margin", "padding", "font", "font-size", "font-family", "font-weight",
+    "text-align", "text-decoration", "overflow", "visibility", "opacity",
+    "transform", "transition", "animation", "flex", "grid", "box-shadow",
+    "cursor", "z-index", "pointer-events", "white-space", "content",
+    "align-items", "justify-content", "flex-direction", "gap", "order"
+  ]
+}

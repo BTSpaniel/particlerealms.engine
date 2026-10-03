@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "high-contrast",
+  "name": "High Contrast",
+  "description": "Maximum contrast for accessibility — WCAG AAA compliant.",
+  "author": "Plauna",
+  "version": "1.0.0",
+  "extends": "_base",
+
+  "vars": {
+    "--bg-primary":    "#000000",
+    "--bg-secondary":  "#0a0a0a",
+    "--bg-tertiary":   "#111111",
+    "--bg-quaternary": "#1a1a1a",
+
+    "--text-primary":   "#ffffff",
+    "--text-secondary": "#f0f0f0",
+    "--text-tertiary":  "#d0d0d0",
+    "--text-disabled":  "#808080",
+
+    "--border-light":  "#444444",
+    "--border-medium": "#666666",
+    "--border-dark":   "#888888",
+    "--border-subtle": "#222222",
+
+    "--color-primary": "#00d4ff",
+    "--color-success": "#00ff88",
+    "--color-warning": "#ffcc00",
+    "--color-error":   "#ff4444",
+    "--color-info":    "#4499ff",
+
+    "--shadow-sm": "0 0 0 1px #ffffff33",
+    "--shadow-md": "0 0 0 2px #ffffff44",
+    "--shadow-lg": "0 0 0 3px #ffffff55",
+    "--shadow-xl": "0 0 0 4px #ffffff66"
+  }
+}

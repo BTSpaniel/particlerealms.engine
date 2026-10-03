@@ -1,0 +1,119 @@
+{
+  "header": {
+    "major": 1,
+    "minor": 0,
+    "flags": 0,
+    "dictionaryVersion": 0,
+    "languageProfile": 0
+  },
+  "manifest": {
+    "applicationId": "test.basic-app",
+    "applicationVersion": "1.0.0",
+    "blockmap": {
+      "builtAt": "2026-01-01T00:00:00Z",
+      "files": {
+        "files/app.js": "8108f09d3f59866f1d3ba2f39a206f7e1aad879fbecd8c7db059ada2022a11e1",
+        "files/greet.js": "d93ba2d5e1ad3dc0e161e8aaa1869df3576d5fa9068f46a8e4ea465e8ad762d6",
+        "files/index.html": "c53451a556fbe601db2d7a7b560990b37de65e187c20e46de771e5fa77bf7d99",
+        "files/style.css": "e8ec03701ad1eee42dcf1df2334733ca7a79fc39795a1d1791a9fb7de35e3fea"
+      },
+      "format": "blockmap-v1",
+      "packageId": "test.basic-app",
+      "version": "1.0.0"
+    },
+    "container": "jhc-1.0",
+    "entry": "files/index.html",
+    "format": "jhc-1.0",
+    "name": "Basic App",
+    "publisher": "fixtures",
+    "requiredFeatures": 0,
+    "resources": [
+      {
+        "decodedLength": 134,
+        "hash": "8108f09d3f59866f1d3ba2f39a206f7e1aad879fbecd8c7db059ada2022a11e1",
+        "id": 0,
+        "mime": "application/octet-stream",
+        "path": "files/app.js",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 60,
+        "hash": "d93ba2d5e1ad3dc0e161e8aaa1869df3576d5fa9068f46a8e4ea465e8ad762d6",
+        "id": 1,
+        "mime": "application/octet-stream",
+        "path": "files/greet.js",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 260,
+        "hash": "c53451a556fbe601db2d7a7b560990b37de65e187c20e46de771e5fa77bf7d99",
+        "id": 2,
+        "mime": "application/octet-stream",
+        "path": "files/index.html",
+        "representation": "raw"
+      },
+      {
+        "decodedLength": 111,
+        "hash": "e8ec03701ad1eee42dcf1df2334733ca7a79fc39795a1d1791a9fb7de35e3fea",
+        "id": 3,
+        "mime": "application/octet-stream",
+        "path": "files/style.css",
+        "representation": "raw"
+      }
+    ]
+  },
+  "directory": [
+    {
+      "sectionType": 0,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 48,
+      "storedLength": 1407,
+      "decodedLength": 1407
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 0,
+      "codec": 0,
+      "storedOffset": 1815,
+      "storedLength": 134,
+      "decodedLength": 134
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 1,
+      "codec": 0,
+      "storedOffset": 1949,
+      "storedLength": 60,
+      "decodedLength": 60
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 2,
+      "codec": 0,
+      "storedOffset": 2009,
+      "storedLength": 260,
+      "decodedLength": 260
+    },
+    {
+      "sectionType": 1,
+      "sectionFlags": 0,
+      "logicalId": 3,
+      "codec": 0,
+      "storedOffset": 2269,
+      "storedLength": 111,
+      "decodedLength": 111
+    }
+  ],
+  "resourcePaths": [
+    "files/app.js",
+    "files/greet.js",
+    "files/index.html",
+    "files/style.css"
+  ],
+  "rootHash": "e9e7589932a7dea9433980d58e63d36ed8731d03593bd360869d6060e7d53472"
+}

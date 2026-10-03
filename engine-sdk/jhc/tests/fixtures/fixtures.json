@@ -1,0 +1,10 @@
+{
+  "fixtures": [
+    "basic-app",
+    "cyclic-modules",
+    "binary-assets",
+    "html-entry",
+    "css-entry",
+    "token-codec"
+  ]
+}

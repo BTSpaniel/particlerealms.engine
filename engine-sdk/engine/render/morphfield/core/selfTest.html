@@ -1,0 +1,32 @@
+<!doctype html>
+<!--
+SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+
+SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MorphField Core Self-Test</title>
+</head>
+<body data-status="running">MorphField self-tests are running.</body>
+<script type="module">
+  import { runMorphFieldCoreSelfTests } from './selfTest.js';
+  import { runMorphAssetSelfTests } from '../assets/selfTest.js';
+
+  try {
+    const core = await runMorphFieldCoreSelfTests();
+    const assets = await runMorphAssetSelfTests();
+    document.body.dataset.status = 'passed';
+    document.body.textContent = JSON.stringify({ core, assets });
+  } catch (error) {
+    document.body.dataset.status = 'failed';
+    document.body.textContent = JSON.stringify({
+      name: error?.name,
+      code: error?.code,
+      message: error?.message,
+      stack: error?.stack,
+    });
+  }
+</script>
+</html>

@@ -1,0 +1,173 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+:root {
+    /* Colors - Modern dark theme with enhanced readability */
+    --bg-color: #0a0a0f;
+    --bg-elevated: #12121a;
+    --panel-bg: #0f0f16;
+    --panel-header-bg: #0a0a0f;
+    --toolbar-bg: #0a0a0f;
+    --border-color: #1e1e2e;
+    --border-light: #2a2a3a;
+    --text-color: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --hover-bg: rgba(255, 255, 255, 0.08);
+    --selected-bg: rgba(107, 138, 253, 0.2);
+    --selected-border: rgba(107, 138, 253, 0.5);
+    
+    /* Accent colors - Premium theme */
+    --accent-color: #6b8afd;
+    --accent-hover: #8b9eff;
+    --accent-glow: rgba(107, 138, 253, 0.4);
+    --button-bg: linear-gradient(135deg, #6b8afd 0%, #a78bfa 100%);
+    --button-hover-bg: linear-gradient(135deg, #8b9eff 0%, #b89bff 100%);
+    
+    /* Semantic colors */
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #06b6d4;
+    
+    /* Input styling */
+    --input-bg: #0a0a0f;
+    --input-border: #27272a;
+    --input-focus: #3b82f6;
+    
+    /* Scrollbar */
+    --scrollbar-track: rgba(255, 255, 255, 0.02);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.12);
+    --scrollbar-thumb-hover: rgba(99, 102, 241, 0.4);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px var(--accent-glow);
+    
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* ========== MODERN SCROLLBARS ========== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 5px;
+    margin: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* Thin scrollbar variant */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    border-width: 1px;
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Allow text selection in inputs */
+input, textarea, select {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+/* Remove number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* ========== BUTTON STYLES ========== */
+button {
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s ease;
+}
+
+button:focus {
+    outline: none;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* ========== INPUT STYLES ========== */
+input, select, textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+    transition: all 0.15s ease;
+}
+
+input:hover, select:hover, textarea:hover {
+    border-color: var(--border-light);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ========== SELECTION ========== */
+::selection {
+    background: var(--accent-color);
+    color: white;
+}

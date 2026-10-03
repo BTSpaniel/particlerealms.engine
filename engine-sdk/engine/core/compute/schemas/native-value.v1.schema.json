@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "native-value v1",
+  "description": "Metadata-only JSON projection for validation. Typed data never becomes JSON on the wire. Markers do not grant native identity; the projector obtains sizes/types with intrinsic accessors. Nonfinite numbers and signed zero retain their existing semantics. Undefined object fields are omitted; array entries retain explicit markers.",
+  "anyOf": [
+    {
+      "type": [
+        "null",
+        "boolean",
+        "string",
+        "number"
+      ]
+    },
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#"
+      }
+    },
+    {
+      "type": "object",
+      "not": {
+        "required": [
+          "$computeType"
+        ]
+      },
+      "additionalProperties": {
+        "$ref": "#"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$computeType": {
+          "const": "typed-array"
+        },
+        "dtype": {
+          "enum": [
+            "u8",
+            "u8clamped",
+            "i8",
+            "u16",
+            "i16",
+            "u32",
+            "i32",
+            "f32",
+            "f64"
+          ]
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "$computeType",
+        "dtype",
+        "byteLength",
+        "length"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$computeType": {
+          "const": "array-buffer"
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "$computeType",
+        "byteLength"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$computeType": {
+          "const": "number"
+        },
+        "value": {
+          "enum": [
+            "NaN",
+            "Infinity",
+            "-Infinity",
+            "-0"
+          ]
+        }
+      },
+      "required": [
+        "$computeType",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$computeType": {
+          "const": "undefined"
+        }
+      },
+      "required": [
+        "$computeType"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Rating Component Styles
+ * Modular CSS for Rating form control
+ */
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rating__stars {
+  display: flex;
+  gap: 4px;
+}
+
+.rating__star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  color: var(--border-medium);
+  cursor: pointer;
+  font-size: 20px;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.rating__star:hover,
+.rating__star.hover {
+  color: var(--color-warning);
+  transform: scale(1.1);
+}
+
+.rating__star.active {
+  color: var(--color-warning);
+}
+
+.rating__star:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Size Variants */
+.rating--sm .rating__star {
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+}
+
+.rating--md .rating__star {
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+}
+
+.rating--lg .rating__star {
+  width: 32px;
+  height: 32px;
+  font-size: 28px;
+}
+
+/* Color Variants */
+.rating--primary .rating__star.active {
+  color: var(--color-primary-500);
+}
+
+.rating--primary .rating__star:hover,
+.rating--primary .rating__star.hover {
+  color: var(--color-primary-500);
+}
+
+.rating--success .rating__star.active {
+  color: var(--color-success);
+}
+
+.rating--success .rating__star:hover,
+.rating--success .rating__star.hover {
+  color: var(--color-success);
+}
+
+.rating--error .rating__star.active {
+  color: var(--color-error);
+}
+
+.rating--error .rating__star:hover,
+.rating--error .rating__star.hover {
+  color: var(--color-error);
+}
+
+/* With Label */
+.rating__label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-left: var(--spacing-sm);
+}
+
+.rating__count {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rating--lg .rating__star {
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+  }
+}

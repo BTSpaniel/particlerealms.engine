@@ -1,0 +1,45 @@
+{
+  "format": "particle-release-targets/v1",
+  "schema_version": 1,
+  "defaultTarget": "engine",
+  "targets": {
+    "engine": {
+      "label": "Engine Kernel public alpha",
+      "entry": ["engine/EngineBootstrap.js"],
+      "name": "particle-engine",
+      "site_profile": "engine",
+      "build_site": true,
+      "build_sdk": true,
+      "include_editor": false,
+      "include_plauna": false,
+      "eager": false
+    },
+    "platform": {
+      "label": "Full Platform preview",
+      "entry": ["engine/EngineEditorBootstrap.js"],
+      "name": "particle-platform",
+      "site_profile": "platform",
+      "build_site": true,
+      "build_sdk": false,
+      "include_editor": true,
+      "include_agi": true,
+      "include_plauna": true,
+      "include_webgpu_os": true,
+      "eager": true
+    },
+    "webgpu-os": {
+      "label": "WebGPU OS desktop (kernel + shell + all apps/mods compiled in)",
+      "entry": ["webgpu-os/index.js"],
+      "name": "particle-os",
+      "site_profile": "webgpu-os",
+      "base_url_root": "webgpu-os/",
+      "include_webgpu_os": true,
+      "build_site": true,
+      "build_sdk": false,
+      "include_editor": false,
+      "include_agi": false,
+      "include_plauna": false,
+      "eager": false
+    }
+  }
+}

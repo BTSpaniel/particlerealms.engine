@@ -1,0 +1,6 @@
+{
+  "name": "bad-manifest-json",
+  "expectedCode": 203,
+  "expectedMessageFragment": "Manifest is not valid JSON",
+  "size": 571
+}

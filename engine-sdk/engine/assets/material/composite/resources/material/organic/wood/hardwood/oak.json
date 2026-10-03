@@ -1,0 +1,126 @@
+{
+  "schema": "engine.composite-material",
+  "schemaVersion": "1.0.0",
+  "copyright": "Copyright (c) 2026 Jake Wehmeier (BTSpaniel)",
+  "license": "LicenseRef-ParticleRealms-Alpha",
+  "id": "builtin.material.organic.oak",
+  "logicalPath": "material/organic/wood/hardwood/oak.json",
+  "name": "Oak",
+  "category": "organic",
+  "facets": {
+    "identity": {
+      "kind": "hardwood",
+      "phaseAt293K": "solid",
+      "description": "Oak compatibility material using the Engine's generic wood interaction values."
+    },
+    "render": {
+      "workflow": "metallicRoughness",
+      "baseColorFactor": [0.55, 0.35, 0.18, 1],
+      "metallicFactor": 0,
+      "roughnessFactor": 0.7,
+      "emissiveFactor": [0, 0, 0],
+      "alphaMode": "opaque",
+      "alphaCutoff": 0.5,
+      "doubleSided": false
+    },
+    "physical": {
+      "densityKgPerM3": 600
+    },
+    "contact": {
+      "staticFriction": 0.5,
+      "dynamicFriction": 0.4,
+      "restitution": 0.2
+    },
+    "mechanical": {
+      "elasticityNormalized": 0.4,
+      "hardnessNormalized": 0.4,
+      "tensileStrengthNormalized": 0.35,
+      "brittlenessNormalized": 0.55,
+      "deformable": true,
+      "breakable": true
+    },
+    "substance": {
+      "engineSubstanceId": "sub_wood"
+    },
+    "audio": {
+      "proceduralPatch": "impact_wood",
+      "footstepMaterial": "wood_plank"
+    }
+  },
+  "missingFacets": ["chemistry", "thermal", "electrical", "fabrication"],
+  "notApplicableFacets": ["fiber"],
+  "sources": [
+    {
+      "id": "engine-render",
+      "kind": "repository",
+      "uri": "engine/render/materials/MaterialLibrary.js",
+      "citation": "Engine generic Wood and sub_wood presets",
+      "note": "Generic wood compatibility values; not claimed as species measurements."
+    },
+    {
+      "id": "editor-render",
+      "kind": "repository",
+      "uri": "editor/js/components/MaterialNodePresets.js",
+      "citation": "Editor generic Wood material-node preset",
+      "note": "Exact generic appearance values copied into immutable Engine-owned data; they are not represented as oak measurements and RealmForge has no runtime Editor dependency."
+    },
+    {
+      "id": "engine-physical",
+      "kind": "repository",
+      "uri": "engine/sim/physics/PhysicalMaterialPresets.js",
+      "citation": "Engine generic wood physical-material preset",
+      "note": "Normalized gameplay fields remain explicitly normalized."
+    },
+    {
+      "id": "engine-contact",
+      "kind": "repository",
+      "uri": "engine/sim/physics/PhysicsSchema.js",
+      "citation": "Engine generic wood contact preset"
+    },
+    {
+      "id": "engine-audio",
+      "kind": "repository",
+      "uri": "engine/audio/synth/ProceduralPatches.js",
+      "citation": "Engine wood impact procedural patch"
+    },
+    {
+      "id": "engine-footsteps",
+      "kind": "repository",
+      "uri": "engine/audio/core/FootstepMaterials.js",
+      "citation": "Engine wood footstep-material mapping"
+    },
+    {
+      "id": "usda-wood",
+      "kind": "primary",
+      "uri": "https://research.fs.usda.gov/fpl/wood-handbook",
+      "citation": "USDA Forest Products Laboratory Wood Handbook",
+      "note": "Taxonomy and terminology context only; generic Engine values are not presented as USDA oak measurements."
+    }
+  ],
+  "fieldSources": {
+    "identity.kind": ["usda-wood"],
+    "identity.phaseAt293K": ["usda-wood"],
+    "identity.description": ["engine-render", "usda-wood"],
+    "render.workflow": ["engine-render"],
+    "render.baseColorFactor": ["engine-render", "editor-render"],
+    "render.metallicFactor": ["engine-render", "editor-render"],
+    "render.roughnessFactor": ["engine-render", "editor-render"],
+    "render.emissiveFactor": ["engine-render"],
+    "render.alphaMode": ["engine-render"],
+    "render.alphaCutoff": ["engine-render"],
+    "render.doubleSided": ["engine-render"],
+    "physical.densityKgPerM3": ["engine-physical"],
+    "contact.staticFriction": ["engine-contact"],
+    "contact.dynamicFriction": ["engine-contact"],
+    "contact.restitution": ["engine-contact"],
+    "mechanical.elasticityNormalized": ["engine-physical"],
+    "mechanical.hardnessNormalized": ["engine-physical"],
+    "mechanical.tensileStrengthNormalized": ["engine-physical"],
+    "mechanical.brittlenessNormalized": ["engine-physical"],
+    "mechanical.deformable": ["engine-physical"],
+    "mechanical.breakable": ["engine-physical"],
+    "substance.engineSubstanceId": ["engine-render"],
+    "audio.proceduralPatch": ["engine-audio"],
+    "audio.footstepMaterial": ["engine-footsteps"]
+  }
+}

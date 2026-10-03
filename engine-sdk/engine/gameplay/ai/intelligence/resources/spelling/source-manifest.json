@@ -1,0 +1,99 @@
+{
+  "counts": {
+    "authored_role_hint_keys": 180,
+    "cmudict_source_lines": 135166,
+    "cmudict_unique_headwords": 126052,
+    "definitions": 0,
+    "exact_surface_forms": 241731,
+    "generated_rejected": 0,
+    "generated_spelling_candidates": 166788,
+    "hunspell_accepted_surface_forms": 166788,
+    "hunspell_declared_base_rows": 79013,
+    "hunspell_source_rows": 79013,
+    "hunspell_unique_base_forms": 79013,
+    "normalized_lookup_keys": 228133,
+    "pronunciation_headwords": 126052,
+    "pronunciation_variants": 135164
+  },
+  "files": {
+    "CMUDICT_LICENSE.txt": {
+      "bytes": 1754,
+      "compression": "none",
+      "sha256": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a"
+    },
+    "HUNSPELL_DATA_COPYRIGHT.txt": {
+      "bytes": 11135,
+      "compression": "none",
+      "sha256": "1d7c0128f6c72d2270bf1b271b37a3a21267f759161b68c4dc6c501574c0892e"
+    },
+    "membership.prlx.gz": {
+      "bytes": 796740,
+      "compression": "gzip",
+      "sha256": "37db9c8e5388a95b713a3a6df878a0685b2f6727714a3416ed9bc059ec7bd37e"
+    },
+    "normalized-words.txt.gz": {
+      "bytes": 2125301,
+      "compression": "gzip",
+      "sha256": "3e0d95049d0f6f24391f5336737ecf25e4af08c0de70a7a84a9da09edbd3ef78"
+    },
+    "source-pack.json.gz": {
+      "bytes": 7501663,
+      "compression": "gzip",
+      "sha256": "8e037dc99d904f2ce51f0b449be48fca59a88d0c27c40ce908db2d266cd92fed"
+    }
+  },
+  "membership": {
+    "binary_bytes": 796740,
+    "edges": 205470,
+    "exact_forms": 228133,
+    "folded_forms": 228133,
+    "format": "realm-lexical-dafsa/1",
+    "gzip_bytes": 546092,
+    "language_sha256": "4dadacc68042bcdf031aca9af56d747e4940e2e70fee330bb0599a77cb697040",
+    "recognized_scope": "NFC + ASCII lowercase membership only; not case/source provenance",
+    "roots": [
+      82499,
+      82499
+    ],
+    "sorted_wordlist_bytes": 2125301,
+    "sorted_wordlist_gzip_bytes": 622808,
+    "states": 82500,
+    "trie_states_before_merging": 1059986
+  },
+  "neural_weights_included": false,
+  "normalization": "NFC + ASCII lower-case lookup only; exact surface retained",
+  "original_input_sha256": {
+    "CMUDICT_LICENSE.txt": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
+    "CMUDICT_README.txt": "00c34e7564f1f6a68de02e12c123d801471da92bc3091f7d89b605f238bf8554",
+    "HUNSPELL_DATA_COPYRIGHT.txt": "1d7c0128f6c72d2270bf1b271b37a3a21267f759161b68c4dc6c501574c0892e",
+    "cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+    "en_US.aff": "70fe5778717d097ce2f3326baaa5c1e4d2206d81a5a81d3ea8e11c4770806dd5",
+    "en_US.dic": "829a043cf078d1e80e886289a13823454977f442a239a859d2133ea61944aa60"
+  },
+  "schema": "particle-optional-lexicon-reference/1",
+  "scope": "Optional source snapshot. Membership is not meaning, permission, OCR correction or pronunciation selection.",
+  "source_artifact_sha256": "97d4c81d090c5ca3ba7e374ca903e0dbf55bcff115806f04f5e1530837d3379e",
+  "sources": [
+    {
+      "definition_coverage": false,
+      "id": "hunspell-en-us-installed",
+      "license_file": "HUNSPELL_DATA_COPYRIGHT.txt",
+      "mask": 1,
+      "name": "SCOWL-derived Hunspell en_US spelling data",
+      "scope": "US spelling entries plus explicitly generated affixes; compounds not exhaustively enumerated",
+      "source_url": "https://wordlist.aspell.net/",
+      "version": "Debian 1:2020.12.07-4 (installed snapshot)"
+    },
+    {
+      "definition_coverage": false,
+      "id": "cmudict-installed",
+      "license_file": "CMUDICT_LICENSE.txt",
+      "mask": 2,
+      "name": "Carnegie Mellon Pronouncing Dictionary",
+      "scope": "US-English ARPAbet pronunciations, including names and variants; not all accents or words",
+      "source_url": "https://github.com/cmusphinx/cmudict",
+      "version": "cmudict Python data package 1.1.3 (installed snapshot)"
+    }
+  ],
+  "version": "M2.2-local-snapshots-1"
+}

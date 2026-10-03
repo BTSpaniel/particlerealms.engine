@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Shadow Atlas Configuration",
+  "description": "Per-category shadow rendering settings for the unified ShadowAtlas system",
+  "type": "object",
+  "properties": {
+    "categories": {
+      "type": "object",
+      "description": "Named shadow categories, each with independent rendering settings",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "label":          { "type": "string",  "description": "Human-readable display name" },
+          "pcfSpread":      { "type": "number",  "minimum": 0, "maximum": 20, "default": 1.5, "description": "PCF filter radius in texels. 0 = hard pixel edges, 1-2 = crisp, 4+ = soft diffuse." },
+          "shadowBias":     { "type": "number",  "minimum": 0, "maximum": 0.1, "default": 0.003, "description": "Depth bias to prevent shadow acne (self-shadowing artifacts)" },
+          "shadowStrength": { "type": "number",  "minimum": 0, "maximum": 1, "default": 0.85, "description": "Shadow darkness. 0 = invisible, 1 = pitch black." },
+          "enabled":        { "type": "boolean", "default": true, "description": "Toggle this category on/off" }
+        },
+        "required": ["pcfSpread", "shadowBias", "shadowStrength"]
+      }
+    },
+    "global": {
+      "type": "object",
+      "description": "Global settings shared across all categories",
+      "properties": {
+        "atlasSize":      { "type": "integer", "enum": [1024, 2048, 4096, 8192], "default": 4096, "description": "Shadow depth texture resolution (square)" },
+        "shadowRadius":   { "type": "number",  "minimum": 5, "maximum": 200, "default": 35, "description": "Camera-centered shadow coverage radius in meters" },
+        "maxShadowDist":  { "type": "number",  "minimum": 10, "maximum": 500, "default": 120, "description": "Max distance from camera before shadows fade out" }
+      }
+    }
+  },
+  "required": ["categories", "global"]
+}

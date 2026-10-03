@@ -1,0 +1,124 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Pagination Component Styles
+ * Modular CSS for Pagination navigation widget
+ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pagination__item {
+  display: flex;
+  align-items: center;
+}
+
+.pagination__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--border-radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.pagination__link:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--color-primary-500);
+  color: var(--color-primary-500);
+}
+
+.pagination__link:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.pagination__link--active {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+  color: white;
+}
+
+.pagination__link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ellipsis */
+.pagination__ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+/* Size Variants */
+.pagination--sm .pagination__link {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.pagination--md .pagination__link {
+  width: 36px;
+  height: 36px;
+  font-size: var(--font-size-sm);
+}
+
+.pagination--lg .pagination__link {
+  width: 44px;
+  height: 44px;
+  font-size: var(--font-size-md);
+}
+
+/* Info */
+.pagination__info {
+  margin-left: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pagination {
+    gap: 4px;
+  }
+
+  .pagination__link {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .pagination--lg .pagination__link {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-sm);
+  }
+
+  .pagination__info {
+    margin-left: var(--spacing-md);
+    font-size: 11px;
+  }
+}

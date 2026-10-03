@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/morphfield/v2/validation-report.schema.json",
+  "title": "MorphField R2 validation report",
+  "description": "The exported result of the browser-native MorphField verification console.",
+  "x-spdx-copyright": "2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>",
+  "x-spdx-license": "LicenseRef-ParticleRealms-Alpha",
+  "type": "object",
+  "required": ["$schema", "schema", "version", "startedAt", "durationMs", "environment", "counts", "passed", "complete", "results"],
+  "properties": {
+    "$schema": { "const": "https://particlerealms.online/schemas/morphfield/v2/validation-report.schema.json" },
+    "schema": { "const": "morphfield-r2-validation-report" },
+    "version": { "const": 1 },
+    "startedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "durationMs": { "type": "number", "minimum": 0 },
+    "benchmark": { "$ref": "common.schema.json#/$defs/jsonValue" },
+    "runQuality": { "$ref": "common.schema.json#/$defs/jsonValue" },
+    "environment": { "$ref": "#/$defs/environment" },
+    "counts": { "$ref": "#/$defs/counts" },
+    "passed": { "type": "boolean" },
+    "complete": { "type": "boolean" },
+    "results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/result" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "passed": { "const": true } },
+        "required": ["passed"]
+      },
+      "then": {
+        "properties": {
+          "counts": {
+            "properties": { "failed": { "const": 0 } },
+            "required": ["failed"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "complete": { "const": true } },
+        "required": ["complete"]
+      },
+      "then": {
+        "properties": {
+          "passed": { "const": true },
+          "counts": {
+            "properties": {
+              "failed": { "const": 0 },
+              "skipped": { "const": 0 }
+            },
+            "required": ["failed", "skipped"]
+          }
+        },
+        "required": ["passed", "counts"]
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "environment": {
+      "type": "object",
+      "required": [
+        "userAgent",
+        "webgpu",
+        "webgpuDevice",
+        "webgpuAdapterMode",
+        "webgpuAttempts",
+        "gpuBlockedChecks",
+        "webgpuGuidance",
+        "portableTestTimeoutMs",
+        "webgpuTestTimeoutMs",
+        "compressionStream",
+        "decompressionStream"
+      ],
+      "properties": {
+        "userAgent": { "type": "string" },
+        "userAgentData": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "platform": { "type": ["string", "null"] },
+        "language": { "type": ["string", "null"] },
+        "crossOriginIsolated": { "type": "boolean" },
+        "devicePixelRatio": { "type": "number", "minimum": 0 },
+        "build": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "adapterInfo": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "deviceFeatures": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "deviceLimits": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "webgpu": { "type": "boolean" },
+        "webgpuDevice": { "type": "boolean" },
+        "webgpuAdapterMode": { "type": ["string", "null"] },
+        "webgpuAttempts": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "gpuBlockedChecks": { "type": "integer", "minimum": 0 },
+        "webgpuGuidance": { "type": ["string", "null"] },
+        "portableTestTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 43200000 },
+        "webgpuTestTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 43200000 },
+        "compressionStream": { "type": "boolean" },
+        "decompressionStream": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "counts": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "skipped"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "required": ["name", "code", "message", "stack"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "code": { "type": ["string", "null"] },
+        "message": { "type": "string" },
+        "stack": { "type": ["string", "null"] },
+        "details": { "$ref": "common.schema.json#/$defs/jsonValue" }
+      },
+      "additionalProperties": false
+    },
+    "result": {
+      "type": "object",
+      "required": ["category", "name", "status", "durationMs"],
+      "properties": {
+        "category": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["passed", "failed", "skipped"] },
+        "durationMs": { "type": "number", "minimum": 0 },
+        "details": { "$ref": "common.schema.json#/$defs/jsonValue" },
+        "error": { "$ref": "#/$defs/error" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "failed" } }, "required": ["status"] },
+          "then": { "required": ["error"] },
+          "else": { "not": { "required": ["error"] } }
+        }
+      ],
+      "additionalProperties": false
+    }
+  }
+}

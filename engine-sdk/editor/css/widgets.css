@@ -1,0 +1,1447 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/* View Mode Selector - Enhanced */
+.view-mode-selector {
+    min-width: 140px;
+    padding: 8px 32px 8px 12px;
+    background: linear-gradient(135deg, rgba(30, 30, 38, 0.95), rgba(20, 20, 28, 0.98));
+    border: 1.5px solid rgba(99, 102, 241, 0.25);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="%23a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+.view-mode-selector:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: linear-gradient(135deg, rgba(40, 40, 48, 0.98), rgba(30, 30, 38, 0.98));
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 12px rgba(99, 102, 241, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.view-mode-selector:focus {
+    border-color: rgba(99, 102, 241, 0.7);
+    box-shadow: 
+        0 0 0 3px rgba(99, 102, 241, 0.15),
+        0 4px 16px rgba(99, 102, 241, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.view-mode-selector option {
+    background: rgba(20, 20, 28, 0.98);
+    color: #fff;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Hierarchy Tree */
+.hierarchy-tree {
+    font-size: 13px;
+}
+
+.tree-node {
+    padding: 6px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: var(--radius-sm);
+    user-select: none;
+    transition: all 0.1s ease;
+    margin: 1px 0;
+}
+
+.tree-node:hover {
+    background: var(--hover-bg);
+}
+
+.tree-node.selected {
+    background: var(--selected-bg);
+    border: 1px solid var(--selected-border);
+    margin: 0;
+}
+
+.tree-node .icon {
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+}
+
+.tree-node:hover .icon,
+.tree-node.selected .icon {
+    opacity: 1;
+}
+
+/* Inspector */
+.inspector-header {
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.inspector-header input {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+    font-size: 13px;
+}
+
+.component {
+    border-bottom: 1px solid var(--border-color);
+    padding: 14px;
+}
+
+.component h3 {
+    font-size: 12px;
+    margin-bottom: 14px;
+    color: var(--text-color);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.component label {
+    display: block;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin: 10px 0 6px 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.vector3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.vector3 input {
+    padding: 6px 8px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    text-align: center;
+}
+
+.inspector-section .stat-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 4px 0;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.inspector-section .stat-row code {
+    color: var(--text-color);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+input[type="number"] {
+    width: 100%;
+}
+
+/* Toolbar in panels */
+.toolbar {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.toolbar button {
+    padding: 8px 14px;
+    background: var(--button-bg);
+    border: none;
+    color: #fff;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.toolbar button:hover {
+    background: var(--button-hover-bg);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.toolbar button:active {
+    transform: translateY(0);
+}
+
+/* Asset Grid */
+.asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.asset-card {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+.asset-card:hover {
+    background: var(--hover-bg);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.asset-card:active {
+    transform: translateY(0);
+}
+
+.asset-thumbnail {
+    font-size: 32px;
+    margin-bottom: 10px;
+    transition: transform 0.2s ease;
+}
+
+.asset-card:hover .asset-thumbnail {
+    transform: scale(1.1);
+}
+
+.asset-name {
+    font-size: 11px;
+    text-align: center;
+    word-break: break-word;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+.asset-card:hover .asset-name {
+    color: var(--text-color);
+}
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 13px;
+    gap: 8px;
+}
+
+.empty-state::before {
+    content: '📭';
+    font-size: 32px;
+    opacity: 0.5;
+    margin-bottom: 8px;
+}
+
+/* Loading spinner */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Tooltip */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    padding: 6px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.15s ease;
+    box-shadow: var(--shadow-md);
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-8px);
+}
+
+/* Simulation Timeline */
+.sim-timeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 16px;
+    padding: 4px 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.timeline-track {
+    position: relative;
+    width: 200px;
+    height: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    overflow: visible;
+    cursor: pointer;
+    transition: height 0.15s ease;
+}
+
+.timeline-track:hover {
+    height: 14px;
+}
+
+.timeline-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, 
+        #22c55e 0%,      /* green - start */
+        #84cc16 25%,     /* lime */
+        #eab308 50%,     /* yellow - mid */
+        #f97316 75%,     /* orange - late */
+        #ef4444 100%     /* red - max */
+    );
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+/* Playhead indicator */
+.timeline-progress::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    width: 4px;
+    height: calc(100% + 4px);
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+.timeline-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.timeline-marker {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.timeline-marker::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: -2px;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+}
+
+.timeline-time {
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--text-color);
+    min-width: 50px;
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Timeline in Scene panel - now inline in toolbar */
+.sim-timeline.scene-timeline {
+    margin: 0;
+    padding: 0 8px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sim-timeline.scene-timeline .timeline-track {
+    flex: 1;
+    width: auto;
+    min-width: 150px;
+}
+
+.sim-timeline.scene-timeline .timeline-time {
+    font-size: 11px;
+    min-width: 45px;
+}
+
+.sim-timeline.scene-timeline::before {
+    display: none;
+}
+
+/* ============================================
+   PROFILER PANEL - Modern Glassmorphism Design
+   ============================================ */
+.profiler-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    min-width: 800px;
+    height: auto;
+    max-height: calc(100vh - 40px);
+    background: rgba(18, 18, 22, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 
+        0 24px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 0 60px rgba(99, 102, 241, 0.1);
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.profiler-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, rgba(40, 40, 50, 0.98) 0%, rgba(30, 30, 38, 0.98) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: move;
+    user-select: none;
+    position: relative;
+}
+
+.profiler-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+}
+
+.profiler-title {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.profiler-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.profiler-header .profiler-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: var(--text-color);
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.profiler-header .profiler-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.profiler-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 720px;
+}
+
+.profiler-main {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.profiler-sidebar {
+    flex: 0 1 420px;
+    max-width: 520px;
+    min-width: 320px;
+    background: rgba(15, 15, 20, 0.6);
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 14px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profiler-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.profiler-section:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 16px rgba(99, 102, 241, 0.08);
+    transform: translateY(-1px);
+}
+
+.profiler-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 8px;
+}
+
+/* Frame Timeline Canvas */
+.profiler-timeline-canvas {
+    width: 100%;
+    height: 70px;
+    background: linear-gradient(180deg, rgba(15,15,25,0.8) 0%, rgba(5,5,15,0.95) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 20px rgba(99, 102, 241, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.profiler-timeline-canvas::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+    pointer-events: none;
+}
+
+.profiler-timeline-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 10px;
+    padding: 0 4px;
+}
+
+/* FPS Performance Badge */
+.profiler-fps-badge {
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.profiler-fps-badge[data-perf="excellent"] {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(129, 199, 132, 0.3));
+    color: #A5D6A7;
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 16px rgba(76, 175, 80, 0.4);
+}
+
+.profiler-fps-badge[data-perf="good"] {
+    background: linear-gradient(135deg, rgba(139, 195, 74, 0.3), rgba(156, 204, 101, 0.3));
+    color: #C5E1A5;
+    border: 1px solid rgba(139, 195, 74, 0.5);
+    box-shadow: 0 0 12px rgba(139, 195, 74, 0.3);
+}
+
+.profiler-fps-badge[data-perf="fair"] {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 213, 79, 0.3));
+    color: #FFE082;
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    box-shadow: 0 0 12px rgba(255, 193, 7, 0.3);
+}
+
+.profiler-fps-badge[data-perf="poor"] {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.3), rgba(255, 171, 64, 0.3));
+    color: #FFB74D;
+    border: 1px solid rgba(255, 152, 0, 0.5);
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.4);
+}
+
+.profiler-fps-badge[data-perf="critical"] {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(239, 83, 80, 0.3));
+    color: #EF9A9A;
+    border: 1px solid rgba(244, 67, 54, 0.5);
+    box-shadow: 0 0 16px rgba(244, 67, 54, 0.5);
+    animation: pulse-warning 2s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% { box-shadow: 0 0 16px rgba(244, 67, 54, 0.5); }
+    50% { box-shadow: 0 0 24px rgba(244, 67, 54, 0.8); }
+}
+
+/* Performance Insights Panel */
+.profiler-insights {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.15), rgba(255, 193, 7, 0.15));
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    border-radius: 6px;
+    font-size: 11px;
+    color: #FFB74D;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profiler-insight-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.profiler-insight-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+/* Frame Breakdown Bars */
+.profiler-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.profiler-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profiler-bar-label {
+    width: 35px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.profiler-bar-container {
+    flex: 1;
+    height: 16px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.profiler-bar {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.profiler-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    border-radius: 5px 5px 0 0;
+}
+
+.profiler-bar-value {
+    width: 60px;
+    text-align: right;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* GPU Buffers List */
+.profiler-buffers {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.profiler-buffer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+}
+
+.profiler-buffer-row:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+    border-color: rgba(99, 102, 241, 0.15);
+    transform: translateX(2px);
+}
+
+.profiler-buffer-name {
+    color: rgba(255, 255, 255, 0.85);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    margin-right: 12px;
+}
+
+.profiler-buffer-size {
+    color: #a5b4fc;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.profiler-buffer-usage {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 10px;
+}
+
+/* Stats in Sidebar */
+.profiler-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    contain: layout;
+}
+
+.profiler-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 12px;
+    padding: 2px 0;
+    gap: 10px;
+}
+
+.profiler-stat-row span:first-child {
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 55px;
+}
+
+.profiler-stat-row span:last-child {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-align: right;
+    flex: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+/* Thread Lanes */
+.profiler-threads-section {
+    min-height: 100px;
+}
+
+.profiler-threads {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profiler-thread-lane {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 22px;
+}
+
+.profiler-lane-label {
+    width: 55px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: right;
+}
+
+.profiler-lane-canvas {
+    flex: 1;
+    height: 18px;
+    background: linear-gradient(180deg, rgba(15,15,25,0.6) 0%, rgba(5,5,15,0.8) 100%);
+    border-radius: 4px;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    box-shadow: 
+        inset 0 1px 3px rgba(0, 0, 0, 0.4),
+        0 0 8px rgba(99, 102, 241, 0.05);
+}
+
+/* Flamegraph Breakdown */
+.profiler-flamegraph {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.profiler-flame-row {
+    display: flex;
+    height: 22px;
+    gap: 2px;
+}
+
+.profiler-flame-row.profiler-flame-detail {
+    height: 20px;
+}
+
+.profiler-flame-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    min-width: 28px;
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 0 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.profiler-flame-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+    border-radius: 6px 6px 0 0;
+    pointer-events: none;
+}
+
+.profiler-flame-block span {
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.profiler-flame-detail .profiler-flame-block span {
+    font-size: 9px;
+    padding: 0 3px;
+}
+
+.profiler-flame-block:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+
+/* Bottleneck Indicator */
+.profiler-bottleneck {
+    background: rgba(30, 30, 38, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.profiler-bottleneck-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bottleneck-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(139, 92, 246, 0.4) 100%);
+    color: #c7d2fe;
+    letter-spacing: 0.5px;
+    box-shadow: 
+        0 4px 16px rgba(99, 102, 241, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 24px rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.bottleneck-label.cpu-bound {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(129, 199, 132, 0.3) 100%);
+    color: #a5d6a7;
+    box-shadow: 0 2px 12px rgba(76, 175, 80, 0.2);
+}
+
+.bottleneck-label.gpu-bound {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.3) 0%, rgba(100, 181, 246, 0.3) 100%);
+    color: #90caf9;
+    box-shadow: 0 2px 12px rgba(33, 150, 243, 0.2);
+}
+
+.bottleneck-label.balanced {
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.3) 0%, rgba(186, 104, 200, 0.3) 100%);
+    color: #ce93d8;
+    box-shadow: 0 2px 12px rgba(156, 39, 176, 0.2);
+}
+
+.bottleneck-bar {
+    display: flex;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.bottleneck-cpu {
+    background: linear-gradient(90deg, #4CAF50, #66BB6A, #8BC34A);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 0 16px rgba(76, 175, 80, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.bottleneck-cpu::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+}
+
+.bottleneck-gpu {
+    background: linear-gradient(90deg, #2196F3, #42A5F5, #03A9F4);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 0 16px rgba(33, 150, 243, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.bottleneck-gpu::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+}
+
+/* Event List */
+.profiler-events {
+    max-height: 240px;
+    overflow-y: auto;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+}
+
+.profiler-event-phase {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 8px 2px;
+    margin-top: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.profiler-event-phase:first-child {
+    margin-top: 0;
+}
+
+.profiler-event-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.profiler-event-row:nth-child(odd) {
+    background: rgba(255,255,255,0.02);
+}
+
+.profiler-event-row:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.profiler-event-marker {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.profiler-event-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.profiler-event-name {
+    min-width: 65px;
+    flex-shrink: 0;
+}
+
+.profiler-event-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.profiler-event-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.15s ease;
+}
+
+.profiler-event-time {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 10px;
+    min-width: 48px;
+    text-align: right;
+}
+
+/* Memory Trend Indicator */
+#prof-mem-trend {
+    font-weight: 600;
+}
+
+#prof-mem-trend[data-trend="increasing"] {
+    color: #F44336;
+}
+
+#prof-mem-trend[data-trend="decreasing"] {
+    color: #4CAF50;
+}
+
+#prof-mem-trend[data-trend="stable"] {
+    color: #9E9E9E;
+}
+
+#prof-mem-trend[data-trend="unknown"] {
+    color: #757575;
+}
+
+/* Profiler Button */
+.profiler-btn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    cursor: pointer;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.profiler-btn:hover {
+    background: #1976D2;
+}
+
+.profiler-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.profiler-btn.probing {
+    background: #FF9800;
+}
+
+/* GPU Info Section */
+.profiler-gpu-info span:last-child {
+    font-size: 9px;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* VRAM Usage Bar */
+#prof-vram-percent {
+    font-weight: 600;
+}
+
+#prof-vram-percent[data-level="low"] {
+    color: #4CAF50;
+}
+
+#prof-vram-percent[data-level="medium"] {
+    color: #FF9800;
+}
+
+#prof-vram-percent[data-level="high"] {
+    color: #F44336;
+}
+
+/* JS Heap Usage */
+#prof-js-percent {
+    font-weight: 600;
+}
+
+#prof-js-percent[data-level="low"] {
+    color: #4CAF50;
+}
+
+#prof-js-percent[data-level="medium"] {
+    color: #FF9800;
+}
+
+#prof-js-percent[data-level="high"] {
+    color: #F44336;
+}
+
+/* Profiler Notes */
+.profiler-note {
+    font-size: 9px;
+    color: #666;
+    font-style: italic;
+    padding: 2px 0;
+    margin-top: 2px;
+}
+
+/* Two-column layout */
+.profiler-2col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+}
+
+.profiler-2col .profiler-stats {
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    min-width: 0;
+}
+
+.profiler-2col .profiler-stat-row {
+    font-size: 11px;
+}
+
+.profiler-2col .profiler-stat-row span:first-child {
+    min-width: 55px;
+}
+
+/* Inline stats row */
+.profiler-inline-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 4px 0;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+}
+
+.profiler-inline-stats > span {
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 500;
+}
+
+.profiler-inline-stats > span > span {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+/* Small probe buttons */
+.profiler-btn-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.profiler-btn-sm {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 6px;
+    color: #a5b4fc;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profiler-btn-sm:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.5) 0%, rgba(139, 92, 246, 0.5) 100%);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Capability Grid (compact) */
+.profiler-caps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    padding: 4px;
+}
+
+.profiler-caps-grid span {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 5px 6px;
+    text-align: center;
+    border-radius: 5px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: help;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.profiler-caps-grid span[data-enabled="true"] {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(129, 199, 132, 0.3) 100%);
+    color: #A5D6A7;
+    border-color: rgba(76, 175, 80, 0.4);
+    box-shadow: 
+        0 0 12px rgba(76, 175, 80, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profiler-caps-grid span[data-enabled="false"] {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.25) 0%, rgba(239, 83, 80, 0.25) 100%);
+    color: #EF9A9A;
+    border-color: rgba(244, 67, 54, 0.35);
+    box-shadow: 
+        0 0 8px rgba(244, 67, 54, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Memory Pressure Indicator */
+#prof-mem-pressure {
+    font-weight: 600;
+}
+
+#prof-mem-pressure[data-level="normal"] {
+    color: #4CAF50;
+}
+
+#prof-mem-pressure[data-level="moderate"] {
+    color: #8BC34A;
+}
+
+#prof-mem-pressure[data-level="high"] {
+    color: #FF9800;
+}
+
+#prof-mem-pressure[data-level="critical"] {
+    color: #F44336;
+}
+
+/* ============================================
+   SOUND STUDIO OVERLAY PANEL
+   ============================================ */
+.sound-studio-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100vw - 40px);
+    min-width: 800px;
+    height: calc(100vh - 40px);
+    min-height: 500px;
+    background: rgba(18, 18, 22, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 0 60px rgba(83, 168, 182, 0.1);
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sound-studio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, rgba(22, 33, 62, 0.98) 0%, rgba(15, 52, 96, 0.95) 100%);
+    border-bottom: 1px solid rgba(83, 168, 182, 0.2);
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.sound-studio-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #53a8b6;
+    letter-spacing: 0.3px;
+}
+
+.sound-studio-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.sound-studio-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8899aa;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.sound-studio-btn:hover {
+    background: rgba(233, 69, 96, 0.3);
+    border-color: rgba(233, 69, 96, 0.5);
+    color: #e94560;
+}
+
+.sound-studio-body {
+    flex: 1;
+    overflow: hidden;
+}

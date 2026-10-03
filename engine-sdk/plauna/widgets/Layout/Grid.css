@@ -1,0 +1,104 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Grid Component Styles
+ * Modular CSS for Grid layout widget
+ */
+
+.grid {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Column Variants */
+.grid--cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid--cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid--cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid--cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid--cols-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.grid--cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+/* Gap Variants */
+.grid--gap-0 {
+  gap: 0;
+}
+
+.grid--gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.grid--gap-md {
+  gap: var(--spacing-md);
+}
+
+.grid--gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.grid--gap-xl {
+  gap: var(--spacing-xl);
+}
+
+/* Auto Fit */
+.grid--auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid--auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .grid--cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid--cols-6 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid--cols-12 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .grid--cols-2,
+  .grid--cols-3,
+  .grid--cols-4,
+  .grid--cols-6,
+  .grid--cols-12 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid--gap-lg {
+    gap: var(--spacing-md);
+  }
+
+  .grid--gap-xl {
+    gap: var(--spacing-lg);
+  }
+}

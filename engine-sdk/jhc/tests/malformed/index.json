@@ -1,0 +1,84 @@
+{
+  "cases": [
+    {
+      "name": "too-short",
+      "expectedCode": 201,
+      "expectedMessageFragment": "Container too short"
+    },
+    {
+      "name": "bad-magic",
+      "expectedCode": 200,
+      "expectedMessageFragment": "Bad JHC1 magic"
+    },
+    {
+      "name": "bad-header-len",
+      "expectedCode": 201,
+      "expectedMessageFragment": "Unsupported header length"
+    },
+    {
+      "name": "manifest-oob",
+      "expectedCode": 201,
+      "expectedMessageFragment": "Manifest out of bounds"
+    },
+    {
+      "name": "directory-oob",
+      "expectedCode": 202,
+      "expectedMessageFragment": "Directory out of bounds"
+    },
+    {
+      "name": "unsorted-directory",
+      "expectedCode": 202,
+      "expectedMessageFragment": "Directory is not sorted"
+    },
+    {
+      "name": "section-oob",
+      "expectedCode": 203,
+      "expectedMessageFragment": "Section out of bounds"
+    },
+    {
+      "name": "hash-mismatch",
+      "expectedCode": 204,
+      "expectedMessageFragment": "Hash mismatch"
+    },
+    {
+      "name": "bad-manifest-json",
+      "expectedCode": 203,
+      "expectedMessageFragment": "Manifest is not valid JSON"
+    },
+    {
+      "name": "truncated",
+      "expectedCode": 203,
+      "expectedMessageFragment": "Section out of bounds"
+    },
+    {
+      "name": "unsupported-codec",
+      "expectedCode": 122,
+      "expectedMessageFragment": "Unsupported codec"
+    },
+    {
+      "name": "raw-length-mismatch",
+      "expectedCode": 120,
+      "expectedMessageFragment": "lengths differ"
+    },
+    {
+      "name": "metadata-overlap",
+      "expectedCode": 121,
+      "expectedMessageFragment": "overlaps package metadata"
+    },
+    {
+      "name": "decode-budget",
+      "expectedCode": 119,
+      "expectedMessageFragment": "decoded size limit"
+    },
+    {
+      "name": "too-many-sections",
+      "expectedCode": 118,
+      "expectedMessageFragment": "too many sections"
+    },
+    {
+      "name": "resource-map-mismatch",
+      "expectedCode": 123,
+      "expectedMessageFragment": "Resource metadata mismatch"
+    }
+  ]
+}

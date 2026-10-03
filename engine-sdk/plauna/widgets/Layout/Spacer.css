@@ -1,0 +1,115 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Spacer Component Styles
+ * Modular CSS for Spacer layout widget
+ */
+
+.spacer {
+  display: block;
+}
+
+/* Size Variants */
+.spacer--xs {
+  width: var(--spacing-xs);
+  height: var(--spacing-xs);
+}
+
+.spacer--sm {
+  width: var(--spacing-sm);
+  height: var(--spacing-sm);
+}
+
+.spacer--md {
+  width: var(--spacing-md);
+  height: var(--spacing-md);
+}
+
+.spacer--lg {
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+}
+
+.spacer--xl {
+  width: var(--spacing-xl);
+  height: var(--spacing-xl);
+}
+
+.spacer--2xl {
+  width: var(--spacing-2xl);
+  height: var(--spacing-2xl);
+}
+
+.spacer--3xl {
+  width: var(--spacing-3xl);
+  height: var(--spacing-3xl);
+}
+
+/* Horizontal Spacer */
+.spacer--horizontal {
+  display: inline-block;
+  height: 0;
+}
+
+.spacer--horizontal.spacer--xs {
+  width: var(--spacing-xs);
+}
+
+.spacer--horizontal.spacer--sm {
+  width: var(--spacing-sm);
+}
+
+.spacer--horizontal.spacer--md {
+  width: var(--spacing-md);
+}
+
+.spacer--horizontal.spacer--lg {
+  width: var(--spacing-lg);
+}
+
+.spacer--horizontal.spacer--xl {
+  width: var(--spacing-xl);
+}
+
+/* Vertical Spacer */
+.spacer--vertical {
+  display: block;
+  width: 0;
+}
+
+.spacer--vertical.spacer--xs {
+  height: var(--spacing-xs);
+}
+
+.spacer--vertical.spacer--sm {
+  height: var(--spacing-sm);
+}
+
+.spacer--vertical.spacer--md {
+  height: var(--spacing-md);
+}
+
+.spacer--vertical.spacer--lg {
+  height: var(--spacing-lg);
+}
+
+.spacer--vertical.spacer--xl {
+  height: var(--spacing-xl);
+}
+
+/* Flex Spacer */
+.spacer--flex {
+  flex: 1;
+}
+
+.spacer--flex-grow {
+  flex-grow: 1;
+}
+
+.spacer--flex-shrink {
+  flex-shrink: 1;
+}

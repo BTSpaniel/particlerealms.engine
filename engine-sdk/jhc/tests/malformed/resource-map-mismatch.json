@@ -1,0 +1,6 @@
+{
+  "name": "resource-map-mismatch",
+  "expectedCode": 123,
+  "expectedMessageFragment": "Resource metadata mismatch",
+  "size": 571
+}

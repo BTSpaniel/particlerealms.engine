@@ -1,0 +1,290 @@
+{
+  "profile": "candidate",
+  "started": "2026-09-23T02:16:57.989Z",
+  "status": "SMOKE_PASSED_NOT_RELEASE_CERTIFIED",
+  "tests": [
+    {
+      "name": "Matched loader/WASM hashes",
+      "status": "PASS",
+      "ms": 88.36499997973442,
+      "detail": {
+        "sourceVersion": "5.11.0",
+        "artifacts": {
+          "physx-pe.wasm": {
+            "bytes": 6948292,
+            "sha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+          },
+          "physx-pe.mjs": {
+            "bytes": 4837868,
+            "sha256": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f"
+          }
+        }
+      }
+    },
+    {
+      "name": "Runtime version and required WebIDL API",
+      "status": "PASS",
+      "ms": 0.21000000834465027,
+      "detail": {
+        "runtimeVersion": "5.11.0"
+      }
+    },
+    {
+      "name": "Foundation, CPU scene and rigid bodies",
+      "status": "PASS",
+      "ms": 8.580000013113022,
+      "detail": {
+        "bodies": 2,
+        "gravity": -9.81,
+        "worker": true,
+        "dispatcherThreads": 0
+      }
+    },
+    {
+      "name": "Free fall: one second without contact",
+      "status": "PASS",
+      "ms": 9.730000019073486,
+      "detail": {
+        "actualY": 5.013250827789307,
+        "continuousReference": 5.095,
+        "tolerance": 0.15
+      }
+    },
+    {
+      "name": "Ground collision and resting height",
+      "status": "PASS",
+      "ms": 11.08500000834465,
+      "detail": {
+        "actualY": 0.4999990165233612,
+        "expectedY": 0.5,
+        "tolerance": 0.08
+      }
+    },
+    {
+      "name": "Scene raycast hits the resting box",
+      "status": "PASS",
+      "ms": 0.949999988079071,
+      "detail": {
+        "distance": 19.000001907348633,
+        "groundDistance": 20,
+        "touches": 2
+      }
+    },
+    {
+      "name": "Rust backend identity",
+      "status": "PASS",
+      "ms": 0.034999996423721313,
+      "detail": {
+        "backend": "rust",
+        "internalAbi": 2,
+        "publicBulkAbi": 1
+      }
+    },
+    {
+      "name": "Bulk addon: IDs, pose equality, removal",
+      "status": "PASS",
+      "ms": 0.9800000190734863,
+      "detail": {
+        "count": 2,
+        "largeUint32ID": true
+      }
+    },
+    {
+      "name": "Regression API surface",
+      "status": "PASS",
+      "ms": 0.08500000834465027,
+      "detail": {
+        "missingBindingsAreFailures": true
+      }
+    },
+    {
+      "name": "Zero-gravity constant velocity",
+      "status": "PASS",
+      "ms": 3.699999988079071,
+      "detail": {
+        "position": [
+          1.9999994039535522,
+          10,
+          -0.9999997019767761
+        ],
+        "expected": [
+          2,
+          10,
+          -1
+        ],
+        "steps": 60
+      }
+    },
+    {
+      "name": "Impulse follows inverse mass",
+      "status": "PASS",
+      "ms": 0.5899999737739563,
+      "detail": {
+        "mass": 2,
+        "impulse": 4,
+        "velocityX": 2
+      }
+    },
+    {
+      "name": "Force accumulator clears after one step",
+      "status": "PASS",
+      "ms": 0.25,
+      "detail": {
+        "velocityAfterOneStep": 0.10000000894069672,
+        "velocityAfterSixSteps": 0.10000000894069672
+      }
+    },
+    {
+      "name": "Angular rotation remains normalized",
+      "status": "PASS",
+      "ms": 1.7599999904632568,
+      "detail": {
+        "quaternion": [
+          0,
+          0.9092974066734314,
+          0,
+          -0.4161471128463745
+        ],
+        "norm": 1.0000000966566958,
+        "steps": 120
+      }
+    },
+    {
+      "name": "Sleep and explicit wake",
+      "status": "PASS",
+      "ms": 0.38999998569488525,
+      "detail": {
+        "sleepAndWake": true
+      }
+    },
+    {
+      "name": "Kinematic target and return to dynamic mode",
+      "status": "PASS",
+      "ms": 0.9949999749660492,
+      "detail": {
+        "target": [
+          3,
+          10,
+          1
+        ],
+        "dynamicY": 9.997275352478027
+      }
+    },
+    {
+      "name": "Raycast miss has no blocking hit",
+      "status": "PASS",
+      "ms": 0.034999996423721313,
+      "detail": {
+        "miss": true
+      }
+    },
+    {
+      "name": "Static actor remains fixed",
+      "status": "PASS",
+      "ms": 0.8799999952316284,
+      "detail": {
+        "staticPose": [
+          0,
+          -0.5,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "Bulk seven-component parity during motion",
+      "status": "PASS",
+      "ms": 11.340000003576279,
+      "detail": {
+        "steps": 256,
+        "componentsCompared": 3584
+      }
+    },
+    {
+      "name": "Bulk contexts remain independent",
+      "status": "PASS",
+      "ms": 0.2800000011920929,
+      "detail": {
+        "sameModuleContexts": 2
+      }
+    },
+    {
+      "name": "Bulk capacity and unregister reuse",
+      "status": "PASS",
+      "ms": 0.5699999928474426,
+      "detail": {
+        "capacity": 1,
+        "reuse": true
+      }
+    },
+    {
+      "name": "Bulk context lifecycle churn",
+      "status": "PASS",
+      "ms": 1.0550000071525574,
+      "detail": {
+        "cycles": 128,
+        "heapBytesBefore": 67108864,
+        "heapBytesAfter": 67108864,
+        "note": "WASM heap high-water observation only; not proof of leak freedom."
+      }
+    },
+    {
+      "name": "Actor, scene and SDK teardown",
+      "status": "PASS",
+      "ms": 5.5,
+      "detail": "Resources released; not a long-run leak certification"
+    },
+    {
+      "name": "No SDK stderr diagnostics",
+      "status": "PASS",
+      "ms": 0.034999996423721313,
+      "detail": {
+        "lines": 0
+      }
+    }
+  ],
+  "stderr": [],
+  "physicsExecuted": true,
+  "engineIntegrationVerified": false,
+  "releaseApproved": false,
+  "notRun": [
+    "D6/ragdoll behavior",
+    "articulation behavior",
+    "vehicle behavior",
+    "controller behavior",
+    "mesh cooking / serialization roundtrip",
+    "callbacks / contact events",
+    "long-run leak checks",
+    "cross-browser/device coverage",
+    "pthread build",
+    "deterministic replay / multiplayer",
+    "full Particle Realms integration"
+  ],
+  "finished": "2026-09-23T02:16:58.287Z",
+  "browser": "153.0.8010.48",
+  "crossOriginIsolated": true,
+  "artifactHashes": {
+    "physx-pe.wasm": {
+      "bytes": 6948292,
+      "sha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+    },
+    "physx-pe.mjs": {
+      "bytes": 4837868,
+      "sha256": "8258172bd1adca31ef74756448d15b2eaa83795d82c9ddce64d5a01a04c2b68f"
+    }
+  },
+  "testHarnessSha256": {
+    "web/suite.mjs": "5db1c7d620b5016c375b7a95153118698967159075946bf07c70396d944ab172",
+    "web/regressions.mjs": "f23fd1e73ead03462f46a564ea1e8dfd00b75fe4d3abd5025b4a20d502b5d8db",
+    "web/worker.mjs": "92cd98b14ec4a12ffed7fb21e4d3a63e2bf9aa81e07d10198c36f200250179af",
+    "web/app.mjs": "8ea6be0c1b8afb15f36c8e1cf1a4ad7b73741378114782ffadacce31df11fd64",
+    "bridge/physx-bulk.mjs": "60ecafb98afe8e522079f59923a4cf89a1fad977f69d2b8ce7947bef96776afe",
+    "bridge/physx-bulk-rust.mjs": "e12e47d3860179d8accdbba75aa858730f0143ba758d7237513a22729499f40f",
+    "tools/browser_test.py": "fa5c99089c61d1b7d9546cb314b980de93005c0413824282a8805e514d9c1356",
+    "tools/evidence.py": "c9cf83f1e22fe4ec730146da650208cfc12219eddc1fcdd8f079545ab62e59a6"
+  },
+  "pageErrors": []
+}

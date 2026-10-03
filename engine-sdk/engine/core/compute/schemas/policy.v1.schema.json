@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/policy.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "policy v1",
+  "description": "Execution policy after caller defaults are resolved. Operation precision/backend availability, permissions, GPU residency and deadline enforcement remain runtime checks.",
+  "type": "object",
+  "properties": {
+    "backend": {
+      "enum": [
+        "auto",
+        "js",
+        "wasm-scalar",
+        "wasm-simd",
+        "wasm-threads",
+        "wasm-threads-simd",
+        "webgpu"
+      ]
+    },
+    "outputLocation": {
+      "enum": [
+        "cpu",
+        "gpu"
+      ]
+    },
+    "precision": {
+      "enum": [
+        "f32",
+        "f64",
+        "exact"
+      ]
+    },
+    "priority": {
+      "enum": [
+        "background",
+        "interactive"
+      ]
+    },
+    "timeoutMs": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 300000
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

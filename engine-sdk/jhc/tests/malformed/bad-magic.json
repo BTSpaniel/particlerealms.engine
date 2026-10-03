@@ -1,0 +1,6 @@
+{
+  "name": "bad-magic",
+  "expectedCode": 200,
+  "expectedMessageFragment": "Bad JHC1 magic",
+  "size": 571
+}

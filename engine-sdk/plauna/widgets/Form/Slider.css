@@ -1,0 +1,149 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Slider Component Styles
+ * Modular CSS for Slider form control
+ */
+
+.slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.slider__track {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-full);
+  position: relative;
+  cursor: pointer;
+}
+
+.slider__fill {
+  height: 100%;
+  background: var(--color-primary-500);
+  border-radius: var(--border-radius-full);
+  position: absolute;
+  left: 0;
+  transition: width var(--transition-fast);
+}
+
+.slider__thumb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary-500);
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.slider__thumb:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+.slider__thumb:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.slider__thumb:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size Variants */
+.slider--sm .slider__track {
+  height: 4px;
+}
+
+.slider--sm .slider__thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.slider--md .slider__track {
+  height: 6px;
+}
+
+.slider--md .slider__thumb {
+  width: 20px;
+  height: 20px;
+}
+
+.slider--lg .slider__track {
+  height: 8px;
+}
+
+.slider--lg .slider__thumb {
+  width: 24px;
+  height: 24px;
+}
+
+/* Color Variants */
+.slider--primary .slider__fill,
+.slider--primary .slider__thumb {
+  background: var(--color-primary-500);
+}
+
+.slider--success .slider__fill,
+.slider--success .slider__thumb {
+  background: var(--color-success);
+}
+
+.slider--warning .slider__fill,
+.slider--warning .slider__thumb {
+  background: var(--color-warning);
+}
+
+.slider--error .slider__fill,
+.slider--error .slider__thumb {
+  background: var(--color-error);
+}
+
+/* With Label */
+.slider__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.slider__value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Range Slider */
+.slider--range .slider__thumb:nth-child(2) {
+  z-index: 5;
+}
+
+.slider--range .slider__thumb.active {
+  z-index: 11;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slider--lg .slider__track {
+    height: 6px;
+  }
+
+  .slider--lg .slider__thumb {
+    width: 20px;
+    height: 20px;
+  }
+}

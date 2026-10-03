@@ -1,0 +1,490 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "operation-parameters",
+  "description": "Effective named-parameter projections for approved compute operations. Produced by projectComputeOperationParameters after bounded native controls. Nullish defaults, existing boolean/coercion semantics and three coefficient values are normalized; -0 uses the native-value number marker. Unconsumed extension controls are intentionally omitted, not serialized or newly rejected. Native validators retain typed-array, value-domain and input-dependent shape checks. These definitions do not describe arbitrary binary controls or evaluate shape expressions.",
+  "$defs": {
+    "finite-number": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$computeType": {
+              "const": "number"
+            },
+            "value": {
+              "const": "-0"
+            }
+          },
+          "required": [
+            "$computeType",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "document-regions": {
+      "type": "object",
+      "properties": {
+        "budgetMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30000
+        },
+        "maxRegions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024
+        },
+        "maxContourPoints": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 100000
+        },
+        "maxBoundaryEdges": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 1000000
+        },
+        "minLineLength": {
+          "type": "number",
+          "minimum": 4,
+          "maximum": 16384
+        },
+        "minContourArea": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 4000000
+        },
+        "maxLineWidth": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "maxComponents": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40000
+        },
+        "sourceId": {
+          "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+        },
+        "pageNumber": {
+          "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+        },
+        "sourceRevision": {
+          "$ref": "https://particlerealms.online/schemas/compute/native-value.v1.schema.json"
+        }
+      },
+      "required": [
+        "budgetMs",
+        "maxRegions",
+        "maxContourPoints",
+        "maxBoundaryEdges",
+        "minLineLength",
+        "minContourArea",
+        "maxLineWidth",
+        "maxComponents",
+        "sourceId",
+        "pageNumber",
+        "sourceRevision"
+      ],
+      "additionalProperties": false
+    },
+    "stats.summary": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "robust.compensated-sum": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "geometry.attribute-bounds": {
+      "type": "object",
+      "properties": {
+        "componentCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "geometry.transform-points": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "image.histogram": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "coefficients": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/finite-number"
+          }
+        },
+        "mode": {
+          "const": "encoded"
+        },
+        "output": {
+          "const": "float32"
+        },
+        "alphaWeight": {
+          "const": false
+        },
+        "byteOutput": {
+          "const": false
+        },
+        "includeAlpha": {
+          "type": "boolean"
+        },
+        "includeLuminance": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "image.luminance": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "coefficients": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/finite-number"
+          }
+        },
+        "mode": {
+          "const": "encoded"
+        },
+        "output": {
+          "const": "float32"
+        },
+        "alphaWeight": {
+          "const": false
+        },
+        "byteOutput": {
+          "const": false
+        },
+        "normalized": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "image.document-analysis": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16384
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16384
+        },
+        "coefficients": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/finite-number"
+          }
+        },
+        "mode": {
+          "const": "encoded"
+        },
+        "output": {
+          "const": "float32"
+        },
+        "alphaWeight": {
+          "const": false
+        },
+        "byteOutput": {
+          "const": false
+        },
+        "maxPixels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4000000
+        },
+        "budgetMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120000
+        },
+        "maxGlyphs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "maxComponents": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40000
+        },
+        "threshold": {
+          "enum": [
+            "auto",
+            "otsu",
+            "adaptive"
+          ]
+        },
+        "recognitionProfile": {
+          "enum": [
+            "printed",
+            "handprint"
+          ]
+        },
+        "deskew": {
+          "type": "boolean"
+        },
+        "regions": {
+          "type": "boolean"
+        },
+        "regionOptions": {
+          "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/document-regions"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "matrix.multiply": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "inner": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        }
+      },
+      "required": [
+        "rows",
+        "inner",
+        "columns"
+      ],
+      "additionalProperties": false
+    },
+    "signal.fft": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "signal.ifft": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "audio.waveform-peaks": {
+      "type": "object",
+      "properties": {
+        "bucketCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "bucketCount"
+      ],
+      "additionalProperties": false
+    },
+    "audio.windowed-rms": {
+      "type": "object",
+      "properties": {
+        "windowSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "hopSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "windowSize"
+      ],
+      "additionalProperties": false
+    },
+    "binary.crc32": {
+      "type": "object",
+      "properties": {
+        "previousCrc": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "binary.histogram": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "compression.entropy": {
+      "type": "object",
+      "properties": {
+        "symbolBits": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "geometry.cloth-iteration": {
+      "type": "object",
+      "properties": {
+        "h": {
+          "type": "number",
+          "minimum": 1e-06,
+          "maximum": 1
+        },
+        "iterations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 48
+        },
+        "damping": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "gravity": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": -1000,
+            "maximum": 1000
+          }
+        },
+        "advect": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "h",
+        "iterations",
+        "damping",
+        "gravity",
+        "advect"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/stats.summary"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/robust.compensated-sum"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/geometry.attribute-bounds"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/geometry.transform-points"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/image.histogram"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/image.luminance"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/image.document-analysis"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/matrix.multiply"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/signal.fft"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/signal.ifft"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/audio.waveform-peaks"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/audio.windowed-rms"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/binary.crc32"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/binary.histogram"
+    },
+    {
+      "$ref": "https://particlerealms.online/schemas/compute/operation-parameters.v1.schema.json#/$defs/compression.entropy"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "engine.composite-material",
+  "schemaVersion": "1.0.0",
+  "copyright": "Copyright (c) 2026 Jake Wehmeier (BTSpaniel)",
+  "license": "LicenseRef-ParticleRealms-Alpha",
+  "id": "builtin.material.alloy.brass",
+  "logicalPath": "material/alloy/copper/brass.json",
+  "name": "Cartridge Brass",
+  "category": "alloy",
+  "facets": {
+    "identity": {
+      "kind": "alloy",
+      "phaseAt293K": "solid",
+      "description": "Nominal 70 percent copper, 30 percent zinc cartridge brass."
+    },
+    "chemistry": {
+      "compositionMassFraction": {
+        "builtin.material.element.copper": 0.7,
+        "builtin.material.element.zinc": 0.3
+      }
+    },
+    "physical": {
+      "densityKgPerM3": 8530
+    },
+    "thermal": {
+      "specificHeatJPerKgK": 380,
+      "thermalConductivityWPerMK": 121,
+      "linearExpansionPerK": 0.0000199
+    },
+    "fabrication": {
+      "processes": ["forming", "machining"]
+    },
+    "audio": {
+      "proceduralPatch": "impact_metal"
+    }
+  },
+  "missingFacets": ["render", "contact", "mechanical", "electrical", "substance"],
+  "notApplicableFacets": ["fiber"],
+  "sources": [
+    {
+      "id": "engine-audio",
+      "kind": "repository",
+      "uri": "engine/audio/synth/ProceduralPatches.js",
+      "citation": "Engine metal impact procedural patch"
+    },
+    {
+      "id": "nist-reference",
+      "kind": "primary",
+      "uri": "https://www.nist.gov/ncnr/neutron-instruments/sample-environment/sample-mounting/reference-tables",
+      "citation": "NIST NCNR sample-mounting reference tables, brass 70Cu/30Zn row"
+    },
+    {
+      "id": "nist-brass",
+      "kind": "primary",
+      "uri": "https://www.nist.gov/publications/thermal-conductivity-and-electrical-resistivity-six-copper-base-alloys",
+      "citation": "NISTIR 76-1003, Thermal Conductivity and Electrical Resistivity of Six Copper-Base Alloys"
+    }
+  ],
+  "fieldSources": {
+    "identity.kind": ["nist-reference"],
+    "identity.phaseAt293K": ["nist-reference"],
+    "identity.description": ["nist-reference"],
+    "chemistry.compositionMassFraction": ["nist-reference"],
+    "physical.densityKgPerM3": ["nist-reference"],
+    "thermal.specificHeatJPerKgK": ["nist-reference"],
+    "thermal.thermalConductivityWPerMK": ["nist-reference", "nist-brass"],
+    "thermal.linearExpansionPerK": ["nist-reference"],
+    "fabrication.processes": ["nist-brass"],
+    "audio.proceduralPatch": ["engine-audio"]
+  }
+}

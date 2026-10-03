@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+# SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+[toolchain]
+channel = "nightly-2026-09-07"
+profile = "minimal"
+components = ["rust-src"]
+targets = ["wasm32-unknown-unknown"]

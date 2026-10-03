@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://particlerealms.online/schemas/compute/buffer-descriptor.v1.schema.json",
+  "$comment": "SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>; SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha",
+  "title": "buffer-descriptor v1",
+  "description": "Normalized CPU buffer metadata. Native input shapes are normalized before validation. The host separately verifies intrinsic element type, product of dimensions, admitted bytes, detachment and owner quotas.",
+  "type": "object",
+  "properties": {
+    "dtype": {
+      "enum": [
+        "u8",
+        "u8clamped",
+        "i8",
+        "u16",
+        "i16",
+        "u32",
+        "i32",
+        "f32",
+        "f64"
+      ]
+    },
+    "elementType": {
+      "enum": [
+        "u8",
+        "u8clamped",
+        "i8",
+        "u16",
+        "i16",
+        "u32",
+        "i32",
+        "f32",
+        "f64"
+      ]
+    },
+    "shape": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9007199254740991
+      },
+      "minItems": 1,
+      "maxItems": 8
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

@@ -1,0 +1,142 @@
+{
+  "schema": "engine.composite-material",
+  "schemaVersion": "1.0.0",
+  "copyright": "Copyright (c) 2026 Jake Wehmeier (BTSpaniel)",
+  "license": "LicenseRef-ParticleRealms-Alpha",
+  "id": "builtin.material.element.copper",
+  "logicalPath": "material/element/metal/transition/copper.json",
+  "name": "Copper",
+  "category": "element",
+  "facets": {
+    "identity": {
+      "kind": "element",
+      "phaseAt293K": "solid",
+      "description": "Elemental copper (Cu)."
+    },
+    "chemistry": {
+      "symbol": "Cu",
+      "atomicNumber": 29,
+      "relativeAtomicMass": 63.546
+    },
+    "render": {
+      "workflow": "metallicRoughness",
+      "baseColorFactor": [0.95, 0.64, 0.54, 1],
+      "metallicFactor": 1,
+      "roughnessFactor": 0.25,
+      "emissiveFactor": [0, 0, 0],
+      "alphaMode": "opaque",
+      "alphaCutoff": 0.5,
+      "doubleSided": false
+    },
+    "physical": {
+      "densityKgPerM3": 8933
+    },
+    "thermal": {
+      "meltingPointK": 1357.77,
+      "boilingPointK": 2835,
+      "specificHeatJPerKgK": 385,
+      "thermalConductivityWPerMK": 401,
+      "linearExpansionPerK": 0.0000165
+    },
+    "electrical": {
+      "resistivityOhmM": 1.678e-8,
+      "referenceTemperatureK": 293,
+      "temperatureCoefficientPerK": 0.004001362165843691,
+      "relativePermeability": 0.999994
+    },
+    "substance": {
+      "particleElementSymbol": "Cu"
+    },
+    "fabrication": {
+      "processes": ["wire-drawing"]
+    },
+    "audio": {
+      "proceduralPatch": "impact_metal"
+    }
+  },
+  "missingFacets": ["contact", "mechanical"],
+  "notApplicableFacets": ["fiber"],
+  "sources": [
+    {
+      "id": "engine-render",
+      "kind": "repository",
+      "uri": "engine/render/materials/MaterialLibrary.js",
+      "citation": "Engine MaterialLibrary Copper preset",
+      "note": "Renderer-authored appearance values only; they are not physical-property evidence."
+    },
+    {
+      "id": "editor-render",
+      "kind": "repository",
+      "uri": "editor/js/components/MaterialNodePresets.js",
+      "citation": "Editor Copper material-node preset",
+      "note": "Only the exact shared base color and metallic values are mapped; the Editor's procedural roughness range is not collapsed into a fabricated constant."
+    },
+    {
+      "id": "engine-elements",
+      "kind": "repository",
+      "uri": "engine/sim/particles/ParticleElementTable.js",
+      "citation": "Engine ParticleElementTable Cu record",
+      "note": "Element identity bridge only."
+    },
+    {
+      "id": "engine-audio",
+      "kind": "repository",
+      "uri": "engine/audio/synth/ProceduralPatches.js",
+      "citation": "Engine elemental audio routing for Cu"
+    },
+    {
+      "id": "rsc-copper",
+      "kind": "primary",
+      "uri": "https://periodic-table.rsc.org/element/29/copper",
+      "citation": "Royal Society of Chemistry periodic-table record for copper"
+    },
+    {
+      "id": "nist-reference",
+      "kind": "primary",
+      "uri": "https://www.nist.gov/ncnr/neutron-instruments/sample-environment/sample-mounting/reference-tables",
+      "citation": "NIST NCNR sample-mounting reference tables"
+    },
+    {
+      "id": "nist-resistivity",
+      "kind": "primary",
+      "uri": "https://srd.nist.gov/JPCRD/jpcrd155.pdf",
+      "citation": "NIST electrical resistivity reference data",
+      "note": "The temperature coefficient is derived explicitly from 1.678e-8 ohm metre at 293 K and 1.725e-8 ohm metre at 300 K."
+    },
+    {
+      "id": "nist-copper-wire",
+      "kind": "primary",
+      "uri": "https://nvlpubs.nist.gov/nistpubs/Legacy/hb/nbshandbook100.pdf",
+      "citation": "NIST Handbook 100, Copper Wire Tables"
+    }
+  ],
+  "fieldSources": {
+    "identity.kind": ["rsc-copper"],
+    "identity.phaseAt293K": ["rsc-copper"],
+    "identity.description": ["rsc-copper"],
+    "chemistry.symbol": ["rsc-copper", "engine-elements"],
+    "chemistry.atomicNumber": ["rsc-copper", "engine-elements"],
+    "chemistry.relativeAtomicMass": ["rsc-copper", "engine-elements"],
+    "render.workflow": ["engine-render"],
+    "render.baseColorFactor": ["engine-render", "editor-render"],
+    "render.metallicFactor": ["engine-render", "editor-render"],
+    "render.roughnessFactor": ["engine-render"],
+    "render.emissiveFactor": ["engine-render"],
+    "render.alphaMode": ["engine-render"],
+    "render.alphaCutoff": ["engine-render"],
+    "render.doubleSided": ["engine-render"],
+    "physical.densityKgPerM3": ["nist-reference"],
+    "thermal.meltingPointK": ["rsc-copper"],
+    "thermal.boilingPointK": ["rsc-copper"],
+    "thermal.specificHeatJPerKgK": ["nist-reference"],
+    "thermal.thermalConductivityWPerMK": ["nist-reference"],
+    "thermal.linearExpansionPerK": ["nist-reference"],
+    "electrical.resistivityOhmM": ["nist-resistivity"],
+    "electrical.referenceTemperatureK": ["nist-resistivity"],
+    "electrical.temperatureCoefficientPerK": ["nist-resistivity"],
+    "electrical.relativePermeability": ["nist-reference"],
+    "substance.particleElementSymbol": ["engine-elements"],
+    "fabrication.processes": ["nist-copper-wire"],
+    "audio.proceduralPatch": ["engine-audio"]
+  }
+}

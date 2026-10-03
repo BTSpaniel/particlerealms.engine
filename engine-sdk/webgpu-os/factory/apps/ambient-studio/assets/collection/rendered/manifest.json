@@ -1,0 +1,327 @@
+{
+  "source": "Production Ambient Studio GPU preview",
+  "entries": [
+    {
+      "id": "aurora-curtains",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:1ef1eb42a84ed4ae518c39b38fa11bad06507c99b080bab99c1f91bbcba8dde9",
+      "file": "aurora-curtains.jpg"
+    },
+    {
+      "id": "flowing-ink",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:c3e25e3ac1195ff282943ec30903a66561d3d927416fc90b78596240433e4ba6",
+      "file": "flowing-ink.jpg"
+    },
+    {
+      "id": "liquid-chrome",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:36220b4a4ef93b9981cdef15b613df725157c893257871b7c43fed74b7f63f16",
+      "file": "liquid-chrome.jpg"
+    },
+    {
+      "id": "deep-space-nebula",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:16742ad27d950a3447217a8ed1ed47720d3d986ce1c311db39369b109c33c66f",
+      "file": "deep-space-nebula.jpg"
+    },
+    {
+      "id": "midnight-downpour",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:75a93dc1db234456cb1a95f603a7912cd32b73a97dfad4ded346c1d954e20be1",
+      "file": "midnight-downpour.jpg"
+    },
+    {
+      "id": "ripple-horizon",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:6bcbf20084323acdf40b20ba8646f4f4dc66858ac4e5c57f50d6cccd9b8c5bd6",
+      "file": "ripple-horizon.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/mesh-ocean-final-20261001-r04/report.json"
+    },
+    {
+      "id": "neural-lattice",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:273fa9eb21c6db1094c1eabceccc3a53ddec5b7fe52c002cad2307705283c6ed",
+      "file": "neural-lattice.jpg"
+    },
+    {
+      "id": "quantum-probability-field",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:e66195c7143063ce28670968e3f10712ed089f48cb72fd5f9802a2ccbbd02866",
+      "file": "quantum-probability-field.jpg"
+    },
+    {
+      "id": "holographic-data-streams",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:0082670a2ad6a68e461eb653ae55d12f04caea6111f406fc146d0f467ea32a4f",
+      "file": "holographic-data-streams.jpg"
+    },
+    {
+      "id": "circuit-voxel-city",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:402ff46edab323b7197f885446afe423d3321af2fc92084c5930ce0fb3e32649",
+      "file": "circuit-voxel-city.jpg"
+    },
+    {
+      "id": "event-horizon",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:a7183f99291513ad83a213096e6f5c2c2de94100c49737055e83afffb13a103c",
+      "file": "event-horizon.jpg"
+    },
+    {
+      "id": "pearlescent-silk",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:c18f01ad84337bc14b8fd5d76c631766bcc1071233c0c34ee68d42137f274c52",
+      "file": "pearlescent-silk.jpg"
+    },
+    {
+      "id": "aurora-glass",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:4fef3cccc0ea8e70f83a480c6bebdc8ee9c9fa67fce2c3ded0a5853ecf70e8dc",
+      "file": "aurora-glass.jpg"
+    },
+    {
+      "id": "liquid-metal",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:bab65f2a9b70bc636a33d13808fe653efd0c06ca702e113a20c58a267e17ce8f",
+      "file": "liquid-metal.jpg"
+    },
+    {
+      "id": "mineral-ink",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:1f854858489d470d28019db431f64e7ee188b35f9f73b5aa1cb423ac55fd5491",
+      "file": "mineral-ink.jpg"
+    },
+    {
+      "id": "moonlit-water",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:4cfe1214b4ee6af42f0215b35c93471e128bbb7a210f5d68712121e846e84194",
+      "file": "moonlit-water.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/mesh-ocean-final-20261001-r04/report.json"
+    },
+    {
+      "id": "atmospheric-depth",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:4eed9dce13441f916a12079e57cd8e11cdef8c18e6691d1297d773c7423aacd1",
+      "file": "atmospheric-depth.jpg"
+    },
+    {
+      "id": "rainlit-study",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:8a53a5992ae1ee5b24d32a4e7b1947ecba56486a3e1e502de80ad33117c1742a",
+      "file": "rainlit-study.jpg"
+    },
+    {
+      "id": "sky-garden",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:d6ca844fad946832f448212b720f58252362fe94d439baaa9f2a8b9c2dba811e",
+      "file": "sky-garden.jpg"
+    },
+    {
+      "id": "neon-district",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:5753e4e67c6e6e474297a0e6b12d1f8a0e13214676fbeead5a6f9aa1066ef9b4",
+      "file": "neon-district.jpg"
+    },
+    {
+      "id": "orbital-observatory",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:8b3a251fae1ab5aa98544ce6804616f11243070048c855bb37ee80eed1935e3f",
+      "file": "orbital-observatory.jpg"
+    },
+    {
+      "id": "broadcast-prism",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:7fd82b6df10d3d079afe55c9c9b17749e39b0f59ba303b6426a58711ec7048c7",
+      "file": "broadcast-prism.jpg"
+    },
+    {
+      "id": "particle-world",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:db895aca30a63b2f4eae0474dd789867355a064bfa5716510eb14ee860624adc",
+      "file": "particle-world.jpg"
+    },
+    {
+      "id": "stellar-drift",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:ba189fe6ad460007bfe8e7a76a2d749c4b889ad3d331a8be985dc2193fa9c818",
+      "file": "stellar-drift.jpg"
+    },
+    {
+      "id": "vortex-bloom",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:e434d91f3ec91493a0d53cadf9092763f3a8fb1223ed741d3b2298c69b69a543",
+      "file": "vortex-bloom.jpg"
+    },
+    {
+      "id": "experiment-flowing-ink",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:b78297025457f33545390e4fede36c35dcb6c4edc0725f291aabf5966bfe86f9",
+      "file": "experiment-flowing-ink.jpg"
+    },
+    {
+      "id": "experiment-liquid-chrome",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:d8274a881a6f9ab7c48e9745fa72376959531847d25cee6dea6d6cfc9a08e1c6",
+      "file": "experiment-liquid-chrome.jpg"
+    },
+    {
+      "id": "experiment-ripple-horizon",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:cddf8078db109965322ac42c4ed9cf2c5331f90e64105cdf52631ca8f39ebaf9",
+      "file": "experiment-ripple-horizon.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/mesh-ocean-final-20261001-r04/report.json"
+    },
+    {
+      "id": "experiment-quantum-probability-field",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:b8ac1d28942d27d5c8583cada93be10032731ec25393670154e1e18e2d845009",
+      "file": "experiment-quantum-probability-field.jpg"
+    },
+    {
+      "id": "spatial-vista",
+      "runtime": "spatial",
+      "planHash": "sha256:310a7b37927bb940f132514586ec2a325cbd0618d2f5f2f2d6e20748cf822ecc",
+      "file": "spatial-vista.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/immersive-final-gallery-20260930-r01/report.json"
+    },
+    {
+      "id": "spatial-flow",
+      "runtime": "spatial",
+      "planHash": "sha256:60ec08891f9a613b62053c524e892764f085656a866ba9fd25b1908fa91c2816",
+      "file": "spatial-flow.jpg"
+    },
+    {
+      "id": "spatial-shatter",
+      "runtime": "spatial",
+      "planHash": "sha256:1ecd45a691b767a2249d6030ae28e79a04b2d4e6f841509fe7238e82cc107519",
+      "file": "spatial-shatter.jpg"
+    },
+    {
+      "id": "spatial-echo",
+      "runtime": "spatial",
+      "planHash": "sha256:dbafb95c009364cf55b7172e6eabcfb8989587d2ece06fbf1316b77f0534cb47",
+      "file": "spatial-echo.jpg"
+    },
+    {
+      "id": "spatial-fabric",
+      "runtime": "spatial",
+      "planHash": "sha256:508658b2a7547b8233cd97b5e9d958d3405288c513e40fc8426f104642abced4",
+      "file": "spatial-fabric.jpg"
+    },
+    {
+      "id": "spatial-cloud",
+      "runtime": "spatial",
+      "planHash": "sha256:fc72f05e629b19813a6633a9526a4edef5d58ee71af5a5a11af997d12aa46c75",
+      "file": "spatial-cloud.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/immersive-final-gallery-20260930-r01/report.json"
+    },
+    {
+      "id": "media-flow",
+      "runtime": "spatial",
+      "planHash": "sha256:a25ef622ce6dbda932de66d0b6b2dcdcb2d5052309aacf9b3b2eeedd04575210",
+      "file": "media-flow.jpg"
+    },
+    {
+      "id": "media-shatter",
+      "runtime": "spatial",
+      "planHash": "sha256:4aae6d22b277de851ab305b8acdfb727cd72f53c1591e43fbce2ddc4c7390031",
+      "file": "media-shatter.jpg"
+    },
+    {
+      "id": "media-echo",
+      "runtime": "spatial",
+      "planHash": "sha256:5e6de8be638c0b0168d5f0c680a4ba3a4d6f13c6385ae4a7ac8d564dfdfa68bb",
+      "file": "media-echo.jpg"
+    },
+    {
+      "id": "media-fabric",
+      "runtime": "spatial",
+      "planHash": "sha256:0b0cb98614418150560a821cf11ce5c660ed85ad89f4254a473a6e6e08874923",
+      "file": "media-fabric.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/immersive-final-gallery-20260930-r01/report.json"
+    },
+    {
+      "id": "custom-shader",
+      "runtime": "shader",
+      "planHash": "sha256:4ca6ace253c39682aec73c0d91014d0cafaa2526b72742da29c9c3ce3c49292b",
+      "file": "custom-shader.jpg"
+    },
+    {
+      "id": "image-studio",
+      "runtime": "spatial",
+      "planHash": "sha256:d524970fcebccaf1b2ca57f477db2a923917cfeea80a92651bdb1c1d5d03b4e8",
+      "file": "image-studio.jpg"
+    },
+    {
+      "id": "nebula",
+      "runtime": "classic",
+      "planHash": "sha256:8840dab4325db899c8da24b76eebe634125cb038b2d58371673128207d21eb05",
+      "file": "nebula.jpg"
+    },
+    {
+      "id": "mesh",
+      "runtime": "classic",
+      "planHash": "sha256:809c19fe300d2ef1615e7650e4a834c8e5d6a9cc5e729d5d72f019bb81d8ac84",
+      "file": "mesh.jpg"
+    },
+    {
+      "id": "gradient",
+      "runtime": "classic",
+      "planHash": "sha256:7e57ab1d2896f33c3d6ce3cfdfc3c2fd373689b908b4233f5d0705388edb91c0",
+      "file": "gradient.jpg"
+    },
+    {
+      "id": "aurora",
+      "runtime": "classic",
+      "planHash": "sha256:e49defc011f97b5594a808b7402d2645b185151524f87619d5b52db94e58f524",
+      "file": "aurora.jpg"
+    },
+    {
+      "id": "solid",
+      "runtime": "classic",
+      "planHash": "sha256:8c1b01a7221ae5a39153658fc5cc202c2f85d854f33281194aa73b3996a3be7e",
+      "file": "solid.jpg"
+    },
+    {
+      "id": "abyss",
+      "runtime": "classic",
+      "planHash": "sha256:4c5f26046613ba01cf59cb69b7694623a1a689b71e8ded38b69c79032597e6a0",
+      "file": "abyss.jpg"
+    },
+    {
+      "id": "webgpu",
+      "runtime": "classic",
+      "planHash": "sha256:523a4f9c8a3d8f3ead658f0b5698cad810674e79723aa14f740a1314496f820c",
+      "file": "webgpu.jpg"
+    },
+    {
+      "id": "spatial-forest",
+      "runtime": "spatial",
+      "planHash": "sha256:94cd55a9b36136a9aa6c272bb181d3eaed58362bced77700fef963a83e38821c",
+      "file": "spatial-forest.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/immersive-final-gallery-20260930-r01/report.json"
+    },
+    {
+      "id": "ocean-daylight",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:afbe2d382fd7f749c210a0945baf31ae161abee4cdb3621b0b5da2f485697f9e",
+      "file": "ocean-daylight.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/mesh-ocean-art-repair-20261001-r06/report.json"
+    },
+    {
+      "id": "ocean-moonlight",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:7c23ff35d0824b9aa890aa73cb8cc5af42d6d21afa8c07eea27938ec9c8bcfed",
+      "file": "ocean-moonlight.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/mesh-ocean-art-repair-20261001-r06/report.json"
+    },
+    {
+      "id": "ocean-swell",
+      "runtime": "ambient-v3",
+      "planHash": "sha256:0cf890ee84c4586c40b3fdb08fced75d67c879689d344fa2fd3af5fc7405d214",
+      "file": "ocean-swell.jpg",
+      "captureReceipt": "artifacts/ambient-quality-review/mesh-ocean-art-repair-20261001-r06/report.json"
+    }
+  ]
+}

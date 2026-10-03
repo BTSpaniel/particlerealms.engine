@@ -1,0 +1,31 @@
+{
+  "$schema": "./shadow-config.schema.json",
+  "categories": {
+    "entity": {
+      "label": "Entity Meshes",
+      "pcfSpread": 1.5,
+      "shadowBias": 0.003,
+      "shadowStrength": 0.85,
+      "enabled": true
+    },
+    "particle": {
+      "label": "Particle Effects",
+      "pcfSpread": 4.0,
+      "shadowBias": 0.004,
+      "shadowStrength": 0.5,
+      "enabled": true
+    },
+    "rope": {
+      "label": "Rope / Chain Meshes",
+      "pcfSpread": 1.5,
+      "shadowBias": 0.002,
+      "shadowStrength": 0.8,
+      "enabled": true
+    }
+  },
+  "global": {
+    "atlasSize": 4096,
+    "shadowRadius": 35,
+    "maxShadowDist": 120
+  }
+}

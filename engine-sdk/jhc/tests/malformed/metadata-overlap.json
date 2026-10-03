@@ -1,0 +1,6 @@
+{
+  "name": "metadata-overlap",
+  "expectedCode": 121,
+  "expectedMessageFragment": "overlaps package metadata",
+  "size": 571
+}

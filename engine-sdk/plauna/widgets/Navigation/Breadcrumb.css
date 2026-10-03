@@ -1,0 +1,92 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+ *
+ * SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+ */
+
+/**
+ * Breadcrumb Component Styles
+ * Modular CSS for Breadcrumb navigation widget
+ */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.breadcrumb__link {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-primary-500);
+  text-decoration: none;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.breadcrumb__link:hover {
+  background: var(--bg-tertiary);
+  color: var(--color-primary-600);
+}
+
+.breadcrumb__link:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.breadcrumb__separator {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  user-select: none;
+}
+
+.breadcrumb__current {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Size Variants */
+.breadcrumb--sm .breadcrumb__link,
+.breadcrumb--sm .breadcrumb__current {
+  padding: 4px 8px;
+  font-size: var(--font-size-xs);
+}
+
+.breadcrumb--md .breadcrumb__link,
+.breadcrumb--md .breadcrumb__current {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.breadcrumb--lg .breadcrumb__link,
+.breadcrumb--lg .breadcrumb__current {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-md);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breadcrumb {
+    gap: 4px;
+  }
+
+  .breadcrumb__link,
+  .breadcrumb__current {
+    padding: 4px 8px;
+    font-size: var(--font-size-xs);
+  }
+
+  .breadcrumb__separator {
+    font-size: 10px;
+  }
+}
