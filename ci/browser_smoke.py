@@ -414,7 +414,7 @@ def main(argv=None):
         with tempfile.TemporaryDirectory(prefix='particle-sdk-ci-template-') as temporary:
             template, receipt = extract_template(ROOT / 'Template.zip', Path(temporary))
             from playwright.sync_api import sync_playwright
-            launch_args = ['--proxy-bypass-list=<-loopback>', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1',
+            launch_args = ['--enable-automation', '--proxy-bypass-list=<-loopback>', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1',
                            '--disable-features=AutofillServerCommunication,OptimizationHints,MediaRouter,Translate']
             if args.webgpu == 'software':
                 launch_args.extend(SOFTWARE_ARGS)
