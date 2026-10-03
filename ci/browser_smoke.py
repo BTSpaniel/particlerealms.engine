@@ -65,16 +65,72 @@ def observe_package_network(context, origin, diagnostics):
         http_url = 'http' + url[2:] if url.startswith(('ws://', 'wss://')) else url
         if external(http_url):
             diagnostics['externalRequests'].append(url)
-            route.close(code=1008, reason='CI blocks external network access')
+            # An unconnected WebSocketRoute never contacts its server. Closing
+            # it synchronously inside the creation callback deadlocks the
+            # pinned Playwright driver; retain the denied attempt and let
+            # context disposal release this intercepted socket.
+            # https://playwright.dev/python/docs/api/class-websocketroute
         else:
             route.connect_to_server()
 
     def observe_page(page):
-        # Chromium also reports dedicated-worker handshakes on their owning
-        # page. Observe those attempts even when frame script routing cannot
-        # intercept them; the proxy still denies every external connection.
         page.on('websocket', lambda socket: diagnostics['externalRequests'].append(socket.url)
             if external('http' + socket.url[2:]) else None)
+        # Startup sockets can race Playwright's worker Network.enable call.
+        # Attach at worker startup, enable Network, then resume it. Observe
+        # recursively created workers too; the denying proxy remains the
+        # transport boundary. No worker code or WebSocket API is replaced.
+        # https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-setAutoAttach
+        # https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-webSocketCreated
+        session = context.new_cdp_session(page)
+        sequence = 0
+        attach = {'autoAttach': True, 'waitForDebuggerOnStart': True, 'flatten': False}
+
+        def send_child(path, method, params=None):
+            nonlocal sequence
+            sequence += 1
+            message = {'id': sequence, 'method': method, 'params': params or {}}
+            for identifier in reversed(path[1:]):
+                sequence += 1
+                message = {'id': sequence, 'method': 'Target.sendMessageToTarget',
+                           'params': {'sessionId': identifier, 'message': json.dumps(message)}}
+            session.send('Target.sendMessageToTarget', {'sessionId': path[0],
+                'message': json.dumps(message)})
+
+        def attached(event, parent=()):
+            path = (*parent, event['sessionId'])
+            send_child(path, 'Network.enable')
+            send_child(path, 'Target.setAutoAttach', attach)
+            send_child(path, 'Runtime.runIfWaitingForDebugger')
+
+        sockets = {}
+
+        def received(event, parent=()):
+            path = (*parent, event['sessionId'])
+            message = json.loads(event['message'])
+            if message.get('error'):
+                diagnostics.setdefault('observationErrors', []).append(message['error'])
+            elif message.get('method') == 'Target.attachedToTarget':
+                attached(message['params'], path)
+            elif message.get('method') == 'Target.receivedMessageFromTarget':
+                received(message['params'], path)
+            elif message.get('method') == 'Network.webSocketCreated':
+                url = message['params']['url']
+                sockets[(*path, message['params']['requestId'])] = url
+                if external('http' + url[2:]):
+                    diagnostics['externalRequests'].append(url)
+            elif message.get('method', '').startswith('Network.webSocket'):
+                params = message['params']
+                # Another debugger may resume the worker before Network.enable
+                # completes. Fail closed if a socket event has no observed URL;
+                # never classify that attempt as browser maintenance traffic.
+                if (*path, params['requestId']) not in sockets:
+                    diagnostics.setdefault('unattributedWorkerSockets', []).append(
+                        {'requestId': params['requestId'], 'event': message['method']})
+
+        session.on('Target.attachedToTarget', attached)
+        session.on('Target.receivedMessageFromTarget', received)
+        session.send('Target.setAutoAttach', attach)
 
     context.route('**/*', admit)
     context.route_web_socket('**/*', admit_web_socket)
@@ -268,15 +324,25 @@ def network_boundary_probe(browser):
                 globalThis.__boundaryWorker = new Worker(__boundaryWorkerUrl);
             }''', expected)
             deadline = time.monotonic() + 5
-            while not set(expected).issubset(result['diagnostics']['externalRequests']) and time.monotonic() < deadline:
+            def observed():
+                requests = result['diagnostics']['externalRequests']
+                return (set(expected[:3]).issubset(requests) and
+                        (expected[3] in requests or result['diagnostics'].get('unattributedWorkerSockets')))
+
+            while not observed() and time.monotonic() < deadline:
                 page.wait_for_timeout(50)
             result['missingObservations'] = sorted(set(expected) - set(result['diagnostics']['externalRequests']))
+            if result['diagnostics'].get('unattributedWorkerSockets'):
+                result['missingObservations'] = [url for url in result['missingObservations'] if url != expected[3]]
+                result['workerSocketObservation'] = 'Unattributed worker socket events are retained as application failures'
             page.evaluate('''() => {
                 __boundaryWorker.terminate(); URL.revokeObjectURL(__boundaryWorkerUrl);
                 delete globalThis.__boundaryWorker; delete globalThis.__boundaryWorkerUrl;
             }''')
             if result['missingObservations']:
                 raise AssertionError('Application network attempts were not observed: ' + str(result['missingObservations']))
+            if result['diagnostics'].get('observationErrors'):
+                raise AssertionError('Worker network observer failed: ' + str(result['diagnostics']['observationErrors']))
             result['status'] = 'PASS'
         except Exception as error:
             result.update(status='FAIL', error=str(error))
@@ -525,8 +591,10 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
                 page.screenshot(path=str(images / f'last-{package}-{mount.strip("/") or "root"}.png'))
             except Exception as capture_error:
                 result['screenshotError'] = str(capture_error)
-            (images / f'{package}-{mount.strip("/") or "root"}.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
             context.close()
+            if any(diagnostics.values()):
+                result.update(status='FAIL', error='Unexpected browser diagnostics after disposal: ' + json.dumps(diagnostics))
+            (images / f'{package}-{mount.strip("/") or "root"}.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     return result
 
 

@@ -59,6 +59,8 @@ The SDK gives your application **Engine + Plauna**. The Template brings together
 
 To run the Template, extract it, enter `Template/` and run `python serve.py 9002` or `launch.bat --port 9002` on Windows. Open the same localhost URL as the SDK quick start.
 
+The current Template download is **46.2 MB** (46,204,894 bytes): one full Platform runtime, one PhysX PE binary, loaders, styles and required runtime resources. Its 721 files preserve the existing `Template/` layout. [Checksums](SHA256SUMS) and [extracted-package checks](validation/template-upgrade.json) identify this exact download.
+
 Your application owns its canvas, frame loop and resources. Keep the supplied runtime, loader and native/worker assets together. Full source documentation and JavaScript rebuilding tools are in the SDK.
 
 ## Use the public APIs

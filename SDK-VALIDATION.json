@@ -91,16 +91,16 @@
     }
   },
   "Template.zip": {
-    "bytes": 46204401,
-    "sha256": "22c7b733fc9398a5b8ce605ff2bd191f6b5006ff0e49df54e565f9eb5597ba24",
+    "bytes": 46204894,
+    "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
     "profile": "runtime-only",
     "archivePrefix": "Template/",
     "files": 721,
-    "treeBytes": 63628168,
-    "templateReceiptSha256": "df5c97aa8aa068d511eb69d921782f1e7ba44de9c3abe8d6d0a810fad687801d",
-    "donorSDKReceiptSha256": "124d56ae72a73900f86e09be1b7b731b34d0dce82f9bc1209ab7f6dbd7e3c3f2",
-    "runtimeSRI": "sha384-VkpXXRmOIzl/JqTdfYh9TxYzKJWiwwifbMHQpXtj+SDTuenCcIPcltLR8T3uIsCs",
-    "loaderCacheToken": "c8affaf979ddd001",
+    "treeBytes": 63628816,
+    "templateReceiptSha256": "e02d1290a4f2454bb61ce25ca6a083747a8bb75d8acfe77484947ff978353792",
+    "donorSDKReceiptSha256": "cd6998d3d6719c356b48de1cfce1b828ab39b2f95b88b42035d97dd533c958c2",
+    "runtimeSRI": "sha384-3fvkApmeaTaZVxgqa1LZgMzuQBEPKOjIkpdVj3nbHpR8D6Wk072XQEldiP5z7+uQ",
+    "loaderCacheToken": "125dc0f4c8aada9a",
     "deterministicArchive": true,
     "duplicateBytes": 372384,
     "platformGzipCopies": 1,
@@ -108,8 +108,8 @@
     "canonicalSourcesIncluded": false,
     "buildToolsIncluded": false,
     "fullSDKDocumentationIncluded": false,
-    "publicationReceiptSha256": "0c30816af70e6b6704dc93d40b89eb439167914172b2671b3c04a3348436037f",
-    "browserAcceptanceReportSha256": "3f95279356ce8d3845cceb7145438b01741c333d6d845bf99a92caee7fdcff57",
+    "publicationReceiptSha256": "fe449c1892919d2e4f86fa91d36cdd2a95ed447ab16b2e4941d34d4bdeb25558",
+    "browserAcceptanceReportSha256": "a24bcc39f7efacbfbf4ee26dbb6e8ff52e9b74bcf51bc0e68acb0341d6107396",
     "browserVersion": "154.0.8037.93",
     "browserFeaturesDisabled": [
       "AvoidUnnecessaryBeforeUnloadCheckSync",
@@ -142,9 +142,9 @@
       "OptimizationHints",
       "AutofillServerCommunication"
     ],
-    "elapsedSeconds": 184.783,
+    "elapsedSeconds": 222.466,
     "harnessInputsSha256": {
-      "scenarios": "f7d410709bec6cc4afe24bebcbc45d617efbaf5b23574b82fbb2b8e301d696bf",
+      "scenarios": "b219719e2a1b57fc566808f0856776167cf810fbe167cb86b6b08859add38f5d",
       "localApp": "3c74306d30d45292c935deb1fe2a70bdedd3bad93e5d8359769cf9b0f184d1a1",
       "nativeExtensions": "0456a1df0de2490a1b1276cea594a4aa6b1b1d023292fb910061ac6869f3081b",
       "runner": "ea95b146a24462a7996882f000bea76dd48efa573e509ced1e3adbea7a9feb89"
@@ -224,7 +224,7 @@
                 "name": "Engine renderEntities submits an indexed cube",
                 "passed": true,
                 "detail": {
-                  "renderedFrames": 2,
+                  "renderedFrames": 3,
                   "triangles": 12
                 }
               }
@@ -295,6 +295,14 @@
                 "detail": null
               },
               {
+                "name": "Plauna Button is visible and usable",
+                "passed": true,
+                "detail": {
+                  "width": 92,
+                  "height": 42
+                }
+              },
+              {
                 "name": "DOM click updates StateStore and retained UI",
                 "passed": true,
                 "detail": {
@@ -320,7 +328,7 @@
                 "name": "Editor saves and reopens the project",
                 "passed": true,
                 "detail": {
-                  "uuid": "project-1790986926196-1a2e816",
+                  "uuid": "project-1791046228358-9821443",
                   "schemaVersion": 1
                 }
               },
@@ -553,7 +561,7 @@
                 "name": "Engine renderEntities submits an indexed cube",
                 "passed": true,
                 "detail": {
-                  "renderedFrames": 2,
+                  "renderedFrames": 3,
                   "triangles": 12
                 }
               }
@@ -624,6 +632,14 @@
                 "detail": null
               },
               {
+                "name": "Plauna Button is visible and usable",
+                "passed": true,
+                "detail": {
+                  "width": 92,
+                  "height": 42
+                }
+              },
+              {
                 "name": "DOM click updates StateStore and retained UI",
                 "passed": true,
                 "detail": {
@@ -649,7 +665,7 @@
                 "name": "Editor saves and reopens the project",
                 "passed": true,
                 "detail": {
-                  "uuid": "project-1790987016594-9089ad9",
+                  "uuid": "project-1791046317681-e7b205b",
                   "schemaVersion": 1
                 }
               },
@@ -839,7 +855,7 @@
   },
   "hostedValidation": {
     "status": "PENDING",
-    "reason": "Candidate branch must pass ordinary CI and manual release validation before promotion"
+    "reason": "Updated Template archive requires fresh hosted validation before promotion"
   },
   "sdkArchiveCreated": false
 }

@@ -1,0 +1,64 @@
+{
+  "schema": "particle-platform-local-input-rejections/v1",
+  "status": "PASS",
+  "scope": "Local fail-closed preflight checks on the verified Platform SDK donor used to build the refreshed Template.zip. Invalid inputs were tested in a disposable copy before any full rebuild or publication. Hosted offline Engine rebuilding is recorded separately.",
+  "profile": "platform",
+  "identity": {
+    "platformDonorReceiptSha256": "cd6998d3d6719c356b48de1cfce1b828ab39b2f95b88b42035d97dd533c958c2",
+    "platformBuildInputsSha256": "382b4d702a4fa2140d5e31921b677b8fefbe86ab7669b8623653f3512d4cdab1",
+    "platformRebuildInputSha256": "e3c08be7d6460702caf11eac1e945264e6e717ae0274645176c07bb187db4c86",
+    "signedRegistrySha256": "a50fc82ac4c195c35135a5870f4755beee81e3bb6c025d37993dce99d63797d1",
+    "signedRegistryBytes": 7464234
+  },
+  "summary": {
+    "checks": 6,
+    "rejected": 6,
+    "failures": 0
+  },
+  "checks": [
+    {
+      "name": "missing-source",
+      "status": "PASS",
+      "rejected": true,
+      "diagnostic": "Missing SDK build input"
+    },
+    {
+      "name": "corrupt-native",
+      "status": "PASS",
+      "rejected": true,
+      "diagnostic": "immutable input hash/length mismatch"
+    },
+    {
+      "name": "corrupt-signed-registry",
+      "status": "PASS",
+      "rejected": true,
+      "diagnostic": "immutable input hash/length mismatch"
+    },
+    {
+      "name": "changed-signed-owner",
+      "status": "PASS",
+      "rejected": true,
+      "diagnostic": "signed"
+    },
+    {
+      "name": "invalid-signature",
+      "status": "PASS",
+      "rejected": true,
+      "diagnostic": "Official package publisher signature is invalid for os.ai-echo"
+    },
+    {
+      "name": "expired-signature",
+      "status": "PASS",
+      "rejected": true,
+      "diagnostic": "Official package certificate is outside its validity window for browser"
+    }
+  ],
+  "pythonNetworkAccess": "blocked",
+  "privateKeysPresent": false,
+  "fullBuildsRun": 0,
+  "sdkArchivesCreated": false,
+  "disposableInputsRestored": true,
+  "donorUnchanged": true,
+  "elapsedSeconds": 88.219,
+  "sourceEvidenceSha256": "3b9231d9952894c36029078b7323bdb266f661b6ca37986d743a2de1db65753b"
+}

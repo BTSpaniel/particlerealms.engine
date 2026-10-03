@@ -51,6 +51,8 @@ On Linux, `python -m playwright install --with-deps chromium` also installs the 
 
 [Focused source regression results](../validation/local-source-checks.json) retain the measured selection pixels, resource cleanup, playground controls and documentation interactions. Their negative controls deliberately reproduce the old failures; hosted reports separately test the final compiled distribution.
 
+[Extracted Template acceptance](../validation/template-upgrade.json) records root and nested hosting, all three launcher modes, compiled examples, native operations and cleanup. [Platform input rejection results](../validation/platform-input-rejections.json) record six actual damaged, changed or invalid-input failures before publication. These reports identify local acceptance separately from hosted CI.
+
 ## Manual release validation
 
 Run [SDK release validation](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-release-validation.yml) from the Actions tab on the candidate branch. This workflow requires no signing keys and does not publish or move release tags.

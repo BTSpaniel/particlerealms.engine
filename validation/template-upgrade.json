@@ -1,0 +1,724 @@
+{
+  "schema": "particle-template-local-upgrade-validation/v1",
+  "status": "PASS",
+  "scope": "Local acceptance of the refreshed runtime-only Template ZIP extracted outside the repository and served without repository fallback. These are functional checks, not hosted qualification or performance measurements.",
+  "profile": "runtime-only",
+  "archive": {
+    "name": "Template.zip",
+    "bytes": 46204894,
+    "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+    "prefix": "Template/",
+    "members": 721,
+    "inventoriedFiles": 720,
+    "treeBytes": 63628816,
+    "duplicateBytes": 372384,
+    "deterministicArchive": true
+  },
+  "identity": {
+    "templateReceiptSha256": "e02d1290a4f2454bb61ce25ca6a083747a8bb75d8acfe77484947ff978353792",
+    "platformDonorReceiptSha256": "cd6998d3d6719c356b48de1cfce1b828ab39b2f95b88b42035d97dd533c958c2",
+    "platformBuildInputsSha256": "382b4d702a4fa2140d5e31921b677b8fefbe86ab7669b8623653f3512d4cdab1",
+    "platformRebuildInputSha256": "e3c08be7d6460702caf11eac1e945264e6e717ae0274645176c07bb187db4c86"
+  },
+  "delivery": {
+    "runtime": {
+      "path": "assets/particle-platform.min.js.gz",
+      "compressedBytes": 41232751,
+      "decodedBytes": 101028812,
+      "sha256": "bc8eae41afe6c14a3617149edf41a77d75fea80890b658ef5fdd9b7393221e6c",
+      "integrity": "sha384-3fvkApmeaTaZVxgqa1LZgMzuQBEPKOjIkpdVj3nbHpR8D6Wk072XQEldiP5z7+uQ",
+      "cacheToken": "125dc0f4c8aada9a",
+      "copies": 1
+    },
+    "native": {
+      "path": "assets/physx-pe.wasm",
+      "bytes": 6948292,
+      "sha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
+      "copies": 1
+    },
+    "sdkSourcesIncluded": false,
+    "sdkBuildToolsIncluded": false,
+    "sdkDocumentationIncluded": false,
+    "localTemplatePublication": "PASS"
+  },
+  "summary": {
+    "mounts": 2,
+    "modeRuns": 6,
+    "compiledExampleRuns": 12,
+    "compiledExampleAssertions": 32,
+    "nativeExtensionChecks": 30,
+    "modeAndExampleCleanupChecks": 18,
+    "nativeExtensionCleanupChecks": 2,
+    "unexpectedBrowserErrors": 0,
+    "unexpectedGpuErrors": 0,
+    "externalApplicationRequests": 0
+  },
+  "server": {
+    "status": "PASS",
+    "responses": [
+      {
+        "path": "index.html",
+        "status": 200,
+        "mime": "text/html"
+      },
+      {
+        "path": "assets/release-runtime-loader.js",
+        "status": 200,
+        "mime": "text/javascript"
+      },
+      {
+        "path": "assets/physx-pe.wasm",
+        "status": 200,
+        "mime": "application/wasm"
+      },
+      {
+        "path": "template-manifest.json",
+        "status": 200,
+        "mime": "application/json"
+      }
+    ],
+    "localhost_only": true,
+    "isolationHeaders": {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp"
+    }
+  },
+  "browser": {
+    "environment": "local installed Chromium",
+    "version": "154.0.8037.93"
+  },
+  "durationSeconds": 222.466,
+  "harnessInputsSha256": {
+    "scenarios": "b219719e2a1b57fc566808f0856776167cf810fbe167cb86b6b08859add38f5d",
+    "localApp": "3c74306d30d45292c935deb1fe2a70bdedd3bad93e5d8359769cf9b0f184d1a1",
+    "nativeExtensions": "0456a1df0de2490a1b1276cea594a4aa6b1b1d023292fb910061ac6869f3081b",
+    "runner": "ea95b146a24462a7996882f000bea76dd48efa573e509ced1e3adbea7a9feb89"
+  },
+  "sourceEvidenceSha256": {
+    "acceptance": "a24bcc39f7efacbfbf4ee26dbb6e8ff52e9b74bcf51bc0e68acb0341d6107396",
+    "package": "2d205960d284be0fa7e8a95771b3d31ff2ff12a527a1d211ff5bed05977eb000",
+    "publication": "fe449c1892919d2e4f86fa91d36cdd2a95ed447ab16b2e4941d34d4bdeb25558"
+  },
+  "mounts": [
+    {
+      "mount": "/",
+      "status": "PASS",
+      "modes": [
+        {
+          "mode": "canvas",
+          "status": "PASS",
+          "namespaces": [
+            "Engine",
+            "Editor",
+            "Plauna",
+            "AGI",
+            "WebGPUOS"
+          ],
+          "crossOriginIsolated": true,
+          "cleanup": {
+            "status": "passed",
+            "released": []
+          },
+          "cleanupCalledTwice": true
+        },
+        {
+          "mode": "plauna",
+          "status": "PASS",
+          "namespaces": [
+            "Engine",
+            "Editor",
+            "Plauna",
+            "AGI",
+            "WebGPUOS"
+          ],
+          "crossOriginIsolated": true,
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Plauna Showcase"
+            ]
+          },
+          "cleanupCalledTwice": true,
+          "interaction": {
+            "contentChanged": true
+          }
+        },
+        {
+          "mode": "os",
+          "status": "PASS",
+          "namespaces": [
+            "Engine",
+            "Editor",
+            "Plauna",
+            "AGI",
+            "WebGPUOS"
+          ],
+          "crossOriginIsolated": true,
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "WebGPU OS"
+            ]
+          },
+          "cleanupCalledTwice": true,
+          "os": {
+            "ready": true,
+            "taskbarChildren": 6,
+            "scopedEntry": true,
+            "serviceWorker": {
+              "scopePath": "/webgpu-os/",
+              "active": "activated",
+              "controller": true
+            }
+          }
+        }
+      ],
+      "examples": [
+        {
+          "case": "engine",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Native gravity and floor contact",
+              "passed": true
+            },
+            {
+              "name": "ECS Transform retains physics pose",
+              "passed": true
+            },
+            {
+              "name": "Engine renderEntities submits an indexed cube",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Render loop and resize listener",
+              "Entity model uniform",
+              "Engine cube mesh",
+              "WebGPU canvas surface",
+              "WebGPU device",
+              "Native PhysX world",
+              "ECS entity",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "worker",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Worker water brush edits real cells",
+              "passed": true
+            },
+            {
+              "name": "Worker executes GPU water transport",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint preserves bounded water mass",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Surface Field module worker",
+              "Surface Field GPU buffers",
+              "WebGPU device",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "plauna",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Plauna renders a retained Button",
+              "passed": true
+            },
+            {
+              "name": "Plauna Button is visible and usable",
+              "passed": true
+            },
+            {
+              "name": "DOM click updates StateStore and retained UI",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Plauna app and retained tree",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "editor",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Editor saves and reopens the project",
+              "passed": true
+            },
+            {
+              "name": "Reopened edits survive another save",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Example Editor project",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "agi",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "GPU ComputeGraph addition matches the vector oracle",
+              "passed": true
+            },
+            {
+              "name": "ComputeGraph executes dependent scaling",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "AGI computation buffers",
+              "AGI ComputeGraph",
+              "WebGPU device",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "os",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Explicit OS boot returns real kernel and desktop",
+              "passed": true
+            },
+            {
+              "name": "Strict local manifest mounts the app",
+              "passed": true
+            },
+            {
+              "name": "Local OS app interaction executes",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "WebGPU OS lifetime",
+              "SDK app registry entry",
+              "Local app module URL",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        }
+      ],
+      "nativeExtensions": {
+        "status": "PASS",
+        "moduleName": "physx-pe",
+        "sdkVersion": "5.11.0",
+        "extensions": {
+          "blast": "PASS",
+          "blastContactManifold": "PASS",
+          "blastSnapshotRestore": "PASS",
+          "blastStress": "PASS",
+          "wovenCloth": "PASS",
+          "gpuChains": "PASS",
+          "flow": "PASS",
+          "flowWorldVelocity": "PASS",
+          "flowScene": "PASS",
+          "flowSceneCleanup": "PASS",
+          "flowGeometry": "PASS",
+          "blastAuthoring": "PASS",
+          "blastAuthoredScene": "PASS",
+          "flowCollision": "PASS",
+          "flowPhysXCollision": "PASS"
+        },
+        "snapshotReadback": {
+          "backend": "physx-pe-rust",
+          "bodies": 1,
+          "batches": 1,
+          "snapshots": 244
+        },
+        "flowShaderRequests": 97,
+        "released": true
+      },
+      "nativeWasm": {
+        "status": "PASS",
+        "path": "/assets/physx-pe.wasm",
+        "requests": 2,
+        "factory": "compiled"
+      },
+      "documentation": {
+        "status": "PASS",
+        "scope": "runtime-kit-readme",
+        "readme_bytes": 5860
+      },
+      "diagnostics": {
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "httpErrors": 0,
+        "externalRequests": 0
+      },
+      "networkContainment": {
+        "status": "PASS",
+        "forwardedRequestsToLocalOrigin": 1514,
+        "proxyFailures": 0,
+        "blockedBrowserMaintenanceRequests": 16,
+        "blockedProxyRequests": 16,
+        "externalApplicationRequests": 0,
+        "externalForwardingEnabled": false
+      }
+    },
+    {
+      "mount": "/template-nested/",
+      "status": "PASS",
+      "modes": [
+        {
+          "mode": "canvas",
+          "status": "PASS",
+          "namespaces": [
+            "Engine",
+            "Editor",
+            "Plauna",
+            "AGI",
+            "WebGPUOS"
+          ],
+          "crossOriginIsolated": true,
+          "cleanup": {
+            "status": "passed",
+            "released": []
+          },
+          "cleanupCalledTwice": true
+        },
+        {
+          "mode": "plauna",
+          "status": "PASS",
+          "namespaces": [
+            "Engine",
+            "Editor",
+            "Plauna",
+            "AGI",
+            "WebGPUOS"
+          ],
+          "crossOriginIsolated": true,
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Plauna Showcase"
+            ]
+          },
+          "cleanupCalledTwice": true,
+          "interaction": {
+            "contentChanged": true
+          }
+        },
+        {
+          "mode": "os",
+          "status": "PASS",
+          "namespaces": [
+            "Engine",
+            "Editor",
+            "Plauna",
+            "AGI",
+            "WebGPUOS"
+          ],
+          "crossOriginIsolated": true,
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "WebGPU OS"
+            ]
+          },
+          "cleanupCalledTwice": true,
+          "os": {
+            "ready": true,
+            "taskbarChildren": 6,
+            "scopedEntry": true,
+            "serviceWorker": {
+              "scopePath": "/template-nested/webgpu-os/",
+              "active": "activated",
+              "controller": true
+            }
+          }
+        }
+      ],
+      "examples": [
+        {
+          "case": "engine",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Native gravity and floor contact",
+              "passed": true
+            },
+            {
+              "name": "ECS Transform retains physics pose",
+              "passed": true
+            },
+            {
+              "name": "Engine renderEntities submits an indexed cube",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Render loop and resize listener",
+              "Entity model uniform",
+              "Engine cube mesh",
+              "WebGPU canvas surface",
+              "WebGPU device",
+              "Native PhysX world",
+              "ECS entity",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "worker",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Worker water brush edits real cells",
+              "passed": true
+            },
+            {
+              "name": "Worker executes GPU water transport",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint preserves bounded water mass",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Surface Field module worker",
+              "Surface Field GPU buffers",
+              "WebGPU device",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "plauna",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Plauna renders a retained Button",
+              "passed": true
+            },
+            {
+              "name": "Plauna Button is visible and usable",
+              "passed": true
+            },
+            {
+              "name": "DOM click updates StateStore and retained UI",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Plauna app and retained tree",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "editor",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Editor saves and reopens the project",
+              "passed": true
+            },
+            {
+              "name": "Reopened edits survive another save",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Example Editor project",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "agi",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "GPU ComputeGraph addition matches the vector oracle",
+              "passed": true
+            },
+            {
+              "name": "ComputeGraph executes dependent scaling",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "AGI computation buffers",
+              "AGI ComputeGraph",
+              "WebGPU device",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        },
+        {
+          "case": "os",
+          "mode": "compiled",
+          "status": "passed",
+          "checks": [
+            {
+              "name": "Explicit OS boot returns real kernel and desktop",
+              "passed": true
+            },
+            {
+              "name": "Strict local manifest mounts the app",
+              "passed": true
+            },
+            {
+              "name": "Local OS app interaction executes",
+              "passed": true
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "WebGPU OS lifetime",
+              "SDK app registry entry",
+              "Local app module URL",
+              "Acceptance stage"
+            ],
+            "failures": []
+          },
+          "cleanupCalledTwice": true,
+          "gpuErrors": 0
+        }
+      ],
+      "nativeExtensions": {
+        "status": "PASS",
+        "moduleName": "physx-pe",
+        "sdkVersion": "5.11.0",
+        "extensions": {
+          "blast": "PASS",
+          "blastContactManifold": "PASS",
+          "blastSnapshotRestore": "PASS",
+          "blastStress": "PASS",
+          "wovenCloth": "PASS",
+          "gpuChains": "PASS",
+          "flow": "PASS",
+          "flowWorldVelocity": "PASS",
+          "flowScene": "PASS",
+          "flowSceneCleanup": "PASS",
+          "flowGeometry": "PASS",
+          "blastAuthoring": "PASS",
+          "blastAuthoredScene": "PASS",
+          "flowCollision": "PASS",
+          "flowPhysXCollision": "PASS"
+        },
+        "snapshotReadback": {
+          "backend": "physx-pe-rust",
+          "bodies": 1,
+          "batches": 1,
+          "snapshots": 244
+        },
+        "flowShaderRequests": 97,
+        "released": true
+      },
+      "nativeWasm": {
+        "status": "PASS",
+        "path": "/template-nested/assets/physx-pe.wasm",
+        "requests": 2,
+        "factory": "compiled"
+      },
+      "documentation": {
+        "status": "PASS",
+        "scope": "runtime-kit-readme",
+        "readme_bytes": 5860
+      },
+      "diagnostics": {
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "httpErrors": 0,
+        "externalRequests": 0
+      },
+      "networkContainment": {
+        "status": "PASS",
+        "forwardedRequestsToLocalOrigin": 1514,
+        "proxyFailures": 0,
+        "blockedBrowserMaintenanceRequests": 16,
+        "blockedProxyRequests": 16,
+        "externalApplicationRequests": 0,
+        "externalForwardingEnabled": false
+      }
+    }
+  ]
+}

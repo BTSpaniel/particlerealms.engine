@@ -67,7 +67,7 @@ class BrowserBoundaryTests(unittest.TestCase):
         for url in ('wss://accounts.google.com/socket', 'wss://unknown.test/socket'):
             route = Mock(url=url)
             socket_route(route)
-            route.close.assert_called_once_with(code=1008, reason='CI blocks external network access')
+            route.close.assert_not_called()
             route.connect_to_server.assert_not_called()
             self.assertIn(url, diagnostics['externalRequests'])
         page = Mock()
@@ -75,6 +75,29 @@ class BrowserBoundaryTests(unittest.TestCase):
         worker_socket_observer = page.on.call_args.args[1]
         worker_socket_observer(SimpleNamespace(url='wss://android.clients.google.com/worker'))
         self.assertIn('wss://android.clients.google.com/worker', diagnostics['externalRequests'])
+        cdp = context.new_cdp_session.return_value
+        cdp_events = {call.args[0]: call.args[1] for call in cdp.on.call_args_list}
+        cdp_events['Target.attachedToTarget']({'sessionId': 'worker-session'})
+        commands = [json.loads(call.args[1]['message'])['method'] for call in cdp.send.call_args_list
+                    if call.args[0] == 'Target.sendMessageToTarget']
+        self.assertEqual(commands, ['Network.enable', 'Target.setAutoAttach', 'Runtime.runIfWaitingForDebugger'])
+
+        def worker_event(method, params):
+            cdp_events['Target.receivedMessageFromTarget']({'sessionId': 'worker-session',
+                'message': json.dumps({'method': method, 'params': params})})
+
+        worker_event('Network.webSocketCreated', {'requestId': 'local', 'url': 'ws://127.0.0.1:9001/socket'})
+        worker_event('Network.webSocketClosed', {'requestId': 'local'})
+        self.assertNotIn('unattributedWorkerSockets', diagnostics)
+        worker_event('Network.webSocketCreated', {'requestId': 'external', 'url': 'wss://accounts.google.com/worker'})
+        self.assertIn('wss://accounts.google.com/worker', diagnostics['externalRequests'])
+        worker_event('Target.receivedMessageFromTarget', {'sessionId': 'nested-worker', 'message': json.dumps(
+            {'method': 'Network.webSocketFrameError', 'params': {'requestId': 'unobserved'}})})
+        self.assertEqual(diagnostics['unattributedWorkerSockets'],
+            [{'requestId': 'unobserved', 'event': 'Network.webSocketFrameError'}])
+        cdp_events['Target.receivedMessageFromTarget']({'sessionId': 'worker-session',
+            'message': json.dumps({'id': 1, 'error': {'code': -1, 'message': 'Network unavailable'}})})
+        self.assertEqual(diagnostics['observationErrors'], [{'code': -1, 'message': 'Network unavailable'}])
         local = Mock(request=SimpleNamespace(url=origin + '/nested/worker.js'))
         request_route(local)
         local.continue_.assert_called_once()
