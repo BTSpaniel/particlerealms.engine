@@ -1,99 +1,107 @@
 <!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
 <!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
 
-# Particle Realms Engine
+<h1 align="center">Particle Realms Engine SDK</h1>
 
-Build browser games, simulations, and interactive tools with **Particle Engine and Plauna UI**. Engine provides WebGPU rendering, ECS, native physics, audio, and networking. Plauna supplies the UI framework.
+<p align="center">
+  <a href="engine-sdk/">
+    <img src="https://raw.githubusercontent.com/BTSpaniel/BTSpaniel/main/assets/engine-card.svg" width="420" alt="Particle Realms Engine: rendering, physics and world systems." />
+  </a>
+</p>
 
-**Browser JavaScript. Python tooling. No npm application dependencies.**
+<p align="center">
+  <strong>Build worlds in the browser.</strong><br />
+  WebGPU rendering, ECS, native physics and Plauna UI on one foundation.<br />
+  Browser ES modules. Python tooling. No npm application setup.
+</p>
 
-[Release](https://github.com/BTSpaniel/particlerealms.engine/releases/tag/v0.8.1-alpha.1) · [Live platform](https://particlerealms.online/) · [Learn](https://particlerealms.online/learn/) · [Playground](https://particlerealms.online/playground/) · [Documentation](https://particlerealms.online/guide/)
+<p align="center">
+  <a href="https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml"><img src="https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml/badge.svg?branch=main" alt="SDK CI" /></a>
+  <a href="https://github.com/BTSpaniel/particlerealms.engine/releases"><img src="https://img.shields.io/github/v/release/BTSpaniel/particlerealms.engine?include_prereleases&amp;label=release&amp;color=6e7fe8" alt="Latest release, including prereleases" /></a>
+</p>
 
-## Choose your starting point
+<p align="center">
+  <a href="#quick-start"><strong>Quick start</strong></a> &nbsp; · &nbsp;
+  <a href="engine-sdk/MD/guides/sdk-distribution.md">SDK guide</a> &nbsp; · &nbsp;
+  <a href="https://particlerealms.online/playground/">Live playground</a> &nbsp; · &nbsp;
+  <a href="https://github.com/BTSpaniel/particlerealms.engine/releases">Releases</a> &nbsp; · &nbsp;
+  <a href="ci/README.md">Tests</a>
+</p>
 
-| Start with | Includes |
-| --- | --- |
-| **[Engine + Plauna SDK](engine-sdk/)** | Sources, compiled APIs, verified PhysX PE and compute assets, source/compiled examples, offline documentation, and Python rebuild tools. Clone this repository to get the SDK files. |
-| **[Template.zip](Template.zip)** | The existing application starter with the full compiled Platform runtime, PhysX PE, local server, and OS/Plauna/Canvas launcher. Also available from the [release](https://github.com/BTSpaniel/particlerealms.engine/releases/tag/v0.8.1-alpha.1). |
+## Quick start
 
-The SDK's compiled runtime includes Engine and Plauna. The Template's compiled Platform runtime includes Engine, Editor, Plauna, AGI, and WebGPU OS. Full API documentation and rebuilding tools live in the SDK.
+Clone the SDK and start its included server:
 
-## Run the SDK
-
-```powershell
+```sh
 git clone https://github.com/BTSpaniel/particlerealms.engine.git
 cd particlerealms.engine/engine-sdk
 python serve_sdk.py --port 9002 --isolate
 ```
 
-Open **<http://127.0.0.1:9002/>** in a browser with a working WebGPU adapter. The landing page verifies the compiled runtime and links source examples, compiled examples, and offline documentation. Serving uses Python's standard library.
+Open **[http://127.0.0.1:9002/](http://127.0.0.1:9002/)** in a browser with WebGPU support. Python serves the SDK without additional packages. The landing page connects the documentation with runnable **Engine**, **worker** and **Plauna** examples in source and compiled modes.
 
-**Serve over HTTP.** Double-clicking `index.html` creates a `file://` origin, which blocks module scripts and runtime fetches. Public hosting requires HTTPS. `--isolate` enables the headers needed by threaded compute and `SharedArrayBuffer`.
+Serve modules over **HTTP on localhost** or **HTTPS in deployment**. Opening `index.html` as a file causes CORS failures. `--isolate` supplies the headers needed by threaded compute.
 
-The examples exercise rendering, ECS, real PhysX PE simulation, a Surface Field worker, and Plauna interaction. Each example reports its checks and provides a **Release resources** action.
+## Choose your starting point
 
-Read the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md), or open `MD/viewer/?doc=guides/sdk-distribution.md` on the SDK server.
+| Package | What you get |
+| --- | --- |
+| **[Engine + Plauna SDK](engine-sdk/)** | Public source modules, compiled APIs, PhysX PE and compute assets, examples, offline docs and rebuild tools. |
+| **[Template.zip](Template.zip)** | Full compiled Platform runtime, PhysX PE, required runtime resources and a ready-to-run launcher. |
 
-## Start from Template.zip
+The SDK gives your application **Engine + Plauna**. The Template brings together **Engine → Editor → Plauna → AGI → WebGPU OS**, with **WebGPU OS**, **Plauna Showcase** and **Blank Canvas** launch modes.
 
-Extract [Template.zip](Template.zip), open its `Template` directory, and run:
+To run the Template, extract it, enter `Template/` and run `python serve.py 9002` or `launch.bat --port 9002` on Windows. Open the same localhost URL as the SDK quick start.
 
-```powershell
-python serve.py 9002
-```
+Your application owns its canvas, frame loop and resources. Keep the supplied runtime, loader and native/worker assets together. Full source documentation and JavaScript rebuilding tools are in the SDK.
 
-Open <http://127.0.0.1:9002/>. Windows users can run `launch.bat --port 9002`; the default Template port is 8000.
+## Use the public APIs
 
-Choose **WebGPU OS**, **Plauna Showcase**, or **Blank Canvas**. Your application owns its canvas, frame loop, and resources. The included README explains the launcher, compiled APIs, hosting, and cleanup.
-
-Keep the runtime, loader, styles, and native/worker dependencies together when copying the Template. Its loader verifies the runtime's decoded byte count and SHA-384 integrity before execution.
-
-## Use Engine and Plauna
-
-In an application at the SDK root, import the public source entry points:
+For a module at the SDK root:
 
 ```javascript
-import { createWorld, createEntity } from './engine/EngineBootstrap.js';
-import * as Plauna from './plauna/index.js';
+import * as Engine from './engine/EngineBootstrap.js';
 
-const world = createWorld({ name: 'My application' });
-const entity = createEntity(world);
+const world = Engine.createWorld({ name: 'My world' });
+const entity = Engine.createEntity(world);
+Engine.setEntityComponent(world, entity, 'Transform',
+  Engine.createTransform({ position: [0, 2, 0] }));
 ```
 
-For compiled mode, preserve the loader tag supplied by the SDK example or Template, then await its verified runtime:
+Plauna's source entry point is [`plauna/index.js`](engine-sdk/plauna/index.js). The [shipped examples](engine-sdk/examples/scenarios.js) show an indexed render, native physics, worker operations and an interactive Plauna button, including cleanup.
+
+For compiled mode, keep the supplied loader tag from the SDK example or Template and await its verified runtime:
 
 ```javascript
 const PE = await globalThis.__PE_RUNTIME_READY;
-const world = PE.createWorld({ name: 'My application' });
+const world = PE.createWorld({ name: 'My world' });
 const entity = PE.createEntity(world);
-const UI = PE.Plauna;
+const Plauna = PE.Plauna;
 ```
 
-The Template also exposes `PE.Editor`, `PE.AGI`, and `PE.WebGPUOS`. OS boot is explicit. Use the shipped examples and documentation for subsystem-specific initialization and lifecycle ownership.
+The full Platform Template additionally exposes `PE.Editor`, `PE.AGI` and `PE.WebGPUOS`. OS boot is explicit; use the included launcher or the subsystem's documented initialization.
 
-## Rebuild the SDK's JavaScript runtime
+## Rebuild the JavaScript runtime
 
-From `engine-sdk`, use the exact environment recorded in `sdk-build.json`. The baseline is **Python 3.12.7**, pinned dependencies, and **rjsmin 1.2.5**. Install prerequisites explicitly before working offline:
+From `engine-sdk/`, use the Python version and pinned tools recorded in [`sdk-build.json`](engine-sdk/sdk-build.json):
 
-```powershell
+```sh
 python -m pip install -r requirements-sdk.txt
 python bundle_engine.py --sdk-rebuild
 ```
 
-Intermediate runtime files go to `build/runtime`; the rebuilt SDK goes to `build/engine-sdk`. Builds verify inputs and tools and do not download missing prerequisites.
+Outputs go to `build/runtime` and `build/engine-sdk`. Install prerequisites before working offline. JavaScript builds reuse the supplied, verified native WASM; native PhysX, Blast, Flow and Rust rebuilding uses separate toolchains. See the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md) for rebuilding and signed-package requirements.
 
-Rebuilding JavaScript reuses the supplied, verified native WASM. Recompiling PhysX, Blast, Flow, or Rust kernels requires their separate toolchains. Private signing keys are not included or required. Signed-owner changes require an authorized replacement public package; the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md) explains that boundary.
+## Tests and documentation
 
-## Verification
+**[SDK CI](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml)** checks the distribution and Python/browser behavior on pushes and pull requests. The [test guide](ci/README.md) lists each job's scope, requirements and local commands. Browser and GPU coverage is reported per job.
 
-The SDK's [manifest](engine-sdk/manifest.json) records exact file hashes, public entry points, build inputs, and tool identities. Runtime manifests and provenance bind the compiled bytes to their inputs. Git preserves the SDK bytes without line-ending conversion. [SDK-VALIDATION.json](SDK-VALIDATION.json) records the measured checks and Template checksum for this release.
+[Release validation](SDK-VALIDATION.json) records the measured package checks, offline rebuilding and native/GPU acceptance for the shipped SDK and Template. The [SDK manifest](engine-sdk/manifest.json) records exact file hashes and build identities.
 
-Package checks cover root and nested hosting, source and compiled examples, workers, native physics, cleanup, unsupported-browser diagnostics, and offline rebuilding. Two builds in the pinned environment produced identical runtime bytes; a changed Engine CPU function executed in its rebuilt runtime. The release notes record the final Template size and checksum.
+Browse the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md) and [API index](engine-sdk/MD/api/index.md), or open `MD/viewer/` on the local SDK server. [Engine Academy](https://particlerealms.online/learn/) and the [Playground](https://particlerealms.online/playground/) provide online learning and live studies.
 
-## License and attribution
+## Credits and license
 
-Created by [Jake Wehmeier (BTSpaniel)](https://github.com/BTSpaniel). See [AUTHORS](AUTHORS).
+Built by [Jake Wehmeier / BTSpaniel](https://github.com/BTSpaniel). [PhysX PE](https://github.com/BTSpaniel/Physx) provides the browser physics integration; upstream authors and licenses remain credited in [AUTHORS](AUTHORS) and [NOTICE.md](NOTICE.md).
 
-First-party code uses the [source-available alpha license](LICENSE). Personal evaluation and internal testing are permitted. Commercial production, redistribution, sublicensing, sale, and competing hosted use require written permission. This is not an OSI-approved open-source license.
-
-Third-party components retain their licenses and attribution. See [NOTICE.md](NOTICE.md), [NVIDIA PhysX](https://github.com/NVIDIA-Omniverse/PhysX), [fabmax/physx-js-webidl](https://github.com/fabmax/physx-js-webidl), and the standalone [PhysX PE distribution](https://github.com/BTSpaniel/Physx). Each package's native inventory identifies the exact supplied binaries.
+First-party code is **[source-available alpha](LICENSE)**. Personal evaluation and internal testing are permitted; commercial production and redistribution require written permission. Included third-party components retain their own licenses.

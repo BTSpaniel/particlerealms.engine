@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 /engine-sdk/build/
 /engine-sdk/.bundle_cache.json
+/test-results/
+/.venv/
