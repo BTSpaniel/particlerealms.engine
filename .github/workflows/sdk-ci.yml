@@ -26,10 +26,6 @@ jobs:
     name: Package integrity and Python tests
     runs-on: windows-2022
     timeout-minutes: 20
-    env:
-      # Use the runner's canonical path instead of its legacy 8.3 user TEMP alias.
-      TEMP: ${{ runner.temp }}
-      TMP: ${{ runner.temp }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -46,6 +42,11 @@ jobs:
         run: python -B ci/verify_distribution.py --output test-results/distribution.json
       - name: Run shipped Python regression tests
         if: ${{ !cancelled() && steps.sdk-tools.outcome == 'success' }}
+        env:
+          # Use the runner's canonical path instead of its legacy 8.3 user TEMP alias.
+          TEMP: ${{ runner.temp }}
+          TMP: ${{ runner.temp }}
+          TMPDIR: ${{ runner.temp }}
         run: python -B ci/run_python_tests.py --output test-results/python.json
       - name: Publish job summary
         if: always()
