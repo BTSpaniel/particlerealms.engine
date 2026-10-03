@@ -1,12 +1,14 @@
 ---
 title: Capabilities — What You Can Build
 description: A routing/decision map for the whole stack — which subsystem to use for each goal, public API maps (engine, Plauna, AGI), rendering/physics recipes, bundle targets, the editor module map, and AI editing rules.
-updated: 2026-06-05
+updated: 2026-10-03
 ---
 
 # Capabilities — What You Can Build
 
 What the stack can actually build: browser-native WebGPU games, simulation sandboxes, tools, editors, UI systems, AI training experiments, and deployable single-file runtimes. Use this page to pick the right subsystem before writing code.
+
+The public base SDK includes Engine and Plauna. Editor, AGI, and WebGPU OS APIs require the full Platform runtime or development stack. Read your package's runtime manifest before selecting a subsystem. Start with [SDK setup and tested examples](sdk-distribution.md) for the public download.
 
 ## Decision map
 
@@ -19,7 +21,7 @@ What the stack can actually build: browser-native WebGPU games, simulation sandb
 | Menus, HUDs, app panels | Plauna | `plauna/index.js` | [Plauna](../plauna/overview.md) |
 | Training, observations, rewards, neural agents | AGI Core | `agi/index.js` | [AGI](../agi/overview.md) |
 | Scene authoring and inspection | Editor | `editor/js/EditorApp.js`, `editor/js/ProjectManager.js` | [Editor](../editor/overview.md) |
-| New app / prototype | Template | `Template/index.html`, `Template/main.js` | [Template starter](#template-starter) |
+| New app / prototype | Template | `Template/index.html`, `Template/assets/` | [Template starter](#template-starter) |
 
 Primary entry points: engine → `engine/EngineBootstrap.js` · compiled global → `window.PE` · Plauna → `plauna/index.js` · AGI → `agi/index.js` · editor → `editor/js/EditorApp.js` · template → `Template/`.
 
@@ -64,9 +66,11 @@ console.log(ENGINE_FULL);
 Compiled runtime pattern:
 
 ```javascript
-const PE = window.PE || window.ParticleEngine;
-const { VERSION_BANNER, createWorld, createEntity, createPlaunaApp, AGI_CORE_FULL } = PE;
-console.log(VERSION_BANNER, AGI_CORE_FULL);
+if (!globalThis.__PE_RUNTIME_READY) throw new Error('Load the SDK runtime loader first');
+const PE = await globalThis.__PE_RUNTIME_READY;
+const { VERSION_BANNER, createWorld, createEntity } = PE;
+const Plauna = PE.Plauna;
+console.log(VERSION_BANNER);
 ```
 
 ## Rendering
@@ -114,15 +118,7 @@ Engine physics modules + PhysX integration + active-ragdoll architecture (see [P
 
 The UI layer for game menus, HUDs, tools, dashboards, context menus, and editor-like panels (see [Plauna](../plauna/overview.md)).
 
-```javascript
-import { PLAUNA_FULL, createPlaunaApp, Panel, Text, Button } from '../../plauna/index.js';
-
-const ui = createPlaunaApp({ root: document.getElementById('ui') });
-const menu = new Panel('main-menu', { title: PLAUNA_FULL });
-menu.add(new Text('title', 'Particle Realms'));
-menu.add(new Button('play', 'Play'));
-ui.mount(menu);
-```
+Use the [tested Plauna counter example](../plauna/getting-started.md#create-and-render-the-ui). It awaits `createPlaunaApp()`, passes options objects to `Panel`, `Text`, and `Button`, attaches children with `appendChild()`, and renders through `app.visualTree` and `app.domRenderer`. It includes interaction and cleanup. The compiled Engine + Plauna runtime exposes these APIs under `PE.Plauna` after runtime readiness. (Source: `plauna/index.js`, `plauna/core/app.js`, and `plauna/core/UINode.js`.)
 
 | Category | Exports | Use for |
 | --- | --- | --- |
@@ -168,32 +164,40 @@ A browser-native authoring tool for scenes, entities, materials, particles, audi
 
 ## Bundled runtime
 
-The Python bundler can generate an engine-only public runtime or a full platform runtime (see [Engine Stack Usage](engine-stack-usage.md)).
+The development repository's Python bundler can generate an engine-only runtime, Engine + Plauna, or the full Platform runtime (see [Engine Stack Usage](engine-stack-usage.md)). Inside a distributed SDK, use [SDK rebuilding](sdk-distribution.md#rebuild-the-javascript-runtime) instead.
 
 ```bash
 # Engine / public playground bundle
 python bundle_engine.py --target engine --no-cache
 
-# Full platform: Engine + Editor + Plauna + AGI Core
+# Base public SDK: Engine + Plauna
+python bundle_engine.py --target engine --include-plauna --sdk-only --production
+
+# Full platform: Engine + Editor + Plauna + AGI + WebGPU OS
 python bundle_engine.py --target platform --production --no-cache
 ```
 
 | Target | Entries | Exposes | Use for |
 | --- | --- | --- | --- |
 | `engine` | `engine/EngineBootstrap.js` | `window.PE` engine APIs | Public site, playground, SDK, engine-only demos |
-| `platform` | `engine/EngineEditorBootstrap.js`, `agi/index.js`, `plauna/index.js` | Engine + Editor + AGI + Plauna APIs | Internal tools, full platform previews |
+| `engine --include-plauna` | Engine and `plauna/index.js` | Engine APIs and `PE.Plauna` | Base public Engine + Plauna SDK |
+| `platform` | Engine/Editor, AGI, Plauna and WebGPU OS entries | Engine plus `PE.Editor`, `PE.Plauna`, `PE.AGI`, `PE.WebGPUOS` | Full Platform Template and applications |
 
 ## Template starter
 
-Use `Template/` as the starter folder for new apps. Copy it, keep game-specific code local, and only promote reusable systems back into `engine/` after multiple projects need them.
+Extract the public `Template.zip` and use its `Template/` folder as the starter for a compiled Platform application. It includes the launcher with OS, Plauna Showcase and Blank Canvas modes, one full Platform runtime, PhysX PE and required runtime dependencies. Run `python serve.py 9001` from that folder; Windows users can run `launch.bat --port 9001`. Keep game-specific code local and retain the supplied runtime inventory and resource paths.
 
 ```text
 Template/
 ├── index.html
-├── style.css
-├── main.js
+├── assets/
+├── serve.py
+├── launch.bat
+├── template-manifest.json
 └── README.md
 ```
+
+This is the launcher layout; the archive also includes its required resource directories and license files. `template-manifest.json` records the complete inventory. It does not contain the SDK source tree or rebuilding tools.
 
 ## AI editing rules for this stack
 

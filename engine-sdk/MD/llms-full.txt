@@ -54,7 +54,7 @@ This page explains what the stack is, who each part is for, and where to go next
 
 # Install & Run
 
-This page covers prerequisites and how to serve the stack and these docs locally. Everything runs in the browser — there is no compile step.
+This page distinguishes the public SDK, compiled Template, and full development source tree. Applications run in the browser. The shipped SDK and Template are ready to serve; rebuilding their JavaScript is an optional workflow with pinned prerequisites.
 
 ## Prerequisites
 
@@ -62,24 +62,37 @@ This page covers prerequisites and how to serve the stack and these docs locally
   operating system, GPU, and driver. Confirm that `navigator.gpu` exists and
   that `await navigator.gpu.requestAdapter()` returns an adapter. Localhost is
   treated as a secure context; deployed sites must use HTTPS.
-- **Python 3.x** — used only to serve files over HTTP and to run the docs tooling. There is **no Node.js dependency**.
+- **Python** — serves files over HTTP. SDK rebuilding requires the exact Python and dependency versions recorded in `sdk-build.json`; the initial baseline is Python 3.12.7. There is **no Node.js dependency**.
 - **A dedicated GPU** is recommended for the engine, AGI training, and GPU-heavy apps.
 
-## Platform downloads and the optional network service
+## Public SDK and Template
 
-- **Platform downloads:** [BTSpaniel/particlerealms.engine](https://github.com/BTSpaniel/particlerealms.engine)
-  publishes browser-ready distribution artifacts, including the compressed
-  `.gz` bundles. It is the public download repository, not the source tree used
-  to generate this API reference.
+- **Engine + Plauna SDK:** [BTSpaniel/particlerealms.engine](https://github.com/BTSpaniel/particlerealms.engine)
+  contains public SDK sources, verified compiled runtime files, PhysX PE, examples,
+  offline documentation, and Python rebuild tools under `engine-sdk/`.
+- **Full Platform Template:** the same repository's `Template.zip` contains the
+  compiled Engine, Editor, Plauna, AGI and WebGPU OS runtime with its launcher.
 - **Optional master server source:**
   [BTSpaniel/particlerealms.engine-master-server](https://github.com/BTSpaniel/particlerealms.engine-master-server)
   is a separate discovery, admission, encrypted-signaling, TURN, and trusted-node
   service. It is never gameplay authority and is not required to run the engine
   or Playground locally.
 
-## Serve the project
+Clone the SDK and start its included server:
 
-The repository ships a static HTTP server. From the repository root (`C:\Coding\game`):
+```bash
+git clone https://github.com/BTSpaniel/particlerealms.engine.git
+cd particlerealms.engine/engine-sdk
+python serve_sdk.py --port 9001 --isolate
+```
+
+Open `http://127.0.0.1:9001/` for the SDK landing page or `http://127.0.0.1:9001/MD/viewer/` for its offline documentation. Source and compiled Engine, worker and Plauna examples are linked from the landing page. `--isolate` adds the headers required for threaded compute. See [SDK distribution and rebuilding](../guides/sdk-distribution.md) for source imports, verified loader use, and rebuild instructions.
+
+For the Template, extract `Template.zip`, enter `Template/`, and run `python serve.py 9001` or `launch.bat --port 9001` on Windows. Open the local root URL and select an OS, Plauna or Canvas mode.
+
+## Serve the full development source tree
+
+These entry points require the full development source tree with Editor, AGI and OS application files. They are not the base SDK's startup paths. From that tree's root:
 
 ```bash
 python start_server.py
@@ -108,12 +121,12 @@ other OS integrations. It cannot add WebGPU to an unsupported browser, GPU, or
 driver. The engine and Playground use browser WebGPU directly; install the
 Companion only for the OS features that explicitly request it.
 
-## Set up the documentation tooling
+## Documentation maintenance in the development tree
 
-The docs are plain Markdown, but a few Python helpers build derived artifacts. From `C:\Coding\game\MD`:
+The SDK already contains its offline viewer and generated reference. Application developers do not need to rebuild these files or fetch libraries. Maintainers use Python helpers to refresh derived documentation from a matching source snapshot. From its `MD/` directory:
 
 ```bash
-# 1. Vendor the viewer's front-end libs locally (offline, no CDN)
+# 1. Explicitly refresh locally vendored viewer libraries (requires network)
 python tools/fetch_vendor.py
 
 # 2. Generate the per-symbol API reference from source
@@ -140,7 +153,7 @@ See [Contribution Workflow](../contributing/doc-contribution-workflow.md) for th
 
 - **Blank page / CORS errors** — you opened a `file://` URL. Serve over HTTP instead.
 - **"WebGPU not available"** — update your browser or enable WebGPU; verify with `navigator.gpu` in the console.
-- **Viewer renders unstyled code / no diagrams** — run `python tools/fetch_vendor.py`. The viewer still works via its built-in fallback, but without syntax highlighting or Mermaid.
+- **Viewer renders unstyled code / no diagrams** — verify the SDK files against the release inventory. Maintainers can explicitly refresh vendor assets in the full development tree. The viewer also has a built-in fallback renderer.
 
 More in [FAQ & Troubleshooting](faq.md).
 
@@ -152,9 +165,13 @@ More in [FAQ & Troubleshooting](faq.md).
 
 # Quickstart
 
-This guide boots the WebGPU OS and opens an app. It assumes you have completed [Install & Run](install.md).
+For the public **Engine + Plauna SDK**, follow [SDK setup](../guides/sdk-distribution.md#get-and-serve-the-sdk), then open its Engine and Plauna examples. The SDK does not include the full OS application entry point.
 
-## 1. Boot the OS
+For the public **full Platform Template**, extract `Template.zip`, run `python serve.py 9001` inside `Template/`, open `http://127.0.0.1:9001/`, and choose **WebGPU OS**, **Plauna Showcase**, or **Blank Canvas**.
+
+The remaining steps describe the **full development source repository**. They assume you have completed the development instructions in [Install & Run](install.md).
+
+## 1. Boot the development OS
 
 Serve the repo and open the OS:
 
@@ -361,7 +378,7 @@ Common questions and fixes. If something here is wrong or missing, follow the [C
 No. The entire stack and the documentation tooling are pure browser + Python. There is no build step required to run anything.
 
 **Why does everything need an HTTP server?**
-Browsers block `fetch()` and ES-module `import` from `file://` URLs. Serve over HTTP with `python start_server.py` and use `http://127.0.0.1:9001/...`.
+Browsers block `fetch()` and ES-module `import` from `file://` URLs. Inside the public repository's `engine-sdk/`, run `python serve_sdk.py --port 9001` and open `http://127.0.0.1:9001/`. The full Platform Template uses `python serve.py 9001`; the full development source repository uses `python start_server.py`. See [Install & Run](install.md) for the appropriate entry points.
 
 **Which browser do I need?**
 Use a current browser release that exposes WebGPU on your operating system and GPU. Browser version alone is not proof of capability. Verify that `navigator.gpu` exists and that `await navigator.gpu.requestAdapter()` returns an adapter. Update the browser and GPU driver if either check fails.
@@ -386,7 +403,7 @@ Apps are discovered and fetched at runtime from `webgpu-os/apps/` (and mods from
 You opened the viewer from `file://`. Serve `MD/` over HTTP.
 
 **Code blocks are unstyled and Mermaid diagrams don't render.**
-The vendored libraries are missing. Run `python tools/fetch_vendor.py`. The viewer falls back to a built-in Markdown renderer so pages still load.
+The SDK ships its viewer libraries. Check the package inventory or restore missing files from the same release. Documentation maintainers in the full development source repository can explicitly refresh vendor assets with `python MD/tools/fetch_vendor.py`; this is not an SDK installation step. The viewer falls back to a built-in Markdown renderer so pages still load.
 
 **A reference page says "(run extract_api.py)" in the sidebar.**
 The API reference hasn't been generated yet. Run `python tools/extract_api.py` then `python tools/build_docs.py`.
@@ -412,6 +429,8 @@ Close other tabs, reduce buffer sizes, disable debug visualizations, and check G
 
 What the stack can actually build: browser-native WebGPU games, simulation sandboxes, tools, editors, UI systems, AI training experiments, and deployable single-file runtimes. Use this page to pick the right subsystem before writing code.
 
+The public base SDK includes Engine and Plauna. Editor, AGI, and WebGPU OS APIs require the full Platform runtime or development stack. Read your package's runtime manifest before selecting a subsystem. Start with [SDK setup and tested examples](sdk-distribution.md) for the public download.
+
 ## Decision map
 
 | Goal | Use | Primary files | Docs |
@@ -423,7 +442,7 @@ What the stack can actually build: browser-native WebGPU games, simulation sandb
 | Menus, HUDs, app panels | Plauna | `plauna/index.js` | [Plauna](../plauna/overview.md) |
 | Training, observations, rewards, neural agents | AGI Core | `agi/index.js` | [AGI](../agi/overview.md) |
 | Scene authoring and inspection | Editor | `editor/js/EditorApp.js`, `editor/js/ProjectManager.js` | [Editor](../editor/overview.md) |
-| New app / prototype | Template | `Template/index.html`, `Template/main.js` | [Template starter](#template-starter) |
+| New app / prototype | Template | `Template/index.html`, `Template/assets/` | [Template starter](#template-starter) |
 
 Primary entry points: engine → `engine/EngineBootstrap.js` · compiled global → `window.PE` · Plauna → `plauna/index.js` · AGI → `agi/index.js` · editor → `editor/js/EditorApp.js` · template → `Template/`.
 
@@ -468,9 +487,11 @@ console.log(ENGINE_FULL);
 Compiled runtime pattern:
 
 ```javascript
-const PE = window.PE || window.ParticleEngine;
-const { VERSION_BANNER, createWorld, createEntity, createPlaunaApp, AGI_CORE_FULL } = PE;
-console.log(VERSION_BANNER, AGI_CORE_FULL);
+if (!globalThis.__PE_RUNTIME_READY) throw new Error('Load the SDK runtime loader first');
+const PE = await globalThis.__PE_RUNTIME_READY;
+const { VERSION_BANNER, createWorld, createEntity } = PE;
+const Plauna = PE.Plauna;
+console.log(VERSION_BANNER);
 ```
 
 ## Rendering
@@ -518,15 +539,7 @@ Engine physics modules + PhysX integration + active-ragdoll architecture (see [P
 
 The UI layer for game menus, HUDs, tools, dashboards, context menus, and editor-like panels (see [Plauna](../plauna/overview.md)).
 
-```javascript
-import { PLAUNA_FULL, createPlaunaApp, Panel, Text, Button } from '../../plauna/index.js';
-
-const ui = createPlaunaApp({ root: document.getElementById('ui') });
-const menu = new Panel('main-menu', { title: PLAUNA_FULL });
-menu.add(new Text('title', 'Particle Realms'));
-menu.add(new Button('play', 'Play'));
-ui.mount(menu);
-```
+Use the [tested Plauna counter example](../plauna/getting-started.md#create-and-render-the-ui). It awaits `createPlaunaApp()`, passes options objects to `Panel`, `Text`, and `Button`, attaches children with `appendChild()`, and renders through `app.visualTree` and `app.domRenderer`. It includes interaction and cleanup. The compiled Engine + Plauna runtime exposes these APIs under `PE.Plauna` after runtime readiness. (Source: `plauna/index.js`, `plauna/core/app.js`, and `plauna/core/UINode.js`.)
 
 | Category | Exports | Use for |
 | --- | --- | --- |
@@ -572,32 +585,40 @@ A browser-native authoring tool for scenes, entities, materials, particles, audi
 
 ## Bundled runtime
 
-The Python bundler can generate an engine-only public runtime or a full platform runtime (see [Engine Stack Usage](engine-stack-usage.md)).
+The development repository's Python bundler can generate an engine-only runtime, Engine + Plauna, or the full Platform runtime (see [Engine Stack Usage](engine-stack-usage.md)). Inside a distributed SDK, use [SDK rebuilding](sdk-distribution.md#rebuild-the-javascript-runtime) instead.
 
 ```bash
 # Engine / public playground bundle
 python bundle_engine.py --target engine --no-cache
 
-# Full platform: Engine + Editor + Plauna + AGI Core
+# Base public SDK: Engine + Plauna
+python bundle_engine.py --target engine --include-plauna --sdk-only --production
+
+# Full platform: Engine + Editor + Plauna + AGI + WebGPU OS
 python bundle_engine.py --target platform --production --no-cache
 ```
 
 | Target | Entries | Exposes | Use for |
 | --- | --- | --- | --- |
 | `engine` | `engine/EngineBootstrap.js` | `window.PE` engine APIs | Public site, playground, SDK, engine-only demos |
-| `platform` | `engine/EngineEditorBootstrap.js`, `agi/index.js`, `plauna/index.js` | Engine + Editor + AGI + Plauna APIs | Internal tools, full platform previews |
+| `engine --include-plauna` | Engine and `plauna/index.js` | Engine APIs and `PE.Plauna` | Base public Engine + Plauna SDK |
+| `platform` | Engine/Editor, AGI, Plauna and WebGPU OS entries | Engine plus `PE.Editor`, `PE.Plauna`, `PE.AGI`, `PE.WebGPUOS` | Full Platform Template and applications |
 
 ## Template starter
 
-Use `Template/` as the starter folder for new apps. Copy it, keep game-specific code local, and only promote reusable systems back into `engine/` after multiple projects need them.
+Extract the public `Template.zip` and use its `Template/` folder as the starter for a compiled Platform application. It includes the launcher with OS, Plauna Showcase and Blank Canvas modes, one full Platform runtime, PhysX PE and required runtime dependencies. Run `python serve.py 9001` from that folder; Windows users can run `launch.bat --port 9001`. Keep game-specific code local and retain the supplied runtime inventory and resource paths.
 
 ```text
 Template/
 ├── index.html
-├── style.css
-├── main.js
+├── assets/
+├── serve.py
+├── launch.bat
+├── template-manifest.json
 └── README.md
 ```
+
+This is the launcher layout; the archive also includes its required resource directories and license files. `template-manifest.json` records the complete inventory. It does not contain the SDK source tree or rebuilding tools.
 
 ## AI editing rules for this stack
 
@@ -1269,13 +1290,17 @@ Then check:
 
 The base Engine SDK release supplies the Engine runtime and Plauna UI for browser applications. The Platform SDK adds the Editor, AGI, and WebGPU OS public entry points. Each SDK includes canonical sources, verified runtime assets, runnable examples, documentation, and Python rebuild tools. The repository's default Engine target remains Engine-only; selecting `--include-plauna` builds the base release with UI. Read `manifest.json` for the exact entry points and subsystem flags of an extracted package. (Source: `release_targets.json`, `bundler/config.py`, and `bundler/sdk.py`.)
 
-## Serve an extracted SDK
+## Get and serve the SDK
 
-Extract `particle-engine-sdk.zip` or `particle-platform-sdk.zip` into its own directory. Run the following commands inside that extracted directory:
+The public Engine + Plauna SDK is committed as ordinary files in [BTSpaniel/particlerealms.engine](https://github.com/BTSpaniel/particlerealms.engine). Clone that repository, then enter its `engine-sdk/` directory:
 
 ```bash
+git clone https://github.com/BTSpaniel/particlerealms.engine.git
+cd particlerealms.engine/engine-sdk
 python serve_sdk.py --port 9001
 ```
+
+`Template.zip` is the separate download for the full compiled Platform launcher. Extract it, enter `Template/`, and run `python serve.py 9001`. The public release does not require a separate SDK ZIP. A locally built SDK directory uses the same `serve_sdk.py` command.
 
 Open `http://127.0.0.1:9001/`. The landing page checks the compiled runtime and links every supported example. Browser ES modules require HTTP; opening an HTML file with `file://` does not work. WebGPU requires a supported browser and a secure context. Localhost is suitable for local development.
 
@@ -1289,23 +1314,46 @@ The server binds only `127.0.0.1`, serves JavaScript and WebAssembly with their 
 
 ## Use source modules or the compiled runtime
 
-Source imports resolve from the package's canonical subsystem paths:
+Save application HTML at the SDK root and put application JavaScript in a `<script type="module">` or a module loaded by that page. The examples below resolve imports from that page's URL, so they also work when the entire SDK is hosted below a URL prefix. Source imports resolve from the package's canonical subsystem paths:
 
+<!-- sdk-example: engine-source -->
 ```javascript
-import { createWorld, createEntity } from './engine/EngineBootstrap.js';
+const Engine = await import(new URL('./engine/EngineBootstrap.js', document.baseURI).href);
 
-const world = createWorld({ name: 'My application' });
-const entity = createEntity(world);
+const world = Engine.createWorld({ name: 'My application' });
+const entity = Engine.createEntity(world);
+Engine.setEntityComponent(world, entity, 'Transform',
+  Engine.createTransform({ position: [0, 2, 0] }));
+
+let disposed = false;
+function cleanup() {
+  if (disposed) return;
+  disposed = true;
+  Engine.destroyEntity(world, entity);
+}
 ```
+
+Call `cleanup()` when your application stops using this example. It creates only an ECS entity; rendering and native physics are demonstrated together in `examples/source.html?case=engine`. The source and compiled examples in this section are executed directly from these Markdown fences during documentation acceptance.
 
 Some canonical Platform modules import from browser-root subsystem paths. When serving source modules below a nested URL, load `examples/source-importmap.js` as a classic script before your application module. It maps `/engine/`, `/editor/`, `/plauna/`, `/agi/`, and `/webgpu-os/` to the SDK directory containing that helper. The source examples and their OS iframe already load it before importing modules. Canonical source bytes stay unchanged; module workers use their own relative import closures.
 
 The generated compiled example page includes the verified loader tag for its runtime manifest. Reuse that generated tag, adjusting its relative paths when the application moves. Wait for the loader before calling public APIs:
 
+<!-- sdk-example: engine-compiled -->
 ```javascript
-const runtime = await globalThis.__PE_RUNTIME_READY;
-const world = runtime.createWorld({ name: 'My application' });
-const entity = runtime.createEntity(world);
+if (!globalThis.__PE_RUNTIME_READY) throw new Error('Load the SDK runtime loader first');
+const Engine = await globalThis.__PE_RUNTIME_READY;
+const world = Engine.createWorld({ name: 'My application' });
+const entity = Engine.createEntity(world);
+Engine.setEntityComponent(world, entity, 'Transform',
+  Engine.createTransform({ position: [0, 2, 0] }));
+
+let disposed = false;
+function cleanup() {
+  if (disposed) return;
+  disposed = true;
+  Engine.destroyEntity(world, entity);
+}
 ```
 
 The verified loader checks compiled transport integrity before it exposes this runtime. Copying only the minified JavaScript file omits the manifest, executor, compression parts, and external assets that its deployed contract requires.
@@ -6830,13 +6878,13 @@ this Engine plan.
 
 # Engine Getting Started
 
-Bring the engine up in a browser and understand the bootstrap entry points. Assumes [Install & Run](../getting-started/install.md) is done.
+Start with the [Engine + Plauna SDK setup](../guides/sdk-distribution.md#get-and-serve-the-sdk), then open `examples/source.html?case=engine` or `examples/compiled.html?case=engine` on its local server. Both run the same ECS, native physics and rendering scenario. The [tested source and compiled snippets](../guides/sdk-distribution.md#use-source-modules-or-the-compiled-runtime) show a smaller first step with entity cleanup.
 
 ## Prerequisites
 
 - A current browser that exposes WebGPU on the machine. Verify both
   `navigator.gpu` and a successful `navigator.gpu.requestAdapter()` call.
-- The repo served over HTTP (`python start_server.py`).
+- The SDK served over HTTP from `engine-sdk/` with `python serve_sdk.py --port 9001`. The full development repository uses `python start_server.py` instead; its Editor and OS pages are separate from the base SDK.
 
 ## Bootstrap entry points
 
@@ -6845,7 +6893,8 @@ Pick the bootstrap that matches your use case:
 | Entry | Use when |
 | --- | --- |
 | `engine/EngineBootstrap.js` | You want the full engine runtime. |
-| `engine/EngineEditorBootstrap.js` | You also want the editor + Plauna wired (`PE.Plauna`, `initializePlauna`). |
+| `plauna/index.js` | You want the base SDK's UI APIs without requiring an Editor. |
+| `engine/EngineEditorBootstrap.js` | You are using the full Platform or development stack and want Editor integration. |
 | `engine/core/AppBootstrap.js` | You're building an app-level entry. |
 
 ## Import maps
@@ -6868,7 +6917,7 @@ The engine is GPU-first and ECS-driven, so a typical session:
 4. Register systems (render, sim) that run each frame.
 5. Start the frame loop — `render/` draws from ECS state; `sim/SimulationUpdate.js` advances simulation.
 
-> **Note:** Exact function signatures are generated into the Engine **API Reference** by `tools/extract_api.py`. Run it, then browse `engine/reference/` for `EngineBootstrap`, `ecs/EntityManager`, `render/SceneRenderer`, and `sim/SimulationUpdate`.
+> **API reference:** The SDK already includes its generated reference under `MD/engine/reference/`; open `MD/viewer/` on the SDK server. Documentation maintainers regenerate it with `MD/tools/extract_api.py` from the matching full source snapshot. Application setup does not require API extraction or downloading documentation libraries.
 
 ## Where to look next
 
@@ -11874,75 +11923,82 @@ dirty propagation never advance canonical development. See the
 
 <!-- source: MD/plauna/getting-started.md -->
 
+<!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
+<!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
+
 # Plauna Getting Started
 
-Initialize Plauna and create UI. This mirrors the examples in `plauna/README.md`. Assumes [Install & Run](../getting-started/install.md) is done.
+Create a retained panel with a working counter using the base Engine + Plauna SDK. Follow [SDK setup](../guides/sdk-distribution.md#get-and-serve-the-sdk), then save an HTML page at the SDK root with the JavaScript below in a `<script type="module">` block. An Editor instance or GPU device is not required for this DOM example.
 
-## Initialize
+## Create and render the UI
 
-Plauna bootstraps through the engine's editor bootstrap:
+`createPlaunaApp()` is asynchronous. Await the initialized app, set its retained root with `visualTree.setRoot()`, and render that tree with `domRenderer.render()`. Widget constructors take an ID and an options object. (Source: `plauna/core/app.js`, `plauna/core/VisualTree.js`, `plauna/core/DOMRenderer.js`, and `plauna/widgets/Primitive/`.)
 
+<!-- sdk-example: plauna-source -->
 ```javascript
-import { initializePlauna } from './engine/EngineEditorBootstrap.js';
-
-const plauna = await initializePlauna({
-  root: document.getElementById('plauna-root'),
-  getVGPU: () => viewport.vgpu,   // reuse the shared GPU device
-  engine: window.ParticleEngine,
-  editor: editorApp,              // optional
-  useCSS: true,
-  textEngine: 'pretext',
+const Plauna = await import(new URL('./plauna/index.js', document.baseURI).href);
+const root = document.createElement('section');
+document.body.append(root);
+const app = await Plauna.createPlaunaApp({
+  root, useCSS: true, initialState: { clicks: 0 },
+  enableModuleTester: false, enableDeveloperTools: false,
+  enableSmartContextMenu: false, enableHotReload: false,
 });
+const menu = new Plauna.Panel('main-menu', { title: 'My application', closable: false, resizable: false });
+const label = new Plauna.Text('title', { content: 'Particle Realms' });
+const button = new Plauna.Button('counter', { text: 'Count: 0' });
+button.setStyles({ fontSize: '15px', lineHeight: '22px', padding: '10px 16px', minHeight: '44px', minWidth: '92px', outline: null });
+// DOMRenderer uses textContent for this simple retained button.
+button.setContent('');
+button.textContent = 'Count: 0';
+button.addEventListener('click', () => {
+  const count = app.stateStore.get('clicks') + 1;
+  app.stateStore.set('clicks', count);
+  button.textContent = `Count: ${count}`;
+  app.domRenderer.updateNode(button);
+});
+menu.appendChild(label);
+menu.appendChild(button);
+app.visualTree.setRoot(menu);
+app.domRenderer.render(app.visualTree);
+
+let disposed = false;
+function cleanup() {
+  if (disposed) return;
+  disposed = true;
+  app.destroy();
+  app.visualTree.destroy();
+  root.remove();
+}
 ```
 
-`PlaunaApp` options:
+Click **Count: 0** to update both the app's `StateStore` and the visible button. Call `cleanup()` when closing the UI; it releases this app, its owned retained tree, and the DOM section it created. Repeated calls are safe. Documentation acceptance executes this exact code, clicks the rendered button, and checks cleanup.
+
+## Use the compiled namespace
+
+Keep the verified loader tag from `examples/compiled.html`, including its runtime metadata. Await `globalThis.__PE_RUNTIME_READY`, then use the returned runtime's `Plauna` namespace in place of the source import. The complete source and compiled scenarios are available at `examples/source.html?case=plauna` and `examples/compiled.html?case=plauna`.
+
+## Integrate with an existing application
 
 | Option | Meaning |
 | --- | --- |
-| `root` | DOM element for the Plauna root. |
-| `getVGPU` | Function returning the VGPU instance to share. |
-| `engine` | The engine instance. |
-| `editor` | An `EditorApp` instance (optional). |
-| `useCSS` | Load Plauna CSS (default `true`). |
-| `textEngine` | Text engine to use (default `'pretext'`). |
+| `root` | Required DOM element owned by the application. |
+| `initialState` | Initial values for the app's state store. |
+| `getVGPU` | Optional function returning an existing shared VGPU instance for GPU surfaces. |
+| `engine` | Optional Engine integration. |
+| `editor` | Optional Editor integration, available in the full Platform. |
+| `useCSS` | Load Plauna's supplied styles. |
+| `enableDeveloperTools`, `enableHotReload` | Development features; disabled in the standalone example. |
 
-## Measure text without the DOM
+The full development stack can use `initializePlauna()` from `engine/EngineEditorBootstrap.js` to integrate with an existing Editor. That path assumes the Editor modules and instances are present; use `plauna/index.js` for the base SDK. Share a GPU device through `getVGPU` when adding a surface instead of creating a separate device for every UI panel.
 
-```javascript
-const handle = plauna.textService.prepare('Hello, world!', {
-  fontFamily: 'Inter', fontSize: 16, fontWeight: 400,
-});
-const layout = plauna.textService.layout(handle, 300, 24);
-console.log(`Lines: ${layout.lineCount}, Height: ${layout.height}px`);
-```
-
-## Create a GPU surface
-
-```javascript
-const surface = plauna.createSurface({
-  id: 'viewport-surface',
-  kind: 'viewport',
-  shape: 'rect',
-  interactive: true,
-});
-```
-
-## Enhance existing editor panels
-
-```javascript
-await plauna.enhanceExistingPanels(editorApp.panels);
-```
-
-## Choosing a rendering mode
-
-- **DOM** for text-heavy, accessible UI.
-- **DOM+GPU** for panels with GPU visuals.
-- **GPU** for warped/particle-reactive, performance-critical UI.
+For advanced text measurement and GPU surfaces, use the [Plauna API reference](reference/core/app.md) and [architecture guide](architecture.md). These operations build on an initialized app and any required shared GPU device.
 
 ## See also
 
-- [Plauna Architecture](architecture.md).
-- Plauna **API Reference** — `core/app`, `surface/`, `text/`, `widgets/`.
+- [SDK distribution and rebuilding](../guides/sdk-distribution.md)
+- [Plauna architecture](architecture.md)
+- [Plauna API reference](reference/core/app.md)
 
 
 

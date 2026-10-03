@@ -1,18 +1,18 @@
 ---
 title: Engine Getting Started
 description: Bring the engine up in a browser and understand its bootstrap entry points and minimal frame flow.
-updated: 2026-06-05
+updated: 2026-10-03
 ---
 
 # Engine Getting Started
 
-Bring the engine up in a browser and understand the bootstrap entry points. Assumes [Install & Run](../getting-started/install.md) is done.
+Start with the [Engine + Plauna SDK setup](../guides/sdk-distribution.md#get-and-serve-the-sdk), then open `examples/source.html?case=engine` or `examples/compiled.html?case=engine` on its local server. Both run the same ECS, native physics and rendering scenario. The [tested source and compiled snippets](../guides/sdk-distribution.md#use-source-modules-or-the-compiled-runtime) show a smaller first step with entity cleanup.
 
 ## Prerequisites
 
 - A current browser that exposes WebGPU on the machine. Verify both
   `navigator.gpu` and a successful `navigator.gpu.requestAdapter()` call.
-- The repo served over HTTP (`python start_server.py`).
+- The SDK served over HTTP from `engine-sdk/` with `python serve_sdk.py --port 9001`. The full development repository uses `python start_server.py` instead; its Editor and OS pages are separate from the base SDK.
 
 ## Bootstrap entry points
 
@@ -21,7 +21,8 @@ Pick the bootstrap that matches your use case:
 | Entry | Use when |
 | --- | --- |
 | `engine/EngineBootstrap.js` | You want the full engine runtime. |
-| `engine/EngineEditorBootstrap.js` | You also want the editor + Plauna wired (`PE.Plauna`, `initializePlauna`). |
+| `plauna/index.js` | You want the base SDK's UI APIs without requiring an Editor. |
+| `engine/EngineEditorBootstrap.js` | You are using the full Platform or development stack and want Editor integration. |
 | `engine/core/AppBootstrap.js` | You're building an app-level entry. |
 
 ## Import maps
@@ -44,7 +45,7 @@ The engine is GPU-first and ECS-driven, so a typical session:
 4. Register systems (render, sim) that run each frame.
 5. Start the frame loop — `render/` draws from ECS state; `sim/SimulationUpdate.js` advances simulation.
 
-> **Note:** Exact function signatures are generated into the Engine **API Reference** by `tools/extract_api.py`. Run it, then browse `engine/reference/` for `EngineBootstrap`, `ecs/EntityManager`, `render/SceneRenderer`, and `sim/SimulationUpdate`.
+> **API reference:** The SDK already includes its generated reference under `MD/engine/reference/`; open `MD/viewer/` on the SDK server. Documentation maintainers regenerate it with `MD/tools/extract_api.py` from the matching full source snapshot. Application setup does not require API extraction or downloading documentation libraries.
 
 ## Where to look next
 

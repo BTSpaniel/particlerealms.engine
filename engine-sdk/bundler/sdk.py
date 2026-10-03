@@ -354,28 +354,32 @@ def verify_sdk(root, *, verify_archive=None):
     return receipt
 
 
-def sdk_is_current(path, target=None):
+def sdk_is_current(path, target=None, *, create_archive=True):
     try:
         receipt = verify_sdk(path)
         if target and receipt['profile'] != target:
             return False
-        verify_sdk(path, verify_archive=Path(path).parent / (receipt['name'] + '.zip'))
+        if create_archive:
+            verify_sdk(path, verify_archive=Path(path).parent / (receipt['name'] + '.zip'))
         return True
     except (OSError, ValueError, KeyError, TypeError, AttributeError, ImportError, RuntimeError, zipfile.BadZipFile, zlib.error):
         return False
 
 
-def _publish_sdk(stage, final, staged_archive, archive):
-    """Keep backups until both directory and ZIP promotion have been verified."""
+def _publish_sdk(stage, final, staged_archive=None, archive=None):
+    """Retain recovery copies until every requested output verifies."""
+    if (staged_archive is None) != (archive is None):
+        raise ValueError('SDK archive promotion requires both archive paths')
     backup = Path(tempfile.mkdtemp(prefix='.sdk-rollback-', dir=final.parent))
-    had_tree, had_archive = final.exists(), archive.exists()
+    had_tree, had_archive = final.exists(), archive is not None and archive.exists()
     if had_tree:
         shutil.copytree(final, backup / 'tree')
     if had_archive:
         shutil.copy2(archive, backup / 'archive.zip')
     try:
         site._publish_staged_site(stage, final)
-        site._os_replace_with_retry(staged_archive, archive)
+        if archive is not None:
+            site._os_replace_with_retry(staged_archive, archive)
         verify_sdk(final, verify_archive=archive)
     except Exception:
         try:
@@ -385,7 +389,7 @@ def _publish_sdk(stage, final, staged_archive, archive):
                 shutil.rmtree(final)
             if had_archive:
                 site._copy_file_atomic(backup / 'archive.zip', archive)
-            else:
+            elif archive is not None:
                 archive.unlink(missing_ok=True)
         except Exception:
             print(f'[bundle][sdk][error] rollback failed; recovery files retained at {backup}')
@@ -471,7 +475,8 @@ def _write_candidate_engine_demo(stage, root, release_dir, manifest):
 
 
 def build_engine_sdk(root, release_dir, manifest, *, module_sources=None, raw_module_sources=None,
-                     output_dir=None, official_records=None, input_snapshot=None, runtime_dir=None):
+                     output_dir=None, official_records=None, input_snapshot=None, runtime_dir=None,
+                     create_archive=True):
     """Compatibility entry point for shared Engine and Platform SDK packaging."""
     from .sdk_rebuild import sdk_tool_versions, write_sdk_build_descriptor
     root, release_dir = Path(root).resolve(), Path(release_dir).resolve()
@@ -556,15 +561,17 @@ def build_engine_sdk(root, release_dir, manifest, *, module_sources=None, raw_mo
         verify_sdk(stage)
         print(f'[bundle][sdk][stage] name=tree-verification duration_ms={(time.perf_counter() - operation_start) * 1000:.3f}')
         operation_start = time.perf_counter()
-        staged_archive = Path(temporary) / 'sdk.zip'
-        site.create_release_site_archive(stage, staged_archive, required_paths=inventory)
-        verify_sdk(stage, verify_archive=staged_archive)
-        print(f'[bundle][sdk][stage] name=archive-and-verification bytes={staged_archive.stat().st_size} duration_ms={(time.perf_counter() - operation_start) * 1000:.3f}')
-        archive = final.parent / (receipt['name'] + '.zip')
+        staged_archive = archive = None
+        if create_archive:
+            staged_archive = Path(temporary) / 'sdk.zip'
+            site.create_release_site_archive(stage, staged_archive, required_paths=inventory)
+            verify_sdk(stage, verify_archive=staged_archive)
+            print(f'[bundle][sdk][stage] name=archive-and-verification bytes={staged_archive.stat().st_size} duration_ms={(time.perf_counter() - operation_start) * 1000:.3f}')
+            archive = final.parent / (receipt['name'] + '.zip')
         operation_start = time.perf_counter()
         _publish_sdk(stage, final, staged_archive, archive)
         print(f'[bundle][sdk][stage] name=publication duration_ms={(time.perf_counter() - operation_start) * 1000:.3f}')
     print(f'[bundle][sdk][exit] profile={profile} files={metrics["files"]} bytes={metrics["bytes"]} '
-          f'duplicateBytes={metrics["duplicateBytes"]} archiveBytes={archive.stat().st_size} '
+          f'duplicateBytes={metrics["duplicateBytes"]} archiveBytes={archive.stat().st_size if archive else 0} '
           f'duration_ms={(time.perf_counter() - started) * 1000:.3f}')
     return receipt

@@ -4,14 +4,14 @@
     {
       "name": "particle-engine.min.js.gz",
       "digest": {
-        "sha256": "396f0c790e316ef2ba87e8e84abcc46fb0ac01b01062c6f155f11b852b2cdaff"
+        "sha256": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08"
       }
     },
     {
       "name": "particle-engine.min.js",
       "digest": {
-        "sha256": "87320986c0aafc3ded17abedc54d48e27011f3caf6cb5744cb29d9a53505b2cb",
-        "sha384": "86a6804d7058a5633558a90782c5c6ea83bb373d233476c1c3140c6786724bb42237cef4496e74bd70171563b99f6bd5"
+        "sha256": "37009b807b6f0f925018b023c6895044ec001ad511f107fa66bd3cd337ca67e9",
+        "sha384": "8202f68b3fe035d8d535cd49a595dbe1f9cfd36a2277348b143ee75fb10f92761d0b8aa55e528891bffada3105bce2a6"
       }
     }
   ],
@@ -35,7 +35,7 @@
         "moduleCount": 1772,
         "fileInventorySha256": "1243ad26bff80ba8765e9eabc0ee3d4eb91bd9d0f595ed2029e8703999709ea0",
         "officialPackageInventorySha256": "ff320c9300a9d0e860be8d26851b2866950d7ae6b52131a1c0dc23b4665c047f",
-        "sdkBuildInputsSha256": "e77aa46e4d575f3f50e576ab400beb9aa8917e668febe6cfa09822324e74b32f",
+        "sdkBuildInputsSha256": "ef4b0904601ecdcaa7e481f8d6d17eb8fc4e605113c215ac3fe436782701dcc0",
         "buildTools": {
           "python": "3.12.7",
           "minifier": "rjsmin",
@@ -69,7 +69,7 @@
         {
           "uri": "git+https://github.com/BTSpaniel/particlerealms.engine",
           "digest": {
-            "sha256": "55e9642d12fc3aa5440594cf6ec0f57cf10f07aa91d5a65c704f2511dbb75029"
+            "sha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1"
           }
         }
       ]

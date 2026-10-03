@@ -121,6 +121,7 @@ export async function runPlauna({ plauna }, { stage, check, own }) {
         if (app.initialized || app.workspaces.size || !app.stateStore.destroyed || app.visualTree.root) throw new Error('Plauna retains owned state after destroy');
     });
     const button = new plauna.Button('sdk-plauna-counter', { text: 'Count: 0' });
+    button.setStyles({ fontSize: '15px', lineHeight: '22px', padding: '10px 16px', minHeight: '44px', minWidth: '92px', outline: null });
     // DOMRenderer renders a node's textContent. Button's optional child-content
     // layout is separate, so use one text-bearing retained button in this demo.
     button.setContent('');
@@ -135,6 +136,12 @@ export async function runPlauna({ plauna }, { stage, check, own }) {
     app.domRenderer.render(app.visualTree);
     const rendered = app.domRenderer.getDOMElement(button);
     check('Plauna renders a retained Button', rendered instanceof HTMLButtonElement && root.contains(rendered));
+    rendered.scrollIntoView({ block: 'center', inline: 'nearest' });
+    await new Promise(requestAnimationFrame);
+    const bounds = rendered.getBoundingClientRect();
+    const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+    check('Plauna Button is visible and usable', bounds.height >= 24 && bounds.width >= 24
+        && (hit === rendered || rendered.contains(hit)), { width: bounds.width, height: bounds.height });
     rendered.click();
     check('DOM click updates StateStore and retained UI', app.stateStore.get('clicks') === 1 && rendered.textContent.includes('Count: 1'), { clicks: app.stateStore.get('clicks') });
 }

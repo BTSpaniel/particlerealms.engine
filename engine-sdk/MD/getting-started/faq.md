@@ -1,7 +1,7 @@
 ---
 title: FAQ & Troubleshooting
 description: Common questions and fixes — Node.js, HTTP serving, browser support, and verifying WebGPU availability.
-updated: 2026-06-05
+updated: 2026-10-03
 ---
 
 # FAQ & Troubleshooting
@@ -14,7 +14,7 @@ Common questions and fixes. If something here is wrong or missing, follow the [C
 No. The entire stack and the documentation tooling are pure browser + Python. There is no build step required to run anything.
 
 **Why does everything need an HTTP server?**
-Browsers block `fetch()` and ES-module `import` from `file://` URLs. Serve over HTTP with `python start_server.py` and use `http://127.0.0.1:9001/...`.
+Browsers block `fetch()` and ES-module `import` from `file://` URLs. Inside the public repository's `engine-sdk/`, run `python serve_sdk.py --port 9001` and open `http://127.0.0.1:9001/`. The full Platform Template uses `python serve.py 9001`; the full development source repository uses `python start_server.py`. See [Install & Run](install.md) for the appropriate entry points.
 
 **Which browser do I need?**
 Use a current browser release that exposes WebGPU on your operating system and GPU. Browser version alone is not proof of capability. Verify that `navigator.gpu` exists and that `await navigator.gpu.requestAdapter()` returns an adapter. Update the browser and GPU driver if either check fails.
@@ -39,7 +39,7 @@ Apps are discovered and fetched at runtime from `webgpu-os/apps/` (and mods from
 You opened the viewer from `file://`. Serve `MD/` over HTTP.
 
 **Code blocks are unstyled and Mermaid diagrams don't render.**
-The vendored libraries are missing. Run `python tools/fetch_vendor.py`. The viewer falls back to a built-in Markdown renderer so pages still load.
+The SDK ships its viewer libraries. Check the package inventory or restore missing files from the same release. Documentation maintainers in the full development source repository can explicitly refresh vendor assets with `python MD/tools/fetch_vendor.py`; this is not an SDK installation step. The viewer falls back to a built-in Markdown renderer so pages still load.
 
 **A reference page says "(run extract_api.py)" in the sidebar.**
 The API reference hasn't been generated yet. Run `python tools/extract_api.py` then `python tools/build_docs.py`.

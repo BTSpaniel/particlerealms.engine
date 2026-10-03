@@ -5,3 +5,5 @@
 /Template.zip -text
 /README.md text eol=lf
 /SDK-VALIDATION.json text eol=lf
+/validation/** -text
+/SHA256SUMS text eol=lf

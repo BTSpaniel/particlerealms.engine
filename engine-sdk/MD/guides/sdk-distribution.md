@@ -1,7 +1,7 @@
 ---
 title: SDK Distribution and Rebuilding
 description: Build applications and rebuild the JavaScript runtime from an extracted Engine or Platform SDK.
-updated: 2026-10-02
+updated: 2026-10-03
 ---
 <!-- SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel> -->
 <!-- SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha -->
@@ -10,13 +10,17 @@ updated: 2026-10-02
 
 The base Engine SDK release supplies the Engine runtime and Plauna UI for browser applications. The Platform SDK adds the Editor, AGI, and WebGPU OS public entry points. Each SDK includes canonical sources, verified runtime assets, runnable examples, documentation, and Python rebuild tools. The repository's default Engine target remains Engine-only; selecting `--include-plauna` builds the base release with UI. Read `manifest.json` for the exact entry points and subsystem flags of an extracted package. (Source: `release_targets.json`, `bundler/config.py`, and `bundler/sdk.py`.)
 
-## Serve an extracted SDK
+## Get and serve the SDK
 
-Extract `particle-engine-sdk.zip` or `particle-platform-sdk.zip` into its own directory. Run the following commands inside that extracted directory:
+The public Engine + Plauna SDK is committed as ordinary files in [BTSpaniel/particlerealms.engine](https://github.com/BTSpaniel/particlerealms.engine). Clone that repository, then enter its `engine-sdk/` directory:
 
 ```bash
+git clone https://github.com/BTSpaniel/particlerealms.engine.git
+cd particlerealms.engine/engine-sdk
 python serve_sdk.py --port 9001
 ```
+
+`Template.zip` is the separate download for the full compiled Platform launcher. Extract it, enter `Template/`, and run `python serve.py 9001`. The public release does not require a separate SDK ZIP. A locally built SDK directory uses the same `serve_sdk.py` command.
 
 Open `http://127.0.0.1:9001/`. The landing page checks the compiled runtime and links every supported example. Browser ES modules require HTTP; opening an HTML file with `file://` does not work. WebGPU requires a supported browser and a secure context. Localhost is suitable for local development.
 
@@ -30,23 +34,46 @@ The server binds only `127.0.0.1`, serves JavaScript and WebAssembly with their 
 
 ## Use source modules or the compiled runtime
 
-Source imports resolve from the package's canonical subsystem paths:
+Save application HTML at the SDK root and put application JavaScript in a `<script type="module">` or a module loaded by that page. The examples below resolve imports from that page's URL, so they also work when the entire SDK is hosted below a URL prefix. Source imports resolve from the package's canonical subsystem paths:
 
+<!-- sdk-example: engine-source -->
 ```javascript
-import { createWorld, createEntity } from './engine/EngineBootstrap.js';
+const Engine = await import(new URL('./engine/EngineBootstrap.js', document.baseURI).href);
 
-const world = createWorld({ name: 'My application' });
-const entity = createEntity(world);
+const world = Engine.createWorld({ name: 'My application' });
+const entity = Engine.createEntity(world);
+Engine.setEntityComponent(world, entity, 'Transform',
+  Engine.createTransform({ position: [0, 2, 0] }));
+
+let disposed = false;
+function cleanup() {
+  if (disposed) return;
+  disposed = true;
+  Engine.destroyEntity(world, entity);
+}
 ```
+
+Call `cleanup()` when your application stops using this example. It creates only an ECS entity; rendering and native physics are demonstrated together in `examples/source.html?case=engine`. The source and compiled examples in this section are executed directly from these Markdown fences during documentation acceptance.
 
 Some canonical Platform modules import from browser-root subsystem paths. When serving source modules below a nested URL, load `examples/source-importmap.js` as a classic script before your application module. It maps `/engine/`, `/editor/`, `/plauna/`, `/agi/`, and `/webgpu-os/` to the SDK directory containing that helper. The source examples and their OS iframe already load it before importing modules. Canonical source bytes stay unchanged; module workers use their own relative import closures.
 
 The generated compiled example page includes the verified loader tag for its runtime manifest. Reuse that generated tag, adjusting its relative paths when the application moves. Wait for the loader before calling public APIs:
 
+<!-- sdk-example: engine-compiled -->
 ```javascript
-const runtime = await globalThis.__PE_RUNTIME_READY;
-const world = runtime.createWorld({ name: 'My application' });
-const entity = runtime.createEntity(world);
+if (!globalThis.__PE_RUNTIME_READY) throw new Error('Load the SDK runtime loader first');
+const Engine = await globalThis.__PE_RUNTIME_READY;
+const world = Engine.createWorld({ name: 'My application' });
+const entity = Engine.createEntity(world);
+Engine.setEntityComponent(world, entity, 'Transform',
+  Engine.createTransform({ position: [0, 2, 0] }));
+
+let disposed = false;
+function cleanup() {
+  if (disposed) return;
+  disposed = true;
+  Engine.destroyEntity(world, entity);
+}
 ```
 
 The verified loader checks compiled transport integrity before it exposes this runtime. Copying only the minified JavaScript file omits the manifest, executor, compression parts, and external assets that its deployed contract requires.

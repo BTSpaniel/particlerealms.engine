@@ -1204,6 +1204,8 @@ def main():
                         help="Build the verified source and runtime SDK (engine or platform).")
     parser.add_argument("--sdk-only", action="store_true",
                         help="Build an SDK and verified runtime artifacts without a website or implicit Template sync.")
+    parser.add_argument("--sdk-no-archive", action="store_true",
+                        help="Publish the verified SDK directory without creating an SDK ZIP.")
     parser.add_argument("--sdk-rebuild", action="store_true",
                         help="Rebuild an extracted SDK offline into build/runtime and build/<profile>-sdk.")
     parser.add_argument("--sdk-packages", type=Path,
@@ -1333,6 +1335,8 @@ def main():
     except ValueError as error:
         print(f"[bundle] ERROR: {error}")
         return 2
+    if args.sdk_no_archive and not args.build_sdk:
+        parser.error('--sdk-no-archive requires SDK packaging (--build-sdk, --sdk-only or --sdk-rebuild)')
     if args.build_sdk:
         if args.target not in {"engine", "platform"} or args.obfuscate or args.encrypt or args.domain_lock or args.integrity or args.embed_source_tree or args.gen_dict:
             print("[bundle] ERROR: SDK packaging requires an unwrapped engine or platform runtime without embedded sources or dictionaries")
@@ -1596,7 +1600,7 @@ def main():
         # Include the resolved target and every output-shaping flag so different
         # targets/modes can never collide in the shared cache record.
         flag_str = (f"target={args.target},name={args.name},entries={','.join(entries)},"
-                    f"site={args.build_site},profile={args.site_profile},sdk={args.build_sdk},"
+                    f"site={args.build_site},profile={args.site_profile},sdk={args.build_sdk},sdkArchive={not args.sdk_no_archive},"
                     f"editor={args.include_editor},agi={args.include_agi},"
                     f"plauna={args.include_plauna},os={args.include_webgpu_os},"
                     f"eager={args.eager},prod={args.production},release={args.release},"
@@ -1618,7 +1622,7 @@ def main():
         if args.build_sdk:
             from .sdk import sdk_is_current
             sdk_destination = ROOT / "build" / (args.target + "-sdk") if args.sdk_rebuild else release_dir / (args.target + "-sdk")
-            sdk_current = sdk_is_current(sdk_destination, args.target)
+            sdk_current = sdk_is_current(sdk_destination, args.target, create_archive=not args.sdk_no_archive)
         signed_os_release = _signed_os_release_requires_fresh_build(args)
         if (not signed_os_release
                 and cache_path.is_file()
@@ -2198,7 +2202,8 @@ def main():
             module_sources=module_sources,
             raw_module_sources={graph.mod_id(path): source for path, source in graph.raw_modules.items()},
             output_dir=ROOT / 'build' / (args.target + '-sdk') if args.sdk_rebuild else None,
-            official_records=_official_preamble, input_snapshot=sdk_snapshot, runtime_dir=outdir)
+            official_records=_official_preamble, input_snapshot=sdk_snapshot, runtime_dir=outdir,
+            create_archive=not args.sdk_no_archive)
 
     # -- Copy public site pages to release/site/ --
     if not args.build_site:

@@ -8,6 +8,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      release_validation:
+        description: Run offline rebuilding and software endurance for this revision
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -22,6 +27,11 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: '1'
 
 jobs:
+  release-validation:
+    name: Manual release validation
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.release_validation }}
+    uses: ./.github/workflows/sdk-release-validation.yml
+
   distribution:
     name: Package integrity and Python tests
     runs-on: windows-2022
@@ -42,11 +52,6 @@ jobs:
         run: python -B ci/verify_distribution.py --output test-results/distribution.json
       - name: Run shipped Python regression tests
         if: ${{ !cancelled() && steps.sdk-tools.outcome == 'success' }}
-        env:
-          # Use the runner's canonical path instead of its legacy 8.3 user TEMP alias.
-          TEMP: ${{ runner.temp }}
-          TMP: ${{ runner.temp }}
-          TMPDIR: ${{ runner.temp }}
         run: python -B ci/run_python_tests.py --output test-results/python.json
       - name: Publish job summary
         if: always()

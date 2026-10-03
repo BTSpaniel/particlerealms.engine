@@ -4,9 +4,10 @@
   "cleanup": "__SDK_EXAMPLE_CLEANUP__",
   "modes": ["source", "compiled"],
   "examples": [
+    {"case": "playground", "profiles": ["engine", "platform"], "requires": "Plauna", "name": "Engine + Plauna physics playground"},
     {"case": "engine", "profiles": ["engine", "platform"], "name": "Engine ECS, rendering and native physics"},
     {"case": "worker", "profiles": ["engine", "platform"], "name": "Surface Field worker and GPU transport"},
-    {"case": "plauna", "profiles": ["platform"], "name": "Plauna retained UI interaction"},
+    {"case": "plauna", "profiles": ["engine", "platform"], "requires": "Plauna", "name": "Plauna retained UI interaction"},
     {"case": "editor", "profiles": ["platform"], "name": "Editor project save and reopen"},
     {"case": "agi", "profiles": ["platform"], "name": "AGI ComputeGraph GPU computation"},
     {"case": "os", "profiles": ["platform"], "name": "WebGPU OS explicit boot and local app", "explicitStart": true}

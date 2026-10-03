@@ -11,6 +11,8 @@
 import { drawMesh } from "./DrawHelpers.js";
 import { mat4Identity, mat4Translate, mat4Scale, mat4FromRotationTranslation } from "../core/math/EngineMath.js";
 
+const selectionWarnings = new WeakMap();
+
 function resolveEntityMesh(meshes, entry) {
   const meshTypes = {
     sphere: meshes.sphere,
@@ -101,6 +103,11 @@ export function encodeEntitiesClusterCulling(options) {
  * @param {Function} options.updateUniforms - Function to update uniforms
  * @param {number} options.lightCount - Current light count
  * @param {number|null} options.selectedEntityId - Selected entity for outline
+ * @param {{uniformBuffer: GPUBuffer, bindGroup: GPUBindGroup}} [options.selectionResources]
+ *   Caller-owned resources for the selection draw, separate from every entity's
+ *   normal resources. Reuse between submissions, not for differing draws within
+ *   one submission. Without them the base entity still renders without an outline.
+ * @param {Object} [options.logger=console] - Receives selection configuration warnings
  */
 export function renderEntities(options) {
   const {
@@ -113,7 +120,27 @@ export function renderEntities(options) {
     updateUniforms,
     lightCount,
     selectedEntityId,
+    selectionResources,
+    logger = console,
   } = options;
+
+  let canDrawSelection = false;
+  if (selectedEntityId != null && entities.some(entry => entry.entityId === selectedEntityId)) {
+    const complete = !!(selectionResources?.uniformBuffer && selectionResources?.bindGroup);
+    const aliasesEntity = complete && entities.some(entry =>
+      selectionResources.uniformBuffer === uniformBuffers.get(entry.entityId)
+      || selectionResources.bindGroup === bindGroups.get(entry.entityId));
+    canDrawSelection = complete && !aliasesEntity;
+    if (canDrawSelection) {
+      selectionWarnings.delete(uniformBuffers);
+    } else {
+      const reason = complete ? 'aliased' : 'missing';
+      if (selectionWarnings.get(uniformBuffers) !== reason) {
+        selectionWarnings.set(uniformBuffers, reason);
+        logger?.warn?.(`[SceneRenderer] Selection outline skipped: ${reason} selectionResources. Supply a separate uniformBuffer and matching bindGroup; the base entity remains visible.`);
+      }
+    }
+  }
 
   for (const entry of entities) {
     const t = getTransform(entry.entityId);
@@ -130,18 +157,20 @@ export function renderEntities(options) {
       drawMesh(renderPass, mesh, entityBindGrp);
 
       // Selection outline
-      if (selectedEntityId === entry.entityId) {
+      if (canDrawSelection && selectedEntityId === entry.entityId) {
         const outlineModel = mat4Scale(model, 1.05, 1.05, 1.05);
-        updateUniforms(entityBuffer, outlineModel, [3.0, 3.0, 0.8], lightCount, 0.75);
+        // Queue writes happen before command-buffer execution. Each differently
+        // valued draw therefore needs its own storage, even in the same pass.
+        updateUniforms(selectionResources.uniformBuffer, outlineModel, [3.0, 3.0, 0.8], lightCount, 0.75);
 
         const culler = mesh.indexedClusterCuller;
         if (culler && mesh.indexBuffer && mesh.indexCount > 0) {
           renderPass.setVertexBuffer(0, mesh.vertexBuffer);
-          renderPass.setBindGroup(0, entityBindGrp);
+          renderPass.setBindGroup(0, selectionResources.bindGroup);
           renderPass.setIndexBuffer(mesh.indexBuffer, mesh.indexFormat || "uint16");
           renderPass.drawIndexed(mesh.indexCount, 1, 0, 0, 0);
         } else {
-          drawMesh(renderPass, mesh, entityBindGrp);
+          drawMesh(renderPass, mesh, selectionResources.bindGroup);
         }
       }
     }

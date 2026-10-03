@@ -25,6 +25,8 @@ import time
 from urllib.parse import unquote, urlsplit
 import zipfile
 
+from sdk_scenarios import playground_case, selection_case
+
 # Dynamic loading of the delivered HTTP server must not add SDK cache files.
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
@@ -273,7 +275,7 @@ def shipped_example(page, url, name, mode):
     return result
 
 
-def smoke_mount(browser, package, root, mount, server_module, integrity, software, images):
+def smoke_mount(browser, package, root, mount, server_module, integrity, software, images, doc_examples=()):
     result = {'package': package, 'mount': mount, 'status': 'RUNNING', 'cases': [],
               'diagnostics': {key: [] for key in ('pageErrors', 'consoleErrors', 'httpErrors', 'externalRequests')}}
     diagnostics = result['diagnostics']
@@ -313,6 +315,18 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
                 for worker in page.evaluate(SNAPSHOT_PROBE, base):
                     require_case(worker)
                     result['cases'].append(worker)
+                for example in doc_examples:
+                    print(f'[browser-ci] {package} {mount} Markdown {example["id"]}', flush=True)
+                    # Each exact Markdown module gets a fresh document and the
+                    # ordinary shipped loader; no prior scenario supplies its API.
+                    page.goto(base + 'examples/docs-snippets.html', wait_until='domcontentloaded')
+                    page.wait_for_function("typeof globalThis.runSdkDocSnippet === 'function'")
+                    operation = page.evaluate(
+                        'async ({record, rootUrl}) => runSdkDocSnippet(record, {rootUrl})',
+                        {'record': example, 'rootUrl': base})
+                    result['cases'].append(operation)
+                    page.screenshot(path=str(images / f'docs-{example["id"]}-{mount.strip("/") or "root"}.png'))
+                    require_case(operation)
                 if software:
                     result['softwareSuite'] = 'RUNNING'
                     result['softwareAdapter'] = page.evaluate(ADAPTER_PROBE)
@@ -321,6 +335,12 @@ def smoke_mount(browser, package, root, mount, server_module, integrity, softwar
                             print(f'[browser-ci] {package} {mount} software {mode} {name}', flush=True)
                             result['cases'].append(shipped_example(page, base + f'examples/{mode}.html?case={name}',
                                 f'Software WebGPU {name}', mode))
+                        for name, operation in (('selection', selection_case), ('playground', playground_case)):
+                            print(f'[browser-ci] {package} {mount} software {mode} {name}', flush=True)
+                            observed = operation(page, base, mode)
+                            result['cases'].append(observed)
+                            page.screenshot(path=str(images / f'{name}-{mode}-{mount.strip("/") or "root"}.png'))
+                            require_case(observed)
                     result['softwareSuite'] = 'PASS'
             else:
                 page.wait_for_function("document.querySelector('#boot-selector')?.classList.contains('visible')")
@@ -392,9 +412,17 @@ def main(argv=None):
     args.output.parent.mkdir(parents=True, exist_ok=True)
     images = args.output.with_suffix('')
     images.mkdir(parents=True, exist_ok=True)
-    inputs = {name: path.read_bytes() for name, path in {
+    input_paths = {
         'runner': Path(__file__), 'sdkManifest': sdk / 'manifest.json', 'server': sdk / 'serve_sdk.py',
-        'scenarios': sdk / 'examples/scenarios.js', 'templateArchive': ROOT / 'Template.zip'}.items()}
+        'scenarios': sdk / 'examples/scenarios.js', 'templateArchive': ROOT / 'Template.zip',
+        'scenarioHarness': Path(__file__).with_name('sdk_scenarios.py'),
+        'exampleRunner': sdk / 'examples/runner.js', 'playground': sdk / 'examples/playground.js',
+        'selectionRegression': sdk / 'examples/selection-regression.js',
+        'docExtractor': sdk / 'sdk/doc_snippets.py',
+        'docRunner': sdk / 'examples/docs-snippets.js', 'docPage': sdk / 'examples/docs-snippets.html',
+        'engineDoc': sdk / 'MD/guides/sdk-distribution.md', 'plaunaDoc': sdk / 'MD/plauna/getting-started.md',
+    }
+    inputs = {name: path.read_bytes() for name, path in input_paths.items()}
     report = {'schema': 'particle-sdk-ci-browser/v1', 'status': 'RUNNING', 'webgpu': args.webgpu,
         'inputsSha256': {name: hashlib.sha256(payload).hexdigest() for name, payload in inputs.items()}, 'mounts': [],
         'gpuSuite': {'status': 'NOT_RUN', 'reason': 'Software suite not started' if args.webgpu == 'software' else
@@ -403,11 +431,20 @@ def main(argv=None):
     started = time.perf_counter()
     try:
         manifest = json.loads(inputs['sdkManifest'])
-        for name in ('serve_sdk.py', 'examples/scenarios.js'):
+        for name in ('serve_sdk.py', 'examples/scenarios.js', 'examples/runner.js',
+                     'examples/playground.js', 'examples/selection-regression.js', 'sdk/doc_snippets.py',
+                     'examples/docs-snippets.js', 'examples/docs-snippets.html',
+                     'MD/guides/sdk-distribution.md', 'MD/plauna/getting-started.md'):
             record = manifest['files'][name]
             payload = (sdk / name).read_bytes()
             if len(payload) != record['bytes'] or hashlib.sha256(payload).hexdigest() != record['sha256']:
                 raise ValueError('Shipped CI input differs from SDK receipt: ' + name)
+        docs_spec = importlib.util.spec_from_file_location('sdk_ci_doc_snippets', sdk / 'sdk/doc_snippets.py')
+        docs_module = importlib.util.module_from_spec(docs_spec)
+        docs_spec.loader.exec_module(docs_module)
+        doc_examples = docs_module.extract_sdk_doc_snippets(sdk)
+        report['documentationExamples'] = [{key: value for key, value in example.items() if key != 'code'}
+                                           for example in doc_examples]
         module_spec = importlib.util.spec_from_file_location('sdk_ci_server', sdk / 'serve_sdk.py')
         server_module = importlib.util.module_from_spec(module_spec)
         module_spec.loader.exec_module(server_module)
@@ -435,7 +472,7 @@ def main(argv=None):
                         for mount in ('/', '/ci-nested/'):
                             print(f'[browser-ci] {package} {mount} {args.webgpu}', flush=True)
                             result = smoke_mount(browser, package, root, mount, server_module, integrity,
-                                                 args.webgpu == 'software', images)
+                                                 args.webgpu == 'software', images, doc_examples)
                             report['mounts'].append(result)
                             if result['status'] != 'PASS':
                                 raise AssertionError(result['error'])
@@ -444,11 +481,8 @@ def main(argv=None):
         if args.webgpu == 'software':
             report['gpuSuite'] = {'status': 'PASS', 'requestedBackend': 'swiftshader',
                 'adapters': [mount['softwareAdapter'] for mount in report['mounts'] if mount['package'] == 'sdk'],
-                'scope': 'Actual shipped Engine rendering and Surface Field GPU transport, source+compiled, root+nested; Plauna CPU interaction. Template CPU smoke. No Flow or hardware qualification.'}
-        if (Path(__file__).read_bytes() != inputs['runner'] or (sdk / 'manifest.json').read_bytes() != inputs['sdkManifest']
-                or (sdk / 'serve_sdk.py').read_bytes() != inputs['server']
-                or (sdk / 'examples/scenarios.js').read_bytes() != inputs['scenarios']
-                or (ROOT / 'Template.zip').read_bytes() != inputs['templateArchive']):
+                'scope': 'Actual shipped Engine rendering, selection pixel regression, physics playground and Surface Field GPU transport, source+compiled, root+nested; exact Markdown examples and Plauna interaction. Template CPU smoke. No Flow or hardware qualification.'}
+        if any(path.read_bytes() != inputs[name] for name, path in input_paths.items()):
             raise AssertionError('A pinned browser CI input changed during execution')
         report['status'] = 'PASS'
     except Exception as error:

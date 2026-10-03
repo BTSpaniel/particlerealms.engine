@@ -28,8 +28,8 @@ Optional master server source: https://github.com/BTSpaniel/particlerealms.engin
 ## Getting Started
 
 - [Overview](https://particlerealms.online/MD/getting-started/overview.md): This page explains what the stack is, who each part is for, and where to go next. Read it first if you are new to the project.
-- [Install & Run](https://particlerealms.online/MD/getting-started/install.md): This page covers prerequisites and how to serve the stack and these docs locally. Everything runs in the browser — there is no compile step.
-- [Quickstart](https://particlerealms.online/MD/getting-started/quickstart.md): This guide boots the WebGPU OS and opens an app. It assumes you have completed Install & Run.
+- [Install & Run](https://particlerealms.online/MD/getting-started/install.md): This page distinguishes the public SDK, compiled Template, and full development source tree. Applications run in the browser. The shipped SDK and Template are ready to serve; rebuilding their…
+- [Quickstart](https://particlerealms.online/MD/getting-started/quickstart.md): For the public Engine + Plauna SDK, follow SDK setup, then open its Engine and Plauna examples. The SDK does not include the full OS application entry point.
 - [Glossary](https://particlerealms.online/MD/getting-started/glossary.md): Terms used throughout this documentation. Each term is defined once here and linked from the pages that use it.
 - [FAQ & Troubleshooting](https://particlerealms.online/MD/getting-started/faq.md): Common questions and fixes. If something here is wrong or missing, follow the Contribution Workflow to update it.
 
@@ -66,7 +66,7 @@ Optional master server source: https://github.com/BTSpaniel/particlerealms.engin
 - [Shared NPC intelligence](https://particlerealms.online/MD/engine/shared-npc-intelligence.md): The shared implementation lives in engine/gameplay/ai/intelligence/. It executes bounded registered tasks using seven injected actor ports. The host owns identities, physical bodies, authoritative…
 - [Genesis Ecology Engine and ECS Plan](https://particlerealms.online/MD/engine/genesis-ecology-engine-plan.md): Genesis Ecology is an Engine-wide upgrade. It does not replace the Engine with an organism simulation. It adds reusable construction, development, regulation, ecology, and evidence mechanisms to the…
 - [Virtual Realm M2 Engine and ECS Foundation](https://particlerealms.online/MD/engine/virtual-realm-m2-engine-foundation.md): The Virtual Realm cannot begin with a renderer. M2 first needs a canonical state boundary that survives exceptions, an ECS that can be snapshotted and restored completely, and a verified bake…
-- [Getting Started](https://particlerealms.online/MD/engine/getting-started.md): Bring the engine up in a browser and understand the bootstrap entry points. Assumes Install & Run is done.
+- [Getting Started](https://particlerealms.online/MD/engine/getting-started.md): Start with the Engine + Plauna SDK setup, then open examples/source.html?case=engine or examples/compiled.html?case=engine on its local server. Both run the same ECS, native physics and rendering…
 - [Virtual GPU (vGPU)](https://particlerealms.online/MD/engine/vgpu.md): VirtualGPU is the shared abstraction for engine systems that use the default GPU path. It wraps raw WebGPU with automatic caching, pooling, and resource management.
 - [Managed Compute and WebAssembly](https://particlerealms.online/MD/engine/compute.md): The engine compute runtime runs approved math operations in JavaScript workers, WebAssembly workers, or an injected WebGPU device lease. Engine hosts create a runtime and owner context; OS…
 - [ECS v2](https://particlerealms.online/MD/engine/ecs.md): Entity-Component-System architecture: entities are IDs, components are data, systems are functions. No inheritance and no scene graph — just fast, flat, data-oriented design.
@@ -102,7 +102,7 @@ Optional master server source: https://github.com/BTSpaniel/particlerealms.engin
 
 - [Overview](https://particlerealms.online/MD/plauna/overview.md): Plauna (plauna/) is a browser-first hybrid DOM/GPU UI framework and workbench. It extends the engine with advanced UI: DOM-free text measurement, GPU surfaces, a dockable workspace, and ECS-driven UI…
 - [Architecture](https://particlerealms.online/MD/plauna/architecture.md): How Plauna renders and manages UI. State lives in a UI ECS world; a visual tree is reconciled to DOM and/or GPU surfaces through a dirty-tracking pipeline.
-- [Getting Started](https://particlerealms.online/MD/plauna/getting-started.md): Initialize Plauna and create UI. This mirrors the examples in plauna/README.md. Assumes Install & Run is done.
+- [Getting Started](https://particlerealms.online/MD/plauna/getting-started.md): Create a retained panel with a working counter using the base Engine + Plauna SDK. Follow SDK setup, then save an HTML page at the SDK root with the JavaScript below in a <script type="module">…
 - [Index](https://particlerealms.online/MD/plauna/index.md): Hybrid DOM/GPU UI framework and workbench. Source: plauna/.
 - [Plauna (UI Framework) API Reference (125 pages)](https://particlerealms.online/MD/plauna/reference/_index.json): Machine-readable index of the generated per-symbol API reference.
 

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
 
 import { runEngine, runWorker, runPlauna, runEditor, runAGI, runOS } from './scenarios.js';
+import { runPlayground } from './playground.js';
 
 const mode = document.documentElement.dataset.sdkMode;
 const profile = document.documentElement.dataset.sdkProfile;
@@ -12,7 +13,17 @@ const output = document.querySelector('#result');
 const cleanupButton = document.querySelector('#cleanup-example');
 const runButton = document.querySelector('#run-example');
 const sdkRoot = new URL('../', document.baseURI);
+if (selected === 'playground') {
+    document.documentElement.dataset.sdkExample = 'playground';
+    const details = document.createElement('details');
+    details.className = 'playground-diagnostics';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Diagnostics and test results';
+    details.append(summary, output);
+    stage.after(details);
+}
 const descriptions = {
+    playground: 'Spawn and select native PhysX cubes, then save and reload their scene using Engine persistence and Plauna controls.',
     engine: 'Create an ECS entity, simulate a native PhysX body, and render its retained transform with Engine mesh helpers.',
     worker: 'Apply water in a real Surface Field worker, run WebGPU transport, and round-trip a retained checkpoint.',
     plauna: 'Render a retained Plauna button, dispatch a native DOM click, and verify its StateStore projection.',
@@ -70,6 +81,7 @@ window.addEventListener('pagehide', () => { void cleanup().catch(error => consol
 function fail(error) {
     receipt.status = error.name === 'UnsupportedBrowserError' ? 'unsupported' : 'failed';
     receipt.error = { name: error.name, message: error.message };
+    if (selected === 'playground') output.parentElement.open = true;
     console.error('[SDK example]', selected, mode, error);
     render();
 }
@@ -122,6 +134,7 @@ async function api() {
         return { engine: runtime, plauna: runtime.Plauna, editor: runtime.Editor, agi: runtime.AGI, os: runtime.WebGPUOS };
     }
     const engine = await import(new URL('engine/EngineBootstrap.js', sdkRoot).href);
+    if (selected === 'playground') return { engine, plauna: await import(new URL('plauna/index.js', sdkRoot).href) };
     if (selected === 'engine' || selected === 'worker') return { engine };
     const entry = { plauna: 'plauna/index.js', editor: 'editor/js/modules/ProjectStorage.js', agi: 'agi/index.js', os: 'webgpu-os/index.js' }[selected];
     if (!entry) throw new Error(`Unknown SDK example: ${selected}`);
@@ -138,7 +151,7 @@ async function start() {
         if (!response.ok) throw new Error(`SDK receipt HTTP ${response.status}`);
         const manifest = await response.json();
         if (manifest.profile !== profile || !manifest.bundle) throw new Error('SDK profile receipt is unavailable');
-        const capability = { plauna: 'include_plauna', editor: 'include_editor', agi: 'include_agi', os: 'include_webgpu_os' }[selected];
+        const capability = { playground: 'include_plauna', plauna: 'include_plauna', editor: 'include_editor', agi: 'include_agi', os: 'include_webgpu_os' }[selected];
         if (capability && !manifest.bundle[capability]) throw new Error(`${selected} is not included in this SDK; choose a package with that subsystem`);
         const reportError = error => {
             fail(error);
@@ -170,7 +183,7 @@ async function start() {
             for (const entry of childResult.checks) check(entry.name, entry.passed, entry.detail);
         } else {
             const runtime = await api();
-            const operation = { engine: runEngine, worker: runWorker, plauna: runPlauna, editor: runEditor, agi: runAGI, os: runOS }[selected];
+            const operation = { playground: runPlayground, engine: runEngine, worker: runWorker, plauna: runPlauna, editor: runEditor, agi: runAGI, os: runOS }[selected];
             await operation(runtime, context);
         }
         if (receipt.status !== 'failed') receipt.status = 'passed';

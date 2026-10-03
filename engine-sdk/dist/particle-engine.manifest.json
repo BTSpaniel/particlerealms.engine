@@ -29,30 +29,30 @@
   "modules": 1772,
   "module_ids": 1662,
   "ns_ordered": false,
-  "source_bytes": 27120396,
-  "bundle_bytes": 28038049,
-  "min_bytes": 19788588,
-  "gzip_bytes": 3811024,
+  "source_bytes": 27122250,
+  "bundle_bytes": 28039903,
+  "min_bytes": 19789540,
+  "gzip_bytes": 3811318,
   "gzip_method": "gzip",
-  "brotli_bytes": 3417101,
-  "zstd_bytes": 3377599,
-  "lzma_bytes": 2903592,
+  "brotli_bytes": 3417304,
+  "zstd_bytes": 3378067,
+  "lzma_bytes": 2903760,
   "zstd_dict_bytes": null,
   "dcz_header_bytes": null,
   "dcz_dictionary_sha256": null,
   "best_compressed": "zstd",
-  "best_bytes": 3377599,
+  "best_bytes": 3378067,
   "repository_metrics": "code-metrics.json",
   "repository": {
-    "files": 5483,
-    "lines": 1972428
+    "files": 5478,
+    "lines": 1970161
   },
-  "sri": "sha384-hqaATXBYpWM1WKkHgsXG6oO7Nz0jNHbBwxQMZ4ZyS7QiN870SW50vXAXFWO5n2vV",
+  "sri": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
   "browser_runtime": "particle-engine.min.js.gz",
   "browser_runtime_compression": "gzip",
-  "browser_runtime_bytes": 3811024,
-  "browser_runtime_decoded_bytes": 19788588,
-  "browser_runtime_integrity": "sha384-hqaATXBYpWM1WKkHgsXG6oO7Nz0jNHbBwxQMZ4ZyS7QiN870SW50vXAXFWO5n2vV",
+  "browser_runtime_bytes": 3811318,
+  "browser_runtime_decoded_bytes": 19789540,
+  "browser_runtime_integrity": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
   "browser_runtime_loader": "release-runtime-loader.js",
   "reduction_min": "27.0%",
   "reduction_gzip": "85.9%",
@@ -1836,7 +1836,7 @@
     "packages": []
   },
   "officialPackageAssets": [],
-  "sdkBuildInputsSha256": "e77aa46e4d575f3f50e576ab400beb9aa8917e668febe6cfa09822324e74b32f",
+  "sdkBuildInputsSha256": "ef4b0904601ecdcaa7e481f8d6d17eb8fc4e605113c215ac3fe436782701dcc0",
   "buildTools": {
     "python": "3.12.7",
     "minifier": "rjsmin",
@@ -1865,7 +1865,7 @@
   },
   "buildMode": "sdk",
   "file_inventory_sha256": "1243ad26bff80ba8765e9eabc0ee3d4eb91bd9d0f595ed2029e8703999709ea0",
-  "source_content_sha256": "55e9642d12fc3aa5440594cf6ec0f57cf10f07aa91d5a65c704f2511dbb75029",
+  "source_content_sha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1",
   "public_api_contracts": {
     "engine-demo": {
       "entry": "engine/EngineBootstrap.js",
@@ -2191,7 +2191,7 @@
     }
   ],
   "physicsConsumerAudit": {
-    "scannedFiles": 5676,
+    "scannedFiles": 5678,
     "consumers": [
       "editor/js/modules/EditorPhysics.js",
       "editor/js/modules/EditorPhysicsSim.js",
@@ -2207,6 +2207,7 @@
       "engine/sim/physics/physx-pe.mjs",
       "engine/sim/surfaceFields/SurfaceFieldStructure.js",
       "engine/sim/surfaceFields/SurfaceFieldSuspension.js",
+      "tests/phase4_simulation/main.js",
       "webgpu-os/apps/ai-echo/EngineDemoPackage.js",
       "webgpu-os/apps/ai-echo/EngineDemoRuntimeKit.js",
       "webgpu-os/apps/realmforge/construction/runtime/RealmForgeConstructionPresetPhysics.js",
@@ -3347,9 +3348,9 @@
     "format": 1,
     "files_verified": 1772,
     "file_inventory_sha256": "1243ad26bff80ba8765e9eabc0ee3d4eb91bd9d0f595ed2029e8703999709ea0",
-    "source_content_sha256": "55e9642d12fc3aa5440594cf6ec0f57cf10f07aa91d5a65c704f2511dbb75029",
-    "decoded_sha384": "sha384-hqaATXBYpWM1WKkHgsXG6oO7Nz0jNHbBwxQMZ4ZyS7QiN870SW50vXAXFWO5n2vV",
-    "gzip_sha256": "396f0c790e316ef2ba87e8e84abcc46fb0ac01b01062c6f155f11b852b2cdaff",
+    "source_content_sha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1",
+    "decoded_sha384": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
+    "gzip_sha256": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08",
     "registry_entries": 1772,
     "static_registry_verified": true,
     "public_namespaces_verified": [
@@ -3360,6 +3361,6 @@
   "provenance": {
     "path": "particle-engine.provenance.json",
     "predicate_type": "https://slsa.dev/provenance/v1",
-    "sha256": "7a3ce42f437c654c6da78a452db465b9e3c688ddbd7d33b9448f2e287ba910fa"
+    "sha256": "e6482741750e39b3c1b0e1f35c63bcdc856677eeb778d93401badcdfa8971e05"
   }
 }

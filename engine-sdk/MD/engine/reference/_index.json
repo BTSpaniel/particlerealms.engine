@@ -60748,7 +60748,7 @@
     "path": "engine/reference/render/SceneRenderer.md",
     "source": "engine/render/SceneRenderer.js",
     "import": "/engine/render/SceneRenderer.js",
-    "sourceHash": "ff3e75955c44d37ffb5d76b10217f56484a9c43df4022ce4c6dedb0116ac2ae2",
+    "sourceHash": "ef6f5da65c200aacc8cf740046d7448150f81540d846cfd3ea20041657853434",
     "summary": "SceneRenderer.js - Scene rendering utilities Helpers for rendering ECS entities and scene elements.",
     "exports": [
       {

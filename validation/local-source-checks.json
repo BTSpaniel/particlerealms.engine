@@ -1,0 +1,2154 @@
+{
+  "schema": "particle-sdk-local-source-validation/v1",
+  "status": "PASS",
+  "scope": "Focused source checks on an installed Chromium and NVIDIA hardware adapter. Hosted compiled, offline rebuilding and endurance checks are recorded separately. This is functional evidence, not a performance comparison.",
+  "selection": {
+    "released-baseline": {
+      "suite": "scene-renderer-selection",
+      "status": "FAIL",
+      "cases": [],
+      "warnings": [],
+      "elapsedMs": 51.899999998509884,
+      "cleanup": {
+        "allocated": 11,
+        "destroyed": 11,
+        "errors": []
+      },
+      "error": "Selection rendering regression failed",
+      "errors": [
+        "indexed: select first entity: base material 1 pixel (70, 128) was 255,255,204; expected 51,102,153"
+      ],
+      "adapter": {
+        "vendor": "nvidia",
+        "architecture": "blackwell",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": false
+      },
+      "pageErrors": []
+    },
+    "canonical-fixed": {
+      "suite": "scene-renderer-selection",
+      "status": "PASS",
+      "cases": [
+        {
+          "name": "indexed: select first entity",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 3,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "indexed: deselect",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 2,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "indexed: select second entity",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 3,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "indexed: select first entity again",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 3,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "indexed: selected translation and scale update",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 89,
+              "y": 96,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 43,
+              "y": 96,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 3,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "non-indexed: select first entity",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 3,
+            "indexed": 0,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "non-indexed: deselect",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 2,
+            "indexed": 0,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "non-indexed: select second entity",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 3,
+            "indexed": 0,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "non-indexed: select first entity again",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 3,
+            "indexed": 0,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "non-indexed: selected translation and scale update",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 89,
+              "y": 96,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 43,
+              "y": 96,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 3,
+            "indexed": 0,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "clustered: select first entity",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 1,
+            "indirect": 2
+          }
+        },
+        {
+          "name": "clustered: deselect",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 0,
+            "indirect": 2
+          }
+        },
+        {
+          "name": "clustered: select second entity",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 1,
+            "indirect": 2
+          }
+        },
+        {
+          "name": "clustered: select first entity again",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 1,
+            "indirect": 2
+          }
+        },
+        {
+          "name": "clustered: selected translation and scale update",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 89,
+              "y": 96,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 43,
+              "y": 96,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 1,
+            "indirect": 2
+          }
+        },
+        {
+          "name": "missing selection resources retain base rendering",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 2,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "missing selection diagnostic is not repeated each frame",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 2,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "selected entity buffer alias retains base rendering",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 2,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "other entity buffer alias retains base rendering",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 2,
+            "indirect": 0
+          }
+        },
+        {
+          "name": "valid selection recovers after configuration errors",
+          "status": "PASS",
+          "measurements": [
+            {
+              "label": "base material 1",
+              "x": 70,
+              "y": 128,
+              "actual": [
+                51,
+                102,
+                153
+              ],
+              "expected": [
+                51,
+                102,
+                153
+              ]
+            },
+            {
+              "label": "base material 2",
+              "x": 185,
+              "y": 128,
+              "actual": [
+                25,
+                204,
+                51
+              ],
+              "expected": [
+                26,
+                204,
+                51
+              ]
+            },
+            {
+              "label": "left outline",
+              "x": 27,
+              "y": 128,
+              "actual": [
+                255,
+                255,
+                204
+              ],
+              "expected": [
+                255,
+                255,
+                204
+              ]
+            },
+            {
+              "label": "right outline",
+              "x": 228,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "label": "outside transformed silhouette",
+              "x": 24,
+              "y": 128,
+              "actual": [
+                0,
+                0,
+                0
+              ],
+              "expected": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "draws": {
+            "direct": 0,
+            "indexed": 3,
+            "indirect": 0
+          }
+        }
+      ],
+      "warnings": [
+        "[SceneRenderer] Selection outline skipped: missing selectionResources. Supply a separate uniformBuffer and matching bindGroup; the base entity remains visible.",
+        "[SceneRenderer] Selection outline skipped: aliased selectionResources. Supply a separate uniformBuffer and matching bindGroup; the base entity remains visible."
+      ],
+      "elapsedMs": 218.60000000149012,
+      "cleanup": {
+        "allocated": 11,
+        "destroyed": 11,
+        "errors": []
+      },
+      "adapter": {
+        "vendor": "nvidia",
+        "architecture": "blackwell",
+        "device": "",
+        "description": "",
+        "isFallbackAdapter": false
+      },
+      "pageErrors": []
+    },
+    "sourceSha256": "ac161c891711f8e509f8c1e4bbf3f3ce18aa3e235df620196b809650e4720fb4",
+    "regressionSha256": "0ec848f3a89a6fa011985911d63294df15610da5466b5ae115137d5fc178a13b"
+  },
+  "constructViewport": {
+    "status": "PASS",
+    "receipt": {
+      "suite": "particle-realms-construct-viewport-gpu",
+      "status": "passed",
+      "passCount": 1,
+      "failCount": 0,
+      "skipCount": 0,
+      "totalCount": 1,
+      "tests": [
+        {
+          "name": "viewport mounts, submits, and retires through the coordinated GPU contract",
+          "status": "pass",
+          "error": null
+        }
+      ]
+    },
+    "sources": {
+      "webgpu-os/factory/apps/particle-realms/ConstructViewport.js": "cc0dca5959e5fce6b6180bf806bb0a3bfaac138777a2e5f623d84c7da1ba7cfc",
+      "tests/construct/construct-viewport-gpu.test.js": "eed415c4ed813260aa715f25410105b133a4390adcf71facd742f81b3c009e01",
+      "engine/render/SceneRenderer.js": "ac161c891711f8e509f8c1e4bbf3f3ce18aa3e235df620196b809650e4720fb4"
+    },
+    "pageErrors": [],
+    "consoleErrors": [],
+    "httpErrors": []
+  },
+  "playground": {
+    "status": "PASS",
+    "overlays": {
+      "/examples/runner.js": "900dd34bca793eb2eb3a1f4094c9f63f37f83e53dfb1fcc7bbe5d9730f5bbf73",
+      "/examples/playground.js": "80b918f78b84e44ebab7f374fe055cd8f4ddb45d15b013f96d76d12246cc8786",
+      "/examples/example.css": "eb2555b832b3796fb83c0223644ad57ea3857642a7f1b749e277370d019e2b83",
+      "/engine/render/SceneRenderer.js": "ac161c891711f8e509f8c1e4bbf3f3ce18aa3e235df620196b809650e4720fb4"
+    },
+    "actions": [
+      {
+        "name": "visible 44px Plauna controls, keyboard focus, mobile wrapping, collapsed diagnostics",
+        "status": "PASS"
+      },
+      {
+        "name": "native Plauna Spawn",
+        "status": "PASS"
+      },
+      {
+        "name": "native Plauna Select next",
+        "status": "PASS"
+      },
+      {
+        "name": "native Plauna Save",
+        "status": "PASS"
+      },
+      {
+        "name": "native Plauna Reset",
+        "status": "PASS"
+      },
+      {
+        "name": "native Plauna Reload",
+        "status": "PASS"
+      },
+      {
+        "name": "saved scene survives full page reload",
+        "status": "PASS"
+      },
+      {
+        "name": "full resource teardown and controls retired",
+        "status": "PASS"
+      }
+    ],
+    "diagnostics": {
+      "pageErrors": [],
+      "consoleErrors": [],
+      "httpErrors": [],
+      "externalRequests": []
+    },
+    "layout": {
+      "diagnosticsCollapsed": true,
+      "diagnosticsBelowStage": true,
+      "buttons": [
+        {
+          "text": "Spawn",
+          "height": 44,
+          "width": 92,
+          "inside": true
+        },
+        {
+          "text": "Select next",
+          "height": 44,
+          "width": 105.71875,
+          "inside": true
+        },
+        {
+          "text": "Reset",
+          "height": 44,
+          "width": 92,
+          "inside": true
+        },
+        {
+          "text": "Save",
+          "height": 44,
+          "width": 92,
+          "inside": true
+        },
+        {
+          "text": "Reload",
+          "height": 44,
+          "width": 92,
+          "inside": true
+        }
+      ]
+    },
+    "keyboardFocus": {
+      "text": "Select next",
+      "visible": true,
+      "outline": "solid",
+      "width": 3
+    },
+    "mobileLayout": {
+      "noOverflow": true,
+      "buttons": [
+        {
+          "height": 44,
+          "inside": true
+        },
+        {
+          "height": 44,
+          "inside": true
+        },
+        {
+          "height": 44,
+          "inside": true
+        },
+        {
+          "height": 44,
+          "inside": true
+        },
+        {
+          "height": 44,
+          "inside": true
+        }
+      ]
+    },
+    "cleanup": {
+      "status": "passed",
+      "released": [
+        "Playground animation and controls",
+        "Playground Plauna app",
+        "Playground entities and buffers",
+        "Playground selection buffer",
+        "Playground cube mesh",
+        "Playground depth",
+        "Playground canvas",
+        "Playground DOM",
+        "WebGPU device",
+        "Playground native world"
+      ],
+      "failures": []
+    }
+  },
+  "documentation": {
+    "status": "PASS",
+    "overlays": {
+      "/examples/runner.js": "900dd34bca793eb2eb3a1f4094c9f63f37f83e53dfb1fcc7bbe5d9730f5bbf73",
+      "/examples/playground.js": "80b918f78b84e44ebab7f374fe055cd8f4ddb45d15b013f96d76d12246cc8786",
+      "/examples/scenarios.js": "b219719e2a1b57fc566808f0856776167cf810fbe167cb86b6b08859add38f5d",
+      "/examples/docs-snippets.js": "36f1fc62786c3f0abe546bdec52fdeda05b6ad59f2199a55f1138c8e0d91afa7",
+      "/examples/example.css": "eb2555b832b3796fb83c0223644ad57ea3857642a7f1b749e277370d019e2b83",
+      "/examples/docs-snippets.html": "7570398a665406914fab573d49feed141a6f6a8829e2a8add2a4f1b78aec3ffb",
+      "/examples/source.html": "24c7d893cd0c7c22fd64cd76c5c621e2e4e3289bc5e404e9dbf879b18ccfe74f"
+    },
+    "cases": [
+      {
+        "name": "exact Plauna Markdown snippet",
+        "mount": "/",
+        "result": {
+          "name": "plauna-source",
+          "mode": "source",
+          "status": "PASS",
+          "checks": [
+            {
+              "name": "Retained Panel contains labeled Text and a real Button",
+              "passed": true,
+              "detail": null
+            },
+            {
+              "name": "Rendered Button is visible and at least 24 pixels high",
+              "passed": true,
+              "detail": {
+                "width": 1100,
+                "height": 42
+              }
+            },
+            {
+              "name": "Native click updates Plauna state and visible content",
+              "passed": true,
+              "detail": null
+            },
+            {
+              "name": "Repeated cleanup releases the owned app, tree and DOM",
+              "passed": true,
+              "detail": null
+            }
+          ],
+          "source": {
+            "path": "MD/plauna/getting-started.md",
+            "line": 19,
+            "sha256": "30cc4b2dd795dce1231e90cffe01a67a74c3b44741928bbb8f9a9a7e10f0e377"
+          },
+          "cleanup": {
+            "status": "passed",
+            "idempotent": true
+          }
+        }
+      },
+      {
+        "name": "source Plauna scenario",
+        "mount": "/",
+        "result": {
+          "status": "passed",
+          "case": "plauna",
+          "mode": "source",
+          "checks": [
+            {
+              "name": "Plauna renders a retained Button",
+              "passed": true,
+              "detail": null
+            },
+            {
+              "name": "Plauna Button is visible and usable",
+              "passed": true,
+              "detail": {
+                "width": 92,
+                "height": 42
+              }
+            },
+            {
+              "name": "DOM click updates StateStore and retained UI",
+              "passed": true,
+              "detail": {
+                "clicks": 1
+              }
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Plauna app and retained tree"
+            ],
+            "failures": []
+          },
+          "nativePointerClick": "PASS"
+        }
+      },
+      {
+        "name": "exact Plauna Markdown snippet",
+        "mount": "/nested/",
+        "result": {
+          "name": "plauna-source",
+          "mode": "source",
+          "status": "PASS",
+          "checks": [
+            {
+              "name": "Retained Panel contains labeled Text and a real Button",
+              "passed": true,
+              "detail": null
+            },
+            {
+              "name": "Rendered Button is visible and at least 24 pixels high",
+              "passed": true,
+              "detail": {
+                "width": 1100,
+                "height": 42
+              }
+            },
+            {
+              "name": "Native click updates Plauna state and visible content",
+              "passed": true,
+              "detail": null
+            },
+            {
+              "name": "Repeated cleanup releases the owned app, tree and DOM",
+              "passed": true,
+              "detail": null
+            }
+          ],
+          "source": {
+            "path": "MD/plauna/getting-started.md",
+            "line": 19,
+            "sha256": "30cc4b2dd795dce1231e90cffe01a67a74c3b44741928bbb8f9a9a7e10f0e377"
+          },
+          "cleanup": {
+            "status": "passed",
+            "idempotent": true
+          }
+        }
+      },
+      {
+        "name": "source Plauna scenario",
+        "mount": "/nested/",
+        "result": {
+          "status": "passed",
+          "case": "plauna",
+          "mode": "source",
+          "checks": [
+            {
+              "name": "Plauna renders a retained Button",
+              "passed": true,
+              "detail": null
+            },
+            {
+              "name": "Plauna Button is visible and usable",
+              "passed": true,
+              "detail": {
+                "width": 92,
+                "height": 42
+              }
+            },
+            {
+              "name": "DOM click updates StateStore and retained UI",
+              "passed": true,
+              "detail": {
+                "clicks": 1
+              }
+            }
+          ],
+          "cleanup": {
+            "status": "passed",
+            "released": [
+              "Plauna app and retained tree"
+            ],
+            "failures": []
+          },
+          "nativePointerClick": "PASS"
+        }
+      }
+    ],
+    "diagnostics": {
+      "pageErrors": [],
+      "consoleErrors": [],
+      "httpErrors": [],
+      "externalRequests": []
+    },
+    "negativeControl": {
+      "name": "plauna-source",
+      "mode": "source",
+      "status": "FAIL",
+      "checks": [
+        {
+          "name": "Retained Panel contains labeled Text and a real Button",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "name": "Rendered Button is visible and at least 24 pixels high",
+          "passed": false,
+          "detail": {
+            "width": 1100,
+            "height": 1
+          }
+        },
+        {
+          "name": "Repeated cleanup releases the owned app, tree and DOM",
+          "passed": true,
+          "detail": null
+        }
+      ],
+      "source": {
+        "path": "MD/plauna/getting-started.md",
+        "line": 19,
+        "sha256": "e1dfb80b77702d9ec31139c91b50818276cd3afc806b080bf6787554f91ed7f2"
+      },
+      "error": "Error: Rendered Button is visible and at least 24 pixels high\n    at check (http://127.0.0.1:60951/examples/docs-snippets.js:25:28)\n    at runSdkDocSnippet (http://127.0.0.1:60951/examples/docs-snippets.js:49:13)\n    at async eval (eval at evaluate (:290:30), <anonymous>:1:15)\n    at async <anonymous>:316:30",
+      "cleanup": {
+        "status": "passed",
+        "idempotent": true
+      }
+    }
+  }
+}

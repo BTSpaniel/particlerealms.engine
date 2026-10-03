@@ -1,12 +1,12 @@
 ---
 title: Install & Run
-description: Prerequisites (a WebGPU browser and Python — no Node.js) and how to serve the stack and these docs locally without a compile step.
-updated: 2026-06-05
+description: Choose the public Engine + Plauna SDK, full Platform Template, or development stack and serve the matching entry point over HTTP.
+updated: 2026-10-03
 ---
 
 # Install & Run
 
-This page covers prerequisites and how to serve the stack and these docs locally. Everything runs in the browser — there is no compile step.
+This page distinguishes the public SDK, compiled Template, and full development source tree. Applications run in the browser. The shipped SDK and Template are ready to serve; rebuilding their JavaScript is an optional workflow with pinned prerequisites.
 
 ## Prerequisites
 
@@ -14,24 +14,37 @@ This page covers prerequisites and how to serve the stack and these docs locally
   operating system, GPU, and driver. Confirm that `navigator.gpu` exists and
   that `await navigator.gpu.requestAdapter()` returns an adapter. Localhost is
   treated as a secure context; deployed sites must use HTTPS.
-- **Python 3.x** — used only to serve files over HTTP and to run the docs tooling. There is **no Node.js dependency**.
+- **Python** — serves files over HTTP. SDK rebuilding requires the exact Python and dependency versions recorded in `sdk-build.json`; the initial baseline is Python 3.12.7. There is **no Node.js dependency**.
 - **A dedicated GPU** is recommended for the engine, AGI training, and GPU-heavy apps.
 
-## Platform downloads and the optional network service
+## Public SDK and Template
 
-- **Platform downloads:** [BTSpaniel/particlerealms.engine](https://github.com/BTSpaniel/particlerealms.engine)
-  publishes browser-ready distribution artifacts, including the compressed
-  `.gz` bundles. It is the public download repository, not the source tree used
-  to generate this API reference.
+- **Engine + Plauna SDK:** [BTSpaniel/particlerealms.engine](https://github.com/BTSpaniel/particlerealms.engine)
+  contains public SDK sources, verified compiled runtime files, PhysX PE, examples,
+  offline documentation, and Python rebuild tools under `engine-sdk/`.
+- **Full Platform Template:** the same repository's `Template.zip` contains the
+  compiled Engine, Editor, Plauna, AGI and WebGPU OS runtime with its launcher.
 - **Optional master server source:**
   [BTSpaniel/particlerealms.engine-master-server](https://github.com/BTSpaniel/particlerealms.engine-master-server)
   is a separate discovery, admission, encrypted-signaling, TURN, and trusted-node
   service. It is never gameplay authority and is not required to run the engine
   or Playground locally.
 
-## Serve the project
+Clone the SDK and start its included server:
 
-The repository ships a static HTTP server. From the repository root (`C:\Coding\game`):
+```bash
+git clone https://github.com/BTSpaniel/particlerealms.engine.git
+cd particlerealms.engine/engine-sdk
+python serve_sdk.py --port 9001 --isolate
+```
+
+Open `http://127.0.0.1:9001/` for the SDK landing page or `http://127.0.0.1:9001/MD/viewer/` for its offline documentation. Source and compiled Engine, worker and Plauna examples are linked from the landing page. `--isolate` adds the headers required for threaded compute. See [SDK distribution and rebuilding](../guides/sdk-distribution.md) for source imports, verified loader use, and rebuild instructions.
+
+For the Template, extract `Template.zip`, enter `Template/`, and run `python serve.py 9001` or `launch.bat --port 9001` on Windows. Open the local root URL and select an OS, Plauna or Canvas mode.
+
+## Serve the full development source tree
+
+These entry points require the full development source tree with Editor, AGI and OS application files. They are not the base SDK's startup paths. From that tree's root:
 
 ```bash
 python start_server.py
@@ -60,12 +73,12 @@ other OS integrations. It cannot add WebGPU to an unsupported browser, GPU, or
 driver. The engine and Playground use browser WebGPU directly; install the
 Companion only for the OS features that explicitly request it.
 
-## Set up the documentation tooling
+## Documentation maintenance in the development tree
 
-The docs are plain Markdown, but a few Python helpers build derived artifacts. From `C:\Coding\game\MD`:
+The SDK already contains its offline viewer and generated reference. Application developers do not need to rebuild these files or fetch libraries. Maintainers use Python helpers to refresh derived documentation from a matching source snapshot. From its `MD/` directory:
 
 ```bash
-# 1. Vendor the viewer's front-end libs locally (offline, no CDN)
+# 1. Explicitly refresh locally vendored viewer libraries (requires network)
 python tools/fetch_vendor.py
 
 # 2. Generate the per-symbol API reference from source
@@ -92,6 +105,6 @@ See [Contribution Workflow](../contributing/doc-contribution-workflow.md) for th
 
 - **Blank page / CORS errors** — you opened a `file://` URL. Serve over HTTP instead.
 - **"WebGPU not available"** — update your browser or enable WebGPU; verify with `navigator.gpu` in the console.
-- **Viewer renders unstyled code / no diagrams** — run `python tools/fetch_vendor.py`. The viewer still works via its built-in fallback, but without syntax highlighting or Mermaid.
+- **Viewer renders unstyled code / no diagrams** — verify the SDK files against the release inventory. Maintainers can explicitly refresh vendor assets in the full development tree. The viewer also has a built-in fallback renderer.
 
 More in [FAQ & Troubleshooting](faq.md).

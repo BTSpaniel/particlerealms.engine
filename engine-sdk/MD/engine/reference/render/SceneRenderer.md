@@ -32,6 +32,7 @@ Render all spawned ECS entities.
 - `options.updateUniforms` *(Function)* — Function to update uniforms
 - `options.lightCount` *(number)* — Current light count
 - `options.selectedEntityId` *(number|null)* — Selected entity for outline
+- `[options.logger` *(Object)* — =console] - Receives selection configuration warnings
 
 ### `renderRoom(options)`
 

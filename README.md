@@ -38,9 +38,15 @@ cd particlerealms.engine/engine-sdk
 python serve_sdk.py --port 9002 --isolate
 ```
 
-Open **[http://127.0.0.1:9002/](http://127.0.0.1:9002/)** in a browser with WebGPU support. Python serves the SDK without additional packages. The landing page connects the documentation with runnable **Engine**, **worker** and **Plauna** examples in source and compiled modes.
+Open **[http://127.0.0.1:9002/](http://127.0.0.1:9002/)** in a browser with WebGPU support. Python serves the SDK without additional packages. Start with the **Engine + Plauna physics playground**: spawn cubes, select one, reset the scene, save it and reload it. The same application runs through source modules or the compiled runtime.
 
 Serve modules over **HTTP on localhost** or **HTTPS in deployment**. Opening `index.html` as a file causes CORS failures. `--isolate` supplies the headers needed by threaded compute.
+
+<details>
+<summary>See the Engine + Plauna physics playground</summary>
+<p><img src="assets/playground.png" width="880" alt="The SDK physics playground with five Plauna controls, native physics cubes and a distinct selection outline." /></p>
+<p>Actual source-mode application, including keyboard focus, mobile wrapping, saved-scene reload and resource cleanup.</p>
+</details>
 
 ## Choose your starting point
 
@@ -66,9 +72,12 @@ const world = Engine.createWorld({ name: 'My world' });
 const entity = Engine.createEntity(world);
 Engine.setEntityComponent(world, entity, 'Transform',
   Engine.createTransform({ position: [0, 2, 0] }));
+
+// When your application is finished with this entity:
+Engine.destroyEntity(world, entity);
 ```
 
-Plauna's source entry point is [`plauna/index.js`](engine-sdk/plauna/index.js). The [shipped examples](engine-sdk/examples/scenarios.js) show an indexed render, native physics, worker operations and an interactive Plauna button, including cleanup.
+Plauna's source entry point is [`plauna/index.js`](engine-sdk/plauna/index.js). Its application factory is asynchronous: use `await createPlaunaApp(...)`. Follow the [complete Plauna quick start](engine-sdk/MD/plauna/getting-started.md) for retained UI, real button interaction and cleanup. The [physics playground](engine-sdk/examples/playground.js) combines Plauna controls with Engine rendering, native physics and public scene persistence.
 
 For compiled mode, keep the supplied loader tag from the SDK example or Template and await its verified runtime:
 
@@ -77,6 +86,9 @@ const PE = await globalThis.__PE_RUNTIME_READY;
 const world = PE.createWorld({ name: 'My world' });
 const entity = PE.createEntity(world);
 const Plauna = PE.Plauna;
+
+// When your application is finished with this entity:
+PE.destroyEntity(world, entity);
 ```
 
 The full Platform Template additionally exposes `PE.Editor`, `PE.AGI` and `PE.WebGPUOS`. OS boot is explicit; use the included launcher or the subsystem's documented initialization.
@@ -87,7 +99,7 @@ From `engine-sdk/`, use the Python version and pinned tools recorded in [`sdk-bu
 
 ```sh
 python -m pip install -r requirements-sdk.txt
-python bundle_engine.py --sdk-rebuild
+python bundle_engine.py --sdk-rebuild --sdk-no-archive
 ```
 
 Outputs go to `build/runtime` and `build/engine-sdk`. Install prerequisites before working offline. JavaScript builds reuse the supplied, verified native WASM; native PhysX, Blast, Flow and Rust rebuilding uses separate toolchains. See the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md) for rebuilding and signed-package requirements.
@@ -96,7 +108,9 @@ Outputs go to `build/runtime` and `build/engine-sdk`. Install prerequisites befo
 
 **[SDK CI](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml)** checks the distribution and Python/browser behavior on pushes and pull requests. The [test guide](ci/README.md) lists each job's scope, requirements and local commands. Browser and GPU coverage is reported per job.
 
-[Release validation](SDK-VALIDATION.json) records the measured package checks, offline rebuilding and native/GPU acceptance for the shipped SDK and Template. The [SDK manifest](engine-sdk/manifest.json) records exact file hashes and build identities.
+The browser jobs execute the actual approved Markdown quick starts. Software WebGPU checks also read back selection-rendering pixels and exercise the playground's save/reload controls. The manual **[release validation workflow](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-release-validation.yml)** checks offline deterministic rebuilding and runs 100 scene lifecycle cycles plus ten minutes of simulation in each runtime mode. Download its reports for individual outcomes, browser and adapter identities, frame-time percentiles and available memory measurements.
+
+[Distribution identity and validation](SDK-VALIDATION.json) identifies the checked SDK and Template. CI results apply to their recorded commit and artifact hashes. The [SDK manifest](engine-sdk/manifest.json) records every distributed file and its build identity. Existing release tags remain stable; `main` can contain improvements awaiting the next tagged release.
 
 Browse the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md) and [API index](engine-sdk/MD/api/index.md), or open `MD/viewer/` on the local SDK server. [Engine Academy](https://particlerealms.online/learn/) and the [Playground](https://particlerealms.online/playground/) provide online learning and live studies.
 

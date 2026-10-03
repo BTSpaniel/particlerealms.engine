@@ -12,12 +12,12 @@
 | Job | Coverage | Environment |
 | --- | --- | --- |
 | Package integrity and Python tests | Every SDK file; source module graph; native asset hashes; compression/SRI/provenance; Template members and runtime; documentation navigation; selected shipped parser, emitter, transport, packaging, server and native-asset regression tests. | Windows Server 2022, Python 3.12.7, exact SDK dependency pins. |
-| Browser tests (`off`) | Source and compiled Engine math/ECS/PhysX, Plauna interaction, Snapshot worker operations; extracted Template APIs; root and nested hosting, cleanup and loading diagnostics. | Ubuntu 24.04, pinned Playwright Chromium; no WebGPU requirement. |
-| Browser tests (`software`) | CPU browser checks plus the shipped Engine rendering, Surface Field worker and Plauna scenarios with real WebGPU commands executed through a software adapter. | Ubuntu 24.04, Chromium with SwiftShader requested; reports record the observed adapter separately. |
+| Browser tests (`off`) | Exact approved Engine/Plauna Markdown examples; source and compiled math/ECS/PhysX, Plauna interaction, Snapshot workers; extracted Template APIs; root and nested hosting, cleanup and loading diagnostics. | Ubuntu 24.04, pinned Playwright Chromium; no WebGPU requirement. |
+| Browser tests (`software`) | CPU checks, Engine rendering, Surface Field GPU transport, selected-object pixel readback, and the physics playground's native UI controls and persistence. Both runtime modes, root and nested hosting. | Ubuntu 24.04, Chromium with SwiftShader requested; reports record the observed adapter separately. |
 
 Software WebGPU checks establish functional behavior, not hardware frame rates or complete device compatibility. Full OS, Editor, AGI, native Flow and hardware release acceptance remain recorded in the versioned release validation. This workflow does not relabel those historical results as new CI runs and does not rebuild native binaries or publish releases.
 
-The strict SDK verifier also checks its recorded Python and native compression versions. Its Windows job uses the release baseline and the runner's canonical temporary directory. CI installs dependencies explicitly before tests; application development still requires no Node/npm setup.
+The strict SDK verifier also checks its recorded Python and native compression versions. Its Windows job uses the release baseline. The bundler resolves physical root paths, including Windows short-path aliases. CI installs dependencies explicitly before tests; application development still requires no Node/npm setup.
 
 Browser tooling is pinned to Playwright 1.63.0 and its Chromium build. The harness selects [Chromium's full headless mode](https://playwright.dev/python/docs/browsers#chromium-new-headless-mode); software jobs explicitly select the [SwiftShader Vulkan driver](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/gpu/swiftshader.md). Each report records the actual browser version, launch arguments and adapter identity.
 
@@ -49,11 +49,32 @@ On Linux, `python -m playwright install --with-deps chromium` also installs the 
 - GitHub keeps uploaded artifacts for 14 days. Release validation remains in Git for durable release evidence.
 - A missing browser, missing adapter, failed assertion, broken import or unexpected resource request fails the applicable job. The CPU job explicitly records WebGPU as not run.
 
+[Focused source regression results](../validation/local-source-checks.json) retain the measured selection pixels, resource cleanup, playground controls and documentation interactions. Their negative controls deliberately reproduce the old failures; hosted reports separately test the final compiled distribution.
+
+## Manual release validation
+
+Run [SDK release validation](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-release-validation.yml) from the Actions tab on the candidate branch. This workflow requires no signing keys and does not publish or move release tags.
+
+| Job | Required evidence |
+| --- | --- |
+| Offline JavaScript rebuilding | Install the recorded prerequisites, block build networking, rebuild twice, compare runtime bytes and complete SDK directory inventories, then change a CPU function in a disposable copy and execute the changed compiled result. Reject missing inputs and corrupt native assets. Signed-package probes apply when the package actually contains signed owners. |
+| Endurance, source and compiled | Execute the selection, persistence and worker checks; run 100 create/save/load/destroy scene cycles; continuously simulate and render for ten minutes. Fail on ownership mismatches, non-finite physics, worker failures, GPU errors or unexpected network/resource requests. |
+
+The endurance report includes frame-time percentiles, available Chromium JavaScript heap measurements, browser, adapter, commit and runtime identities. Software adapter timings are labeled as software measurements; JavaScript heap estimates exclude native and GPU allocations. The reports do not claim unmeasured hardware performance or total memory usage.
+
+```powershell
+python -B ci/rebuild_acceptance.py --output test-results/rebuild
+python -B ci/endurance.py --mode source --duration 600 --cycles 100 --output test-results/endurance-source.json
+python -B ci/endurance.py --mode compiled --duration 600 --cycles 100 --output test-results/endurance-compiled.json
+```
+
+Use the same explicitly installed SDK and browser prerequisites as the commands above. Rebuilding writes only to a disposable SDK copy. No SDK ZIP is produced.
+
 ## Preparing the next release
 
 1. Update the distribution through its bundler and refresh the real SDK/Template validation record. Keep sources, runtime manifests, native files and receipts together.
 2. Push a branch and inspect all three CI jobs. Resolve failures before advancing `main`.
-3. Run the hardware and native release acceptance appropriate to changed components; retain those measured results alongside the release.
+3. Run the manual release-validation workflow, plus hardware and native acceptance appropriate to changed components; retain the measured results alongside the release.
 4. Create a new version tag from the tested commit. Preserve previous release tags and assets. Attach the verified Template ZIP according to the release plan.
 
 Keep the front page's release navigation stable. Expand these jobs as public capabilities and runnable examples are added, using actual operations and cleanup checks for each new subsystem.

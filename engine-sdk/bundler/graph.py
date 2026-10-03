@@ -95,7 +95,10 @@ def _is_external_import(import_path):
 
 class ModuleGraph:
     def __init__(self, root_dir, skip_patterns=None, cyclic_baseline=None):
-        self.root = Path(root_dir)
+        # Imports resolve to physical absolute paths. Canonicalize their root
+        # once as well, including Windows 8.3 names and linked checkout aliases,
+        # so module IDs and skip patterns use the same filesystem identity.
+        self.root = Path(root_dir).resolve()
         self.skip = skip_patterns or []
         self.modules = OrderedDict()   # abs_path -> source
         self.raw_modules = OrderedDict()  # source before shader preprocessing

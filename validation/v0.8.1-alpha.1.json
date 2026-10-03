@@ -1,0 +1,2097 @@
+{
+  "format": "particle-git-release-validation/v1",
+  "status": "PASS",
+  "repository": "BTSpaniel/particlerealms.engine",
+  "tag": "v0.8.1-alpha.1",
+  "releaseAssetInventory": [
+    "Template.zip"
+  ],
+  "EngineSDK": {
+    "profile": "engine",
+    "distribution": "ordinary Git files under engine-sdk/",
+    "version": "0.8.1",
+    "sdkReceiptSha256": "e75e8b66ceb393f386b0b6c65e32e5b06aa9cdf1eaa61cd5ef0f0e4c2a29a3e1",
+    "files": 7150,
+    "bytes": 310186864,
+    "testedCommit": "9f664de277a704ee9eece06abf3b58cb011a4f6e",
+    "gitTreeSha1": "825531d7b652bbeb5eaae93b35cdd2ead674fbe3",
+    "committedBytesMatchAcceptedInventory": true,
+    "publicEntrypoints": {
+      "engine/EngineBootstrap.js": "PE",
+      "plauna/index.js": "Plauna"
+    },
+    "publicNamespaces": [
+      "Engine",
+      "Plauna"
+    ],
+    "runtime": {
+      "name": "particle-engine",
+      "sri": "sha384-hqaATXBYpWM1WKkHgsXG6oO7Nz0jNHbBwxQMZ4ZyS7QiN870SW50vXAXFWO5n2vV",
+      "decodedBytes": 19788588,
+      "compressedBytes": 3811024,
+      "sourceContentSha256": "55e9642d12fc3aa5440594cf6ec0f57cf10f07aa91d5a65c704f2511dbb75029",
+      "provenance": {
+        "path": "particle-engine.provenance.json",
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "sha256": "7a3ce42f437c654c6da78a452db465b9e3c688ddbd7d33b9448f2e287ba910fa"
+      }
+    },
+    "buildInputsSha256": "e77aa46e4d575f3f50e576ab400beb9aa8917e668febe6cfa09822324e74b32f",
+    "tools": {
+      "python": "3.12.7",
+      "minifier": "rjsmin",
+      "packages": {
+        "jsonschema": "4.25.1",
+        "cryptography": "46.0.5",
+        "rjsmin": "1.2.5",
+        "attrs": "25.4.0",
+        "referencing": "0.37.0",
+        "rpds-py": "0.30.0",
+        "jsonschema-specifications": "2025.9.1",
+        "cffi": "2.0.0",
+        "pycparser": "3.0",
+        "typing-extensions": "4.15.0",
+        "brotli": "1.2.0",
+        "zstandard": "0.25.0",
+        "zopfli": "0.4.1"
+      },
+      "nativeCompression": {
+        "zlib": {
+          "compiled": "1.3.1",
+          "runtime": "1.3.1"
+        },
+        "lzma": "python-stdlib-lzma2-xz"
+      }
+    },
+    "nativeWasmAssets": [
+      {
+        "path": "engine/sim/physics/physx-pe.wasm",
+        "bytes": 6948292,
+        "sha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4"
+      }
+    ],
+    "inventoryRuntimeSourceValidation": {
+      "inventory": "passed",
+      "runtime": "passed",
+      "sourceClosure": "passed"
+    },
+    "cleanGitCheckout": {
+      "status": "PASS",
+      "outsideDevelopmentRepository": true,
+      "reportSha256": "ad80e9c9444c12701d6e6dafad0c02a6b612c790e2721a05224ad3d18647c0f1",
+      "browserReportSha256": "6bf90a6ad46001a0f791f275ea096e443e14c151b9b26dfe816a881cb80c9d9f",
+      "browserVersion": "154.0.8037.93",
+      "elapsedSeconds": 145.875,
+      "sourceAndCompiledChecks": [
+        {
+          "mount": "/",
+          "status": "PASS",
+          "examples": [
+            {
+              "mode": "source",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 1,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            }
+          ],
+          "documentation": {
+            "status": "PASS",
+            "catalogs": [
+              {
+                "name": "api-index.json",
+                "status": 200,
+                "bytes": 7060574
+              },
+              {
+                "name": "docs-chunks.jsonl",
+                "status": 200,
+                "bytes": 8873443
+              },
+              {
+                "name": "api-symbols.jsonl",
+                "status": 200,
+                "bytes": 15131550
+              }
+            ],
+            "navigationWithinPackage": true
+          },
+          "unsupportedBrowserChecks": [
+            {
+              "mode": "source",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            },
+            {
+              "mode": "compiled",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            }
+          ],
+          "crossOriginIsolated": true,
+          "diagnosticsClean": true
+        },
+        {
+          "mount": "/sdk-nested/",
+          "status": "PASS",
+          "examples": [
+            {
+              "mode": "source",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            }
+          ],
+          "documentation": {
+            "status": "PASS",
+            "catalogs": [
+              {
+                "name": "api-index.json",
+                "status": 200,
+                "bytes": 7060574
+              },
+              {
+                "name": "docs-chunks.jsonl",
+                "status": 200,
+                "bytes": 8873443
+              },
+              {
+                "name": "api-symbols.jsonl",
+                "status": 200,
+                "bytes": 15131550
+              }
+            ],
+            "navigationWithinPackage": true
+          },
+          "unsupportedBrowserChecks": [
+            {
+              "mode": "source",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            },
+            {
+              "mode": "compiled",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            }
+          ],
+          "crossOriginIsolated": true,
+          "diagnosticsClean": true
+        }
+      ]
+    },
+    "priorPackageAcceptance": {
+      "status": "PASS",
+      "reportSha256": "4ef17d174e4a062ced110879924aac13b825a43feca9cb7600ebfa93b5a519fe",
+      "acceptedArchiveSha256": "ed881f18d70cd49c363d6372c475f0bcd6f9bd114005f233c95d0a9bf7c9d0dd",
+      "sourceAndCompiledChecks": [
+        {
+          "mount": "/",
+          "status": "PASS",
+          "examples": [
+            {
+              "mode": "source",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            }
+          ],
+          "documentation": {
+            "status": "PASS",
+            "catalogs": [
+              {
+                "name": "api-index.json",
+                "status": 200,
+                "bytes": 7060574
+              },
+              {
+                "name": "docs-chunks.jsonl",
+                "status": 200,
+                "bytes": 8873443
+              },
+              {
+                "name": "api-symbols.jsonl",
+                "status": 200,
+                "bytes": 15131550
+              }
+            ],
+            "navigationWithinPackage": true
+          },
+          "unsupportedBrowserChecks": [
+            {
+              "mode": "source",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            },
+            {
+              "mode": "compiled",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            }
+          ],
+          "crossOriginIsolated": true,
+          "diagnosticsClean": true
+        },
+        {
+          "mount": "/sdk-nested/",
+          "status": "PASS",
+          "examples": [
+            {
+              "mode": "source",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "source",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "engine",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Native gravity and floor contact",
+                  "passed": true,
+                  "detail": {
+                    "positionM": [
+                      -0.026736939325928688,
+                      0.65428626537323,
+                      -0.02279893308877945
+                    ],
+                    "steps": 60
+                  }
+                },
+                {
+                  "name": "ECS Transform retains physics pose",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "Engine renderEntities submits an indexed cube",
+                  "passed": true,
+                  "detail": {
+                    "renderedFrames": 2,
+                    "triangles": 12
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Render loop and resize listener",
+                  "Entity model uniform",
+                  "Engine cube mesh",
+                  "WebGPU canvas surface",
+                  "WebGPU device",
+                  "Native PhysX world",
+                  "ECS entity"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "worker",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Worker water brush edits real cells",
+                  "passed": true,
+                  "detail": {
+                    "cells": 12
+                  }
+                },
+                {
+                  "name": "Worker executes GPU water transport",
+                  "passed": true,
+                  "detail": {
+                    "gpuSteps": 2,
+                    "workerSteps": 1
+                  }
+                },
+                {
+                  "name": "Checkpoint preserves bounded water mass",
+                  "passed": true,
+                  "detail": {
+                    "waterM3": 3.0682208517770164e-05,
+                    "waterResidualKg": 0
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Surface Field module worker",
+                  "Surface Field GPU buffers",
+                  "WebGPU device"
+                ],
+                "failures": []
+              }
+            },
+            {
+              "mode": "compiled",
+              "case": "plauna",
+              "status": "passed",
+              "checks": [
+                {
+                  "name": "Plauna renders a retained Button",
+                  "passed": true,
+                  "detail": null
+                },
+                {
+                  "name": "DOM click updates StateStore and retained UI",
+                  "passed": true,
+                  "detail": {
+                    "clicks": 1
+                  }
+                }
+              ],
+              "cleanup": {
+                "status": "passed",
+                "released": [
+                  "Plauna app and retained tree"
+                ],
+                "failures": []
+              }
+            }
+          ],
+          "documentation": {
+            "status": "PASS",
+            "catalogs": [
+              {
+                "name": "api-index.json",
+                "status": 200,
+                "bytes": 7060574
+              },
+              {
+                "name": "docs-chunks.jsonl",
+                "status": 200,
+                "bytes": 8873443
+              },
+              {
+                "name": "api-symbols.jsonl",
+                "status": 200,
+                "bytes": 15131550
+              }
+            ],
+            "navigationWithinPackage": true
+          },
+          "unsupportedBrowserChecks": [
+            {
+              "mode": "source",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            },
+            {
+              "mode": "compiled",
+              "status": "PASS",
+              "diagnostic": "UnsupportedBrowserError",
+              "cleanup": "passed"
+            }
+          ],
+          "crossOriginIsolated": true,
+          "diagnosticsClean": true
+        }
+      ]
+    },
+    "offlineRebuild": {
+      "status": "PASS",
+      "runtimeHashes": [
+        {
+          "particle-engine.js": "8c4aa5a524fccfa084e74dbfdb57bbf6680ffda198dcc055ca3e93cbfdb880cc",
+          "particle-engine.min.js": "87320986c0aafc3ded17abedc54d48e27011f3caf6cb5744cb29d9a53505b2cb",
+          "particle-engine.min.js.br": "0141b6a497af5328c925610e988b51331fd987e1472926dfd3655ae19943a753",
+          "particle-engine.min.js.gz": "396f0c790e316ef2ba87e8e84abcc46fb0ac01b01062c6f155f11b852b2cdaff",
+          "particle-engine.min.js.sri": "af2af210a31b1f5b15177a2bb4a312f2e8ecd6a797485745f6dbc8dd0aa22f08",
+          "particle-engine.min.js.xz": "a8baf7f2c55f1c597e992e093717d8cff013138832afb8a022347f4bf85f74e7",
+          "particle-engine.min.js.zst": "af472cd865cb8518dc8fdb1c0c36c20484bba59830b63f40ff2a2d7bc837ffe7"
+        },
+        {
+          "particle-engine.js": "8c4aa5a524fccfa084e74dbfdb57bbf6680ffda198dcc055ca3e93cbfdb880cc",
+          "particle-engine.min.js": "87320986c0aafc3ded17abedc54d48e27011f3caf6cb5744cb29d9a53505b2cb",
+          "particle-engine.min.js.br": "0141b6a497af5328c925610e988b51331fd987e1472926dfd3655ae19943a753",
+          "particle-engine.min.js.gz": "396f0c790e316ef2ba87e8e84abcc46fb0ac01b01062c6f155f11b852b2cdaff",
+          "particle-engine.min.js.sri": "af2af210a31b1f5b15177a2bb4a312f2e8ecd6a797485745f6dbc8dd0aa22f08",
+          "particle-engine.min.js.xz": "a8baf7f2c55f1c597e992e093717d8cff013138832afb8a022347f4bf85f74e7",
+          "particle-engine.min.js.zst": "af472cd865cb8518dc8fdb1c0c36c20484bba59830b63f40ff2a2d7bc837ffe7"
+        }
+      ],
+      "archiveIdentities": [
+        {
+          "sha256": "316050226d8d2c980969da649b933c21fcca0493c580b5e7e65fcb3a0aecab8a",
+          "bytes": 128933801
+        },
+        {
+          "sha256": "316050226d8d2c980969da649b933c21fcca0493c580b5e7e65fcb3a0aecab8a",
+          "bytes": 128933801
+        }
+      ],
+      "changedRuntimeHashes": {
+        "particle-engine.js": "3177cf3492af60901c67faeb775870e0103af078f1562d70a685701eb40a8fb4",
+        "particle-engine.min.js": "b2f00048c51dcaec94b5c89c9688eea3d3367b931deb3042333ea0167de74f39",
+        "particle-engine.min.js.br": "f7c8ae67021c74d07f615fa175e9c96c3ad9e5240fcc635290c7c0e12494c028",
+        "particle-engine.min.js.gz": "a6021ea0be1d2243f53f5838b4d0120bd3d8c92b29f6f8b423da7c937689c0f7",
+        "particle-engine.min.js.sri": "4b4882dc45626975c77add099afffeb7eb8096c3e5d28f9ad4253753bba6cdf3",
+        "particle-engine.min.js.xz": "53e12fa7a6aac742123a4e2710b154327a397993a9df6ba9acba8ef3d8e503e9",
+        "particle-engine.min.js.zst": "93570c7a304eec2b25966aa2ad017842c105c7fceb63f2e5d6654cff9fb3b82c"
+      },
+      "cpuVec3Result": [
+        3,
+        3,
+        4
+      ],
+      "privateKeysPresent": false,
+      "pythonNetworkAccess": "blocked",
+      "scope": "Two unchanged offline JavaScript builds with identical runtime and packaging bytes; third build with an authored CPU change executed in a browser"
+    },
+    "nativeAcceptance": [
+      {
+        "mount": "/",
+        "status": "PASS",
+        "reportSha256": "4611ba3448314a73fd8dc195b36ba2f47d6866b3244a5def1461d4a09d5d7140",
+        "runtime": {
+          "moduleName": "physx-pe",
+          "sdkVersion": "5.11.0",
+          "upstreamTag": "ovphysx-0.6.3",
+          "upstreamCommit": "da950a3537927784951853c66618036f332ca0ce",
+          "capabilities": {
+            "rigidBodies": true,
+            "rustBulkAbi": 2,
+            "bulkApiAbi": 1,
+            "simd128": true,
+            "blastVersion": "5.0.6",
+            "blastFractureSelfTest": true,
+            "blastSceneApi": true,
+            "flowStagingAbi": 1,
+            "flowShaderModules": 97,
+            "flowSelectedPipelines": 96,
+            "flowSolver": true,
+            "flowHostAbi": 1,
+            "flowExcludedPipeline": "source/nvflowext/shaders/EmitterNanoVdbCS.wgsl",
+            "flowSceneAbi": 1,
+            "flowEmitterShapes": [
+              "sphere",
+              "box",
+              "points",
+              "mesh"
+            ],
+            "flowMultipleEmitters": true,
+            "flowLayers": true,
+            "flowGeometryAbi": 1,
+            "flowCollisionAbi": 1,
+            "flowColliderShapes": [
+              "sphere",
+              "box"
+            ],
+            "flowCollisionCoupling": "one-way-velocity",
+            "blastStressAbi": 1,
+            "blastStressBackend": "scalar-cpu-wasm",
+            "blastStressUnits": "Pa",
+            "blastAuthoringAbi": 1
+          }
+        },
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "blackwell"
+        },
+        "extensionGroups": {
+          "blast": "PASS",
+          "blastContactManifold": "PASS",
+          "blastSnapshotRestore": "PASS",
+          "blastStress": "PASS",
+          "wovenCloth": "PASS",
+          "gpuChains": "PASS",
+          "flow": "PASS",
+          "flowWorldVelocity": "PASS",
+          "flowScene": "PASS",
+          "flowSceneCleanup": "PASS",
+          "flowGeometry": "PASS",
+          "blastAuthoring": "PASS",
+          "blastAuthoredScene": "PASS",
+          "flowCollision": "PASS",
+          "flowPhysXCollision": "PASS"
+        },
+        "rustReadback": {
+          "backend": "physx-pe-rust",
+          "bodies": 1,
+          "batches": 1,
+          "snapshots": 244
+        },
+        "resourcesReleased": true,
+        "diagnosticsClean": true
+      },
+      {
+        "mount": "/sdk-nested/",
+        "status": "PASS",
+        "reportSha256": "75a9f7dd90c765f685d875316a1740857226118bb3f7b7f1cd5c3bda4e028279",
+        "runtime": {
+          "moduleName": "physx-pe",
+          "sdkVersion": "5.11.0",
+          "upstreamTag": "ovphysx-0.6.3",
+          "upstreamCommit": "da950a3537927784951853c66618036f332ca0ce",
+          "capabilities": {
+            "rigidBodies": true,
+            "rustBulkAbi": 2,
+            "bulkApiAbi": 1,
+            "simd128": true,
+            "blastVersion": "5.0.6",
+            "blastFractureSelfTest": true,
+            "blastSceneApi": true,
+            "flowStagingAbi": 1,
+            "flowShaderModules": 97,
+            "flowSelectedPipelines": 96,
+            "flowSolver": true,
+            "flowHostAbi": 1,
+            "flowExcludedPipeline": "source/nvflowext/shaders/EmitterNanoVdbCS.wgsl",
+            "flowSceneAbi": 1,
+            "flowEmitterShapes": [
+              "sphere",
+              "box",
+              "points",
+              "mesh"
+            ],
+            "flowMultipleEmitters": true,
+            "flowLayers": true,
+            "flowGeometryAbi": 1,
+            "flowCollisionAbi": 1,
+            "flowColliderShapes": [
+              "sphere",
+              "box"
+            ],
+            "flowCollisionCoupling": "one-way-velocity",
+            "blastStressAbi": 1,
+            "blastStressBackend": "scalar-cpu-wasm",
+            "blastStressUnits": "Pa",
+            "blastAuthoringAbi": 1
+          }
+        },
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "blackwell"
+        },
+        "extensionGroups": {
+          "blast": "PASS",
+          "blastContactManifold": "PASS",
+          "blastSnapshotRestore": "PASS",
+          "blastStress": "PASS",
+          "wovenCloth": "PASS",
+          "gpuChains": "PASS",
+          "flow": "PASS",
+          "flowWorldVelocity": "PASS",
+          "flowScene": "PASS",
+          "flowSceneCleanup": "PASS",
+          "flowGeometry": "PASS",
+          "blastAuthoring": "PASS",
+          "blastAuthoredScene": "PASS",
+          "flowCollision": "PASS",
+          "flowPhysXCollision": "PASS"
+        },
+        "rustReadback": {
+          "backend": "physx-pe-rust",
+          "bodies": 1,
+          "batches": 1,
+          "snapshots": 244
+        },
+        "resourcesReleased": true,
+        "diagnosticsClean": true
+      }
+    ]
+  },
+  "Template.zip": {
+    "bytes": 46204401,
+    "sha256": "22c7b733fc9398a5b8ce605ff2bd191f6b5006ff0e49df54e565f9eb5597ba24",
+    "profile": "runtime-only",
+    "archivePrefix": "Template/",
+    "files": 721,
+    "treeBytes": 63628168,
+    "templateReceiptSha256": "df5c97aa8aa068d511eb69d921782f1e7ba44de9c3abe8d6d0a810fad687801d",
+    "donorSDKReceiptSha256": "124d56ae72a73900f86e09be1b7b731b34d0dce82f9bc1209ab7f6dbd7e3c3f2",
+    "runtimeSRI": "sha384-VkpXXRmOIzl/JqTdfYh9TxYzKJWiwwifbMHQpXtj+SDTuenCcIPcltLR8T3uIsCs",
+    "loaderCacheToken": "c8affaf979ddd001",
+    "deterministicArchive": true,
+    "duplicateBytes": 372384,
+    "platformGzipCopies": 1,
+    "physxPeWasmCopies": 1,
+    "canonicalSourcesIncluded": false,
+    "buildToolsIncluded": false,
+    "fullSDKDocumentationIncluded": false,
+    "publicationReceiptSha256": "0c30816af70e6b6704dc93d40b89eb439167914172b2671b3c04a3348436037f",
+    "browserAcceptanceReportSha256": "3f95279356ce8d3845cceb7145438b01741c333d6d845bf99a92caee7fdcff57",
+    "browserVersion": "154.0.8037.93",
+    "browserFeaturesDisabled": [
+      "AvoidUnnecessaryBeforeUnloadCheckSync",
+      "BoundaryEventDispatchTracksNodeRemoval",
+      "DestroyProfileOnBrowserClose",
+      "DialMediaRouteProvider",
+      "GlobalMediaControls",
+      "HttpsUpgrades",
+      "LensOverlay",
+      "MediaRouter",
+      "PaintHolding",
+      "ThirdPartyStoragePartitioning",
+      "Translate",
+      "AutoDeElevate",
+      "RenderDocument",
+      "OptimizationHints",
+      "AvoidUnnecessaryBeforeUnloadCheckSync",
+      "BoundaryEventDispatchTracksNodeRemoval",
+      "DestroyProfileOnBrowserClose",
+      "DialMediaRouteProvider",
+      "GlobalMediaControls",
+      "HttpsUpgrades",
+      "LensOverlay",
+      "MediaRouter",
+      "PaintHolding",
+      "ThirdPartyStoragePartitioning",
+      "Translate",
+      "AutoDeElevate",
+      "RenderDocument",
+      "OptimizationHints",
+      "AutofillServerCommunication"
+    ],
+    "elapsedSeconds": 184.783,
+    "harnessInputsSha256": {
+      "scenarios": "f7d410709bec6cc4afe24bebcbc45d617efbaf5b23574b82fbb2b8e301d696bf",
+      "localApp": "3c74306d30d45292c935deb1fe2a70bdedd3bad93e5d8359769cf9b0f184d1a1",
+      "nativeExtensions": "0456a1df0de2490a1b1276cea594a4aa6b1b1d023292fb910061ac6869f3081b",
+      "runner": "ea95b146a24462a7996882f000bea76dd48efa573e509ced1e3adbea7a9feb89"
+    },
+    "server": {
+      "status": "PASS",
+      "responses": [
+        {
+          "path": "index.html",
+          "status": 200,
+          "mime": "text/html"
+        },
+        {
+          "path": "assets/release-runtime-loader.js",
+          "status": 200,
+          "mime": "text/javascript"
+        },
+        {
+          "path": "assets/physx-pe.wasm",
+          "status": 200,
+          "mime": "application/wasm"
+        },
+        {
+          "path": "template-manifest.json",
+          "status": 200,
+          "mime": "application/json"
+        }
+      ],
+      "localhost_only": true
+    },
+    "extractedOutsideRepository": true,
+    "browserChecks": [
+      {
+        "mount": "/",
+        "status": "PASS",
+        "modes": [
+          {
+            "mode": "canvas",
+            "status": "PASS",
+            "cleanup": "passed"
+          },
+          {
+            "mode": "plauna",
+            "status": "PASS",
+            "cleanup": "passed"
+          },
+          {
+            "mode": "os",
+            "status": "PASS",
+            "cleanup": "passed"
+          }
+        ],
+        "compiledExamples": [
+          {
+            "mode": "compiled",
+            "case": "engine",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Native gravity and floor contact",
+                "passed": true,
+                "detail": {
+                  "positionM": [
+                    -0.026736939325928688,
+                    0.65428626537323,
+                    -0.02279893308877945
+                  ],
+                  "steps": 60
+                }
+              },
+              {
+                "name": "ECS Transform retains physics pose",
+                "passed": true,
+                "detail": null
+              },
+              {
+                "name": "Engine renderEntities submits an indexed cube",
+                "passed": true,
+                "detail": {
+                  "renderedFrames": 2,
+                  "triangles": 12
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Render loop and resize listener",
+                "Entity model uniform",
+                "Engine cube mesh",
+                "WebGPU canvas surface",
+                "WebGPU device",
+                "Native PhysX world",
+                "ECS entity",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "worker",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Worker water brush edits real cells",
+                "passed": true,
+                "detail": {
+                  "cells": 12
+                }
+              },
+              {
+                "name": "Worker executes GPU water transport",
+                "passed": true,
+                "detail": {
+                  "gpuSteps": 2,
+                  "workerSteps": 1
+                }
+              },
+              {
+                "name": "Checkpoint preserves bounded water mass",
+                "passed": true,
+                "detail": {
+                  "waterM3": 3.0682208517770164e-05,
+                  "waterResidualKg": 0
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Surface Field module worker",
+                "Surface Field GPU buffers",
+                "WebGPU device",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "plauna",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Plauna renders a retained Button",
+                "passed": true,
+                "detail": null
+              },
+              {
+                "name": "DOM click updates StateStore and retained UI",
+                "passed": true,
+                "detail": {
+                  "clicks": 1
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Plauna app and retained tree",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "editor",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Editor saves and reopens the project",
+                "passed": true,
+                "detail": {
+                  "uuid": "project-1790986926196-1a2e816",
+                  "schemaVersion": 1
+                }
+              },
+              {
+                "name": "Reopened edits survive another save",
+                "passed": true,
+                "detail": null
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Example Editor project",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "agi",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "GPU ComputeGraph addition matches the vector oracle",
+                "passed": true,
+                "detail": {
+                  "sum": [
+                    11,
+                    22,
+                    33,
+                    44
+                  ]
+                }
+              },
+              {
+                "name": "ComputeGraph executes dependent scaling",
+                "passed": true,
+                "detail": {
+                  "result": [
+                    22,
+                    44,
+                    66,
+                    88
+                  ],
+                  "order": [
+                    "left",
+                    "right",
+                    "sum",
+                    "scaled"
+                  ]
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "AGI computation buffers",
+                "AGI ComputeGraph",
+                "WebGPU device",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "os",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Explicit OS boot returns real kernel and desktop",
+                "passed": true,
+                "detail": null
+              },
+              {
+                "name": "Strict local manifest mounts the app",
+                "passed": true,
+                "detail": {
+                  "appId": "sdk.local-app",
+                  "temporarySession": true,
+                  "mountState": "ready"
+                }
+              },
+              {
+                "name": "Local OS app interaction executes",
+                "passed": true,
+                "detail": null
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "WebGPU OS lifetime",
+                "SDK app registry entry",
+                "Local app module URL",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          }
+        ],
+        "nativeExtensions": {
+          "status": "PASS",
+          "extensionGroups": {
+            "blast": "PASS",
+            "blastContactManifold": "PASS",
+            "blastSnapshotRestore": "PASS",
+            "blastStress": "PASS",
+            "wovenCloth": "PASS",
+            "gpuChains": "PASS",
+            "flow": "PASS",
+            "flowWorldVelocity": "PASS",
+            "flowScene": "PASS",
+            "flowSceneCleanup": "PASS",
+            "flowGeometry": "PASS",
+            "blastAuthoring": "PASS",
+            "blastAuthoredScene": "PASS",
+            "flowCollision": "PASS",
+            "flowPhysXCollision": "PASS"
+          },
+          "rustReadback": {
+            "backend": "physx-pe-rust",
+            "bodies": 1,
+            "batches": 1,
+            "snapshots": 244
+          },
+          "flowShaderRequests": 97,
+          "runtime": {
+            "moduleName": "physx-pe",
+            "sdkVersion": "5.11.0",
+            "upstreamTag": "ovphysx-0.6.3",
+            "upstreamCommit": "da950a3537927784951853c66618036f332ca0ce",
+            "capabilities": {
+              "rigidBodies": true,
+              "rustBulkAbi": 2,
+              "bulkApiAbi": 1,
+              "simd128": true,
+              "blastVersion": "5.0.6",
+              "blastFractureSelfTest": true,
+              "blastSceneApi": true,
+              "flowStagingAbi": 1,
+              "flowShaderModules": 97,
+              "flowSelectedPipelines": 96,
+              "flowSolver": true,
+              "flowHostAbi": 1,
+              "flowExcludedPipeline": "source/nvflowext/shaders/EmitterNanoVdbCS.wgsl",
+              "flowSceneAbi": 1,
+              "flowEmitterShapes": [
+                "sphere",
+                "box",
+                "points",
+                "mesh"
+              ],
+              "flowMultipleEmitters": true,
+              "flowLayers": true,
+              "flowGeometryAbi": 1,
+              "flowCollisionAbi": 1,
+              "flowColliderShapes": [
+                "sphere",
+                "box"
+              ],
+              "flowCollisionCoupling": "one-way-velocity",
+              "blastStressAbi": 1,
+              "blastStressBackend": "scalar-cpu-wasm",
+              "blastStressUnits": "Pa",
+              "blastAuthoringAbi": 1
+            }
+          },
+          "resourcesReleased": true
+        },
+        "nativeWasm": {
+          "status": "PASS",
+          "path": "/assets/physx-pe.wasm",
+          "factory": "compiled"
+        },
+        "networkContainment": {
+          "status": "PASS",
+          "serviceWorkers": "allowed",
+          "externalAndRepositoryFallbackBlocked": true
+        },
+        "diagnosticsClean": true,
+        "gpuErrors": [],
+        "helpAndReadme": "PASS"
+      },
+      {
+        "mount": "/template-nested/",
+        "status": "PASS",
+        "modes": [
+          {
+            "mode": "canvas",
+            "status": "PASS",
+            "cleanup": "passed"
+          },
+          {
+            "mode": "plauna",
+            "status": "PASS",
+            "cleanup": "passed"
+          },
+          {
+            "mode": "os",
+            "status": "PASS",
+            "cleanup": "passed"
+          }
+        ],
+        "compiledExamples": [
+          {
+            "mode": "compiled",
+            "case": "engine",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Native gravity and floor contact",
+                "passed": true,
+                "detail": {
+                  "positionM": [
+                    -0.026736939325928688,
+                    0.65428626537323,
+                    -0.02279893308877945
+                  ],
+                  "steps": 60
+                }
+              },
+              {
+                "name": "ECS Transform retains physics pose",
+                "passed": true,
+                "detail": null
+              },
+              {
+                "name": "Engine renderEntities submits an indexed cube",
+                "passed": true,
+                "detail": {
+                  "renderedFrames": 2,
+                  "triangles": 12
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Render loop and resize listener",
+                "Entity model uniform",
+                "Engine cube mesh",
+                "WebGPU canvas surface",
+                "WebGPU device",
+                "Native PhysX world",
+                "ECS entity",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "worker",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Worker water brush edits real cells",
+                "passed": true,
+                "detail": {
+                  "cells": 12
+                }
+              },
+              {
+                "name": "Worker executes GPU water transport",
+                "passed": true,
+                "detail": {
+                  "gpuSteps": 2,
+                  "workerSteps": 1
+                }
+              },
+              {
+                "name": "Checkpoint preserves bounded water mass",
+                "passed": true,
+                "detail": {
+                  "waterM3": 3.0682208517770164e-05,
+                  "waterResidualKg": 0
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Surface Field module worker",
+                "Surface Field GPU buffers",
+                "WebGPU device",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "plauna",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Plauna renders a retained Button",
+                "passed": true,
+                "detail": null
+              },
+              {
+                "name": "DOM click updates StateStore and retained UI",
+                "passed": true,
+                "detail": {
+                  "clicks": 1
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Plauna app and retained tree",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "editor",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Editor saves and reopens the project",
+                "passed": true,
+                "detail": {
+                  "uuid": "project-1790987016594-9089ad9",
+                  "schemaVersion": 1
+                }
+              },
+              {
+                "name": "Reopened edits survive another save",
+                "passed": true,
+                "detail": null
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "Example Editor project",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "agi",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "GPU ComputeGraph addition matches the vector oracle",
+                "passed": true,
+                "detail": {
+                  "sum": [
+                    11,
+                    22,
+                    33,
+                    44
+                  ]
+                }
+              },
+              {
+                "name": "ComputeGraph executes dependent scaling",
+                "passed": true,
+                "detail": {
+                  "result": [
+                    22,
+                    44,
+                    66,
+                    88
+                  ],
+                  "order": [
+                    "left",
+                    "right",
+                    "sum",
+                    "scaled"
+                  ]
+                }
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "AGI computation buffers",
+                "AGI ComputeGraph",
+                "WebGPU device",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          },
+          {
+            "mode": "compiled",
+            "case": "os",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "Explicit OS boot returns real kernel and desktop",
+                "passed": true,
+                "detail": null
+              },
+              {
+                "name": "Strict local manifest mounts the app",
+                "passed": true,
+                "detail": {
+                  "appId": "sdk.local-app",
+                  "temporarySession": true,
+                  "mountState": "ready"
+                }
+              },
+              {
+                "name": "Local OS app interaction executes",
+                "passed": true,
+                "detail": null
+              }
+            ],
+            "cleanup": {
+              "status": "passed",
+              "released": [
+                "WebGPU OS lifetime",
+                "SDK app registry entry",
+                "Local app module URL",
+                "Acceptance stage"
+              ],
+              "failures": []
+            }
+          }
+        ],
+        "nativeExtensions": {
+          "status": "PASS",
+          "extensionGroups": {
+            "blast": "PASS",
+            "blastContactManifold": "PASS",
+            "blastSnapshotRestore": "PASS",
+            "blastStress": "PASS",
+            "wovenCloth": "PASS",
+            "gpuChains": "PASS",
+            "flow": "PASS",
+            "flowWorldVelocity": "PASS",
+            "flowScene": "PASS",
+            "flowSceneCleanup": "PASS",
+            "flowGeometry": "PASS",
+            "blastAuthoring": "PASS",
+            "blastAuthoredScene": "PASS",
+            "flowCollision": "PASS",
+            "flowPhysXCollision": "PASS"
+          },
+          "rustReadback": {
+            "backend": "physx-pe-rust",
+            "bodies": 1,
+            "batches": 1,
+            "snapshots": 244
+          },
+          "flowShaderRequests": 97,
+          "runtime": {
+            "moduleName": "physx-pe",
+            "sdkVersion": "5.11.0",
+            "upstreamTag": "ovphysx-0.6.3",
+            "upstreamCommit": "da950a3537927784951853c66618036f332ca0ce",
+            "capabilities": {
+              "rigidBodies": true,
+              "rustBulkAbi": 2,
+              "bulkApiAbi": 1,
+              "simd128": true,
+              "blastVersion": "5.0.6",
+              "blastFractureSelfTest": true,
+              "blastSceneApi": true,
+              "flowStagingAbi": 1,
+              "flowShaderModules": 97,
+              "flowSelectedPipelines": 96,
+              "flowSolver": true,
+              "flowHostAbi": 1,
+              "flowExcludedPipeline": "source/nvflowext/shaders/EmitterNanoVdbCS.wgsl",
+              "flowSceneAbi": 1,
+              "flowEmitterShapes": [
+                "sphere",
+                "box",
+                "points",
+                "mesh"
+              ],
+              "flowMultipleEmitters": true,
+              "flowLayers": true,
+              "flowGeometryAbi": 1,
+              "flowCollisionAbi": 1,
+              "flowColliderShapes": [
+                "sphere",
+                "box"
+              ],
+              "flowCollisionCoupling": "one-way-velocity",
+              "blastStressAbi": 1,
+              "blastStressBackend": "scalar-cpu-wasm",
+              "blastStressUnits": "Pa",
+              "blastAuthoringAbi": 1
+            }
+          },
+          "resourcesReleased": true
+        },
+        "nativeWasm": {
+          "status": "PASS",
+          "path": "/template-nested/assets/physx-pe.wasm",
+          "factory": "compiled"
+        },
+        "networkContainment": {
+          "status": "PASS",
+          "serviceWorkers": "allowed",
+          "externalAndRepositoryFallbackBlocked": true
+        },
+        "diagnosticsClean": true,
+        "gpuErrors": [],
+        "helpAndReadme": "PASS"
+      }
+    ]
+  }
+}

@@ -1,14 +1,18 @@
 ---
 title: Quickstart
-description: Boot the WebGPU OS and open your first app after installing, using the bundled local Python HTTP server.
-updated: 2026-06-05
+description: Choose the Engine + Plauna SDK examples or boot WebGPU OS from the full Platform Template or development stack.
+updated: 2026-10-03
 ---
 
 # Quickstart
 
-This guide boots the WebGPU OS and opens an app. It assumes you have completed [Install & Run](install.md).
+For the public **Engine + Plauna SDK**, follow [SDK setup](../guides/sdk-distribution.md#get-and-serve-the-sdk), then open its Engine and Plauna examples. The SDK does not include the full OS application entry point.
 
-## 1. Boot the OS
+For the public **full Platform Template**, extract `Template.zip`, run `python serve.py 9001` inside `Template/`, open `http://127.0.0.1:9001/`, and choose **WebGPU OS**, **Plauna Showcase**, or **Blank Canvas**.
+
+The remaining steps describe the **full development source repository**. They assume you have completed the development instructions in [Install & Run](install.md).
+
+## 1. Boot the development OS
 
 Serve the repo and open the OS:
 

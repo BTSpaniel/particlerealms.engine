@@ -36,10 +36,10 @@
  * - Text engine integration (pretext or custom)
  *
  * INITIALIZATION FLOW:
- * 1. createPlaunaApp(options) - Factory function
+ * 1. await createPlaunaApp(options) - Asynchronous factory function
  * 2. PlaunaApp constructor - Sets up core components
  * 3. initialize() - Initializes all subsystems
- * 4. mount() - Mounts to root DOM element
+ * 4. visualTree.setRoot(node), domRenderer.render(visualTree) - Render owned UI
  *
  * OPTIONS:
  * - root: Required DOM element to mount to
@@ -52,29 +52,26 @@
  * - enableSmartContextMenu: Enable smart context menu (default: true)
  *
  * PUBLIC API:
- * - mount(): Mount app to root element
  * - destroy(): Cleanup and destroy app
- * - addComponent(): Add component to registry
- * - getComponent(): Get component from registry
  * - visualTree: Access visual tree instance
- * - renderer: Access DOM renderer instance
+ * - domRenderer: Access DOM renderer instance
  * - eventSystem: Access event system instance
  * - themeManager: Access theme manager instance
  *
  * LIFECYCLE:
- * - Created via createPlaunaApp() factory
- * - Must call mount() to display UI
- * - Call destroy() to cleanup
+ * - Created via awaited createPlaunaApp() factory
+ * - Set the retained root and render it through domRenderer
+ * - Call destroy(), release the owned visualTree, then remove the owned DOM root
  *
  * USAGE:
- *   const app = await createPlaunaApp({
- *       root: document.body,
- *       getVGPU: () => vgpuInstance,
- *       engine: particleEngine
- *   });
- *   await app.mount();
- *   // ... use app
+ *   const root = document.createElement('section');
+ *   document.body.append(root);
+ *   const app = await createPlaunaApp({ root, enableDeveloperTools: false });
+ *   // Supply your retained UINode tree through app.visualTree.setRoot(node).
+ *   app.domRenderer.render(app.visualTree);
  *   app.destroy();
+ *   app.visualTree.destroy();
+ *   root.remove();
  */
 
 import { createWorld, createEntity } from '../../engine/ecs/world/World.js';

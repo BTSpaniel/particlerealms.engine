@@ -32,9 +32,6 @@ from bundler.graph import ModuleGraph
 from bundler.engine_demo_transport import descriptor_path, publish_transport, read_descriptor, read_transport_file, transport_paths
 
 ROOT = Path(__file__).resolve().parents[2]
-_RUNNER_SPEC = importlib.util.spec_from_file_location('sdk_acceptance_test_helpers', ROOT / 'tests/run_sdk_acceptance.py')
-runner = importlib.util.module_from_spec(_RUNNER_SPEC)
-_RUNNER_SPEC.loader.exec_module(runner)
 
 
 def write(root, relative, payload):
@@ -1018,14 +1015,24 @@ class TestSdkAssemblyAndPublication(unittest.TestCase):
 
 
 class TestSdkAcceptanceIsolation(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Only these developer HTTP tests need the repository acceptance
+        # runner. Portable packaging fixtures are also shipped in SDKs which
+        # intentionally exclude the development tests directory.
+        specification = importlib.util.spec_from_file_location(
+            'sdk_acceptance_test_helpers', ROOT / 'tests/run_sdk_acceptance.py')
+        cls.runner = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(cls.runner)
+
     def test_request_paths_reject_traversal_other_mounts_and_double_encoding(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             for raw in ('/../outside', '/%2e%2e/outside', '/%252e%252e/outside', '/engine/index.js',
                         '/sdk-nested/..%5coutside', '/sdk-nested/%00'):
                 with self.subTest(raw=raw), self.assertRaises(ValueError):
-                    runner.contained_request_path(root, raw, '/sdk-nested/')
-            self.assertEqual(runner.contained_request_path(root, '/sdk-nested/engine/main.js?v=1', '/sdk-nested/'),
+                    self.runner.contained_request_path(root, raw, '/sdk-nested/')
+            self.assertEqual(self.runner.contained_request_path(root, '/sdk-nested/engine/main.js?v=1', '/sdk-nested/'),
                              root / 'engine/main.js')
 
     def test_server_serves_nested_sdk_only_with_wasm_and_module_mime_types(self):
@@ -1034,7 +1041,7 @@ class TestSdkAcceptanceIsolation(unittest.TestCase):
             write(root, 'engine/main.mjs', 'export {};')
             write(root, 'engine/native.wasm', b'\0asm\x01\0\0\0')
             write(root.parent, 'outside.js', 'must not be served')
-            with runner.sdk_server(root, '/sdk-nested/') as (origin, observations):
+            with self.runner.sdk_server(root, '/sdk-nested/') as (origin, observations):
                 for name, mime in (('main.mjs', 'text/javascript'), ('native.wasm', 'application/wasm')):
                     with urlopen(origin + '/sdk-nested/engine/' + name) as response:
                         self.assertEqual(response.headers.get_content_type(), mime)
@@ -1062,7 +1069,7 @@ class TestSdkAcceptanceIsolation(unittest.TestCase):
                         item.external_attr = (0o120777 << 16)
                         archive.writestr(item, '../outside')
                 with self.assertRaises(ValueError):
-                    runner.extract_sdk(archive_path, Path(temporary) / 'extracted')
+                    self.runner.extract_sdk(archive_path, Path(temporary) / 'extracted')
 
 
 class TestSdkCliPreflight(unittest.TestCase):
