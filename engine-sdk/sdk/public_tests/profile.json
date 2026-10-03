@@ -1,0 +1,417 @@
+{
+  "schema": "particle-sdk-public-tests/v1",
+  "modes": [
+    "source",
+    "compiled"
+  ],
+  "mounts": [
+    "/",
+    "/ci-nested/"
+  ],
+  "expectedCasesPerMode": 64,
+  "canonicalCatalogSha256": "c0a5aa3a9a0cf4ab96e06a8afd21be489046f8ff7800f8c21b45dfa3f079e49c",
+  "assertionOriginsSha256": {
+    "tests/test_plauna_button_browser.py": "84195521338dbf11e51f63b952a4bc7a83f4f1ca22c835d5e14ede18447625d3",
+    "tests/plauna-surface-manager.test.js": "bdc78970fa159886aad7d6b68977365c1dbd7dc88faae2db449de87742814a3f",
+    "tests/plauna-workbench-lifecycle.test.js": "9b205142151542fa3ed7801f2c70fa361582ccfe569439f2409417481a76b57c",
+    "tests/strict-json-value.test.js": "541e330e8adba72b8094209df0f9c0ecfea1e39f8209a22c3de04bc8ff0f0ee7",
+    "tests/rig-public-api.test.js": "1c198e89be1d1f6767bcbc1ae86a545e0150a450a4f8dc788c50fe4452d1c58c",
+    "tests/rig-public-api.bundle.test.js": "93eb1c267dff939b8272a3a31ce5424d6a78dcd98b409e35d7ba58c1237d6822",
+    "tests/engine-durable-persistence.html": "f386315e6e1d7d95371dd6c143cb5dbcc079a21e3e17d61e1395d59a61b07416",
+    "tests/particle-cohort-planner.test.js": "006f78940ee691c1a8bb6c8da206f94e1f90fcf3d261f7359bd117e6299e6b61",
+    "tests/particle-kinematics-state-codec.test.js": "a772ebdf5d1e02f51fd356b296d5c9008eaaef55fde900e277e1ea81bbeb5d1b",
+    "tests/complex-fft.test.js": "7830fe5dfba670f61c9e3a28df36afce9abf8486df26cff3e4957a0dad077fae"
+  },
+  "suites": [
+    {
+      "id": "plauna-button",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "plauna/widgets/Primitive/Button.js",
+        "plauna/core/DOMRenderer.js"
+      ],
+      "fixture": "fixtures/button.js",
+      "expectedCount": 7,
+      "expectedCases": {
+        "source": [
+          "plauna-button:test_real_mouse_dispatches_callback_and_retained_action_once",
+          "plauna-button:test_mouse_callback_prevention_reaches_retained_and_native_events",
+          "plauna-button:test_retained_prevention_reaches_native_mouse_event",
+          "plauna-button:test_programmatic_activation_has_one_cancelable_public_callback",
+          "plauna-button:test_disabled_and_loading_suppress_native_and_programmatic_actions",
+          "plauna-button:test_real_keyboard_enter_and_space_activate_once_without_extra_click",
+          "plauna-button:test_retained_click_contract_preserves_prevention_without_redispatch"
+        ],
+        "compiled": [
+          "plauna-button:test_real_mouse_dispatches_callback_and_retained_action_once",
+          "plauna-button:test_mouse_callback_prevention_reaches_retained_and_native_events",
+          "plauna-button:test_retained_prevention_reaches_native_mouse_event",
+          "plauna-button:test_programmatic_activation_has_one_cancelable_public_callback",
+          "plauna-button:test_disabled_and_loading_suppress_native_and_programmatic_actions",
+          "plauna-button:test_real_keyboard_enter_and_space_activate_once_without_extra_click",
+          "plauna-button:test_retained_click_contract_preserves_prevention_without_redispatch"
+        ]
+      },
+      "timeoutSeconds": 180,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "plauna-surface",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "plauna/surface/surface-manager.js"
+      ],
+      "fixture": "fixtures/plauna-surface.js",
+      "expectedCount": 6,
+      "expectedCases": {
+        "source": [
+          "plauna-surface:explicit bounds and dimensions",
+          "plauna-surface:collision-safe IDs",
+          "plauna-surface:atomic allowlisted updates",
+          "plauna-surface:shape-aware topmost hit testing",
+          "plauna-surface:GPU bounds and atomic updates",
+          "plauna-surface:idempotent surface and renderer cleanup"
+        ],
+        "compiled": [
+          "plauna-surface:explicit bounds and dimensions",
+          "plauna-surface:collision-safe IDs",
+          "plauna-surface:atomic allowlisted updates",
+          "plauna-surface:shape-aware topmost hit testing",
+          "plauna-surface:GPU bounds and atomic updates",
+          "plauna-surface:idempotent surface and renderer cleanup"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "plauna-workbench",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "plauna/lab/workbench-lab.js"
+      ],
+      "fixture": "fixtures/plauna-workbench.js",
+      "expectedCount": 3,
+      "expectedCases": {
+        "source": [
+          "plauna-workbench:backdrop destroy releases a late standalone lease without publication",
+          "plauna-workbench:successful backdrop initialization is sequentially idempotent",
+          "plauna-workbench:workbench boot is fenced and every installed interaction is removed"
+        ],
+        "compiled": [
+          "plauna-workbench:backdrop destroy releases a late standalone lease without publication",
+          "plauna-workbench:successful backdrop initialization is sequentially idempotent",
+          "plauna-workbench:workbench boot is fenced and every installed interaction is removed"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "strict-json",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "engine/core/schema/StrictJsonValue.js"
+      ],
+      "fixture": "fixtures/strict-json.js",
+      "expectedCount": 9,
+      "expectedCases": {
+        "source": [
+          "strict-json:Certified descendants still produce fresh independent mutable and frozen clones",
+          "strict-json:Array descriptor results remain detached wrappers with exact frozen flags",
+          "strict-json:Raw and manually frozen hostile inputs retain exact rejection and accessor behavior",
+          "strict-json:Raw containers with certified children still reject late invalid fields and cycles",
+          "strict-json:Proxy wrappers and in-place frozen inputs cannot forge copy provenance",
+          "strict-json:Replaced freezing functions cannot certify still-mutable private copies",
+          "strict-json:Private copies polluted through inherited setters still receive descriptor validation",
+          "strict-json:Cached parent values never certify mutable descendants injected through an inherited setter",
+          "strict-json:Null prototypes, key order, repeated copies and descriptor results match baseline"
+        ],
+        "compiled": [
+          "strict-json:Certified descendants still produce fresh independent mutable and frozen clones",
+          "strict-json:Array descriptor results remain detached wrappers with exact frozen flags",
+          "strict-json:Raw and manually frozen hostile inputs retain exact rejection and accessor behavior",
+          "strict-json:Raw containers with certified children still reject late invalid fields and cycles",
+          "strict-json:Proxy wrappers and in-place frozen inputs cannot forge copy provenance",
+          "strict-json:Replaced freezing functions cannot certify still-mutable private copies",
+          "strict-json:Private copies polluted through inherited setters still receive descriptor validation",
+          "strict-json:Cached parent values never certify mutable descendants injected through an inherited setter",
+          "strict-json:Null prototypes, key order, repeated copies and descriptor results match baseline"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "rig-public",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "engine/EngineBootstrap.js",
+        "engine/EngineImports.js",
+        "engine/assets/index.js",
+        "engine/assets/rig/index.js"
+      ],
+      "fixture": "fixtures/rig-{mode}.js",
+      "expectedCount": 2,
+      "expectedCases": {
+        "source": [
+          "rig-public:native modules share one public Rig identity and preserve Assets",
+          "rig-public:public RagdollSim produces a deterministic finite step"
+        ],
+        "compiled": [
+          "rig-public:compiled PE exposes the namespaced rig surface without flat pollution",
+          "rig-public:compiled PE.Rig RagdollSim steps deterministically"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "engine-persistence",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "engine/audio/synth/VariationGenerator.js",
+        "engine/gameplay/spells/SpellGeneratorIntegration.js",
+        "engine/render/materials/MaterialLibrary.js",
+        "engine/network/daemon/ParticleNetworkDaemon.js",
+        "engine/network/realm/branches/BranchStorage.js",
+        "engine/collab/CollabIdentity.js",
+        "engine/render/particles/ParticleEffectRegistry.js",
+        "engine/world/storage/ChunkPersistence.js",
+        "engine/network/routes/MasterServerList.js"
+      ],
+      "fixture": "fixtures/engine-persistence.js",
+      "expectedCount": 8,
+      "expectedCases": {
+        "source": [
+          "engine-persistence:sound palette v1 read, v2 dual publication, and future zero-write",
+          "engine-persistence:spell and material libraries use strict shared v2 records",
+          "engine-persistence:network trust floor dual publishes and blocks future generations",
+          "engine-persistence:realm branch queues retain v1 rollback writers and future records",
+          "engine-persistence:collaboration identity v2 commits atomically and future keys stay untouched",
+          "engine-persistence:particle effects load v1, publish v2, and preflight future records",
+          "engine-persistence:chunk storage loads v1 and preserves future v2 records with zero writes",
+          "engine-persistence:master-server future envelope remains unchanged"
+        ],
+        "compiled": [
+          "engine-persistence:sound palette v1 read, v2 dual publication, and future zero-write",
+          "engine-persistence:spell and material libraries use strict shared v2 records",
+          "engine-persistence:network trust floor dual publishes and blocks future generations",
+          "engine-persistence:realm branch queues retain v1 rollback writers and future records",
+          "engine-persistence:collaboration identity v2 commits atomically and future keys stay untouched",
+          "engine-persistence:particle effects load v1, publish v2, and preflight future records",
+          "engine-persistence:chunk storage loads v1 and preserves future v2 records with zero writes",
+          "engine-persistence:master-server future envelope remains unchanged"
+        ]
+      },
+      "timeoutSeconds": 180,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "particle-cohorts",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "engine/render/morphfield/systems/ParticleCohortPlanner.js",
+        "engine/render/morphfield/systems/index.js"
+      ],
+      "fixture": "fixtures/particle-cohorts.js",
+      "expectedCount": 15,
+      "expectedCases": {
+        "source": [
+          "particle-cohorts:systems barrel exports the reusable planner and stable six-queue catalog",
+          "particle-cohorts:mass-weighted moments conserve translation rotation and covariance",
+          "particle-cohorts:weighted covariance uses total mass and ignores zero-mass influence",
+          "particle-cohorts:aggregate moments project into the existing oriented-kernel contract",
+          "particle-cohorts:oriented kernels rotate both their evaluator and spatial-bin bounds",
+          "particle-cohorts:branch-field reconstruction is deterministic separated and presentation-only",
+          "particle-cohorts:branch-field bounds clamp extrapolation exponent radius axial motion and residual",
+          "particle-cohorts:planner assigns each page to exactly one exclusive presentation queue",
+          "particle-cohorts:automatic policy selects bounded procedural volumetric moment packed and sleep paths",
+          "particle-cohorts:failed approximation certificates fall through to conservative eligible queues",
+          "particle-cohorts:promotion hysteresis is idempotent per frame while error failures demote immediately",
+          "particle-cohorts:an invalid current queue cannot bypass promotion gates into a denser approximation",
+          "particle-cohorts:source revision invalidates compressed history before another promotion",
+          "particle-cohorts:canonical page ordering and retirement telemetry are deterministic",
+          "particle-cohorts:invalid descriptors duplicate pages and backwards frames fail closed"
+        ],
+        "compiled": [
+          "particle-cohorts:systems barrel exports the reusable planner and stable six-queue catalog",
+          "particle-cohorts:mass-weighted moments conserve translation rotation and covariance",
+          "particle-cohorts:weighted covariance uses total mass and ignores zero-mass influence",
+          "particle-cohorts:aggregate moments project into the existing oriented-kernel contract",
+          "particle-cohorts:oriented kernels rotate both their evaluator and spatial-bin bounds",
+          "particle-cohorts:branch-field reconstruction is deterministic separated and presentation-only",
+          "particle-cohorts:branch-field bounds clamp extrapolation exponent radius axial motion and residual",
+          "particle-cohorts:planner assigns each page to exactly one exclusive presentation queue",
+          "particle-cohorts:automatic policy selects bounded procedural volumetric moment packed and sleep paths",
+          "particle-cohorts:failed approximation certificates fall through to conservative eligible queues",
+          "particle-cohorts:promotion hysteresis is idempotent per frame while error failures demote immediately",
+          "particle-cohorts:an invalid current queue cannot bypass promotion gates into a denser approximation",
+          "particle-cohorts:source revision invalidates compressed history before another promotion",
+          "particle-cohorts:canonical page ordering and retirement telemetry are deterministic",
+          "particle-cohorts:invalid descriptors duplicate pages and backwards frames fail closed"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "particle-codec",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "engine/matter/index.js"
+      ],
+      "fixture": "fixtures/particle-codec.js",
+      "expectedCount": 7,
+      "expectedCases": {
+        "source": [
+          "particle-codec:engine Matter barrel exposes a page codec bound to the truthful packet layout",
+          "particle-codec:registered encoder and decoder round-trip a 128-lane page with exact byte accounting",
+          "particle-codec:ranked 12-byte exceptions occupy an independent validated envelope block",
+          "particle-codec:optional projection blocks preserve aligned bytes and certificate identity",
+          "particle-codec:typed payload subviews decode without reading bytes outside their declared range",
+          "particle-codec:payload length and post-envelope byte mutation fail closed",
+          "particle-codec:header and envelope exception disagreement fails closed"
+        ],
+        "compiled": [
+          "particle-codec:engine Matter barrel exposes a page codec bound to the truthful packet layout",
+          "particle-codec:registered encoder and decoder round-trip a 128-lane page with exact byte accounting",
+          "particle-codec:ranked 12-byte exceptions occupy an independent validated envelope block",
+          "particle-codec:optional projection blocks preserve aligned bytes and certificate identity",
+          "particle-codec:typed payload subviews decode without reading bytes outside their declared range",
+          "particle-codec:payload length and post-envelope byte mutation fail closed",
+          "particle-codec:header and envelope exception disagreement fails closed"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU JavaScript and DOM behavior; no native GPU rendering"
+    },
+    {
+      "id": "complex-fft",
+      "eligible": true,
+      "modes": [
+        "source",
+        "compiled"
+      ],
+      "requiredModules": [
+        "engine/core/math/MathSignal.js",
+        "engine/core/gpu/ComplexFft.js",
+        "engine/sim/particles/ParticleMeshEwald.js"
+      ],
+      "fixture": "fixtures/complex-fft.js",
+      "expectedCount": 7,
+      "expectedCases": {
+        "source": [
+          "complex-fft:Complex rectangular FFT and inverse agree with direct DFT without changing inputs",
+          "complex-fft:Real-only calls, impulse, constant and negative complex frequency preserve sign and normalization",
+          "complex-fft:2D FFT rejects malformed dimensions, lengths and nonfinite complex components",
+          "complex-fft:Plans record exact axis/stage order, immutable uniforms and caller-owned submissions",
+          "complex-fft:Borrowed PME buffers, pipeline device identity, hardware limits and rollback are enforced",
+          "complex-fft:PME imports the single shared core and retains gather normalization",
+          "complex-fft:PME wrapper preserves external encoding, device checks and complete resource cleanup"
+        ],
+        "compiled": [
+          "complex-fft:Complex rectangular FFT and inverse agree with direct DFT without changing inputs",
+          "complex-fft:Real-only calls, impulse, constant and negative complex frequency preserve sign and normalization",
+          "complex-fft:2D FFT rejects malformed dimensions, lengths and nonfinite complex components",
+          "complex-fft:Plans record exact axis/stage order, immutable uniforms and caller-owned submissions",
+          "complex-fft:Borrowed PME buffers, pipeline device identity, hardware limits and rollback are enforced",
+          "complex-fft:PME imports the single shared core and retains gather normalization",
+          "complex-fft:PME wrapper preserves external encoding, device checks and complete resource cleanup"
+        ]
+      },
+      "timeoutSeconds": 90,
+      "scope": "CPU numerical execution, controlled resource-ownership contracts, and source contract; no native GPU execution"
+    }
+  ],
+  "files": {
+    "button_contract.py": {
+      "bytes": 7188,
+      "sha256": "f3e5f97ebd420c4843a41384d525d5cd21f9c4df2e948a8694e7b8b46b42d2a8"
+    },
+    "fixtures/button.js": {
+      "bytes": 2643,
+      "sha256": "0c888f149338b68d5c2f0edd0087f5ab961aad26573c6df5e685d63064fd9de8"
+    },
+    "fixtures/complex-fft.js": {
+      "bytes": 23815,
+      "sha256": "a647ac58394f8d3bdd3591c7b5242de8d1eec1eb6242e81eec46f2770a92bcf1"
+    },
+    "fixtures/engine-persistence.js": {
+      "bytes": 19062,
+      "sha256": "9b4d0624cf3f6656f64671b065febf85151d87daf494b58badcf494a67e82d24"
+    },
+    "fixtures/particle-codec.js": {
+      "bytes": 10314,
+      "sha256": "ba901757ec3a5315e441e88a6fba162d6cdf0b166964c33acc8fb29b8340350f"
+    },
+    "fixtures/particle-cohorts.js": {
+      "bytes": 21521,
+      "sha256": "f62a80cb2cf7422aef771bc4c85177e3f41f18d8ed482d803127c1fb9094e21f"
+    },
+    "fixtures/plauna-surface.js": {
+      "bytes": 12583,
+      "sha256": "769d7147cc782c519fec9b8e5e240eb82fbfc111b6a864fb27c770e7d032a4c3"
+    },
+    "fixtures/plauna-workbench.js": {
+      "bytes": 7576,
+      "sha256": "4563d27d4274c7955aaf208ce3f7daf5dba33f2cba075ebd8a4a3f78e80668d1"
+    },
+    "fixtures/rig-compiled.js": {
+      "bytes": 3158,
+      "sha256": "9c2078b24c39dd5f8942af5ea7f957567dab97f6628cb7b31aad8a365fbdc911"
+    },
+    "fixtures/rig-source.js": {
+      "bytes": 3635,
+      "sha256": "ad70f7cc94c48a1df41a5d2f7f5acc90f92e4cbd8795434066cdc17ac0647e03"
+    },
+    "fixtures/strict-json.js": {
+      "bytes": 13366,
+      "sha256": "d770366420d3c16c1d4cdfb6a7186da1fbd7e465e18988acc3b9adb14fa688ff"
+    },
+    "index.html": {
+      "bytes": 503,
+      "sha256": "96118d782df12169f3bc82b224768c925d4a535463579c17ec7a2776b969cffe"
+    },
+    "resolver.js": {
+      "bytes": 5192,
+      "sha256": "50f2d6e8b92df6121b31c409ae80f9365ebb22d84bda23032761d5508ef939f4"
+    },
+    "runner.js": {
+      "bytes": 1673,
+      "sha256": "12b5b8aacaae7e4dbcffafe603f3520cecbef6ce96f0ec0098ee17ae7e0f1189"
+    }
+  }
+}

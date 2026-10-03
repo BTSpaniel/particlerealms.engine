@@ -877,7 +877,7 @@ def _release_compressed_artifacts_are_current(release_dir: Path, bundle_name: st
         best_size = int(manifest["best_bytes"])
         if best_ext is None or gzip_size < 0 or best_size < 0:
             return False
-        sdk_build = manifest.get("buildMode") in {"sdk", "sdk-rebuild"}
+        sdk_build = manifest.get("buildMode") in {"sdk", "sdk-rebuild", "sdk-stage"}
         part_map = compressed_artifact_part_map(manifest)
         lengths = {f"{bundle_name}.min.js.gz": gzip_size, f"{bundle_name}.min.js{best_ext}": best_size}
         if sdk_build:
@@ -983,6 +983,7 @@ def _signed_os_release_requires_fresh_build(args) -> bool:
         getattr(args, "include_webgpu_os", False)
         and (getattr(args, "production", False) or getattr(args, "release", False))
         and not getattr(args, "sdk_rebuild", False)
+        and not getattr(args, "stage_dir", None)
     )
 
 
@@ -1206,6 +1207,8 @@ def main():
                         help="Build an SDK and verified runtime artifacts without a website or implicit Template sync.")
     parser.add_argument("--sdk-no-archive", action="store_true",
                         help="Publish the verified SDK directory without creating an SDK ZIP.")
+    parser.add_argument("--stage-dir", type=Path,
+                        help="Build a canonical --production --sdk-only candidate into a fresh isolated directory.")
     parser.add_argument("--sdk-rebuild", action="store_true",
                         help="Rebuild an extracted SDK offline into build/runtime and build/<profile>-sdk.")
     parser.add_argument("--sdk-packages", type=Path,
@@ -1289,6 +1292,14 @@ def main():
     # Validate standalone rebuild routing before maintenance commands or writes.
     rebuild_state = None
     sdk_snapshot = None
+    stage_root = stage_inputs = stage_snapshot = None
+    if args.stage_dir is not None:
+        from .staging import validate_stage_arguments, resolve_stage_destination
+        try:
+            validate_stage_arguments(args, sys.argv[1:])
+            stage_root = resolve_stage_destination(ROOT, args.stage_dir)
+        except ValueError as error:
+            parser.error(str(error))
     if args.sdk_packages is not None and not args.sdk_rebuild:
         parser.error('--sdk-packages requires --sdk-rebuild')
     if args.sdk_rebuild:
@@ -1337,6 +1348,13 @@ def main():
         return 2
     if args.sdk_no_archive and not args.build_sdk:
         parser.error('--sdk-no-archive requires SDK packaging (--build-sdk, --sdk-only or --sdk-rebuild)')
+    if stage_root is not None:
+        from .staging import validate_stage_configuration
+        try:
+            validate_stage_configuration(args, entries)
+        except ValueError as error:
+            parser.error(str(error))
+        args.outdir = str(stage_root / 'runtime')
     if args.build_sdk:
         if args.target not in {"engine", "platform"} or args.obfuscate or args.encrypt or args.domain_lock or args.integrity or args.embed_source_tree or args.gen_dict:
             print("[bundle] ERROR: SDK packaging requires an unwrapped engine or platform runtime without embedded sources or dictionaries")
@@ -1392,10 +1410,15 @@ def main():
     # Source and emitted Wasm share one provenance gate before the JS cache.
     # Dry runs verify only; regular builds compile missing/stale variants.
     try:
+        if stage_root is not None:
+            from .staging import verify_stage_inputs
+            from .sdk import sdk_input_snapshot
+            stage_inputs = verify_stage_inputs(ROOT, args.target)
+            stage_snapshot = sdk_input_snapshot(ROOT, args.target)
         from .wasm import build_compute_kernels, compute_release_asset_paths
         from .compute_contracts import verify_compute_contracts, compute_contract_asset_paths
         verify_compute_contracts(ROOT)
-        compute_build = build_compute_kernels(ROOT, check=bool(args.dry_run or args.sdk_rebuild))
+        compute_build = build_compute_kernels(ROOT, check=bool(args.dry_run or args.sdk_rebuild or stage_root is not None))
         verify_compute_contracts(ROOT, manifest=compute_build['manifest'])
         print(f"[bundle] Compute kernels: {'verified' if compute_build['cached'] else 'rebuilt'} four ABI 1 variants")
     except (OSError, ValueError, RuntimeError) as error:
@@ -1406,7 +1429,7 @@ def main():
     # must be made current before ModuleGraph reads any JavaScript. Production
     # and release builds never mutate shared source fallbacks; they mint a fresh
     # verified registry preamble later and bypass cross-target cache reuse.
-    if getattr(args, "include_webgpu_os", False) and not args.sdk_rebuild:
+    if getattr(args, "include_webgpu_os", False) and not args.sdk_rebuild and stage_root is None:
         if args.production or args.release:
             print("[official] release mode preserves checked-in development Faculty fallbacks")
             try:
@@ -1522,7 +1545,7 @@ def main():
             print(f"[bundle] WARNING: could not load cyclic baseline: {e}")
 
     if args.build_sdk:
-        if not args.sdk_rebuild and not args.dry_run:
+        if not args.sdk_rebuild and not args.dry_run and stage_root is None:
             from .site import _prepare_md_docs
             _prepare_md_docs(ROOT)
     graph = ModuleGraph(ROOT, SKIP_PATTERNS, cyclic_baseline=cyclic_baseline)
@@ -1549,6 +1572,13 @@ def main():
 
     if args.build_sdk:
         from .sdk import sdk_input_snapshot
+        if stage_snapshot is not None:
+            from .sdk import _verify_snapshot
+            try:
+                _verify_snapshot(ROOT, stage_snapshot)
+            except (OSError, ValueError) as error:
+                print(f'[bundle] ERROR: SDK staging inputs changed during graph assembly: {error}')
+                return 1
         sdk_snapshot = sdk_input_snapshot(
             ROOT, args.target, [graph.mod_id(path) for path in graph.order]
         )
@@ -1571,19 +1601,25 @@ def main():
     print(f"[bundle] Repository metrics: {metrics_files:,} first-party files, "
           f"{metrics_lines:,} physical lines")
     outdir = Path(args.outdir)
-    release_dir = ROOT / "build/runtime" if args.sdk_rebuild else ROOT / "release"
+    release_dir = stage_root / 'runtime' if stage_root is not None else ROOT / "build/runtime" if args.sdk_rebuild else ROOT / "release"
     if not args.dry_run:
+        if stage_root is not None:
+            # Revalidate immediately before claiming a destination. A failed
+            # preflight never creates output, and another writer cannot be reused.
+            if resolve_stage_destination(ROOT, args.stage_dir) != stage_root:
+                raise ValueError('SDK staging destination changed after preflight')
+            stage_root.mkdir(parents=True, exist_ok=False)
         metrics_paths = {
             outdir.resolve() / "code-metrics.json",
             release_dir / "code-metrics.json",
         }
-        if not args.sdk_rebuild:
+        if not args.sdk_rebuild and stage_root is None:
             metrics_paths.add(ROOT / "tests" / "assets" / "code-metrics.json")
         for metrics_path in metrics_paths:
             write_code_metrics(metrics_path, code_metrics)
 
     # -- Incremental build cache: skip rebuild if source hash unchanged --
-    cache_path = release_dir / ".build_cache.v2"
+    cache_path = stage_root / '.cache' / '.build_cache.v2' if stage_root is not None else release_dir / ".build_cache.v2"
     digest = None
     if not args.no_cache and not args.dry_run:
         source_hash = hashlib.sha256()
@@ -1621,7 +1657,7 @@ def main():
         sdk_current = True
         if args.build_sdk:
             from .sdk import sdk_is_current
-            sdk_destination = ROOT / "build" / (args.target + "-sdk") if args.sdk_rebuild else release_dir / (args.target + "-sdk")
+            sdk_destination = stage_root / (args.target + '-sdk') if stage_root is not None else ROOT / "build" / (args.target + "-sdk") if args.sdk_rebuild else release_dir / (args.target + "-sdk")
             sdk_current = sdk_is_current(sdk_destination, args.target, create_archive=not args.sdk_no_archive)
         signed_os_release = _signed_os_release_requires_fresh_build(args)
         if (not signed_os_release
@@ -1655,9 +1691,10 @@ def main():
             _source_preamble = generate_system_source_barrel(ROOT)
         # Official signed packages remain the production application payload.
         try:
-            if args.sdk_rebuild:
-                _official_container_assets.update(rebuild_state['official_container_assets'])
-            _official_preamble = rebuild_state['official_preamble'] if args.sdk_rebuild else build_official_app_packages(
+            public_inputs = stage_inputs if stage_root is not None else rebuild_state
+            if public_inputs is not None:
+                _official_container_assets.update(public_inputs['official_container_assets'])
+            _official_preamble = public_inputs['official_preamble'] if public_inputs is not None else build_official_app_packages(
                 ROOT,
                 write_generated_fallback=False,
                 required=bool(args.production or args.release),
@@ -2033,7 +2070,7 @@ def main():
         from .sdk_rebuild import sdk_tool_versions
         manifest['sdkBuildInputsSha256'] = sdk_snapshot['sha256']
         manifest['buildTools'] = sdk_tool_versions()
-        manifest['buildMode'] = 'sdk-rebuild' if args.sdk_rebuild else 'sdk'
+        manifest['buildMode'] = 'sdk-stage' if stage_root is not None else 'sdk-rebuild' if args.sdk_rebuild else 'sdk'
         if _official_preamble:
             manifest['signedRegistrySha256'] = hashlib.sha256(
                 _official_preamble.encode('utf-8')
@@ -2201,7 +2238,7 @@ def main():
         build_engine_sdk(ROOT, release_dir, manifest,
             module_sources=module_sources,
             raw_module_sources={graph.mod_id(path): source for path, source in graph.raw_modules.items()},
-            output_dir=ROOT / 'build' / (args.target + '-sdk') if args.sdk_rebuild else None,
+            output_dir=stage_root / (args.target + '-sdk') if stage_root is not None else ROOT / 'build' / (args.target + '-sdk') if args.sdk_rebuild else None,
             official_records=_official_preamble, input_snapshot=sdk_snapshot, runtime_dir=outdir,
             create_archive=not args.sdk_no_archive)
 
@@ -2332,6 +2369,14 @@ def main():
             _write_exact_utf8(cache_path, digest + "\n")
         except Exception:
             pass
+
+    if stage_root is not None:
+        from .staging import complete_stage
+        try:
+            complete_stage(ROOT, stage_root, args, manifest, sdk_snapshot, stage_inputs)
+        except (OSError, ValueError, RuntimeError) as error:
+            print(f'[bundle] ERROR: SDK candidate verification failed: {error}')
+            return 1
 
     # -- Print timing profile --
     total_t = sum(t for _, t in _timings)

@@ -4,14 +4,14 @@
     {
       "name": "particle-engine.min.js.gz",
       "digest": {
-        "sha256": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08"
+        "sha256": "4af39569cee4e2de76cf8a0c38e2201fb5b99c11206c3707148aa74352a36183"
       }
     },
     {
       "name": "particle-engine.min.js",
       "digest": {
-        "sha256": "37009b807b6f0f925018b023c6895044ec001ad511f107fa66bd3cd337ca67e9",
-        "sha384": "8202f68b3fe035d8d535cd49a595dbe1f9cfd36a2277348b143ee75fb10f92761d0b8aa55e528891bffada3105bce2a6"
+        "sha256": "8c8f365174e743b49ec1ec0b131dddfa2dbaa10babdbd30299aa59015f5e25b1",
+        "sha384": "8234f31bef7ca937f21a08cf1176bb53b821c0b62c28a6d7217b055ee17835597249d34accdebd8eea3b513cea6dddda"
       }
     }
   ],
@@ -32,10 +32,10 @@
       },
       "internalParameters": {
         "bundleVersion": "0.8.1",
-        "moduleCount": 1772,
-        "fileInventorySha256": "1243ad26bff80ba8765e9eabc0ee3d4eb91bd9d0f595ed2029e8703999709ea0",
+        "moduleCount": 1775,
+        "fileInventorySha256": "2f361a589993f603b8761ffad7e7f996d223b594fb5ecf7ffc55d05c7b377e41",
         "officialPackageInventorySha256": "ff320c9300a9d0e860be8d26851b2866950d7ae6b52131a1c0dc23b4665c047f",
-        "sdkBuildInputsSha256": "b7b927989161d47f7e74b61a2b689a932b38c663d31f181f4eec38604f8e0dcb",
+        "sdkBuildInputsSha256": "7733391482d2f136fd742a4f6b444c38f5a9137cfc6eec19c55595bbe78fcc75",
         "buildTools": {
           "python": "3.12.7",
           "minifier": "rjsmin",
@@ -62,14 +62,14 @@
             "lzma": "python-stdlib-lzma2-xz"
           }
         },
-        "buildMode": "sdk",
+        "buildMode": "sdk-stage",
         "signedRegistrySha256": null
       },
       "resolvedDependencies": [
         {
           "uri": "git+https://github.com/BTSpaniel/particlerealms.engine",
           "digest": {
-            "sha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1"
+            "sha256": "c408d48a3f3818ffe29554ab841dc012253e465ee701e659352d6bd850a1b1f6"
           }
         }
       ]

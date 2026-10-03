@@ -11,9 +11,13 @@
 
 | Job | Coverage | Environment |
 | --- | --- | --- |
-| Package integrity and Python tests | Every SDK file; source module graph; native asset hashes; compression/SRI/provenance; Template members and runtime; documentation navigation; selected shipped parser, emitter, transport, packaging, server and native-asset regression tests. | Windows Server 2022, Python 3.12.7, exact SDK dependency pins. |
+| Package integrity and API changes | Every SDK file; source graph; native hashes; compression/SRI/provenance; unchanged Template; docs navigation; public exports, declarations, tools, sizes and protected bytes against `v0.8.1-alpha.1`. | Windows Server 2022, Python 3.12.7, exact SDK pins. |
+| Portable Python | Fixture-based parser, emitter, graph reuse, paths, transport, server, packaging and rejection tests; unittest and pytest identities retained. | Windows Server 2022, Ubuntu 24.04 and macOS 14; Python 3.12.7, pinned pytest. |
+| Chromium parser and public CPU contracts | Actual Engine/Plauna source census and dependency analysis; grammar of emitted classic code; fixed native source/emitted/minified oracles; shared public CPU/DOM assertions and cleanup. | Ubuntu 24.04; pinned Chromium, WebGPU disabled. |
+| Windows candidate | Offline recorded Engine + Plauna recipe in a disposable SDK; source/compiled contracts at root/nested URLs; parser corpus and semantic oracles; provenance for actual built artifacts. | Qualified Windows Python/compression baseline; verified supplied WASM, no signing keys or native compilers. |
 | Browser tests (`off`) | Exact approved Engine/Plauna Markdown examples; source and compiled math/ECS/PhysX, Plauna interaction, Snapshot workers; extracted Template APIs; root and nested hosting, cleanup and loading diagnostics. | Ubuntu 24.04, pinned Playwright Chromium; no WebGPU requirement. |
 | Browser tests (`software`) | CPU checks, Engine rendering, Surface Field GPU transport, selected-object pixel readback, and the physics playground's native UI controls and persistence. Both runtime modes, root and nested hosting. | Ubuntu 24.04, Chromium with SwiftShader requested; reports record the observed adapter separately. |
+| Required code-validation evidence | Every required report must pass with the same commit, workflow/run/attempt, recipe and checked-in SDK/Template identity. Candidate reports must agree on the rebuilt package. | Always runs, including after upstream failure; missing evidence fails. |
 
 Software WebGPU checks establish functional behavior, not hardware frame rates or complete device compatibility. Full OS, Editor, AGI, native Flow and hardware release acceptance remain recorded in the versioned release validation. This workflow does not relabel those historical results as new CI runs and does not rebuild native binaries or publish releases.
 
@@ -27,6 +31,7 @@ From this repository's root, using the SDK's recorded Python 3.12.7 environment:
 
 ```powershell
 python -m pip install -r engine-sdk/requirements-sdk.txt
+python -m pip install -r ci/requirements-tests.txt
 python -B ci/verify_distribution.py --output test-results/distribution.json
 python -B ci/run_python_tests.py --output test-results/python.json
 ```
@@ -36,11 +41,23 @@ For browser checks:
 ```powershell
 python -m pip install -r ci/requirements-browser.txt
 python -m playwright install chromium
+python -B ci/parser_tests.py --output test-results/parser.json
+python -B ci/sdk_tests.py --output test-results/sdk-tests.json
 python -B ci/browser_smoke.py --webgpu off --output test-results/browser-off.json
 python -B ci/browser_smoke.py --webgpu software --output test-results/browser-software.json
 ```
 
-On Linux, `python -m playwright install --with-deps chromium` also installs the browser's system libraries. To use an already installed Chromium locally, pass `--browser PATH`. Test servers bind only to localhost, isolate the SDK/Template serving roots, and reject application requests to outside origins. Generated reports stay in ignored `test-results/`; tests do not edit the inventoried SDK files.
+Build and test a disposable candidate on the recorded Windows baseline:
+
+```powershell
+python -B ci/candidate_build.py --output test-results/candidate
+python -B ci/sdk_tests.py --sdk test-results/candidate/engine-sdk --output test-results/candidate-sdk-tests.json
+python -B ci/parser_tests.py --sdk test-results/candidate/engine-sdk --output test-results/candidate-parser.json
+```
+
+The candidate controller uses canonical `--stage-dir` packaging, verifies the supplied SDK descriptor and native inputs, and blocks build networking. Its destination must be fresh. Runtime, SDK, metrics and cache outputs remain inside staging; source fixtures and consumers are not synchronized. Failed admission produces no verified candidate receipt.
+
+On Linux, `python -m playwright install --with-deps chromium` also installs the browser's system libraries. The SDK and browser smoke controllers accept `--browser PATH` for an already installed Chromium; parser checks use the pinned Playwright browser. Test servers bind only to localhost, isolate the SDK/Template serving roots, and reject application requests to outside origins. Generated reports stay in ignored `test-results/`; tests do not edit the inventoried SDK files.
 
 Browser jobs verify blocked page and worker network attempts. Passive browser-wide socket tracing catches requests made before a worker debugger attaches; reports retain socket URLs and counts, and incomplete traces fail validation.
 
@@ -48,8 +65,13 @@ Browser jobs verify blocked page and worker network attempts. Passive browser-wi
 
 - The README badge is the current `main` workflow result, not a static “passing” image.
 - JSON reports contain the tested artifact identities and individual outcomes. Python tests also produce JUnit XML. Browser failures retain diagnostic data and screenshots when a page is available.
-- GitHub keeps uploaded artifacts for 14 days. Release validation remains in Git for durable release evidence.
+- Download `code-validation-results` and open `coverage.html` for the aggregate, then open its linked original reports. Individual job artifacts contain JSON/JUnit, logs and screenshots. The aggregate retains those originals and their hashes; it does not infer success from a job badge.
+- Individual artifacts remain available for 14 days; aggregate evidence for 30 days. Historical release validation remains in Git.
 - A missing browser, missing adapter, failed assertion, broken import or unexpected resource request fails the applicable job. The CPU job explicitly records WebGPU as not run.
+
+Required suites reject zero execution, duplicate or missing case identities, skips and unfinished cleanup. Unix runners exercise symlink rejection cases; Windows reports their privilege-dependent exclusion explicitly. The public profile ships only the fixtures and module dependencies needed by its approved cases. Compiled cases use the delivered loader and `PE.requireModule()`; absent modules or exports fail without source fallback. Controlled CPU resource-contract checks are labeled separately from native GPU operations.
+
+The bundler's parser/scanner identify dependency and export contracts; Chromium validates JavaScript grammar separately. Behavior oracles execute original ES modules, emitted code and minified code against independent expected values. The production census records each first-party delivered Engine/Plauna module and its hash. This is not a hardware performance qualification.
 
 [Focused source regression results](../validation/local-source-checks.json) retain the measured selection pixels, resource cleanup, playground controls and documentation interactions. Their negative controls deliberately reproduce the old failures; hosted reports separately test the final compiled distribution.
 
@@ -77,8 +99,10 @@ Use the same explicitly installed SDK and browser prerequisites as the commands 
 ## Preparing the next release
 
 1. Update the distribution through its bundler and refresh the real SDK/Template validation record. Keep sources, runtime manifests, native files and receipts together.
-2. Push a branch and inspect all three CI jobs. Resolve failures before advancing `main`.
+2. Push a branch and inspect every required job plus the final aggregation gate. Resolve failures before advancing `main`.
 3. Run the manual release-validation workflow, plus hardware and native acceptance appropriate to changed components; retain the measured results alongside the release.
-4. Create a new version tag from the tested commit. Preserve previous release tags and assets. Attach the verified Template ZIP according to the release plan.
+4. Validate release preparation with `python tools/release.py --help`. Supply an explicit future version, exact tested commit, notes and the aggregate's original required reports. The tool verifies package identities and permits `Template.zip` as the release asset. Default validation makes no release API writes. Explicit draft preparation is separate from publication. Existing versions and mismatched asset hashes are rejected.
+
+The manual [SDK release preparation workflow](../.github/workflows/sdk-release.yml) validates by default and prepares a draft only when explicitly requested. The allowed release download remains `Template.zip`; the SDK stays ordinary repository files. Carry the accepted Template unchanged unless a replacement includes matching full Platform donor and acceptance evidence. GitHub provenance attestations describe files actually built by the Windows candidate job, rather than merely copied release assets.
 
 Keep the front page's release navigation stable. Expand these jobs as public capabilities and runnable examples are added, using actual operations and cleanup checks for each new subsystem.

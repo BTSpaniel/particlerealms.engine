@@ -334,7 +334,11 @@ def _emit_export(exp: Export, filepath, graph, os_base_prefix) -> Optional[str]:
                     original, alias = binding.split(" as ", 1)
                 else:
                     original = alias = binding
-                parts.append(f"__e.{_escape_identifier(alias)} = __r('{mid}').{_escape_identifier(original)};")
+                # Internal module defaults use __default. A default forwarded
+                # by a barrel must remain consumable by ordinary default imports.
+                target = '__default' if alias == 'default' else _escape_identifier(alias)
+                member = '__default' if original == 'default' else _escape_identifier(original)
+                parts.append(f"__e.{target} = __r('{mid}').{member};")
             return ";" + " ".join(parts)
         return f";Object.assign(__e, __r('{mid}'));"
     if exp.default:
@@ -350,7 +354,8 @@ def _emit_export(exp: Export, filepath, graph, os_base_prefix) -> Optional[str]:
                 original, alias = binding.split(" as ", 1)
             else:
                 original = alias = binding
-            parts.append(f"__e.{_escape_identifier(alias)} = {_escape_identifier(original)};")
+            target = '__default' if alias == 'default' else _escape_identifier(alias)
+            parts.append(f"__e.{target} = {_escape_identifier(original)};")
         # A named export may directly follow `export default class` or
         # `export default function`. Those declarations become assignment
         # expressions in the classic bundle and therefore require an explicit

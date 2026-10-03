@@ -7,3 +7,6 @@
 /SDK-VALIDATION.json text eol=lf
 /validation/** -text
 /SHA256SUMS text eol=lf
+/ci/** text eol=lf
+/tools/** text eol=lf
+/.github/** text eol=lf

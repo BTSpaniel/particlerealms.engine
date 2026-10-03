@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+# SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+# Explicit test collection tooling; build dependencies retain SDK pins.
+pytest==9.0.3
+iniconfig==2.3.0
+packaging==26.2
+pluggy==1.6.0
+Pygments==2.19.2
+colorama==0.4.6; sys_platform == 'win32'

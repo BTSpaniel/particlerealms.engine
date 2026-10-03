@@ -274,6 +274,36 @@ BUILT_IN_TOOL_FACULTY_GENERATED_MODULE = (
 )
 
 
+def verify_live_descriptor_fixtures(root):
+    """Check real browser descriptor hashes without rewriting supplied fixtures."""
+    resolved_root = Path(root).resolve()
+    helper = resolved_root / "tests/navi/run_dump_built_in_tool_descriptors.py"
+    if not helper.is_file() or helper.is_symlink() or not helper.resolve().is_relative_to(resolved_root):
+        raise RuntimeError(f"live built-in descriptor verifier is missing or unsafe: {helper}")
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-B", str(helper), "--verify"], cwd=resolved_root,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=120, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise RuntimeError(f"live built-in descriptor verification failed: {error}") from error
+    if completed.returncode:
+        raise RuntimeError("live built-in descriptor verification failed: " +
+                           (completed.stderr.strip() or completed.stdout.strip()))
+    try:
+        receipt = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError("live built-in descriptor verifier returned malformed JSON") from error
+    if (not isinstance(receipt, dict) or receipt.get("format") != "built-in-tool-descriptor-verify-v1"
+            or receipt.get("status") != "PASS" or not isinstance(receipt.get("counts"), dict)
+            or set(receipt["counts"]) != {"generic", "artifactStudio", "browserSemantic"}
+            or any(type(count) is not int or count < 1 for count in receipt["counts"].values())):
+        raise RuntimeError("live built-in descriptor verifier returned unsupported evidence")
+    print(f"[official] verified live descriptor fixtures without writes ({sum(receipt['counts'].values())} descriptors)")
+    return receipt
+
+
 def _synchronize_live_descriptor_fixtures(root, *, required):
     """Refresh signed Faculty fixtures from the browser's live descriptors.
 

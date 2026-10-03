@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
 
 import * as ComputeNamespace from './core/compute/index.js';
+// Keep the native spell-library persistence module available to PE.requireModule.
+// Importing it creates only private metadata; storage access remains explicit.
+import './gameplay/spells/SpellGeneratorIntegration.js';
 export * from './core/compute/index.js';
 export { ComputeNamespace as Compute };
 

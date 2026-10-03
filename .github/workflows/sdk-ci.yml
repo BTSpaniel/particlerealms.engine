@@ -33,13 +33,14 @@ jobs:
     uses: ./.github/workflows/sdk-release-validation.yml
 
   distribution:
-    name: Package integrity and Python tests
+    name: Package integrity and API changes
     runs-on: windows-2022
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12.7'
@@ -49,10 +50,10 @@ jobs:
         id: sdk-tools
         run: python -m pip install -r engine-sdk/requirements-sdk.txt
       - name: Verify SDK, Template and documentation
-        run: python -B ci/verify_distribution.py --output test-results/distribution.json
-      - name: Run shipped Python regression tests
+        run: python -B ci/run_with_context.py --report test-results/distribution.json -- python -B ci/verify_distribution.py --output test-results/distribution.json
+      - name: Compare the released API and protected inputs
         if: ${{ !cancelled() && steps.sdk-tools.outcome == 'success' }}
-        run: python -B ci/run_python_tests.py --output test-results/python.json
+        run: python -B ci/change_report.py --output test-results/changes.json
       - name: Publish job summary
         if: always()
         run: python -B ci/reporting.py --directory test-results
@@ -60,7 +61,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: package-and-python-results
+          name: package-results
           path: test-results/
           retention-days: 14
           if-no-files-found: warn
@@ -89,7 +90,7 @@ jobs:
       - name: Exercise source and compiled browser APIs
         env:
           DEBUG: pw:browser
-        run: python -B ci/browser_smoke.py --webgpu ${{ matrix.webgpu }} --output test-results/browser-${{ matrix.webgpu }}.json
+        run: python -B ci/run_with_context.py --report test-results/browser-${{ matrix.webgpu }}.json -- python -B ci/browser_smoke.py --webgpu ${{ matrix.webgpu }} --output test-results/browser-${{ matrix.webgpu }}.json
       - name: Publish job summary
         if: always()
         run: python -B ci/reporting.py --directory test-results
@@ -100,4 +101,164 @@ jobs:
           name: browser-${{ matrix.webgpu }}-results
           path: test-results/
           retention-days: 14
+          if-no-files-found: warn
+
+  python:
+    name: Portable Python (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-24.04, macos-14]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.7'
+      - name: Install pinned SDK and test tools
+        run: python -m pip install -r engine-sdk/requirements-sdk.txt -r ci/requirements-tests.txt
+      - name: Execute unittest and pytest fixture cases
+        run: python -B ci/run_python_tests.py --portable --output test-results/python.json
+      - name: Summarize actual results
+        if: always()
+        run: python -B ci/reporting.py --directory test-results
+      - name: Preserve diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: python-${{ matrix.os }}-results
+          path: test-results/
+          retention-days: 14
+          if-no-files-found: warn
+
+  code:
+    name: Chromium parser and public CPU contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.7'
+      - run: python -m pip install -r engine-sdk/requirements-sdk.txt -r ci/requirements-browser.txt -r ci/requirements-tests.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: Validate delivered parser corpus and fixed semantic oracles
+        run: python -B ci/parser_tests.py --output test-results/parser.json
+      - name: Execute shared source and compiled CPU assertions
+        if: ${{ !cancelled() }}
+        run: python -B ci/sdk_tests.py --output test-results/sdk-tests.json
+      - name: Summarize and retain diagnostics
+        if: always()
+        run: python -B ci/reporting.py --directory test-results
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: code-results
+          path: test-results/
+          retention-days: 14
+          if-no-files-found: warn
+
+  candidate:
+    name: Pinned Windows candidate build and execution
+    runs-on: windows-2022
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.7'
+      - run: python -m pip install -r engine-sdk/requirements-sdk.txt -r ci/requirements-browser.txt -r ci/requirements-tests.txt
+      - run: python -m playwright install chromium
+      - name: Rebuild recorded Engine + Plauna recipe offline
+        id: build
+        run: python -B ci/candidate_build.py --output test-results/candidate
+      - name: Test candidate source and compiled APIs at both mounts
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: python -B ci/sdk_tests.py --sdk test-results/candidate/engine-sdk --output test-results/candidate-sdk-tests.json
+      - name: Validate candidate corpus and real JavaScript execution
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: python -B ci/parser_tests.py --sdk test-results/candidate/engine-sdk --output test-results/candidate-parser.json
+      - name: Attest only runtime artifacts built in this job
+        if: ${{ success() && github.event_name != 'pull_request' }}
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: |
+            test-results/candidate/engine-sdk/dist/particle-engine.min.js
+            test-results/candidate/engine-sdk/dist/particle-engine.min.js.gz
+            test-results/candidate/engine-sdk/manifest.json
+      - if: always()
+        run: python -B ci/reporting.py --report test-results/candidate/candidate.json --report test-results/candidate-sdk-tests.json --report test-results/candidate-parser.json --html test-results/candidate-results.html
+      - name: Preserve candidate reports and actual runtime artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: candidate-results
+          path: |
+            test-results/candidate/*.json
+            test-results/candidate/*.log
+            test-results/candidate/engine-sdk/dist/particle-engine.min.js*
+            test-results/candidate/engine-sdk/manifest.json
+            test-results/candidate-sdk-tests*
+            test-results/candidate-parser*
+            test-results/candidate-results.html
+          retention-days: 14
+          if-no-files-found: warn
+
+  required-evidence:
+    name: Required code-validation evidence
+    if: always()
+    needs: [distribution, browser, python, code, candidate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.7'
+      - name: Download individual diagnostic artifacts
+        if: always()
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: '*-results'
+          path: test-results/children
+      - name: Require complete, consistent execution evidence
+        if: always()
+        run: >-
+          python -B ci/aggregate.py --expected-commit ${{ github.sha }}
+          --report distribution=test-results/children/package-results/distribution.json
+          --report changes=test-results/children/package-results/changes.json
+          --report windows=test-results/children/python-windows-2022-results/python.json
+          --report ubuntu=test-results/children/python-ubuntu-24.04-results/python.json
+          --report macos=test-results/children/python-macos-14-results/python.json
+          --report browser-off=test-results/children/browser-off-results/browser-off.json
+          --report browser-software=test-results/children/browser-software-results/browser-software.json
+          --report parser=test-results/children/code-results/parser.json
+          --report cpu=test-results/children/code-results/sdk-tests.json
+          --report candidate=test-results/children/candidate-results/candidate/candidate.json
+          --report candidate-cpu=test-results/children/candidate-results/candidate-sdk-tests.json
+          --report candidate-parser=test-results/children/candidate-results/candidate-parser.json
+          --output test-results/aggregate.json
+      - name: Generate downloadable HTML coverage
+        if: always()
+        run: python -B ci/reporting.py --report test-results/aggregate.json --html test-results/coverage.html
+      - name: Preserve aggregate and original evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: code-validation-results
+          path: test-results/
+          retention-days: 30
           if-no-files-found: warn

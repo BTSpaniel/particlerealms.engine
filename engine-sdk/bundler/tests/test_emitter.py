@@ -59,6 +59,17 @@ class TestEmitter(unittest.TestCase):
         out = rewrite_module_canonical(source, "src/index.js", self._graph())
         self.assertIn("__e.a = a; __e.b = b;", out)
 
+    def test_reexport_default_uses_internal_default_contract(self):
+        source = "export { default, value, default as Demo } from './dep.js';"
+        out = rewrite_module_canonical(source, "src/index.js", self._graph())
+        self.assertIn("__e.__default = __r('src/dep.js').__default;", out)
+        self.assertIn("__e.value = __r('src/dep.js').value;", out)
+        self.assertIn("__e.Demo = __r('src/dep.js').__default;", out)
+
+    def test_local_default_alias_uses_internal_default_contract(self):
+        out = rewrite_module_canonical("const Demo = 7; export { Demo as default };", "src/index.js", self._graph())
+        self.assertIn("__e.__default = Demo;", out)
+
     def test_named_export_preserves_boundary_after_default_class_expression(self):
         source = (
             "const value = 1;\n"

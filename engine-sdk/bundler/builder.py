@@ -520,7 +520,7 @@ class _MinificationLiteralScanner(_CodeScanner):
 
     _REGEX_PREFIXES = frozenset({
         "=>", ">", ">=", ">>", ">>>", "typeof", "void", "throw", "delete",
-        "new", "instanceof", "in", "else", "do", "case",
+        "new", "instanceof", "in", "else", "do", "case", "/",
     })
 
     def __init__(self, source):

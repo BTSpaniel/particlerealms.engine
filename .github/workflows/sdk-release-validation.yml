@@ -39,7 +39,7 @@ jobs:
       - name: Install pinned Chromium
         run: python -m playwright install chromium
       - name: Rebuild offline twice and execute a source change
-        run: python -B ci/rebuild_acceptance.py --output test-results/rebuild
+        run: python -B ci/run_with_context.py --report test-results/rebuild/report.json -- python -B ci/rebuild_acceptance.py --output test-results/rebuild
       - name: Publish actual rebuilding results
         if: always()
         run: python -B ci/reporting.py --report test-results/rebuild/report.json
@@ -76,7 +76,7 @@ jobs:
       - name: Run 100 lifecycle cycles and ten minutes of simulation
         env:
           DEBUG: pw:browser
-        run: python -B ci/endurance.py --mode ${{ matrix.mode }} --duration 600 --cycles 100 --output test-results/endurance-${{ matrix.mode }}.json
+        run: python -B ci/run_with_context.py --report test-results/endurance-${{ matrix.mode }}.json -- python -B ci/endurance.py --mode ${{ matrix.mode }} --duration 600 --cycles 100 --output test-results/endurance-${{ matrix.mode }}.json
       - name: Publish actual endurance measurements
         if: always()
         run: python -B ci/reporting.py --directory test-results

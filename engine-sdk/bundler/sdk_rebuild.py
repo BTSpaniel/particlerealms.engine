@@ -95,6 +95,7 @@ def _validate_records(root, records, *, compare=True):
 def _immutable_path(relative):
     path = PurePosixPath(relative)
     return (path.parts[0] in {"bundler", "jhc"} or path.suffix in {".py", ".wasm"}
+            or relative.startswith("sdk/public_tests/")
             or relative in {"bundle_engine.py", "release_targets.json", "requirements-sdk.txt",
                             "webgpu-os/kernel/trust/roots.json"}
             or relative.startswith("engine/core/compute/artifacts/")

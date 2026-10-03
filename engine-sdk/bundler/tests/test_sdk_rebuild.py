@@ -137,6 +137,39 @@ class SDKRebuildTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "tool version mismatch: zstandard"):
                 sdk_rebuild.prepare_sdk_rebuild(self.root, "engine")
 
+    def test_public_assertions_and_updated_profile_remain_descriptor_immutable(self):
+        self._engine_fixture()
+        base = self.root / "sdk/public_tests"
+        fixture = base / "fixtures/assertion.js"
+        fixture.parent.mkdir(parents=True)
+        fixture.write_bytes(b"export const assertion = () => 42 === 42;\n")
+        resolver, runner = base / "resolver.js", base / "runner.js"
+        resolver.write_bytes(b"export const resolveModule = name => name;\n")
+        runner.write_bytes(b"export const run = assertion => assertion();\n")
+        profile = base / "profile.json"
+        profile.write_text(json.dumps({"files": {"fixtures/assertion.js": sdk_rebuild._record(fixture)}}), encoding="utf-8")
+        descriptor = sdk_rebuild.write_sdk_build_descriptor(self.root, self.root, "engine", _input_records(self.root))
+        descriptor_before = (self.root / sdk_rebuild.SDK_BUILD_FILENAME).read_bytes()
+        originals = {path: path.read_bytes() for path in (fixture, resolver, runner, profile)}
+        for path in originals:
+            self.assertIn(path.relative_to(self.root).as_posix(), descriptor["immutable"])
+        fixture.write_bytes(b"export const assertion = () => true;\n")
+        profile.write_text(json.dumps({"files": {"fixtures/assertion.js": sdk_rebuild._record(fixture)}}), encoding="utf-8")
+        with mock.patch.object(sdk_rebuild, "verify_compute_artifacts") as native:
+            with self.assertRaisesRegex(ValueError, "immutable input hash/length mismatch"):
+                sdk_rebuild.prepare_sdk_rebuild(self.root, "engine")
+            native.assert_not_called()
+        self.assertEqual((self.root / sdk_rebuild.SDK_BUILD_FILENAME).read_bytes(), descriptor_before)
+        for path, original in originals.items():
+            path.write_bytes(original)
+        for path in (resolver, runner, profile):
+            with self.subTest(path=path.name), mock.patch.object(sdk_rebuild, "verify_compute_artifacts") as native:
+                path.write_bytes(originals[path] + b" ")
+                with self.assertRaisesRegex(ValueError, "immutable input hash/length mismatch"):
+                    sdk_rebuild.prepare_sdk_rebuild(self.root, "engine")
+                native.assert_not_called()
+                path.write_bytes(originals[path])
+
     def test_descriptor_records_actual_python_and_native_compression_environment(self):
         self._engine_fixture()
         descriptor = json.loads((self.root / sdk_rebuild.SDK_BUILD_FILENAME).read_text(encoding="utf-8"))

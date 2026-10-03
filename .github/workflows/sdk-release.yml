@@ -1,0 +1,119 @@
+# SPDX-FileCopyrightText: 2026 Jake Wehmeier (BTSpaniel) <https://github.com/BTSpaniel>
+# SPDX-License-Identifier: LicenseRef-ParticleRealms-Alpha
+name: SDK future release tooling
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Validate locally or explicitly stage a future draft
+        type: choice
+        options: [validate, draft]
+        default: validate
+      tag:
+        description: Explicit future alpha tag; existing releases are immutable
+        required: true
+        type: string
+      tested_commit:
+        description: Exact 40-character commit with passing code-validation evidence
+        required: true
+        type: string
+      evidence_run_id:
+        description: SDK CI run containing the passing aggregate and original reports
+        required: true
+        type: string
+      notes_path:
+        description: Nonempty release notes file in the tested commit
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: sdk-future-release-${{ inputs.tag }}
+  cancel-in-progress: false
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  validate:
+    name: Validate future release locally
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tested_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.7'
+      - name: Download original tested evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.evidence_run_id }}
+          name: code-validation-results
+          path: test-results/evidence
+      - name: Validate exact commit, evidence and accepted Template
+        env:
+          FUTURE_TAG: ${{ inputs.tag }}
+          TESTED_COMMIT: ${{ inputs.tested_commit }}
+          RELEASE_NOTES: ${{ inputs.notes_path }}
+        shell: pwsh
+        run: python -B tools/release.py --tag $env:FUTURE_TAG --tested-commit $env:TESTED_COMMIT --notes $env:RELEASE_NOTES --evidence test-results/evidence/aggregate.json --output test-results/release-plan.json
+      - name: Retain local validation results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: future-release-validation
+          path: test-results/
+          retention-days: 14
+          if-no-files-found: warn
+
+  draft:
+    name: Explicit future draft
+    if: ${{ inputs.action == 'draft' }}
+    needs: validate
+    runs-on: windows-2022
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tested_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.7'
+      - name: Download original tested evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.evidence_run_id }}
+          name: code-validation-results
+          path: test-results/evidence
+      - name: Revalidate and stage the future draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FUTURE_TAG: ${{ inputs.tag }}
+          TESTED_COMMIT: ${{ inputs.tested_commit }}
+          RELEASE_NOTES: ${{ inputs.notes_path }}
+        shell: pwsh
+        run: python -B tools/release.py --tag $env:FUTURE_TAG --tested-commit $env:TESTED_COMMIT --notes $env:RELEASE_NOTES --evidence test-results/evidence/aggregate.json --draft --output test-results/release-plan.json
+      - name: Retain verified draft identity
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: future-release-draft
+          path: test-results/release-plan.json
+          retention-days: 14
+          if-no-files-found: warn

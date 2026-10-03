@@ -15,6 +15,7 @@ from pathlib import Path
 import time
 import unittest
 import xml.etree.ElementTree as ET
+from report_context import capture, verify_finish
 
 ROOT = Path(__file__).resolve().parents[1]
 SDK = ROOT / "engine-sdk"
@@ -94,6 +95,49 @@ SELECTORS = (
     )),
 )
 
+EXTRA_SELECTORS = (
+    'bundler.tests.test_sdk_staging.StagePreflightTests',
+    'bundler.tests.test_sdk_staging.StageReceiptTests',
+    'bundler.tests.test_sdk_staging.StageComputeTests',
+    *('bundler.tests.test_sdk_staging.StagePublicProfileTests.' + name for name in (
+        'test_stage_binds_verified_delivered_profile_identity',
+        'test_changed_public_fixture_fails_before_native_validation',
+        'test_delivered_sdk_descriptor_is_admitted_by_shared_rebuild_verifier',
+        'test_extracted_sdk_missing_descriptor_is_rejected_before_native_checks',
+        'test_extracted_sdk_coordinated_fixture_and_profile_drift_is_rejected',
+        'test_extracted_sdk_descriptor_missing_fixture_coverage_is_rejected',
+        'test_extracted_sdk_native_corruption_is_rejected_before_compute_checks',
+    )),
+    'sdk.tests.test_public_tests',
+)
+PYTEST_FILES = ('bundler/tests/test_graph_parse_reuse.py',)
+
+
+class PytestRecords:
+    """Keep pytest's collected identities and actual setup/call/teardown results."""
+    def __init__(self):
+        self.records = {}
+        self.selected = []
+        self.collection_errors = []
+
+    def pytest_collection_finish(self, session):
+        self.selected = [item.nodeid for item in session.items]
+
+    def pytest_collectreport(self, report):
+        if report.failed:
+            self.collection_errors.append(str(report.longrepr))
+
+    def pytest_runtest_logreport(self, report):
+        row = self.records.setdefault(report.nodeid, {'name': report.nodeid, 'status': 'RUNNING', 'duration_seconds': 0, 'phases': {}})
+        row['phases'][report.when] = report.outcome
+        row['duration_seconds'] += report.duration
+        if report.failed:
+            row.update(status='FAIL', detail=str(report.longrepr))
+        elif report.skipped and row['status'] != 'FAIL':
+            row.update(status='SKIP', detail=str(report.longrepr))
+        elif report.when == 'teardown' and row['status'] == 'RUNNING':
+            row['status'] = 'PASS' if row['phases'] == {'setup': 'passed', 'call': 'passed', 'teardown': 'passed'} else 'ERROR'
+
 
 class RecordedResult(unittest.TextTestResult):
     """Record unittest's actual callbacks, including subtest/fixture failures."""
@@ -158,8 +202,10 @@ def write_reports(report, output):
     output.parent.mkdir(parents=True, exist_ok=True)
     junit = output.with_suffix(".xml")
     counts = report["counts"]
-    suite = ET.Element("testsuite", name="Shipped SDK Python tests", tests=str(len(report["tests"])),
-                       failures=str(counts["failures"]), errors=str(counts["errors"]),
+    infrastructure_failed = report['status'] != 'PASS' and not any(
+        test['status'] in {'FAIL', 'ERROR', 'RUNNING'} for test in report['tests'])
+    suite = ET.Element("testsuite", name="Shipped SDK Python tests", tests=str(len(report["tests"]) + int(infrastructure_failed)),
+                       failures=str(counts["failures"]), errors=str(counts["errors"] + int(infrastructure_failed)),
                        skipped=str(counts["skipped"] + counts["expectedFailures"]),
                        time=str(report["duration_seconds"]))
     for test in report["tests"]:
@@ -172,6 +218,11 @@ def write_reports(report, output):
             ET.SubElement(case, tag, message=test["status"]).text = details or "Test did not complete"
         elif test["status"] in {"SKIP", "XFAIL"}:
             ET.SubElement(case, "skipped", message=test["status"]).text = test.get("detail", "")
+    if infrastructure_failed:
+        case = ET.SubElement(suite, 'testcase', classname='sdk.validation', name='Required execution and input identity')
+        ET.SubElement(case, 'error', message='Required validation did not pass').text = (
+            report.get('error') or json.dumps(report.get('identityVerification', {}), sort_keys=True)
+            or 'Required validation did not execute')
     ET.ElementTree(suite).write(junit, encoding="utf-8", xml_declaration=True)
     report["junit"] = junit.relative_to(ROOT).as_posix() if junit.is_relative_to(ROOT) else str(junit)
     output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
@@ -196,16 +247,32 @@ def write_reports(report, output):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "test-results/python.json")
+    parser.add_argument('--portable', action='store_true', help='Run fixture-based suites on this operating system')
     args = parser.parse_args(argv)
     if args.output.resolve().is_relative_to(SDK):
         parser.error("--output must be outside engine-sdk/")
     sys.path.insert(0, str(SDK))
+    sys.path.insert(1, str(ROOT))
+    context = capture(ROOT)
     started = time.perf_counter()
     loader = unittest.TestLoader()
     selected = unittest.TestSuite()
     sources = {}
     ci_sources = {}
-    for selector in SELECTORS:
+    selectors = list(SELECTORS) + list(EXTRA_SELECTORS)
+    # Windows does not grant symlink creation to ordinary hosted users. These
+    # privilege-dependent rejection cases remain required on Unix runners.
+    exclusions = [{'name': 'bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_platform_stale_signed_owner_is_rejected_before_descriptor_browser',
+                   'reason': 'Platform-only signed-owner fixture; validated in the full development repository, outside this Engine + Plauna package'}]
+    if os.name == 'nt':
+        stage = loader.loadTestsFromName('bundler.tests.test_sdk_staging.StagePreflightTests')
+        selectors.remove('bundler.tests.test_sdk_staging.StagePreflightTests')
+        for case in stage:
+            if 'symlink' in case.id():
+                exclusions.append({'name': case.id(), 'reason': 'Requires filesystem symlink privileges; executed on Ubuntu and macOS'})
+            else:
+                selectors.append(case.id())
+    for selector in selectors:
         module_name = ".".join(selector.split(".")[:3])
         # The unittest loader represents import/missing-test errors as actual
         # failing cases so JSON and JUnit retain them instead of losing a job.
@@ -228,21 +295,66 @@ def main(argv=None):
     # as well as their own test bytes. Counts remain actual unittest discovery.
     for path in (ROOT / "ci/network_trace.py",):
         ci_sources[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    if os.name == 'nt':
+        unsupported = {'test_browser_smoke.BrowserBoundaryTests.test_external_symlink_targets_are_refused',
+                       'sdk.tests.test_server.SDKServerTests.test_symlink_cannot_escape_the_served_root',
+                       'bundler.tests.test_graph_root_paths.GraphRootPathTests.test_symlink_root_uses_physical_identity',
+                       'bundler.tests.test_sdk_staging.StagePreflightTests.test_resolved_source_alias_is_considered_source_overlap'}
+        def eligible(suite):
+            for item in suite:
+                if isinstance(item, unittest.TestSuite):
+                    yield from eligible(item)
+                elif item.id() in unsupported:
+                    exclusions.append({'name': item.id(), 'reason': 'Requires filesystem symlink privileges; required on Ubuntu and macOS'})
+                else:
+                    yield item
+        selected = unittest.TestSuite(eligible(selected))
+    else:
+        windows_only = {'bundler.tests.test_graph_root_paths.GraphRootPathTests.test_windows_short_root_uses_physical_identity',
+                        'bundler.tests.test_graph_root_paths.GraphRootPathTests.test_windows_junction_root_uses_physical_identity'}
+        def unix_eligible(suite):
+            for item in suite:
+                if isinstance(item, unittest.TestSuite):
+                    yield from unix_eligible(item)
+                elif item.id() in windows_only:
+                    exclusions.append({'name': item.id(), 'reason': 'Windows filesystem API; required on the Windows runner'})
+                else:
+                    yield item
+        selected = unittest.TestSuite(unix_eligible(selected))
     expected = selected.countTestCases()
     result = unittest.TextTestRunner(verbosity=2, resultclass=RecordedResult).run(selected)
     tests = list(result.records.values())
+    import pytest
+    pytest_records = PytestRecords()
+    pytest_arguments = [str(SDK / name) for name in PYTEST_FILES]
+    for name in PYTEST_FILES:
+        sources[name] = hashlib.sha256((SDK / name).read_bytes()).hexdigest()
+    # Explicit plugins avoid a user's installed plugins changing collection.
+    os.environ['PYTEST_DISABLE_PLUGIN_AUTOLOAD'] = '1'
+    pytest_code = pytest.main(['-q', '-p', 'no:cacheprovider', *pytest_arguments], plugins=[pytest_records])
+    tests.extend(pytest_records.records.values())
+    expected += len(pytest_records.selected)
     statuses = Counter(test["status"] for test in tests)
-    status = "FAIL" if not result.wasSuccessful() or statuses["RUNNING"] or not expected else "PASS" if statuses["PASS"] else "SKIP"
+    status = 'FAIL' if (not result.wasSuccessful() or pytest_code or not expected
+                       or any(statuses[name] for name in ('RUNNING', 'SKIP', 'XFAIL', 'FAIL', 'ERROR'))
+                       or len(tests) != expected or len({test['name'] for test in tests}) != len(tests)
+                       or pytest_records.collection_errors) else 'PASS'
     report = {"format": "particle-python-tests/v1", "status": status,
               "duration_seconds": round(time.perf_counter() - started, 6),
-              "elapsedSeconds": round(time.perf_counter() - started, 6), "testsRun": result.testsRun,
-              "python": sys.version.split()[0], "selected": list(SELECTORS) + ci_modules,
+              "elapsedSeconds": round(time.perf_counter() - started, 6), "testsRun": len(tests),
+              "python": sys.version.split()[0], 'pytest': pytest.__version__, "selected": selectors + ci_modules,
+              'pytestSelected': pytest_records.selected, 'exclusions': exclusions,
               "suite_sources_sha256": sources, "ci_sources_sha256": ci_sources,
-              "discoveryErrors": list(loader.errors),
+              "discoveryErrors": list(loader.errors) + pytest_records.collection_errors,
               "testNames": [test["name"] for test in tests], "tests": tests,
-              "counts": {"expected": expected, "run": result.testsRun, "passed": statuses["PASS"],
+              "counts": {"expected": expected, "run": len(tests), "passed": statuses["PASS"],
                          "failures": statuses["FAIL"], "errors": statuses["ERROR"] + statuses["RUNNING"],
                          "skipped": statuses["SKIP"], "expectedFailures": statuses["XFAIL"]}}
+    report['context'] = context
+    report['identityVerification'] = verify_finish(context, ROOT)
+    report['testedPackage'] = context['sdk']
+    if report['identityVerification']['status'] != 'PASS':
+        report['status'] = status = 'FAIL'
     write_reports(report, args.output)
     print(json.dumps({key: report[key] for key in ("status", "counts", "duration_seconds", "junit")}))
     return 1 if status != "PASS" else 0

@@ -12,6 +12,13 @@ Usage:
   python bundle_engine.py --target webgpu-os
 """
 
+import sys
+
+# Candidate builds must not leave interpreter caches in their source checkout.
+# Apply this before importing the bundler, including failures during preflight.
+if any(argument.split("=", 1)[0] == "--stage-dir" for argument in sys.argv[1:]):
+    sys.dont_write_bytecode = True
+
 from bundler.cli import main
 
 if __name__ == "__main__":

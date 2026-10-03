@@ -148,6 +148,9 @@ def sdk_input_file_map(root, target, manifest_files=()):
         add(source.relative_to(root).as_posix())
         add(source.relative_to(root).as_posix(), (site.MORPHFIELD_SCHEMA_DEPLOYMENT_ROOT / source.name).as_posix())
     if target == 'platform':
+        for name in ('run_dump_built_in_tool_descriptors.py',
+                     'dump-built-in-tool-descriptors.html', 'dump-built-in-tool-descriptors.js'):
+            add('tests/navi/' + name)
         for relative in (*site.WEBGPU_OS_RUNTIME_ASSET_PATHS, *site.WEBGPU_OS_PWA_ASSET_PATHS):
             add('webgpu-os/' + relative)
         for source, destination in shell_assets:

@@ -12,30 +12,30 @@
     "profile": "engine",
     "distribution": "ordinary Git files under engine-sdk/",
     "version": "0.8.1",
-    "sdkReceiptSha256": "4503b7e7be39b712dab3cc7266627537aae6da75f5cc7ed0365123d7feaa730b",
-    "files": 7165,
-    "bytes": 310375133,
+    "sdkReceiptSha256": "210b1e59a727936e624216959c084eaebba4327c3ad695b53d563f9c0490b61f",
+    "files": 7184,
+    "bytes": 310744364,
+    "inventoriedPayloadBytes": 309330398,
     "publicEntrypoints": {
       "engine/EngineBootstrap.js": "PE",
       "plauna/index.js": "Plauna"
     },
     "publicNamespaces": [
-      "Engine",
       "Plauna"
     ],
     "runtime": {
       "name": "particle-engine",
-      "sri": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
-      "decodedBytes": 19789540,
-      "compressedBytes": 3811318,
-      "sourceContentSha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1",
+      "sri": "sha384-gjTzG+98qTfyGgjPEXa7U7ghwLYsKKbXIXsFXuF4NVlySdNKzN69juo7UTzqbd3a",
+      "decodedBytes": 19823005,
+      "compressedBytes": 3820148,
+      "sourceContentSha256": "c408d48a3f3818ffe29554ab841dc012253e465ee701e659352d6bd850a1b1f6",
       "provenance": {
         "path": "particle-engine.provenance.json",
         "predicate_type": "https://slsa.dev/provenance/v1",
-        "sha256": "b2b7115ba3c29e7b9b7d070ffd0ace43b7d2c13679d82867b59d8ca2c790f0a3"
+        "sha256": "92f0b3f3dbff076af737e8bd4d94ddec39c02da4152cc08c615b19a460c9e310"
       }
     },
-    "buildInputsSha256": "b7b927989161d47f7e74b61a2b689a932b38c663d31f181f4eec38604f8e0dcb",
+    "buildInputsSha256": "7733391482d2f136fd742a4f6b444c38f5a9137cfc6eec19c55595bbe78fcc75",
     "tools": {
       "python": "3.12.7",
       "minifier": "rjsmin",
@@ -66,28 +66,6 @@
       "changed": false,
       "physxPeWasmSha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
       "priorEvidence": "validation/v0.8.1-alpha.1.json"
-    },
-    "localSourceChecks": {
-      "selection-renderer-upgrade-results.json": {
-        "sha256": "0be73b1bc56b9e260d3192d0fe6d99112dbcd33f2b55c39be35c8cdfaac01ce1",
-        "status": "PASS",
-        "scope": "Local source checks; compiled and hosted checks recorded separately"
-      },
-      "construct-selection-lifecycle-results.json": {
-        "sha256": "845305fab7ea1b09749398b44dea5d735bc18b0b2f24c96b50c1a8b8a71ce9ce",
-        "status": "PASS",
-        "scope": "Local source checks; compiled and hosted checks recorded separately"
-      },
-      "playground-source-upgrade-results.json": {
-        "sha256": "eef2c6f05878100d362754e55094836f2daad5aba4af7bc807b36ba15db32bea",
-        "status": "PASS",
-        "scope": "Local source checks; compiled and hosted checks recorded separately"
-      },
-      "plauna-onboarding-upgrade-results.json": {
-        "sha256": "4199ca5c9ad073b42236a0d655f7dfdcc94c6802527ee65f816907d85830876d",
-        "status": "PASS",
-        "scope": "Local source checks; compiled and hosted checks recorded separately"
-      }
     }
   },
   "Template.zip": {
@@ -854,6 +832,98 @@
     ]
   },
   "hostedValidation": {
+    "status": "PENDING",
+    "scope": "Current code-validation milestone; hosted results will be recorded after the complete required workflow passes."
+  },
+  "sdkArchiveCreated": false,
+  "historicalSdkBaseline": {
+    "profile": "engine",
+    "distribution": "ordinary Git files under engine-sdk/",
+    "version": "0.8.1",
+    "sdkReceiptSha256": "4503b7e7be39b712dab3cc7266627537aae6da75f5cc7ed0365123d7feaa730b",
+    "files": 7165,
+    "bytes": 310375133,
+    "publicEntrypoints": {
+      "engine/EngineBootstrap.js": "PE",
+      "plauna/index.js": "Plauna"
+    },
+    "publicNamespaces": [
+      "Engine",
+      "Plauna"
+    ],
+    "runtime": {
+      "name": "particle-engine",
+      "sri": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
+      "decodedBytes": 19789540,
+      "compressedBytes": 3811318,
+      "sourceContentSha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1",
+      "provenance": {
+        "path": "particle-engine.provenance.json",
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "sha256": "b2b7115ba3c29e7b9b7d070ffd0ace43b7d2c13679d82867b59d8ca2c790f0a3"
+      }
+    },
+    "buildInputsSha256": "b7b927989161d47f7e74b61a2b689a932b38c663d31f181f4eec38604f8e0dcb",
+    "tools": {
+      "python": "3.12.7",
+      "minifier": "rjsmin",
+      "packages": {
+        "jsonschema": "4.25.1",
+        "cryptography": "46.0.5",
+        "rjsmin": "1.2.5",
+        "attrs": "25.4.0",
+        "referencing": "0.37.0",
+        "rpds-py": "0.30.0",
+        "jsonschema-specifications": "2025.9.1",
+        "cffi": "2.0.0",
+        "pycparser": "3.0",
+        "typing-extensions": "4.15.0",
+        "brotli": "1.2.0",
+        "zstandard": "0.25.0",
+        "zopfli": "0.4.1"
+      },
+      "nativeCompression": {
+        "zlib": {
+          "compiled": "1.3.1",
+          "runtime": "1.3.1"
+        },
+        "lzma": "python-stdlib-lzma2-xz"
+      }
+    },
+    "nativeBaseline": {
+      "changed": false,
+      "physxPeWasmSha256": "3d73e561fa71b996e3c25b10426b9445bad7b6a56eb3cd5a6a3901c791b8e8f4",
+      "priorEvidence": "validation/v0.8.1-alpha.1.json"
+    },
+    "localSourceChecks": {
+      "selection-renderer-upgrade-results.json": {
+        "sha256": "0be73b1bc56b9e260d3192d0fe6d99112dbcd33f2b55c39be35c8cdfaac01ce1",
+        "status": "PASS",
+        "scope": "Local source checks; compiled and hosted checks recorded separately"
+      },
+      "construct-selection-lifecycle-results.json": {
+        "sha256": "845305fab7ea1b09749398b44dea5d735bc18b0b2f24c96b50c1a8b8a71ce9ce",
+        "status": "PASS",
+        "scope": "Local source checks; compiled and hosted checks recorded separately"
+      },
+      "playground-source-upgrade-results.json": {
+        "sha256": "eef2c6f05878100d362754e55094836f2daad5aba4af7bc807b36ba15db32bea",
+        "status": "PASS",
+        "scope": "Local source checks; compiled and hosted checks recorded separately"
+      },
+      "plauna-onboarding-upgrade-results.json": {
+        "sha256": "4199ca5c9ad073b42236a0d655f7dfdcc94c6802527ee65f816907d85830876d",
+        "status": "PASS",
+        "scope": "Local source checks; compiled and hosted checks recorded separately"
+      }
+    }
+  },
+  "codeValidationUpgrade": {
+    "status": "CANDIDATE",
+    "scope": "SDK assembly verified; current code and hosted execution evidence recorded separately",
+    "candidateReceiptSha256": "235165a8973d2b361cf8e72fd4fda95fce35c62770daca67cc8d3cf8f02596ca"
+  },
+  "historicalHostedValidation": {
     "status": "PASS",
     "testedCommit": "37154e9e779f673ce6e80e3b7918c36917708f7c",
     "runId": 37141495043,
@@ -862,5 +932,5 @@
     "sha256": "e8e98a64543adf52172b7495698f073a351ac4ff42038c064ba0808e097077b8",
     "scope": "Six hosted jobs; exact current SDK, Template and harness bytes. Evidence-only publication commits are identified separately by Git history."
   },
-  "sdkArchiveCreated": false
+  "scope": "SDK and Template package integrity; current hosted code validation is identified separately."
 }

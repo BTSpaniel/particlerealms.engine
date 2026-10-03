@@ -3,7 +3,7 @@
   "schema_version": 2,
   "name": "particle-engine",
   "version": "0.8.1",
-  "date": "2026-06-01 00:00",
+  "date": "1980-01-01 00:00",
   "entries": [
     "engine/EngineBootstrap.js",
     "plauna/index.js"
@@ -26,33 +26,33 @@
   "obfuscate": false,
   "encrypt": false,
   "integrity_wrapper": false,
-  "modules": 1772,
-  "module_ids": 1662,
+  "modules": 1775,
+  "module_ids": 1665,
   "ns_ordered": false,
-  "source_bytes": 27122250,
-  "bundle_bytes": 28039903,
-  "min_bytes": 19789540,
-  "gzip_bytes": 3811318,
+  "source_bytes": 27172396,
+  "bundle_bytes": 28092012,
+  "min_bytes": 19823005,
+  "gzip_bytes": 3820148,
   "gzip_method": "gzip",
-  "brotli_bytes": 3417304,
-  "zstd_bytes": 3378067,
-  "lzma_bytes": 2903760,
+  "brotli_bytes": 3425008,
+  "zstd_bytes": 3386063,
+  "lzma_bytes": 2910600,
   "zstd_dict_bytes": null,
   "dcz_header_bytes": null,
   "dcz_dictionary_sha256": null,
   "best_compressed": "zstd",
-  "best_bytes": 3378067,
+  "best_bytes": 3386063,
   "repository_metrics": "code-metrics.json",
   "repository": {
     "files": 5478,
-    "lines": 1970161
+    "lines": 1970164
   },
-  "sri": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
+  "sri": "sha384-gjTzG+98qTfyGgjPEXa7U7ghwLYsKKbXIXsFXuF4NVlySdNKzN69juo7UTzqbd3a",
   "browser_runtime": "particle-engine.min.js.gz",
   "browser_runtime_compression": "gzip",
-  "browser_runtime_bytes": 3811318,
-  "browser_runtime_decoded_bytes": 19789540,
-  "browser_runtime_integrity": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
+  "browser_runtime_bytes": 3820148,
+  "browser_runtime_decoded_bytes": 19823005,
+  "browser_runtime_integrity": "sha384-gjTzG+98qTfyGgjPEXa7U7ghwLYsKKbXIXsFXuF4NVlySdNKzN69juo7UTzqbd3a",
   "browser_runtime_loader": "release-runtime-loader.js",
   "reduction_min": "27.0%",
   "reduction_gzip": "85.9%",
@@ -1164,11 +1164,14 @@
     "engine/core/timing/index.js",
     "engine/core/index.js",
     "engine/ecs/EntityManager.js",
+    "engine/render/particles/CustomParticleEffect.js",
+    "engine/render/particles/ParticleEffectRegistry.js",
+    "engine/gameplay/spells/SpellGenerator.js",
+    "engine/gameplay/spells/SpellElementMixer.js",
+    "engine/gameplay/spells/SpellGeneratorIntegration.js",
     "engine/render/DrawHelpers.js",
     "engine/sim/particles/ParticleConfig.js",
     "engine/core/gpu/BindingSignals.js",
-    "engine/render/particles/CustomParticleEffect.js",
-    "engine/render/particles/ParticleEffectRegistry.js",
     "engine/render/particles/ParticleCollisionSDF.js",
     "engine/sim/particles/CustomSDFCollisionBridge.js",
     "engine/sim/particles/ParticleAdaptiveSubstep.js",
@@ -1836,7 +1839,7 @@
     "packages": []
   },
   "officialPackageAssets": [],
-  "sdkBuildInputsSha256": "b7b927989161d47f7e74b61a2b689a932b38c663d31f181f4eec38604f8e0dcb",
+  "sdkBuildInputsSha256": "7733391482d2f136fd742a4f6b444c38f5a9137cfc6eec19c55595bbe78fcc75",
   "buildTools": {
     "python": "3.12.7",
     "minifier": "rjsmin",
@@ -1863,9 +1866,9 @@
       "lzma": "python-stdlib-lzma2-xz"
     }
   },
-  "buildMode": "sdk",
-  "file_inventory_sha256": "1243ad26bff80ba8765e9eabc0ee3d4eb91bd9d0f595ed2029e8703999709ea0",
-  "source_content_sha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1",
+  "buildMode": "sdk-stage",
+  "file_inventory_sha256": "2f361a589993f603b8761ffad7e7f996d223b594fb5ecf7ffc55d05c7b377e41",
+  "source_content_sha256": "c408d48a3f3818ffe29554ab841dc012253e465ee701e659352d6bd850a1b1f6",
   "public_api_contracts": {
     "engine-demo": {
       "entry": "engine/EngineBootstrap.js",
@@ -2191,7 +2194,7 @@
     }
   ],
   "physicsConsumerAudit": {
-    "scannedFiles": 5678,
+    "scannedFiles": 5689,
     "consumers": [
       "editor/js/modules/EditorPhysics.js",
       "editor/js/modules/EditorPhysicsSim.js",
@@ -3346,12 +3349,12 @@
   ],
   "post_build_verification": {
     "format": 1,
-    "files_verified": 1772,
-    "file_inventory_sha256": "1243ad26bff80ba8765e9eabc0ee3d4eb91bd9d0f595ed2029e8703999709ea0",
-    "source_content_sha256": "190d12329800fdf073e5d4421105eb1d47e926811fc4e5ac131edddd77c5f7b1",
-    "decoded_sha384": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
-    "gzip_sha256": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08",
-    "registry_entries": 1772,
+    "files_verified": 1775,
+    "file_inventory_sha256": "2f361a589993f603b8761ffad7e7f996d223b594fb5ecf7ffc55d05c7b377e41",
+    "source_content_sha256": "c408d48a3f3818ffe29554ab841dc012253e465ee701e659352d6bd850a1b1f6",
+    "decoded_sha384": "sha384-gjTzG+98qTfyGgjPEXa7U7ghwLYsKKbXIXsFXuF4NVlySdNKzN69juo7UTzqbd3a",
+    "gzip_sha256": "4af39569cee4e2de76cf8a0c38e2201fb5b99c11206c3707148aa74352a36183",
+    "registry_entries": 1775,
     "static_registry_verified": true,
     "public_namespaces_verified": [
       "Plauna"
@@ -3361,6 +3364,6 @@
   "provenance": {
     "path": "particle-engine.provenance.json",
     "predicate_type": "https://slsa.dev/provenance/v1",
-    "sha256": "b2b7115ba3c29e7b9b7d070ffd0ace43b7d2c13679d82867b59d8ca2c790f0a3"
+    "sha256": "92f0b3f3dbff076af737e8bd4d94ddec39c02da4152cc08c615b19a460c9e310"
   }
 }

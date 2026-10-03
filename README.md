@@ -110,18 +110,23 @@ Outputs go to `build/runtime` and `build/engine-sdk`. Install prerequisites befo
 
 **[SDK CI](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml)** checks the distribution and Python/browser behavior on pushes and pull requests. The [test guide](ci/README.md) lists each job's scope, requirements and local commands. Browser and GPU coverage is reported per job.
 
-**[Latest full validation](https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043): all six jobs passed.** [Permanent reports](validation/hosted-results.json) retain the tested commit, artifact hashes and measurements.
+Open the latest **[SDK CI run](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml)** for the current commit's required results. Download **`code-validation-results`** for `coverage.html`, original JSON reports, JUnit XML and exact package identities. The final gate rejects missing reports, skipped required assertions, mismatched commits and changed packages.
 
-| Check | Verified result |
+| Check | Evidence |
 | --- | --- |
-| Python regression | 154 tests passed; no skips |
-| Browser behavior | 22 CPU cases and 38 software WebGPU cases; root and nested hosting |
-| Offline JavaScript rebuilding | Two identical builds and an executed source-change proof; no private keys |
-| Source and compiled endurance | 100 scene lifecycle cycles and ten minutes of simulation in each mode; cleanup passed |
+| Portable Python | Actual unittest and pytest fixture cases on Windows, Ubuntu and macOS |
+| Parser and code correctness | Engine/Plauna module census; Chromium grammar; fixed source, emitted and minified behavior oracles, with WebGPU disabled |
+| Public CPU contracts | Shared Plauna, strict JSON, Rig, persistence, particle planning/codecs and FFT assertions; source and compiled modes at root and nested URLs |
+| Fresh Windows candidate | Recorded offline JavaScript rebuild, then API and parser tests against the rebuilt SDK; CI provenance for its actual runtime files |
+| Existing browser coverage | Documentation interactions, native physics, workers and software WebGPU rendering; runtime errors and cleanup remain required |
 
-The browser jobs execute the actual approved Markdown quick starts. Software WebGPU checks also read back selection-rendering pixels and exercise the playground's save/reload controls. The manual **[release validation workflow](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-release-validation.yml)** checks offline deterministic rebuilding and runs 100 scene lifecycle cycles plus ten minutes of simulation in each runtime mode. Download its reports for individual outcomes, browser and adapter identities, frame-time percentiles and available memory measurements.
+The browser jobs execute the approved Markdown quick starts. Software WebGPU checks also read back selection-rendering pixels and exercise save/reload controls. The manual **[release validation workflow](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-release-validation.yml)** retains deterministic rebuilding, a source-change proof, 100 scene lifecycle cycles and ten minutes of simulation in each runtime mode. Windows qualifies release-byte reproducibility; the other operating systems check portability. Software adapter measurements remain labeled separately from hardware performance.
+
+The earlier [six-job validation](https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043) and its [permanent reports](validation/hosted-results.json) describe their recorded revision. They are historical evidence, separate from the upgraded workflow's current results.
 
 [Distribution identity and validation](SDK-VALIDATION.json) identifies the checked SDK and Template. CI results apply to their recorded commit and artifact hashes. The [SDK manifest](engine-sdk/manifest.json) records every distributed file and its build identity. Existing release tags remain stable; `main` can contain improvements awaiting the next tagged release.
+
+Future release preparation uses [`tools/release.py`](tools/release.py): an explicit new version, exact tested commit, notes, package identities and complete required evidence. Validation is the default. Draft preparation is explicit, and publication is a separate action. See the [release preparation guide](ci/README.md#preparing-the-next-release).
 
 Browse the [SDK guide](engine-sdk/MD/guides/sdk-distribution.md) and [API index](engine-sdk/MD/api/index.md), or open `MD/viewer/` on the local SDK server. [Engine Academy](https://particlerealms.online/learn/) and the [Playground](https://particlerealms.online/playground/) provide online learning and live studies.
 
