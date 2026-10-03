@@ -1,0 +1,332 @@
+{
+  "format": "particle-sdk-hosted-validation/v1",
+  "status": "PASS",
+  "runId": 37141495043,
+  "url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043",
+  "testedCommit": "37154e9e779f673ce6e80e3b7918c36917708f7c",
+  "sdkReceiptSha256": "4503b7e7be39b712dab3cc7266627537aae6da75f5cc7ed0365123d7feaa730b",
+  "templateArchiveSha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+  "jobs": [
+    {
+      "name": "Package integrity and Python tests",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043/job/111256714486"
+    },
+    {
+      "name": "Browser tests (off)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043/job/111256714636"
+    },
+    {
+      "name": "Browser tests (software)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043/job/111256714658"
+    },
+    {
+      "name": "Manual release validation / Software WebGPU endurance (source)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043/job/111256714735"
+    },
+    {
+      "name": "Manual release validation / Offline JavaScript rebuilding",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043/job/111256714746"
+    },
+    {
+      "name": "Manual release validation / Software WebGPU endurance (compiled)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043/job/111256714823"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "package-and-python-results",
+      "id": 11280307987,
+      "archiveSha256": "2ce7a56f2ed437a2897d10dc0836666e4f0cc28c2ee221615d3be4c6307c4f95",
+      "reports": [
+        {
+          "path": "distribution.json",
+          "publishedPath": "validation/hosted-37141495043/distribution.json",
+          "sha256": "f14af6e8a31b5b888ff9caed7ff91e10a0aca2c114e0a4f9f023a3b1e9ee717f"
+        },
+        {
+          "path": "python.json",
+          "publishedPath": "validation/hosted-37141495043/python.json",
+          "sha256": "7d074e2ed8b33701db2dc34709641cd7ef1f94e8f60e436e7ac1c71be0a90d33"
+        }
+      ]
+    },
+    {
+      "name": "browser-off-results",
+      "id": 11280308025,
+      "archiveSha256": "ee6249dfeb3d8eff8a26af494499bd58aba7f158aa2ef1c77658cc72d63e740c",
+      "reports": [
+        {
+          "path": "browser-off.json",
+          "publishedPath": "validation/hosted-37141495043/browser-off.json",
+          "sha256": "c6b7752b23688c3aec9c9d89d6c5fb7b5dba2837bc9daf7013eca594efc9ad15"
+        }
+      ]
+    },
+    {
+      "name": "browser-software-results",
+      "id": 11280717440,
+      "archiveSha256": "f73f9feb026d92a64dc3990b4f51fe65a74145acec70b70a4e95761f29b70006",
+      "reports": [
+        {
+          "path": "browser-software.json",
+          "publishedPath": "validation/hosted-37141495043/browser-software.json",
+          "sha256": "d1fde773b61e02c267ca94185d99dddac92a330a664090eae331fe02bc0fd109"
+        }
+      ]
+    },
+    {
+      "name": "offline-rebuild-results",
+      "id": 11281081155,
+      "archiveSha256": "c0c9d8c8fc777bd7cac8698ea8a886f198e1c45d34b0ef60603c519b4a826324",
+      "reports": [
+        {
+          "path": "rebuild/report.json",
+          "publishedPath": "validation/hosted-37141495043/rebuild.json",
+          "sha256": "8b22601547946ada8784d77002a5ccab127c9a8a4df7d80b358c03c408bd2ce3"
+        }
+      ]
+    },
+    {
+      "name": "endurance-source-results",
+      "id": 11280229367,
+      "archiveSha256": "c679fe4312c46c7e7616e55f0ae07305d5e6c550f20525fa76f2313993d3ef2d",
+      "reports": [
+        {
+          "path": "endurance-source.json",
+          "publishedPath": "validation/hosted-37141495043/endurance-source.json",
+          "sha256": "a0d910bf6e3731e6162fe732e024cecc91f9c12788e846d2d803618ef09dd339"
+        }
+      ]
+    },
+    {
+      "name": "endurance-compiled-results",
+      "id": 11280194141,
+      "archiveSha256": "ccd093d636fdd480420ca1f557c19fa99333a24ba56687275334e8729cf8f331",
+      "reports": [
+        {
+          "path": "endurance-compiled.json",
+          "publishedPath": "validation/hosted-37141495043/endurance-compiled.json",
+          "sha256": "14a8c0355d555ed2213b3a80103b30b33890c64a9e296f39ee7c7c52887e690a"
+        }
+      ]
+    }
+  ],
+  "python": {
+    "expected": 154,
+    "run": 154,
+    "passed": 154,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "expectedFailures": 0
+  },
+  "browsers": {
+    "off": {
+      "status": "PASS",
+      "cases": 22,
+      "assertions": 82,
+      "browserVersion": "153.0.8010.12",
+      "gpuSuite": {
+        "status": "NOT_RUN",
+        "reason": "CPU baseline; rendering and GPU Surface Field transport were not executed"
+      }
+    },
+    "software": {
+      "status": "PASS",
+      "cases": 38,
+      "assertions": 206,
+      "browserVersion": "153.0.8010.12",
+      "gpuSuite": {
+        "status": "PASS",
+        "requestedBackend": "swiftshader",
+        "adapters": [
+          {
+            "requestedBackend": "swiftshader",
+            "observedBackend": "swiftshader",
+            "identity": {
+              "vendor": "google",
+              "architecture": "swiftshader",
+              "device": "",
+              "description": ""
+            },
+            "isFallbackAdapter": true,
+            "deviceCreated": true,
+            "deviceDestroyed": true,
+            "scope": "Software WebGPU example smoke; no hardware, Flow, performance or device-matrix qualification"
+          },
+          {
+            "requestedBackend": "swiftshader",
+            "observedBackend": "swiftshader",
+            "identity": {
+              "vendor": "google",
+              "architecture": "swiftshader",
+              "device": "",
+              "description": ""
+            },
+            "isFallbackAdapter": true,
+            "deviceCreated": true,
+            "deviceDestroyed": true,
+            "scope": "Software WebGPU example smoke; no hardware, Flow, performance or device-matrix qualification"
+          }
+        ],
+        "scope": "Actual shipped Engine rendering, selection pixel regression, physics playground and Surface Field GPU transport, source+compiled, root+nested; exact Markdown examples and Plauna interaction. Template CPU smoke. No Flow or hardware qualification."
+      }
+    }
+  },
+  "endurance": {
+    "source": {
+      "status": "PASS",
+      "cycles": 100,
+      "durationSeconds": 600.0149245460001,
+      "measurements": {
+        "entities": 3,
+        "bodies": 3,
+        "nativeBodies": 4,
+        "uniformBuffers": 3,
+        "bindGroups": 3,
+        "selected": 211812352,
+        "frames": 36061,
+        "maximumBodies": 4,
+        "finite": true,
+        "frameTimeMs": {
+          "samples": 36060,
+          "p50": 16.66500000000815,
+          "p95": 16.67000000004191,
+          "p99": 16.67000000004191
+        },
+        "memory": {
+          "usedJSHeapSize": 133940875,
+          "totalJSHeapSize": 139402363,
+          "scope": "Chromium JavaScript heap estimate; excludes GPU and native allocations"
+        },
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        }
+      },
+      "scope": "Software WebGPU functional endurance; reported timings do not qualify hardware performance. Memory is available browser JS heap data, not total native or GPU memory."
+    },
+    "compiled": {
+      "status": "PASS",
+      "cycles": 100,
+      "durationSeconds": 600.038400218,
+      "measurements": {
+        "entities": 3,
+        "bodies": 3,
+        "nativeBodies": 4,
+        "uniformBuffers": 3,
+        "bindGroups": 3,
+        "selected": 211812352,
+        "frames": 36034,
+        "maximumBodies": 4,
+        "finite": true,
+        "frameTimeMs": {
+          "samples": 36033,
+          "p50": 16.66500000000815,
+          "p95": 16.67000000004191,
+          "p99": 16.67000000004191
+        },
+        "memory": {
+          "usedJSHeapSize": 111405439,
+          "totalJSHeapSize": 119345195,
+          "scope": "Chromium JavaScript heap estimate; excludes GPU and native allocations"
+        },
+        "adapter": {
+          "vendor": "google",
+          "architecture": "swiftshader",
+          "device": "",
+          "description": ""
+        }
+      },
+      "scope": "Software WebGPU functional endurance; reported timings do not qualify hardware performance. Memory is available browser JS heap data, not total native or GPU memory."
+    }
+  },
+  "rebuild": {
+    "status": "PASS",
+    "runtimeHashes": [
+      {
+        "particle-engine.js": "a408237c9790b13ce22d5330de502612e35ff772d330c4383613b3324fda1639",
+        "particle-engine.min.js": "37009b807b6f0f925018b023c6895044ec001ad511f107fa66bd3cd337ca67e9",
+        "particle-engine.min.js.br": "99168189fc8a73c0c7be600a9dc6830809fb393293695efca5ba042d87f9bc37",
+        "particle-engine.min.js.gz": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08",
+        "particle-engine.min.js.sri": "9071a16d94a31348ccd700c1e3878b19e6ded3830757ebef25cbde52e58cb660",
+        "particle-engine.min.js.xz": "0419c6e16795ad9bf780834046cc3ed04e9c94a64b39c54b189329f5b6e6918c",
+        "particle-engine.min.js.zst": "9f76bff2c09991a46f7effb7668d84b423a0f99b03508c96a4cf162a3e626fe8"
+      },
+      {
+        "particle-engine.js": "a408237c9790b13ce22d5330de502612e35ff772d330c4383613b3324fda1639",
+        "particle-engine.min.js": "37009b807b6f0f925018b023c6895044ec001ad511f107fa66bd3cd337ca67e9",
+        "particle-engine.min.js.br": "99168189fc8a73c0c7be600a9dc6830809fb393293695efca5ba042d87f9bc37",
+        "particle-engine.min.js.gz": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08",
+        "particle-engine.min.js.sri": "9071a16d94a31348ccd700c1e3878b19e6ded3830757ebef25cbde52e58cb660",
+        "particle-engine.min.js.xz": "0419c6e16795ad9bf780834046cc3ed04e9c94a64b39c54b189329f5b6e6918c",
+        "particle-engine.min.js.zst": "9f76bff2c09991a46f7effb7668d84b423a0f99b03508c96a4cf162a3e626fe8"
+      }
+    ],
+    "directoryFiles": 7165,
+    "changedRuntimeHashes": {
+      "particle-engine.js": "890ee1d0eb48ec242e2f9687919f9529a4ed7f3ae1fecc682682651956f2b2eb",
+      "particle-engine.min.js": "945fd191abe6f4a98976b6a8bb1bee44d97bf71825b1336542e2e17c8d1acd03",
+      "particle-engine.min.js.br": "9bab06dbf4d74cc07cc7de73a6d3603bc0cbd966f79006d6f4a948fb00d16ef3",
+      "particle-engine.min.js.gz": "7430baa7ebe38315c52ecf1c4348c199166db365a910a388ca2b58ec21cef6f6",
+      "particle-engine.min.js.sri": "d098f86716a72ff6d812b3254c34ca77dfed739f3456f34c3ddd2cdd7979dfc7",
+      "particle-engine.min.js.xz": "2f4fe2f33b7e5bee6573467964dacc6fce3d7eaa1fa47e47d508966daf1561e7",
+      "particle-engine.min.js.zst": "c0386cb3552283c12f3a1fb26494a3befa10d4790aef71a1dc1e422da01737aa"
+    },
+    "rejectionChecks": [
+      {
+        "name": "missing-source",
+        "status": "PASS",
+        "rejected": true,
+        "diagnostic": "Missing SDK build input"
+      },
+      {
+        "name": "corrupt-native",
+        "status": "PASS",
+        "rejected": true,
+        "diagnostic": "immutable input hash/length mismatch"
+      },
+      {
+        "name": "signed-packages",
+        "status": "NOT_APPLICABLE",
+        "reason": "Engine SDK does not contain a Platform signed-package registry"
+      }
+    ],
+    "cpuProbe": {
+      "status": "PASS",
+      "input": [
+        2,
+        3,
+        4
+      ],
+      "expected": [
+        3,
+        3,
+        4
+      ],
+      "observed": [
+        3,
+        3,
+        4
+      ],
+      "diagnostics": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "httpErrors": [],
+        "externalRequests": []
+      }
+    },
+    "privateKeysPresent": false,
+    "pythonNetworkAccess": "blocked",
+    "pythonSubprocessNetworkAccess": "blocked",
+    "sdkArchivesCreated": false
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "particle-sdk-rebuild-acceptance/v1",
+  "status": "PASS",
+  "commit": "37154e9e779f673ce6e80e3b7918c36917708f7c",
+  "checks": [
+    {
+      "name": "Offline deterministic rebuild and executed source change",
+      "status": "PASS"
+    }
+  ],
+  "profile": "engine",
+  "sdkReceiptSha256": "4503b7e7be39b712dab3cc7266627537aae6da75f5cc7ed0365123d7feaa730b",
+  "browserVersion": "153.0.8010.12",
+  "rebuild": {
+    "status": "PASS",
+    "runtimeHashes": [
+      {
+        "particle-engine.js": "a408237c9790b13ce22d5330de502612e35ff772d330c4383613b3324fda1639",
+        "particle-engine.min.js": "37009b807b6f0f925018b023c6895044ec001ad511f107fa66bd3cd337ca67e9",
+        "particle-engine.min.js.br": "99168189fc8a73c0c7be600a9dc6830809fb393293695efca5ba042d87f9bc37",
+        "particle-engine.min.js.gz": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08",
+        "particle-engine.min.js.sri": "9071a16d94a31348ccd700c1e3878b19e6ded3830757ebef25cbde52e58cb660",
+        "particle-engine.min.js.xz": "0419c6e16795ad9bf780834046cc3ed04e9c94a64b39c54b189329f5b6e6918c",
+        "particle-engine.min.js.zst": "9f76bff2c09991a46f7effb7668d84b423a0f99b03508c96a4cf162a3e626fe8"
+      },
+      {
+        "particle-engine.js": "a408237c9790b13ce22d5330de502612e35ff772d330c4383613b3324fda1639",
+        "particle-engine.min.js": "37009b807b6f0f925018b023c6895044ec001ad511f107fa66bd3cd337ca67e9",
+        "particle-engine.min.js.br": "99168189fc8a73c0c7be600a9dc6830809fb393293695efca5ba042d87f9bc37",
+        "particle-engine.min.js.gz": "e7ad0a8562d34defd83e20f7222048cff758aa2fc7ee0707ad593a13e7218f08",
+        "particle-engine.min.js.sri": "9071a16d94a31348ccd700c1e3878b19e6ded3830757ebef25cbde52e58cb660",
+        "particle-engine.min.js.xz": "0419c6e16795ad9bf780834046cc3ed04e9c94a64b39c54b189329f5b6e6918c",
+        "particle-engine.min.js.zst": "9f76bff2c09991a46f7effb7668d84b423a0f99b03508c96a4cf162a3e626fe8"
+      }
+    ],
+    "directoryFiles": 7165,
+    "changedRuntimeHashes": {
+      "particle-engine.js": "890ee1d0eb48ec242e2f9687919f9529a4ed7f3ae1fecc682682651956f2b2eb",
+      "particle-engine.min.js": "945fd191abe6f4a98976b6a8bb1bee44d97bf71825b1336542e2e17c8d1acd03",
+      "particle-engine.min.js.br": "9bab06dbf4d74cc07cc7de73a6d3603bc0cbd966f79006d6f4a948fb00d16ef3",
+      "particle-engine.min.js.gz": "7430baa7ebe38315c52ecf1c4348c199166db365a910a388ca2b58ec21cef6f6",
+      "particle-engine.min.js.sri": "d098f86716a72ff6d812b3254c34ca77dfed739f3456f34c3ddd2cdd7979dfc7",
+      "particle-engine.min.js.xz": "2f4fe2f33b7e5bee6573467964dacc6fce3d7eaa1fa47e47d508966daf1561e7",
+      "particle-engine.min.js.zst": "c0386cb3552283c12f3a1fb26494a3befa10d4790aef71a1dc1e422da01737aa"
+    },
+    "rejectionChecks": [
+      {
+        "name": "missing-source",
+        "status": "PASS",
+        "rejected": true,
+        "diagnostic": "Missing SDK build input"
+      },
+      {
+        "name": "corrupt-native",
+        "status": "PASS",
+        "rejected": true,
+        "diagnostic": "immutable input hash/length mismatch"
+      },
+      {
+        "name": "signed-packages",
+        "status": "NOT_APPLICABLE",
+        "reason": "Engine SDK does not contain a Platform signed-package registry"
+      }
+    ],
+    "cpuProbe": {
+      "status": "PASS",
+      "input": [
+        2,
+        3,
+        4
+      ],
+      "expected": [
+        3,
+        3,
+        4
+      ],
+      "observed": [
+        3,
+        3,
+        4
+      ],
+      "diagnostics": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "httpErrors": [],
+        "externalRequests": []
+      }
+    },
+    "privateKeysPresent": false,
+    "pythonNetworkAccess": "blocked",
+    "pythonSubprocessNetworkAccess": "blocked",
+    "sdkArchivesCreated": false
+  },
+  "elapsedSeconds": 998.282
+}

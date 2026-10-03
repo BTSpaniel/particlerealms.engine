@@ -1,6 +1,6 @@
 {
   "format": "particle-git-distribution-validation/v2",
-  "status": "PENDING_CI",
+  "status": "PASS",
   "repository": "BTSpaniel/particlerealms.engine",
   "preservedRelease": {
     "tag": "v0.8.1-alpha.1",
@@ -854,8 +854,13 @@
     ]
   },
   "hostedValidation": {
-    "status": "PENDING",
-    "reason": "Updated Template archive requires fresh hosted validation before promotion"
+    "status": "PASS",
+    "testedCommit": "37154e9e779f673ce6e80e3b7918c36917708f7c",
+    "runId": 37141495043,
+    "url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043",
+    "evidence": "validation/hosted-results.json",
+    "sha256": "e8e98a64543adf52172b7495698f073a351ac4ff42038c064ba0808e097077b8",
+    "scope": "Six hosted jobs; exact current SDK, Template and harness bytes. Evidence-only publication commits are identified separately by Git history."
   },
   "sdkArchiveCreated": false
 }

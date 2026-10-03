@@ -1,0 +1,43 @@
+{
+  "schema": "particle-sdk-ci-distribution/v1",
+  "status": "PASS",
+  "commit": "37154e9e779f673ce6e80e3b7918c36917708f7c",
+  "python": "3.12.7",
+  "platform": "Windows",
+  "checks": [
+    {
+      "name": "SDK inventory, source graph, native assets, compression and provenance",
+      "status": "PASS",
+      "details": {
+        "files": 7165,
+        "profile": "engine",
+        "publicNamespaces": [
+          "Plauna"
+        ],
+        "runtimeSRI": "sha384-ggL2iz/gNdjVNc1JpZXb4fnP02oidzSLFD7nX7EPknYdC4qlXlKIkb/62jEFvOKm",
+        "receiptSha256": "4503b7e7be39b712dab3cc7266627537aae6da75f5cc7ed0365123d7feaa730b"
+      }
+    },
+    {
+      "name": "Template archive inventory, runtime integrity and provenance",
+      "status": "PASS",
+      "details": {
+        "files": 721,
+        "bytes": 46204894,
+        "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+        "runtimeSRI": "sha384-3fvkApmeaTaZVxgqa1LZgMzuQBEPKOjIkpdVj3nbHpR8D6Wk072XQEldiP5z7+uQ",
+        "platformRuntimes": 1,
+        "physxPeWasmCopies": 1
+      }
+    },
+    {
+      "name": "Offline documentation navigation and repository links",
+      "status": "PASS",
+      "details": {
+        "navigationDocuments": 162,
+        "repositoryLinks": 26
+      }
+    }
+  ],
+  "elapsedSeconds": 36.406
+}

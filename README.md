@@ -110,6 +110,15 @@ Outputs go to `build/runtime` and `build/engine-sdk`. Install prerequisites befo
 
 **[SDK CI](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml)** checks the distribution and Python/browser behavior on pushes and pull requests. The [test guide](ci/README.md) lists each job's scope, requirements and local commands. Browser and GPU coverage is reported per job.
 
+**[Latest full validation](https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37141495043): all six jobs passed.** [Permanent reports](validation/hosted-results.json) retain the tested commit, artifact hashes and measurements.
+
+| Check | Verified result |
+| --- | --- |
+| Python regression | 154 tests passed; no skips |
+| Browser behavior | 22 CPU cases and 38 software WebGPU cases; root and nested hosting |
+| Offline JavaScript rebuilding | Two identical builds and an executed source-change proof; no private keys |
+| Source and compiled endurance | 100 scene lifecycle cycles and ten minutes of simulation in each mode; cleanup passed |
+
 The browser jobs execute the actual approved Markdown quick starts. Software WebGPU checks also read back selection-rendering pixels and exercise the playground's save/reload controls. The manual **[release validation workflow](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-release-validation.yml)** checks offline deterministic rebuilding and runs 100 scene lifecycle cycles plus ten minutes of simulation in each runtime mode. Download its reports for individual outcomes, browser and adapter identities, frame-time percentiles and available memory measurements.
 
 [Distribution identity and validation](SDK-VALIDATION.json) identifies the checked SDK and Template. CI results apply to their recorded commit and artifact hashes. The [SDK manifest](engine-sdk/manifest.json) records every distributed file and its build identity. Existing release tags remain stable; `main` can contain improvements awaiting the next tagged release.
