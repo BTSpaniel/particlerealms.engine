@@ -832,8 +832,44 @@
     ]
   },
   "hostedValidation": {
-    "status": "PENDING",
-    "scope": "Current code-validation milestone; hosted results will be recorded after the complete required workflow passes."
+    "status": "PASS",
+    "testedCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "runId": 37162104342,
+    "runAttempt": 1,
+    "url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/attempts/1",
+    "requiredJobs": 9,
+    "requiredReports": 12,
+    "evidence": "validation/code-validation/35b2b9b/aggregate.json",
+    "sha256": "f61f64aa469226f2716cef2690697e66612614b5e1ac43f38f04503483384dc7",
+    "coverage": "validation/code-validation/35b2b9b/coverage.html",
+    "receipt": "validation/code-validation/35b2b9b/receipt.json",
+    "receiptSha256": "b12a49dc9bf659ebf45c1df456999b537b7c79f90717dfce63c2ad98e82baa15",
+    "sdk": {
+      "kind": "directory",
+      "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+      "files": 7184,
+      "bytes": 310750274,
+      "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+    },
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "template": {
+      "kind": "file",
+      "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+      "bytes": 46204894
+    },
+    "candidate": {
+      "kind": "directory",
+      "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+      "files": 7184,
+      "bytes": 310749013,
+      "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+    },
+    "scope": "Original passing hosted reports retain their tested commit and exact package identities; later evidence publication commits do not relabel this validation."
   },
   "sdkArchiveCreated": false,
   "historicalSdkBaseline": {
@@ -919,9 +955,30 @@
     }
   },
   "codeValidationUpgrade": {
-    "status": "CANDIDATE",
-    "scope": "SDK assembly verified; current code and hosted execution evidence recorded separately",
-    "candidateReceiptSha256": "2941bf2db794f5ca2c43e40782aceb2af0a27b6f786448f5df98462a15a0098c"
+    "status": "PASS",
+    "scope": "Original passing hosted reports retain their tested commit and exact package identities; later evidence publication commits do not relabel this validation.",
+    "candidateReceiptSha256": "2941bf2db794f5ca2c43e40782aceb2af0a27b6f786448f5df98462a15a0098c",
+    "testedCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "runId": 37162104342,
+    "runAttempt": 1,
+    "sdkReceiptSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43",
+    "templateArchiveSha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "testedCandidate": {
+      "kind": "directory",
+      "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+      "files": 7184,
+      "bytes": 310749013,
+      "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+    },
+    "evidence": "validation/code-validation/35b2b9b/aggregate.json",
+    "coverage": "validation/code-validation/35b2b9b/coverage.html",
+    "receipt": "validation/code-validation/35b2b9b/receipt.json"
   },
   "historicalHostedValidation": {
     "status": "PASS",

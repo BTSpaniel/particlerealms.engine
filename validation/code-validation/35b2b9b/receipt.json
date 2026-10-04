@@ -1,0 +1,180 @@
+{
+  "schema": "particle-sdk-hosted-evidence-archive/v1",
+  "status": "PASS",
+  "repository": "BTSpaniel/particlerealms.engine",
+  "testedCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+  "runId": 37162104342,
+  "runAttempt": 1,
+  "url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/attempts/1",
+  "requiredJobs": 9,
+  "requiredReports": 12,
+  "sdk": {
+    "kind": "directory",
+    "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+    "files": 7184,
+    "bytes": 310750274,
+    "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+  },
+  "recipe": {
+    "kind": "directory",
+    "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+    "files": 32,
+    "bytes": 341856
+  },
+  "template": {
+    "kind": "file",
+    "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+    "bytes": 46204894
+  },
+  "candidate": {
+    "kind": "directory",
+    "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+    "files": 7184,
+    "bytes": 310749013,
+    "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+  },
+  "artifact": {
+    "name": "code-validation-results",
+    "id": 11288725351,
+    "archiveSha256": "148d3c900da110b6114eb88e423efd8e92e3e40d4d8e3ce70ec49bd51264223c"
+  },
+  "jobs": [
+    {
+      "name": "Chromium parser and public CPU contracts",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317487895"
+    },
+    {
+      "name": "Package integrity and API changes",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317487987"
+    },
+    {
+      "name": "Pinned Windows candidate build and execution",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317488012"
+    },
+    {
+      "name": "Portable Python (ubuntu-24.04)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317488030"
+    },
+    {
+      "name": "Browser tests (off)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317488035"
+    },
+    {
+      "name": "Browser tests (software)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317488043"
+    },
+    {
+      "name": "Portable Python (macos-14)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317488064"
+    },
+    {
+      "name": "Portable Python (windows-2022)",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111317488089"
+    },
+    {
+      "name": "Required code-validation evidence",
+      "conclusion": "success",
+      "html_url": "https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/job/111319935288"
+    }
+  ],
+  "files": {
+    "aggregate.json": {
+      "bytes": 7671,
+      "sha256": "f61f64aa469226f2716cef2690697e66612614b5e1ac43f38f04503483384dc7"
+    },
+    "aggregate.xml": {
+      "bytes": 1609,
+      "sha256": "7ee814bedc4f0661db9e59325a018f50b72ecb1ae0912f0b2e0ffde74c9a20bd"
+    },
+    "children/browser-off-results/browser-off.json": {
+      "bytes": 876033,
+      "sha256": "1e683acb7253a5c1bd04fce31a703603d1a0578c46bec14c7dae1d4a6da65791"
+    },
+    "children/browser-software-results/browser-software.json": {
+      "bytes": 3301736,
+      "sha256": "da2738d6d8bd7ba62b4d35b692dfc20d03d012633b388174d7ddcde820639599"
+    },
+    "children/candidate-results/candidate-parser.json": {
+      "bytes": 4430430,
+      "sha256": "ffc1e8641157136b6faefa388c976d3c3e474a4ddbc2fc5bc33bc93a7a65ff0b"
+    },
+    "children/candidate-results/candidate-parser.xml": {
+      "bytes": 8916,
+      "sha256": "5cbe245d14057449dd40bfa2d82c8f0c3c5b8973d14236535490ed32fdd6d3c0"
+    },
+    "children/candidate-results/candidate-sdk-tests.json": {
+      "bytes": 692960,
+      "sha256": "2571350797132c9ac29794048dc81cf42b34e3d0d25f1a5dccaf3771022b0565"
+    },
+    "children/candidate-results/candidate-sdk-tests.xml": {
+      "bytes": 36856,
+      "sha256": "422c7b17dab53200e796d67a997d08b08256b2e5ed572881f17132cf98583e98"
+    },
+    "children/candidate-results/candidate/candidate.json": {
+      "bytes": 3732,
+      "sha256": "5e8a38336d9779fa90741cf57a112a5644015fe8035d2670c6bb92860d182d7f"
+    },
+    "children/code-results/parser.json": {
+      "bytes": 4272117,
+      "sha256": "3de481f4e249d4bdda37e6b17fcae6c0bde7ca754b40ff218dd84dd66ccc7308"
+    },
+    "children/code-results/parser.xml": {
+      "bytes": 8899,
+      "sha256": "7b021c0a8ae9667834d43f3a95afc3fc75f32852271d90b25575328295a6d0be"
+    },
+    "children/code-results/sdk-tests.json": {
+      "bytes": 670445,
+      "sha256": "7cea6f0caedcfd1fc4ad6f6134c13a23d39aa885304147e94dc29ba10ecd563f"
+    },
+    "children/code-results/sdk-tests.xml": {
+      "bytes": 36855,
+      "sha256": "c94326ab0e177e89ecf3a461cdca556a71f41956e3def11fccd3c0b86aad90aa"
+    },
+    "children/package-results/changes.json": {
+      "bytes": 29085,
+      "sha256": "36ddfd4bef759d220e17087f745807a9380a06e16d93c35f162ec7a56fa6363d"
+    },
+    "children/package-results/distribution.json": {
+      "bytes": 3884,
+      "sha256": "3480b2b52743b80c166f989560a8601e8145cd37b8bafaab2c7ffa13543fa1a3"
+    },
+    "children/python-macos-14-results/python.json": {
+      "bytes": 108502,
+      "sha256": "8b73843347788c7be99050b819da41fb8bb4e4ee63246af49dd0ada2ef80dc8b"
+    },
+    "children/python-macos-14-results/python.xml": {
+      "bytes": 46143,
+      "sha256": "ff130a1b1d48a471861161fca4e7603e54425411cee978cc6404e8fa1ada433a"
+    },
+    "children/python-ubuntu-24.04-results/python.json": {
+      "bytes": 108532,
+      "sha256": "91164452b677d7ea73bbd8d22b956fd7e75168a3a1cad97b8345b627c306736f"
+    },
+    "children/python-ubuntu-24.04-results/python.xml": {
+      "bytes": 46173,
+      "sha256": "3cbab798af991a0b17f47b2d33237ab26a644b34e6526d08eb1d2bb43fbfb46e"
+    },
+    "children/python-windows-2022-results/python.json": {
+      "bytes": 111641,
+      "sha256": "3f9e45107e6edfa89934c2fef33da065b9b01f944394c1b1ce76af3e24433c35"
+    },
+    "children/python-windows-2022-results/python.xml": {
+      "bytes": 45791,
+      "sha256": "adbac587e62f039045c6f3e06dc6bd2dd9d607e5083347c28dc30d193c8cf61b"
+    },
+    "coverage.html": {
+      "bytes": 9525482,
+      "sha256": "c9de2a21f5f3bfaabc6c69985dbb7c49dbdc646709c414398e5dced34e6c187b"
+    }
+  },
+  "inventorySha256": "2f53e87e16e7e42a9955d3d78676071b23ecc47a041767d9bf1604a4ad5964f6",
+  "scope": "Original passing hosted reports retain their tested commit and exact package identities; later evidence publication commits do not relabel this validation."
+}

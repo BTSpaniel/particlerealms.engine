@@ -1,0 +1,115 @@
+{
+  "schema": "particle-sdk-ci-distribution/v1",
+  "status": "PASS",
+  "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+  "python": "3.12.7",
+  "platform": "Windows",
+  "checks": [
+    {
+      "name": "SDK inventory, source graph, native assets, compression and provenance",
+      "status": "PASS",
+      "details": {
+        "files": 7184,
+        "profile": "engine",
+        "publicNamespaces": [
+          "Plauna"
+        ],
+        "runtimeSRI": "sha384-gjTzG+98qTfyGgjPEXa7U7ghwLYsKKbXIXsFXuF4NVlySdNKzN69juo7UTzqbd3a",
+        "receiptSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+      }
+    },
+    {
+      "name": "Template archive inventory, runtime integrity and provenance",
+      "status": "PASS",
+      "details": {
+        "files": 721,
+        "bytes": 46204894,
+        "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+        "runtimeSRI": "sha384-3fvkApmeaTaZVxgqa1LZgMzuQBEPKOjIkpdVj3nbHpR8D6Wk072XQEldiP5z7+uQ",
+        "platformRuntimes": 1,
+        "physxPeWasmCopies": 1
+      }
+    },
+    {
+      "name": "Offline documentation navigation and repository links",
+      "status": "PASS",
+      "details": {
+        "navigationDocuments": 162,
+        "repositoryLinks": 30
+      }
+    }
+  ],
+  "elapsedSeconds": 30.281,
+  "context": {
+    "schema": "particle-sdk-report-context/v1",
+    "repository": "BTSpaniel/particlerealms.engine",
+    "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workingTreeClean": true,
+    "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workflow": "SDK CI",
+    "runId": "37162104342",
+    "runAttempt": "1",
+    "job": "distribution",
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "sdk": {
+      "kind": "directory",
+      "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+      "files": 7184,
+      "bytes": 310750274,
+      "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+    },
+    "candidate": null,
+    "template": {
+      "kind": "file",
+      "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+      "bytes": 46204894
+    }
+  },
+  "identityVerification": {
+    "status": "PASS",
+    "changes": [],
+    "context": {
+      "schema": "particle-sdk-report-context/v1",
+      "repository": "BTSpaniel/particlerealms.engine",
+      "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+      "workingTreeClean": true,
+      "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+      "workflow": "SDK CI",
+      "runId": "37162104342",
+      "runAttempt": "1",
+      "job": "distribution",
+      "recipe": {
+        "kind": "directory",
+        "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+        "files": 32,
+        "bytes": 341856
+      },
+      "sdk": {
+        "kind": "directory",
+        "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+        "files": 7184,
+        "bytes": 310750274,
+        "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+      },
+      "candidate": null,
+      "template": {
+        "kind": "file",
+        "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+        "bytes": 46204894
+      }
+    }
+  },
+  "testedPackage": {
+    "kind": "directory",
+    "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+    "files": 7184,
+    "bytes": 310750274,
+    "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+  },
+  "exitCode": 0
+}

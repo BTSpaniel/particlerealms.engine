@@ -1,0 +1,108 @@
+{
+  "schema": "particle-sdk-candidate-validation/v1",
+  "status": "PASS",
+  "context": {
+    "schema": "particle-sdk-report-context/v1",
+    "repository": "BTSpaniel/particlerealms.engine",
+    "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workingTreeClean": true,
+    "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workflow": "SDK CI",
+    "runId": "37162104342",
+    "runAttempt": "1",
+    "job": "candidate",
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "sdk": {
+      "kind": "directory",
+      "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+      "files": 7184,
+      "bytes": 310750274,
+      "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+    },
+    "candidate": {
+      "kind": "directory",
+      "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+      "files": 7184,
+      "bytes": 310749013,
+      "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+    },
+    "template": {
+      "kind": "file",
+      "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+      "bytes": 46204894
+    }
+  },
+  "identityVerification": {
+    "status": "PASS",
+    "changes": [],
+    "context": {
+      "schema": "particle-sdk-report-context/v1",
+      "repository": "BTSpaniel/particlerealms.engine",
+      "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+      "workingTreeClean": true,
+      "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+      "workflow": "SDK CI",
+      "runId": "37162104342",
+      "runAttempt": "1",
+      "job": "candidate",
+      "recipe": {
+        "kind": "directory",
+        "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+        "files": 32,
+        "bytes": 341856
+      },
+      "sdk": {
+        "kind": "directory",
+        "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+        "files": 7184,
+        "bytes": 310750274,
+        "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+      },
+      "candidate": {
+        "kind": "directory",
+        "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+        "files": 7184,
+        "bytes": 310749013,
+        "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+      },
+      "template": {
+        "kind": "file",
+        "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+        "bytes": 46204894
+      }
+    }
+  },
+  "testedPackage": {
+    "kind": "directory",
+    "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+    "files": 7184,
+    "bytes": 310749013,
+    "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+  },
+  "checks": [
+    {
+      "name": "input integrity",
+      "status": "PASS"
+    },
+    {
+      "name": "offline recorded recipe",
+      "status": "PASS"
+    },
+    {
+      "name": "rebuilt SDK integrity",
+      "status": "PASS"
+    },
+    {
+      "name": "isolated copy integrity",
+      "status": "PASS"
+    }
+  ],
+  "error": null,
+  "elapsedSeconds": 624.8646651999998,
+  "scope": "Canonical --stage-dir SDK-only build from the recorded recipe on the qualified Windows baseline; isolated verified outputs, native assets reused, network blocked, private signing keys absent."
+}

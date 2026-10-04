@@ -112,6 +112,8 @@ Outputs go to `build/runtime` and `build/engine-sdk`. Install prerequisites befo
 
 Open the latest **[SDK CI run](https://github.com/BTSpaniel/particlerealms.engine/actions/workflows/sdk-ci.yml)** for the current commit's required results. Download **`code-validation-results`** for `coverage.html`, original JSON reports, JUnit XML and exact package identities. The final gate rejects missing reports, skipped required assertions, mismatched commits and changed packages.
 
+Hosted code validation passed on [`35b2b9b`](https://github.com/BTSpaniel/particlerealms.engine/commit/35b2b9b39f7877162352e6a46d3c32c03c025a28): **9 required jobs and 12 reports** in [run 37162104342](https://github.com/BTSpaniel/particlerealms.engine/actions/runs/37162104342/attempts/1). Permanent [JSON](validation/code-validation/35b2b9b/aggregate.json) and [HTML](validation/code-validation/35b2b9b/coverage.html) retain that tested commit and exact package hashes.
+
 | Check | Evidence |
 | --- | --- |
 | Portable Python | Actual unittest and pytest fixture cases on Windows, Ubuntu and macOS |

@@ -1,0 +1,209 @@
+{
+  "schema": "particle-sdk-ci-aggregate/v1",
+  "status": "PASS",
+  "requiredCount": 12,
+  "executedCount": 12,
+  "context": {
+    "repository": "BTSpaniel/particlerealms.engine",
+    "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workingTreeClean": true,
+    "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workflow": "SDK CI",
+    "runId": "37162104342",
+    "runAttempt": "1",
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "sdk": {
+      "kind": "directory",
+      "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+      "files": 7184,
+      "bytes": 310750274,
+      "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+    },
+    "template": {
+      "kind": "file",
+      "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+      "bytes": 46204894
+    }
+  },
+  "candidate": {
+    "kind": "directory",
+    "inventorySha256": "8ba9dbfbd8d587705d5b63712419ca51f2977bbf2d53bb263b5cee5237ac0eb7",
+    "files": 7184,
+    "bytes": 310749013,
+    "manifestSha256": "1d5cfd80b4387e8d0ee4e24fa346a2d162f1410502504a7394b5231fd4c6912d"
+  },
+  "reports": [
+    {
+      "name": "browser-off",
+      "status": "PASS",
+      "reportSha256": "0611fa739f6cb3a13f7f5f380974b291147f4d639a085b1efe9b364280dbe270",
+      "errors": []
+    },
+    {
+      "name": "browser-software",
+      "status": "PASS",
+      "reportSha256": "7c5ad6cf1a0dde95823d9d19f1fa06a2babf4975e8f6f1f5009e706e5c01f016",
+      "errors": []
+    },
+    {
+      "name": "candidate",
+      "status": "PASS",
+      "reportSha256": "41b9e58671499d46df4cdbb125332956dbdb1d6c1dae84546f2356bcca682020",
+      "errors": []
+    },
+    {
+      "name": "candidate-cpu",
+      "status": "PASS",
+      "reportSha256": "d0ff89783836819538836112a58f0d605a849b91ee910a1d14ec16466ec9ebf2",
+      "errors": []
+    },
+    {
+      "name": "candidate-parser",
+      "status": "PASS",
+      "reportSha256": "1f6d0d6b9287fec77a7fd78000df6252cdc5f929d0124cdee7fdfa8edc06b7f0",
+      "errors": []
+    },
+    {
+      "name": "changes",
+      "status": "PASS",
+      "reportSha256": "30838234d24e3fb5052ec9f064270e02927dc1baa2895d88b3ba86c569377d1c",
+      "errors": []
+    },
+    {
+      "name": "cpu",
+      "status": "PASS",
+      "reportSha256": "7c80a44dd0031f37af630bab8a96036ed1260ae722e958e98878b0dca3d05453",
+      "errors": []
+    },
+    {
+      "name": "distribution",
+      "status": "PASS",
+      "reportSha256": "09b0da56c3904a7520594df96c152ce1111ed7012cac9bdc5ce39d0346705e87",
+      "errors": []
+    },
+    {
+      "name": "macos",
+      "status": "PASS",
+      "reportSha256": "b97a1ede1c318c63f25fc57b3a49991eeb86ced8a978d854be8cb8d2eedf3f75",
+      "errors": []
+    },
+    {
+      "name": "parser",
+      "status": "PASS",
+      "reportSha256": "3ad13af48ef7ca913130e0e02a4f362cf467dd6c88c9c60018f4bcc906db9203",
+      "errors": []
+    },
+    {
+      "name": "ubuntu",
+      "status": "PASS",
+      "reportSha256": "40676fffb2be95669a677f4f25d6f40c8d762979be2f64bbcf1ff5f0bc2518c2",
+      "errors": []
+    },
+    {
+      "name": "windows",
+      "status": "PASS",
+      "reportSha256": "045407ad26a7a231b64783ab75978c94d1900930a5936888114bda5f4024268a",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "scope": "Current required code-validation evidence; historical release receipts remain separate.",
+  "aggregationContext": {
+    "schema": "particle-sdk-report-context/v1",
+    "repository": "BTSpaniel/particlerealms.engine",
+    "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workingTreeClean": true,
+    "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workflow": "SDK CI",
+    "runId": "37162104342",
+    "runAttempt": "1",
+    "job": "required-evidence",
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "sdk": {
+      "kind": "directory",
+      "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+      "files": 7184,
+      "bytes": 310750274,
+      "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+    },
+    "candidate": null,
+    "template": {
+      "kind": "file",
+      "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+      "bytes": 46204894
+    }
+  },
+  "sources": {
+    "distribution": {
+      "path": "test-results/children/package-results/distribution.json",
+      "artifactPath": "children/package-results/distribution.json",
+      "sha256": "3480b2b52743b80c166f989560a8601e8145cd37b8bafaab2c7ffa13543fa1a3"
+    },
+    "changes": {
+      "path": "test-results/children/package-results/changes.json",
+      "artifactPath": "children/package-results/changes.json",
+      "sha256": "36ddfd4bef759d220e17087f745807a9380a06e16d93c35f162ec7a56fa6363d"
+    },
+    "windows": {
+      "path": "test-results/children/python-windows-2022-results/python.json",
+      "artifactPath": "children/python-windows-2022-results/python.json",
+      "sha256": "3f9e45107e6edfa89934c2fef33da065b9b01f944394c1b1ce76af3e24433c35"
+    },
+    "ubuntu": {
+      "path": "test-results/children/python-ubuntu-24.04-results/python.json",
+      "artifactPath": "children/python-ubuntu-24.04-results/python.json",
+      "sha256": "91164452b677d7ea73bbd8d22b956fd7e75168a3a1cad97b8345b627c306736f"
+    },
+    "macos": {
+      "path": "test-results/children/python-macos-14-results/python.json",
+      "artifactPath": "children/python-macos-14-results/python.json",
+      "sha256": "8b73843347788c7be99050b819da41fb8bb4e4ee63246af49dd0ada2ef80dc8b"
+    },
+    "browser-off": {
+      "path": "test-results/children/browser-off-results/browser-off.json",
+      "artifactPath": "children/browser-off-results/browser-off.json",
+      "sha256": "1e683acb7253a5c1bd04fce31a703603d1a0578c46bec14c7dae1d4a6da65791"
+    },
+    "browser-software": {
+      "path": "test-results/children/browser-software-results/browser-software.json",
+      "artifactPath": "children/browser-software-results/browser-software.json",
+      "sha256": "da2738d6d8bd7ba62b4d35b692dfc20d03d012633b388174d7ddcde820639599"
+    },
+    "parser": {
+      "path": "test-results/children/code-results/parser.json",
+      "artifactPath": "children/code-results/parser.json",
+      "sha256": "3de481f4e249d4bdda37e6b17fcae6c0bde7ca754b40ff218dd84dd66ccc7308"
+    },
+    "cpu": {
+      "path": "test-results/children/code-results/sdk-tests.json",
+      "artifactPath": "children/code-results/sdk-tests.json",
+      "sha256": "7cea6f0caedcfd1fc4ad6f6134c13a23d39aa885304147e94dc29ba10ecd563f"
+    },
+    "candidate": {
+      "path": "test-results/children/candidate-results/candidate/candidate.json",
+      "artifactPath": "children/candidate-results/candidate/candidate.json",
+      "sha256": "5e8a38336d9779fa90741cf57a112a5644015fe8035d2670c6bb92860d182d7f"
+    },
+    "candidate-cpu": {
+      "path": "test-results/children/candidate-results/candidate-sdk-tests.json",
+      "artifactPath": "children/candidate-results/candidate-sdk-tests.json",
+      "sha256": "2571350797132c9ac29794048dc81cf42b34e3d0d25f1a5dccaf3771022b0565"
+    },
+    "candidate-parser": {
+      "path": "test-results/children/candidate-results/candidate-parser.json",
+      "artifactPath": "children/candidate-results/candidate-parser.json",
+      "sha256": "ffc1e8641157136b6faefa388c976d3c3e474a4ddbc2fc5bc33bc93a7a65ff0b"
+    }
+  },
+  "junit": "aggregate.xml"
+}

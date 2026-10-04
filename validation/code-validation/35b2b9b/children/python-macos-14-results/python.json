@@ -1,0 +1,2084 @@
+{
+  "format": "particle-python-tests/v1",
+  "status": "PASS",
+  "duration_seconds": 15.83568,
+  "elapsedSeconds": 15.835685,
+  "testsRun": 305,
+  "python": "3.12.7",
+  "pytest": "9.0.3",
+  "selected": [
+    "bundler.tests.test_parser.TestParser",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry",
+    "bundler.tests.test_emitter.TestEmitter",
+    "bundler.tests.test_builder_module_access.TestBuilderModuleAccess",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry",
+    "bundler.tests.test_console_stripping.ConsoleStrippingTests.test_literals_comments_and_other_objects_are_preserved",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_deterministic_parts_reassemble_exact_original_gzip",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_small_artifact_and_full_local_consumer_remain_supported",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_transport_metadata_rejects_malformed_shapes_paths_bounds_and_order",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_tampered_truncated_missing_and_relabelled_parts_fail_closed",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_public_copy_and_archive_preserve_gzip_and_best_transport",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_loader_urls_and_cache_identity_bind_transport_metadata",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_cache_busting_preserves_attested_physics_bytes",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_compute_consumer_inventory_includes_offline_contracts",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_static_site_rejects_files_above_host_cap",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_static_site_rejects_too_many_files_for_free_pages",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_release_site_includes_static_404_page",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_public_include_tree_parity_recurses_into_academy_starter",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_docs_laydown_ships_curated_sources_indexes_and_root_discovery",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_replaces_live_site_and_removes_previous",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_restores_previous_site_when_swap_fails",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_syncs_file_atomically_when_live_directory_is_locked",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_server_uses_previous_then_staged_site_during_publication_gap",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_server_transition_fallback_rejects_parent_traversal",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_archive_contains_every_publish_file_at_root_with_exact_bytes",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_archive_fails_when_a_required_asset_is_absent",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_cache_verifies_without_invoking_compiler",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_source_changes_fail_readonly_check",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_corrupted_binary_and_manifest_path_fail_closed",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_binary_metadata_controls_features_and_imports",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_sidecar_closure_is_portable_and_source_free",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_binary_edit_invalidates_runtime_cache_even_without_site",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_consumer_compute_inventory_requires_verified_complete_closure",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_compiled_provider_urls_keep_engine_release_base",
+    "sdk.tests.test_server.SDKServerTests",
+    "bundler.tests.test_graph_root_paths.GraphRootPathTests",
+    "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests",
+    "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_child_python_inherits_guard_and_runs_local_code",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_concurrent_thread_does_not_inherit_socketpair_permission",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_connections_are_rejected_before_the_operating_system_call",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_dns_udp_and_saved_socket_calls_are_blocked",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_native_tool_and_shell_spawns_are_blocked",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_real_asyncio_self_pipe_runs_and_closes",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_real_tcp_socketpair_exchanges_bytes_and_restores_scope",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_socketpair_failure_restores_permission",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_spawned_process_pool_blocks_network_and_preserves_compression",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_missing_editable_source_is_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_tampered_tool_and_native_binary_are_rejected_before_compute_checks",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_selected_compression_tool_version_mismatch_fails",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_descriptor_records_actual_python_and_native_compression_environment",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_different_python_patch_version_is_rejected_before_native_checks",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_missing_or_changed_native_compression_environment_is_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_requirements_and_tools_cover_transitive_schema_and_crypto_dependencies",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_existing_audited_compute_artifacts_rebuild_without_compiler_invocation",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_changed_kernel_source_rejects_stale_native_artifacts",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_input_path_escape_and_duplicate_json_keys_are_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_input_mutation_between_copy_and_descriptor_is_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_engine_sdk_rejects_explicit_signed_registry",
+    "bundler.tests.test_sdk_staging.StagePreflightTests",
+    "bundler.tests.test_sdk_staging.StageReceiptTests",
+    "bundler.tests.test_sdk_staging.StageComputeTests",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_stage_binds_verified_delivered_profile_identity",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_changed_public_fixture_fails_before_native_validation",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_delivered_sdk_descriptor_is_admitted_by_shared_rebuild_verifier",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_missing_descriptor_is_rejected_before_native_checks",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_coordinated_fixture_and_profile_drift_is_rejected",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_descriptor_missing_fixture_coverage_is_rejected",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_native_corruption_is_rejected_before_compute_checks",
+    "sdk.tests.test_public_tests",
+    "test_aggregate",
+    "test_browser_smoke",
+    "test_candidate_build",
+    "test_change_report",
+    "test_ci_validation_guards",
+    "test_dashboard",
+    "test_network_trace",
+    "test_python_reporting",
+    "test_release_tooling",
+    "test_report_context",
+    "test_sdk_tests"
+  ],
+  "pytestSelected": [
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_walk_reorder_and_emit_share_successful_parse",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_changed_source_and_new_graph_do_not_reuse_old_parse",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_cached_statements_resolve_against_each_module_location",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_failed_discovery_parse_still_blocks_canonical_emission"
+  ],
+  "exclusions": [
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_platform_stale_signed_owner_is_rejected_before_descriptor_browser",
+      "reason": "Platform-only signed-owner fixture; validated in the full development repository, outside this Engine + Plauna package"
+    },
+    {
+      "name": "bundler.tests.test_graph_root_paths.GraphRootPathTests.test_windows_junction_root_uses_physical_identity",
+      "reason": "Windows filesystem API; required on the Windows runner"
+    },
+    {
+      "name": "bundler.tests.test_graph_root_paths.GraphRootPathTests.test_windows_short_root_uses_physical_identity",
+      "reason": "Windows filesystem API; required on the Windows runner"
+    }
+  ],
+  "suite_sources_sha256": {
+    "bundler/tests/test_parser.py": "b80c87ad403ed894ff12a121ff8b28ee385cd7574c05851dcc565e5fc38cc84e",
+    "bundler/tests/test_parser_registry.py": "a2d9f64d71c3b95ad736d8f5315b3dd850041e98bef536dcc3020b8cc2dc8d62",
+    "bundler/tests/test_emitter.py": "dfc0bc7bce3b8657d6ddc0e5efdb7ed434c955b851e98a4d1df4f0318cc706ed",
+    "bundler/tests/test_builder_module_access.py": "fc57b6ad9b7d9da9f20063d8dbd6038b7f5189b4f599d399e53159c4d0521390",
+    "bundler/tests/test_in_memory_generated_entry.py": "f603112f2228fa7f82316c3794927a7dae4a84f5a1886934a30ec78f2b6fde81",
+    "bundler/tests/test_console_stripping.py": "7b12b9c2a65bd558a36d39a15b179d1a1c16ab382fd1f58ee6e1b7ec8011903b",
+    "bundler/tests/test_runtime_transport.py": "4f4e93daff5646d74b29d963a47b0382fa62466c4d8c422ebe719c76d19af7cc",
+    "bundler/tests/test_site_archive.py": "d444b1ffa1596ca742ecadcea189b1050ed7b56227bf9b420fc9110d76b21b0b",
+    "bundler/tests/test_compute_wasm.py": "efe4f1f569365971b60cfd00875d667499d4b60a9bf27c791718136f339010c6",
+    "sdk/tests/test_server.py": "8554a82241c1cda64796e62f57f9fdadb225c94df4d8a7660728573f08670002",
+    "bundler/tests/test_graph_root_paths.py": "9e026e27a268b068d973687422123e112441171b8a006d9a083e483b626e41c5",
+    "bundler/tests/test_sdk_directory_publication.py": "18f24d1333caf385ac3d1573b8d2289745c50c40acd8c6ee35806a1af55c9498",
+    "sdk/tests/test_doc_snippets.py": "b86fd1d7b0c325181d573d35444959b40fad56745116eb885f8ff189065a347f",
+    "sdk/tests/test_rebuild_acceptance.py": "19ff0c2f3b04713f20342e3e13f64a5c5aac5fe094f23d7a7e7e60a725b6531b",
+    "sdk/tests/test_rebuild_network.py": "7f98d0acd59db60e51b06e9ddd96ce4809f056d2dc527c1f9e35dde6e2f48a13",
+    "bundler/tests/test_sdk_rebuild.py": "0507c1e462708c1461d727a37ae7967294c787cc54c4e9c1a13e91898edad5e3",
+    "bundler/tests/test_sdk_staging.py": "ed81e22c347d8c556d402ff544f903be165cda90ee406fa6bf91f143fd5db225",
+    "sdk/tests/test_public_tests.py": "d3be178b2996956f62a7b97145dddcc4f5546e974fbc4c518280b74c6baeb161",
+    "bundler/tests/test_graph_parse_reuse.py": "14fce4e655cf32439340a46b7fc84602bb81ca980ddc2e5a1437d6b310e088f4"
+  },
+  "ci_sources_sha256": {
+    "ci/tests/test_aggregate.py": "a377a2f95e2adb1aaa25701fd5e7b694542374f90911a71b3d605216a02dbe09",
+    "ci/tests/test_browser_smoke.py": "1a627ad0e17e88923e979b80d6b39219ee63cc356cd74e02ae82a3eebd3cb006",
+    "ci/tests/test_candidate_build.py": "434e69247827feaa9ecae60b5330248d0adf0b9e9efa121052ab9b5da4775905",
+    "ci/tests/test_change_report.py": "811e60ab90e2ce2bf963436961ab5638a7c3338d66ffeeded5350181da2efeac",
+    "ci/tests/test_ci_validation_guards.py": "5c3723d0ecfeaf63570ba852e71a944b77e10cafa2d59903b02d53801bed683b",
+    "ci/tests/test_dashboard.py": "9901aa4e3e1fb28a40de9175d48c3c366b11d75f5fa27d04a8005d4f5c1668b1",
+    "ci/tests/test_network_trace.py": "c65125aaa4d7c88d8cf8e270abfa1d45471cef4123d1ec1380c2f0d6117313c3",
+    "ci/tests/test_python_reporting.py": "0592662cadccb060e57bf75c8c0dec7d86e23e58c1ee102f7041447f3804ab03",
+    "ci/tests/test_release_tooling.py": "00cc4d86f5edd1693d8d8668553ff5e076bdc29c325b2a5e8651a075acfcb38a",
+    "ci/tests/test_report_context.py": "ecc4818f50e27716ae365fe417c73d11b6fac03bf019460a48ec631d50e517f9",
+    "ci/tests/test_sdk_tests.py": "5d6b7cf9241e1eaefdb9da176a9e513a63546bbe378a912d366b17471e1bfabf",
+    "ci/network_trace.py": "06866a798e55530a66cbadcc4c42bd8a205b1cdf005494e3217d5df705818a83"
+  },
+  "discoveryErrors": [],
+  "testNames": [
+    "bundler.tests.test_parser.TestParser.test_comments_and_strings_ignored",
+    "bundler.tests.test_parser.TestParser.test_default_import",
+    "bundler.tests.test_parser.TestParser.test_escaped_specifiers_decode_in_every_dependency_form",
+    "bundler.tests.test_parser.TestParser.test_export_array_binding_pattern",
+    "bundler.tests.test_parser.TestParser.test_export_declaration_asi_recognizes_every_javascript_line_terminator",
+    "bundler.tests.test_parser.TestParser.test_export_declaration_list_distinguishes_nested_initializer_commas",
+    "bundler.tests.test_parser.TestParser.test_export_declaration_list_keeps_multiline_classes_and_keyword_operators",
+    "bundler.tests.test_parser.TestParser.test_export_declaration_list_keeps_multiline_expressions_together",
+    "bundler.tests.test_parser.TestParser.test_export_declaration_list_stops_at_automatic_semicolons",
+    "bundler.tests.test_parser.TestParser.test_export_declaration_lookahead_keeps_dynamic_imports_visible",
+    "bundler.tests.test_parser.TestParser.test_export_default",
+    "bundler.tests.test_parser.TestParser.test_export_named",
+    "bundler.tests.test_parser.TestParser.test_export_object_binding_pattern",
+    "bundler.tests.test_parser.TestParser.test_export_variable_declaration_list_keeps_every_binding",
+    "bundler.tests.test_parser.TestParser.test_exported_generators_keep_names_offsets_and_body_imports",
+    "bundler.tests.test_parser.TestParser.test_external_specifier_schemes_are_decoded_without_changing_identity",
+    "bundler.tests.test_parser.TestParser.test_generator_star_does_not_allow_anonymous_or_invalid_named_exports",
+    "bundler.tests.test_parser.TestParser.test_import_meta_is_not_an_import",
+    "bundler.tests.test_parser.TestParser.test_invalid_specifier_escapes_fail_both_dependency_readers",
+    "bundler.tests.test_parser.TestParser.test_mixed_default_named_import",
+    "bundler.tests.test_parser.TestParser.test_mixed_default_namespace_import",
+    "bundler.tests.test_parser.TestParser.test_multiple_statements_keep_exact_offsets",
+    "bundler.tests.test_parser.TestParser.test_named_import",
+    "bundler.tests.test_parser.TestParser.test_namespace_import",
+    "bundler.tests.test_parser.TestParser.test_reexport_namespace",
+    "bundler.tests.test_parser.TestParser.test_reexport_star",
+    "bundler.tests.test_parser.TestParser.test_side_effect_import",
+    "bundler.tests.test_parser.TestParser.test_specifier_line_continuations_match_javascript_values",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_code_sequence_helper_never_matches_literal_contents_or_nested_code",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_extracts_direct_star_reexport_keys_only",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_extracts_ordered_function_and_arrow_wrappers",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_ignores_comment_string_template_regex_and_nested_decoys",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_outer_token_values_support_one_scan_marker_checks",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_rejects_ambiguous_and_malformed_declarations",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_rejects_duplicate_runtime_property_keys",
+    "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_rejects_malformed_direct_wrapper_factory",
+    "bundler.tests.test_emitter.TestEmitter.test_aliases_and_multiple_statement_offsets",
+    "bundler.tests.test_emitter.TestEmitter.test_classic_script_gate_reports_executable_import_meta",
+    "bundler.tests.test_emitter.TestEmitter.test_default_declarations_preserve_boundary_before_ordinary_code",
+    "bundler.tests.test_emitter.TestEmitter.test_default_import",
+    "bundler.tests.test_emitter.TestEmitter.test_export_declaration_preserves_declaration",
+    "bundler.tests.test_emitter.TestEmitter.test_export_default",
+    "bundler.tests.test_emitter.TestEmitter.test_export_destructuring_assigns_every_declared_binding",
+    "bundler.tests.test_emitter.TestEmitter.test_export_named",
+    "bundler.tests.test_emitter.TestEmitter.test_export_variable_declaration_list_assigns_all_public_bindings",
+    "bundler.tests.test_emitter.TestEmitter.test_exported_generators_preserve_declarations_and_iterator_bodies",
+    "bundler.tests.test_emitter.TestEmitter.test_import_meta_is_rewritten_for_classic_script",
+    "bundler.tests.test_emitter.TestEmitter.test_import_meta_preserves_non_os_runtime_module_paths",
+    "bundler.tests.test_emitter.TestEmitter.test_import_meta_preserves_original_webgpu_os_module_path",
+    "bundler.tests.test_emitter.TestEmitter.test_import_meta_scanner_preserves_literals_and_rewrites_template_expressions",
+    "bundler.tests.test_emitter.TestEmitter.test_local_default_alias_uses_internal_default_contract",
+    "bundler.tests.test_emitter.TestEmitter.test_named_export_preserves_boundary_after_default_class_expression",
+    "bundler.tests.test_emitter.TestEmitter.test_named_import",
+    "bundler.tests.test_emitter.TestEmitter.test_namespace_import",
+    "bundler.tests.test_emitter.TestEmitter.test_ocr_worker_url_survives_playground_compiled_os_registry",
+    "bundler.tests.test_emitter.TestEmitter.test_particle_voice_worklet_url_survives_compiled_os_registry",
+    "bundler.tests.test_emitter.TestEmitter.test_reexport_default_uses_internal_default_contract",
+    "bundler.tests.test_emitter.TestEmitter.test_side_effect_import",
+    "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_forward_require_compacts_without_rewriting_member_calls",
+    "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_internal_compaction_never_rewrites_signed_or_application_text",
+    "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_original_path_resolver_survives_id_shortening_without_literal_rewrites",
+    "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_platform_entries_receive_distinct_stable_namespaces",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_app_entry_is_in_graph_without_eager_barrel_require",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_barrel_is_rendered_without_shared_temporary_file",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_concurrent_graphs_walk_same_stable_virtual_entry",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_duplicate_index_entries_and_unindexed_manifests_fail_closed",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_manifest_errors_duplicate_ids_and_stale_entries_fail_closed",
+    "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_missing_or_malformed_indexes_fail_closed",
+    "bundler.tests.test_console_stripping.ConsoleStrippingTests.test_literals_comments_and_other_objects_are_preserved",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_deterministic_parts_reassemble_exact_original_gzip",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_small_artifact_and_full_local_consumer_remain_supported",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_transport_metadata_rejects_malformed_shapes_paths_bounds_and_order",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_tampered_truncated_missing_and_relabelled_parts_fail_closed",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_public_copy_and_archive_preserve_gzip_and_best_transport",
+    "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_loader_urls_and_cache_identity_bind_transport_metadata",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_cache_busting_preserves_attested_physics_bytes",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_compute_consumer_inventory_includes_offline_contracts",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_static_site_rejects_files_above_host_cap",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_static_site_rejects_too_many_files_for_free_pages",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_release_site_includes_static_404_page",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_public_include_tree_parity_recurses_into_academy_starter",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_docs_laydown_ships_curated_sources_indexes_and_root_discovery",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_replaces_live_site_and_removes_previous",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_restores_previous_site_when_swap_fails",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_syncs_file_atomically_when_live_directory_is_locked",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_server_uses_previous_then_staged_site_during_publication_gap",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_server_transition_fallback_rejects_parent_traversal",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_archive_contains_every_publish_file_at_root_with_exact_bytes",
+    "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_archive_fails_when_a_required_asset_is_absent",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_cache_verifies_without_invoking_compiler",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_source_changes_fail_readonly_check",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_corrupted_binary_and_manifest_path_fail_closed",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_binary_metadata_controls_features_and_imports",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_sidecar_closure_is_portable_and_source_free",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_binary_edit_invalidates_runtime_cache_even_without_site",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_consumer_compute_inventory_requires_verified_complete_closure",
+    "bundler.tests.test_compute_wasm.TestComputeWasm.test_compiled_provider_urls_keep_engine_release_base",
+    "sdk.tests.test_server.SDKServerTests.test_isolation_headers_are_opt_in",
+    "sdk.tests.test_server.SDKServerTests.test_plain_server_sets_mime_without_transforming_transport",
+    "sdk.tests.test_server.SDKServerTests.test_symlink_cannot_escape_the_served_root",
+    "bundler.tests.test_graph_root_paths.GraphRootPathTests.test_relative_root_uses_physical_identity",
+    "bundler.tests.test_graph_root_paths.GraphRootPathTests.test_symlink_root_uses_physical_identity",
+    "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests.test_directory_cache_requires_integrity_but_not_a_zip",
+    "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests.test_failed_directory_verification_restores_previous_tree",
+    "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests.test_verified_directory_promotion_does_not_touch_existing_archive",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_canonical_inventory_has_every_supported_example",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_changed_markdown_changes_executed_bytes_and_digest",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_duplicate_example_is_rejected",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_empty_and_unterminated_examples_are_rejected",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_extracts_actual_fence_bytes_location_and_identity",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_missing_example_does_not_silently_reduce_coverage",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_non_javascript_or_detached_fence_is_rejected",
+    "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_unknown_or_misplaced_example_is_rejected",
+    "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests.test_probe_failure_is_not_reported_as_success_and_restores_original_bytes",
+    "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests.test_runtime_drift_fails_before_browser_proof",
+    "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests.test_success_requires_fresh_second_build_and_executes_changed_source",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_child_python_inherits_guard_and_runs_local_code",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_concurrent_thread_does_not_inherit_socketpair_permission",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_connections_are_rejected_before_the_operating_system_call",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_dns_udp_and_saved_socket_calls_are_blocked",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_native_tool_and_shell_spawns_are_blocked",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_real_asyncio_self_pipe_runs_and_closes",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_real_tcp_socketpair_exchanges_bytes_and_restores_scope",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_socketpair_failure_restores_permission",
+    "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_spawned_process_pool_blocks_network_and_preserves_compression",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_missing_editable_source_is_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_tampered_tool_and_native_binary_are_rejected_before_compute_checks",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_selected_compression_tool_version_mismatch_fails",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_descriptor_records_actual_python_and_native_compression_environment",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_different_python_patch_version_is_rejected_before_native_checks",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_missing_or_changed_native_compression_environment_is_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_requirements_and_tools_cover_transitive_schema_and_crypto_dependencies",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_existing_audited_compute_artifacts_rebuild_without_compiler_invocation",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_changed_kernel_source_rejects_stale_native_artifacts",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_input_path_escape_and_duplicate_json_keys_are_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_input_mutation_between_copy_and_descriptor_is_rejected",
+    "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_engine_sdk_rejects_explicit_signed_registry",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_cli_dry_run_uses_check_only_native_and_never_regenerates_source",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_cli_rejects_output_conflict_before_compute_or_maintenance",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_cli_stale_native_failure_creates_no_files",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_conflicting_flags_rejected_before_trust_or_output_actions",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_existing_destination_rejected_even_when_empty",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_explicit_production_sdk_only_are_required",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_fresh_external_destination_is_resolved_without_writes",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_parent_traversal_is_rejected",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_resolved_source_alias_is_considered_source_overlap",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_source_and_live_output_overlap_rejected",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_symlink_ancestor_cannot_redirect_a_candidate",
+    "bundler.tests.test_sdk_staging.StagePreflightTests.test_unsupported_target_and_noncanonical_entries_rejected",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_missing_runtime_metadata_rejected_even_when_sdk_is_intact",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_native_identity_change_rejected_without_candidate_receipt",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_receipt_binds_actual_sdk_runtime_cache_and_recipe",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_required_archive_is_actually_verified",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_source_mutation_rejected_without_candidate_receipt",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_source_runtime_receipt_disagreement_rejected",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_tampered_runtime_copy_rejected_even_when_sdk_is_intact",
+    "bundler.tests.test_sdk_staging.StageReceiptTests.test_tampered_sdk_rejected_by_shared_verifier",
+    "bundler.tests.test_sdk_staging.StageComputeTests.test_corrupt_native_kernel_rejected_without_compiling",
+    "bundler.tests.test_sdk_staging.StageComputeTests.test_stale_kernel_sources_are_rejected_without_compiling",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_stage_binds_verified_delivered_profile_identity",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_changed_public_fixture_fails_before_native_validation",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_delivered_sdk_descriptor_is_admitted_by_shared_rebuild_verifier",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_missing_descriptor_is_rejected_before_native_checks",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_coordinated_fixture_and_profile_drift_is_rejected",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_descriptor_missing_fixture_coverage_is_rejected",
+    "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_native_corruption_is_rejected_before_compute_checks",
+    "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_exact_completed_case_inventory_passes",
+    "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_missing_and_duplicated_identities_are_rejected",
+    "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_native_import_alias_uses_valid_destructuring_without_changing_export_identity",
+    "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_skip_missing_assertions_and_failed_assertions_do_not_pass",
+    "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_unfinished_cleanup_is_rejected",
+    "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_zero_case_success_is_rejected",
+    "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_adapted_body_drift_fails_even_after_self_receipt_is_updated",
+    "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_approved_original_identities_are_verified",
+    "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_changed_assertion_body_with_same_case_identity_fails_before_export_writes",
+    "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_missing_origin_pin_is_rejected",
+    "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_stale_profile_catalog_identity_is_rejected",
+    "sdk.tests.test_public_tests.PublicPersistenceGraphTests.test_bootstrap_side_effect_import_exposes_existing_spell_persistence_module",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_case_identity_drift_is_rejected",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_ineligible_suite_cannot_remain_required",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_missing_compiled_module_is_rejected_without_source_fallback",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_missing_source_module_is_rejected",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_receipt_does_not_accept_changed_required_source",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_reduced_suite_count_cannot_be_certified_by_changed_metadata",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_reviewed_suites_have_exact_64_case_inventory",
+    "sdk.tests.test_public_tests.PublicProfileClosureTests.test_tampered_assertion_fixture_is_rejected",
+    "test_aggregate.AggregateTests.test_candidate_only_reports_agree_without_relabeling_published_fixture",
+    "test_aggregate.AggregateTests.test_different_jobs_of_one_actual_input_run_aggregate",
+    "test_aggregate.AggregateTests.test_dirty_work_is_honest_local_evidence_but_not_hosted_evidence",
+    "test_aggregate.AggregateTests.test_gpu_scope_exemption_is_only_for_explicit_off_mode",
+    "test_aggregate.AggregateTests.test_historical_pass_is_readable_but_not_current_required_evidence",
+    "test_aggregate.AggregateTests.test_junit_keeps_original_status_and_failed_required_gate",
+    "test_aggregate.AggregateTests.test_missing_failed_zero_skipped_and_false_checks_are_rejected",
+    "test_aggregate.AggregateTests.test_missing_subject_incomplete_rows_and_fake_directory_archive_fail",
+    "test_aggregate.AggregateTests.test_mixed_commit_run_recipe_sdk_and_finish_drift_fail",
+    "test_aggregate.AggregateTests.test_standard_name_type_substitution_candidate_identity_and_gpu_modes_fail",
+    "test_aggregate.HostedAggregateCliTests.test_consistent_prior_attempt_run_and_requested_commit_fail",
+    "test_aggregate.HostedAggregateCliTests.test_consistent_stale_sdk_recipe_and_template_fail_current_checkout_binding",
+    "test_aggregate.HostedAggregateCliTests.test_current_hosted_checkout_and_complete_standard_reports_pass",
+    "test_aggregate.HostedAggregateCliTests.test_hosted_and_expected_commit_gates_require_each_standard_report",
+    "test_aggregate.HostedAggregateCliTests.test_hosted_gate_without_expected_commit_cannot_admit_custom_subset",
+    "test_aggregate.HostedAggregateCliTests.test_local_cli_keeps_standalone_aggregation_usable",
+    "test_aggregate.HostedAggregateCliTests.test_real_dirty_checkout_cannot_qualify_hosted_evidence",
+    "test_aggregate.HostedAggregateCliTests.test_standard_report_substitution_fails_complete_hosted_cli",
+    "test_aggregate.IndividualCaseAdmissionTests.test_cpu_duplicate_case_and_assertions_fail",
+    "test_aggregate.IndividualCaseAdmissionTests.test_cpu_invalid_mount_suite_and_count_fields_fail_without_crashing",
+    "test_aggregate.IndividualCaseAdmissionTests.test_cpu_missing_case_even_with_adjusted_counts_fails_selected_inventory",
+    "test_aggregate.IndividualCaseAdmissionTests.test_cpu_missing_or_duplicated_mount_and_suite_groups_fail",
+    "test_aggregate.IndividualCaseAdmissionTests.test_cpu_repeated_ids_in_distinct_suite_mode_mount_groups_pass",
+    "test_aggregate.IndividualCaseAdmissionTests.test_cpu_zero_assertions_missing_cleanup_and_missing_inventory_fail",
+    "test_aggregate.IndividualCaseAdmissionTests.test_generic_duplicate_checks_tests_rows_and_cases_are_rejected",
+    "test_aggregate.IndividualCaseAdmissionTests.test_missing_duplicate_or_invalid_selected_parser_inventory_fails",
+    "test_aggregate.IndividualCaseAdmissionTests.test_missing_or_unhashable_generic_case_identity_fails_without_crashing",
+    "test_aggregate.IndividualCaseAdmissionTests.test_parser_exact_inventory_and_each_oracle_runtime_mode_pass",
+    "test_aggregate.IndividualCaseAdmissionTests.test_parser_missing_or_failed_original_and_canonical_grammar_fails",
+    "test_aggregate.IndividualCaseAdmissionTests.test_parser_missing_or_substituted_cases_and_changed_counts_are_rejected",
+    "test_browser_smoke.BrowserBoundaryTests.test_application_http_and_socket_attempts_override_background_classification",
+    "test_browser_smoke.BrowserBoundaryTests.test_archive_extracts_only_recorded_template_members",
+    "test_browser_smoke.BrowserBoundaryTests.test_archive_traversal_links_duplicates_and_extra_members_are_refused",
+    "test_browser_smoke.BrowserBoundaryTests.test_context_boundary_blocks_known_hosts_for_pages_workers_and_websockets",
+    "test_browser_smoke.BrowserBoundaryTests.test_external_symlink_targets_are_refused",
+    "test_browser_smoke.BrowserBoundaryTests.test_modified_payload_and_unexecuted_browser_cases_are_refused",
+    "test_browser_smoke.BrowserBoundaryTests.test_mounted_requests_are_contained_and_decode_once",
+    "test_browser_smoke.BrowserBoundaryTests.test_only_exact_browser_maintenance_destinations_are_classified",
+    "test_browser_smoke.BrowserBoundaryTests.test_proxy_denies_known_and_unknown_services_without_forwarding",
+    "test_candidate_build.CandidateInventoryCopyTests.test_existing_destination_is_preserved",
+    "test_candidate_build.CandidateInventoryCopyTests.test_inventory_path_escape_fails_before_destination_creation",
+    "test_candidate_build.CandidateInventoryCopyTests.test_missing_inventoried_input_fails_before_destination_creation",
+    "test_candidate_build.CandidateInventoryCopyTests.test_real_copy_preserves_inventoried_build_paths_and_excludes_unlisted_caches",
+    "test_candidate_build.CandidateInventoryCopyTests.test_source_overlap_is_rejected_before_writing",
+    "test_candidate_build.CandidateReceiptTests.test_actual_unlisted_file_cannot_hide_behind_a_valid_output_digest",
+    "test_candidate_build.CandidateReceiptTests.test_corrupt_runtime_is_rejected_by_shared_decoding_verifier",
+    "test_candidate_build.CandidateReceiptTests.test_missing_empty_failed_and_incomplete_validation_do_not_pass",
+    "test_candidate_build.CandidateReceiptTests.test_output_inventory_and_its_digest_are_both_required",
+    "test_candidate_build.CandidateReceiptTests.test_real_staged_receipt_matches_all_supplied_and_runtime_identities",
+    "test_candidate_build.CandidateReceiptTests.test_rebuilt_descriptor_option_drift_fails_before_output_admission",
+    "test_candidate_build.CandidateReceiptTests.test_rehashed_wrong_recipe_still_fails",
+    "test_candidate_build.CandidateReceiptTests.test_sdk_input_tool_descriptor_and_runtime_receipt_drift_fail",
+    "test_candidate_build.CandidateRecipeTests.test_replayed_recipe_options_preserve_recorded_flags",
+    "test_candidate_build.CandidateRecipeTests.test_unreplayed_defaults_and_invalid_flags_fail_explicitly",
+    "test_change_report.ChangeReportTests.test_added_export_and_measured_size_changes_are_visible",
+    "test_change_report.ChangeReportTests.test_inventory_size_includes_actual_manifest_bytes_and_rejects_bad_parser_input",
+    "test_change_report.ChangeReportTests.test_protected_guard_requires_digest_bound_acceptance_for_exact_file_bytes",
+    "test_change_report.ChangeReportTests.test_real_parser_aliases_stars_defaults_and_cycles_have_exact_names",
+    "test_change_report.ChangeReportTests.test_removed_shipped_tool_requires_exact_review_reason",
+    "test_change_report.ChangeReportTests.test_unexplained_removed_exports_and_protected_bytes_fail",
+    "test_ci_validation_guards.ActualPytestCollectionTests.test_absent_call_phase_does_not_certify_pass",
+    "test_ci_validation_guards.ActualPytestCollectionTests.test_actual_empty_file_returns_no_tests_status",
+    "test_ci_validation_guards.ActualPytestCollectionTests.test_actual_invalid_python_collection_is_not_a_passing_zero_case_suite",
+    "test_ci_validation_guards.ActualPytestCollectionTests.test_actual_setup_call_teardown_failures_and_skip_are_retained",
+    "test_ci_validation_guards.ActualPytestCollectionTests.test_teardown_skip_cannot_overwrite_an_earlier_failure",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_conflicting_child_context_is_not_rebound_to_current_inputs",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_existing_report_is_rejected_before_launch",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_failed_command_launch_still_produces_failed_evidence",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_fresh_pass_binds_actual_context_and_exit_code",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_input_drift_invalidates_otherwise_passing_new_evidence",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_invalid_report_shape_is_explicitly_rejected",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_malformed_child_identity_verification_is_reported_as_failed_evidence",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_nonzero_child_cannot_promote_its_pass_report",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_report_outside_allowed_directory_is_rejected_before_launch",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_report_that_becomes_unsafe_is_never_read_or_rewritten",
+    "test_ci_validation_guards.FreshEvidenceWrapperTests.test_success_exit_without_new_evidence_is_blocked",
+    "test_ci_validation_guards.JunitInfrastructureTests.test_blocked_or_changed_inputs_are_errors_even_when_individual_cases_pass",
+    "test_ci_validation_guards.ParserOutputBoundaryTests.test_baseline_and_candidate_outputs_are_rejected_before_reading_inputs",
+    "test_dashboard.DashboardTests.test_aggregate_dashboard_includes_actual_children_and_downloadable_junit",
+    "test_dashboard.DashboardTests.test_malicious_report_names_and_text_are_inert_and_status_is_preserved",
+    "test_dashboard.DashboardTests.test_missing_and_invalid_reports_are_actual_failure_rows",
+    "test_network_trace.BrowserSocketTraceTests.test_completed_trace_does_not_wait_for_an_application_page",
+    "test_network_trace.BrowserSocketTraceTests.test_failed_start_and_failed_finish_cannot_be_reused",
+    "test_network_trace.BrowserSocketTraceTests.test_finished_report_retains_urls_and_counts_without_raw_sensitive_events",
+    "test_network_trace.BrowserSocketTraceTests.test_finishing_pumps_browser_cdp_until_all_trace_events_arrive",
+    "test_network_trace.BrowserSocketTraceTests.test_handlers_are_registered_before_the_proved_category_starts",
+    "test_network_trace.BrowserSocketTraceTests.test_parser_accepts_only_actual_netlog_socket_request_urls",
+    "test_network_trace.BrowserSocketTraceTests.test_start_and_finish_lifecycle_rejects_misuse_and_reuses_completed_result",
+    "test_network_trace.BrowserSocketTraceTests.test_timeout_configuration_is_bounded",
+    "test_network_trace.BrowserSocketTraceTests.test_trace_loss_and_missing_loss_status_fail_after_detaching",
+    "test_network_trace.BrowserSocketTraceTests.test_trace_timeout_fails_and_detaches",
+    "test_python_reporting.PythonReportingTests.test_actual_callbacks_preserve_distinct_outcomes_in_json_and_junit",
+    "test_python_reporting.PythonReportingTests.test_missing_suite_is_an_actual_error_and_report_paths_preserve_sdk",
+    "test_release_tooling.ReleaseToolingTests.test_committed_version_must_match_the_explicit_future_tag",
+    "test_release_tooling.ReleaseToolingTests.test_draft_preflight_rechecks_notes_and_assets_before_authentication",
+    "test_release_tooling.ReleaseToolingTests.test_draft_rejects_published_release_and_conflicting_tag_without_mutation",
+    "test_release_tooling.ReleaseToolingTests.test_explicit_future_sdk_version_with_fresh_matching_evidence_is_permitted",
+    "test_release_tooling.ReleaseToolingTests.test_future_version_cannot_reuse_older_commit_or_package_evidence",
+    "test_release_tooling.ReleaseToolingTests.test_local_default_revalidates_real_archive_and_children_without_network",
+    "test_release_tooling.ReleaseToolingTests.test_old_tags_inexact_or_untested_commits_and_dirty_checkout_fail",
+    "test_release_tooling.ReleaseToolingTests.test_one_passing_report_or_missing_required_report_cannot_qualify_release",
+    "test_release_tooling.ReleaseToolingTests.test_recomputed_hash_cannot_hide_skipped_or_mixed_child_evidence",
+    "test_release_tooling.ReleaseToolingTests.test_rewritten_template_receipt_cannot_bypass_full_platform_donor",
+    "test_release_tooling.ReleaseToolingTests.test_tampered_original_children_and_artifact_escape_fail",
+    "test_release_tooling.ReleaseToolingTests.test_template_replacement_requires_full_platform_donor",
+    "test_release_tooling.ReleaseToolingTests.test_wrong_typed_receipt_cannot_replace_cpu_even_with_recomputed_hashes",
+    "test_report_context.RealGitContextTests.test_real_git_clean_dirty_and_ignored_output_status_is_bound",
+    "test_report_context.ReportContextTests.test_actual_sdk_drift_without_manifest_edit_fails_finish",
+    "test_report_context.ReportContextTests.test_candidate_cannot_replace_baseline_input_identity",
+    "test_report_context.ReportContextTests.test_directory_identity_is_not_an_invented_zip_identity",
+    "test_report_context.ReportContextTests.test_job_outputs_do_not_change_recipe_but_recipe_edits_do",
+    "test_report_context.ReportContextTests.test_published_build_named_directories_remain_part_of_package_identity",
+    "test_sdk_tests.PublicBrowserReportingTests.test_expected_inventory_selects_case_ids_per_mode_before_execution",
+    "test_sdk_tests.PublicBrowserReportingTests.test_unavailable_module_records_every_required_case_as_unexecuted",
+    "test_sdk_tests.PublicBrowserReportingTests.test_zero_case_initialization_failure_is_a_junit_error",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_walk_reorder_and_emit_share_successful_parse",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_changed_source_and_new_graph_do_not_reuse_old_parse",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_cached_statements_resolve_against_each_module_location",
+    "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_failed_discovery_parse_still_blocks_canonical_emission"
+  ],
+  "tests": [
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_comments_and_strings_ignored",
+      "status": "PASS",
+      "duration_seconds": 0.000624
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_default_import",
+      "status": "PASS",
+      "duration_seconds": 5.4e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_escaped_specifiers_decode_in_every_dependency_form",
+      "status": "PASS",
+      "duration_seconds": 0.002931
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_array_binding_pattern",
+      "status": "PASS",
+      "duration_seconds": 0.000148
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_declaration_asi_recognizes_every_javascript_line_terminator",
+      "status": "PASS",
+      "duration_seconds": 0.00065
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_declaration_list_distinguishes_nested_initializer_commas",
+      "status": "PASS",
+      "duration_seconds": 0.000254
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_declaration_list_keeps_multiline_classes_and_keyword_operators",
+      "status": "PASS",
+      "duration_seconds": 0.000246
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_declaration_list_keeps_multiline_expressions_together",
+      "status": "PASS",
+      "duration_seconds": 0.000207
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_declaration_list_stops_at_automatic_semicolons",
+      "status": "PASS",
+      "duration_seconds": 0.000381
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_declaration_lookahead_keeps_dynamic_imports_visible",
+      "status": "PASS",
+      "duration_seconds": 0.000202
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_default",
+      "status": "PASS",
+      "duration_seconds": 5e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_named",
+      "status": "PASS",
+      "duration_seconds": 3.9e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_object_binding_pattern",
+      "status": "PASS",
+      "duration_seconds": 0.000103
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_export_variable_declaration_list_keeps_every_binding",
+      "status": "PASS",
+      "duration_seconds": 0.0002
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_exported_generators_keep_names_offsets_and_body_imports",
+      "status": "PASS",
+      "duration_seconds": 0.000248
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_external_specifier_schemes_are_decoded_without_changing_identity",
+      "status": "PASS",
+      "duration_seconds": 0.000121
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_generator_star_does_not_allow_anonymous_or_invalid_named_exports",
+      "status": "PASS",
+      "duration_seconds": 0.000111
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_import_meta_is_not_an_import",
+      "status": "PASS",
+      "duration_seconds": 4.1e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_invalid_specifier_escapes_fail_both_dependency_readers",
+      "status": "PASS",
+      "duration_seconds": 0.001188
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_mixed_default_named_import",
+      "status": "PASS",
+      "duration_seconds": 4.3e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_mixed_default_namespace_import",
+      "status": "PASS",
+      "duration_seconds": 3.5e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_multiple_statements_keep_exact_offsets",
+      "status": "PASS",
+      "duration_seconds": 8.3e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_named_import",
+      "status": "PASS",
+      "duration_seconds": 3.8e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_namespace_import",
+      "status": "PASS",
+      "duration_seconds": 3.1e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_reexport_namespace",
+      "status": "PASS",
+      "duration_seconds": 3e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_reexport_star",
+      "status": "PASS",
+      "duration_seconds": 2.4e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_side_effect_import",
+      "status": "PASS",
+      "duration_seconds": 2.8e-05
+    },
+    {
+      "name": "bundler.tests.test_parser.TestParser.test_specifier_line_continuations_match_javascript_values",
+      "status": "PASS",
+      "duration_seconds": 0.000469
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_code_sequence_helper_never_matches_literal_contents_or_nested_code",
+      "status": "PASS",
+      "duration_seconds": 0.00014
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_extracts_direct_star_reexport_keys_only",
+      "status": "PASS",
+      "duration_seconds": 0.000689
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_extracts_ordered_function_and_arrow_wrappers",
+      "status": "PASS",
+      "duration_seconds": 0.000585
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_ignores_comment_string_template_regex_and_nested_decoys",
+      "status": "PASS",
+      "duration_seconds": 0.001225
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_outer_token_values_support_one_scan_marker_checks",
+      "status": "PASS",
+      "duration_seconds": 0.000279
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_rejects_ambiguous_and_malformed_declarations",
+      "status": "PASS",
+      "duration_seconds": 0.000516
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_rejects_duplicate_runtime_property_keys",
+      "status": "PASS",
+      "duration_seconds": 0.000286
+    },
+    {
+      "name": "bundler.tests.test_parser_registry.TestCanonicalModuleRegistry.test_rejects_malformed_direct_wrapper_factory",
+      "status": "PASS",
+      "duration_seconds": 0.000268
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_aliases_and_multiple_statement_offsets",
+      "status": "PASS",
+      "duration_seconds": 0.000132
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_classic_script_gate_reports_executable_import_meta",
+      "status": "PASS",
+      "duration_seconds": 8.2e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_default_declarations_preserve_boundary_before_ordinary_code",
+      "status": "PASS",
+      "duration_seconds": 0.000763
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_default_import",
+      "status": "PASS",
+      "duration_seconds": 4.2e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_export_declaration_preserves_declaration",
+      "status": "PASS",
+      "duration_seconds": 5.5e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_export_default",
+      "status": "PASS",
+      "duration_seconds": 5.4e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_export_destructuring_assigns_every_declared_binding",
+      "status": "PASS",
+      "duration_seconds": 8.6e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_export_named",
+      "status": "PASS",
+      "duration_seconds": 3.3e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_export_variable_declaration_list_assigns_all_public_bindings",
+      "status": "PASS",
+      "duration_seconds": 0.000309
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_exported_generators_preserve_declarations_and_iterator_bodies",
+      "status": "PASS",
+      "duration_seconds": 0.000423
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_import_meta_is_rewritten_for_classic_script",
+      "status": "PASS",
+      "duration_seconds": 6.2e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_import_meta_preserves_non_os_runtime_module_paths",
+      "status": "PASS",
+      "duration_seconds": 0.000242
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_import_meta_preserves_original_webgpu_os_module_path",
+      "status": "PASS",
+      "duration_seconds": 6.5e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_import_meta_scanner_preserves_literals_and_rewrites_template_expressions",
+      "status": "PASS",
+      "duration_seconds": 0.000164
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_local_default_alias_uses_internal_default_contract",
+      "status": "PASS",
+      "duration_seconds": 4.6e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_named_export_preserves_boundary_after_default_class_expression",
+      "status": "PASS",
+      "duration_seconds": 0.000201
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_named_import",
+      "status": "PASS",
+      "duration_seconds": 4.6e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_namespace_import",
+      "status": "PASS",
+      "duration_seconds": 3.7e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_ocr_worker_url_survives_playground_compiled_os_registry",
+      "status": "PASS",
+      "duration_seconds": 0.00024
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_particle_voice_worklet_url_survives_compiled_os_registry",
+      "status": "PASS",
+      "duration_seconds": 0.000181
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_reexport_default_uses_internal_default_contract",
+      "status": "PASS",
+      "duration_seconds": 6.5e-05
+    },
+    {
+      "name": "bundler.tests.test_emitter.TestEmitter.test_side_effect_import",
+      "status": "PASS",
+      "duration_seconds": 3.3e-05
+    },
+    {
+      "name": "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_forward_require_compacts_without_rewriting_member_calls",
+      "status": "PASS",
+      "duration_seconds": 0.000202
+    },
+    {
+      "name": "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_internal_compaction_never_rewrites_signed_or_application_text",
+      "status": "PASS",
+      "duration_seconds": 1.4e-05
+    },
+    {
+      "name": "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_original_path_resolver_survives_id_shortening_without_literal_rewrites",
+      "status": "PASS",
+      "duration_seconds": 0.001681
+    },
+    {
+      "name": "bundler.tests.test_builder_module_access.TestBuilderModuleAccess.test_platform_entries_receive_distinct_stable_namespaces",
+      "status": "PASS",
+      "duration_seconds": 0.000225
+    },
+    {
+      "name": "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_app_entry_is_in_graph_without_eager_barrel_require",
+      "status": "PASS",
+      "duration_seconds": 0.002768
+    },
+    {
+      "name": "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_barrel_is_rendered_without_shared_temporary_file",
+      "status": "PASS",
+      "duration_seconds": 0.001409
+    },
+    {
+      "name": "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_concurrent_graphs_walk_same_stable_virtual_entry",
+      "status": "PASS",
+      "duration_seconds": 0.014693
+    },
+    {
+      "name": "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_duplicate_index_entries_and_unindexed_manifests_fail_closed",
+      "status": "PASS",
+      "duration_seconds": 0.002696
+    },
+    {
+      "name": "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_manifest_errors_duplicate_ids_and_stale_entries_fail_closed",
+      "status": "PASS",
+      "duration_seconds": 0.005738
+    },
+    {
+      "name": "bundler.tests.test_in_memory_generated_entry.TestInMemoryGeneratedEntry.test_missing_or_malformed_indexes_fail_closed",
+      "status": "PASS",
+      "duration_seconds": 0.003565
+    },
+    {
+      "name": "bundler.tests.test_console_stripping.ConsoleStrippingTests.test_literals_comments_and_other_objects_are_preserved",
+      "status": "PASS",
+      "duration_seconds": 0.000149
+    },
+    {
+      "name": "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_deterministic_parts_reassemble_exact_original_gzip",
+      "status": "PASS",
+      "duration_seconds": 0.003174
+    },
+    {
+      "name": "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_small_artifact_and_full_local_consumer_remain_supported",
+      "status": "PASS",
+      "duration_seconds": 0.001046
+    },
+    {
+      "name": "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_transport_metadata_rejects_malformed_shapes_paths_bounds_and_order",
+      "status": "PASS",
+      "duration_seconds": 0.000545
+    },
+    {
+      "name": "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_tampered_truncated_missing_and_relabelled_parts_fail_closed",
+      "status": "PASS",
+      "duration_seconds": 0.002923
+    },
+    {
+      "name": "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_public_copy_and_archive_preserve_gzip_and_best_transport",
+      "status": "PASS",
+      "duration_seconds": 0.019992
+    },
+    {
+      "name": "bundler.tests.test_runtime_transport.TestRuntimeTransport.test_loader_urls_and_cache_identity_bind_transport_metadata",
+      "status": "PASS",
+      "duration_seconds": 0.000683
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_cache_busting_preserves_attested_physics_bytes",
+      "status": "PASS",
+      "duration_seconds": 0.001605
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_compute_consumer_inventory_includes_offline_contracts",
+      "status": "PASS",
+      "duration_seconds": 2.36604
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_static_site_rejects_files_above_host_cap",
+      "status": "PASS",
+      "duration_seconds": 0.000949
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_static_site_rejects_too_many_files_for_free_pages",
+      "status": "PASS",
+      "duration_seconds": 0.000701
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_release_site_includes_static_404_page",
+      "status": "PASS",
+      "duration_seconds": 1.8e-05
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_public_include_tree_parity_recurses_into_academy_starter",
+      "status": "PASS",
+      "duration_seconds": 0.007965
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_docs_laydown_ships_curated_sources_indexes_and_root_discovery",
+      "status": "PASS",
+      "duration_seconds": 0.008666
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_replaces_live_site_and_removes_previous",
+      "status": "PASS",
+      "duration_seconds": 0.001108
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_restores_previous_site_when_swap_fails",
+      "status": "PASS",
+      "duration_seconds": 0.001645
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_staged_site_publish_syncs_file_atomically_when_live_directory_is_locked",
+      "status": "PASS",
+      "duration_seconds": 0.004367
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_server_uses_previous_then_staged_site_during_publication_gap",
+      "status": "PASS",
+      "duration_seconds": 0.001629
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_server_transition_fallback_rejects_parent_traversal",
+      "status": "PASS",
+      "duration_seconds": 0.00069
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_archive_contains_every_publish_file_at_root_with_exact_bytes",
+      "status": "PASS",
+      "duration_seconds": 0.002169
+    },
+    {
+      "name": "bundler.tests.test_site_archive.TestReleaseSiteArchive.test_archive_fails_when_a_required_asset_is_absent",
+      "status": "PASS",
+      "duration_seconds": 0.000498
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_cache_verifies_without_invoking_compiler",
+      "status": "PASS",
+      "duration_seconds": 0.000935
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_source_changes_fail_readonly_check",
+      "status": "PASS",
+      "duration_seconds": 0.004769
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_corrupted_binary_and_manifest_path_fail_closed",
+      "status": "PASS",
+      "duration_seconds": 0.004532
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_binary_metadata_controls_features_and_imports",
+      "status": "PASS",
+      "duration_seconds": 0.001058
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_sidecar_closure_is_portable_and_source_free",
+      "status": "PASS",
+      "duration_seconds": 1.561369
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_binary_edit_invalidates_runtime_cache_even_without_site",
+      "status": "PASS",
+      "duration_seconds": 0.004389
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_consumer_compute_inventory_requires_verified_complete_closure",
+      "status": "PASS",
+      "duration_seconds": 2.52013
+    },
+    {
+      "name": "bundler.tests.test_compute_wasm.TestComputeWasm.test_compiled_provider_urls_keep_engine_release_base",
+      "status": "PASS",
+      "duration_seconds": 0.000237
+    },
+    {
+      "name": "sdk.tests.test_server.SDKServerTests.test_isolation_headers_are_opt_in",
+      "status": "PASS",
+      "duration_seconds": 0.529685
+    },
+    {
+      "name": "sdk.tests.test_server.SDKServerTests.test_plain_server_sets_mime_without_transforming_transport",
+      "status": "PASS",
+      "duration_seconds": 0.506748
+    },
+    {
+      "name": "sdk.tests.test_server.SDKServerTests.test_symlink_cannot_escape_the_served_root",
+      "status": "PASS",
+      "duration_seconds": 0.50321
+    },
+    {
+      "name": "bundler.tests.test_graph_root_paths.GraphRootPathTests.test_relative_root_uses_physical_identity",
+      "status": "PASS",
+      "duration_seconds": 0.001407
+    },
+    {
+      "name": "bundler.tests.test_graph_root_paths.GraphRootPathTests.test_symlink_root_uses_physical_identity",
+      "status": "PASS",
+      "duration_seconds": 0.001202
+    },
+    {
+      "name": "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests.test_directory_cache_requires_integrity_but_not_a_zip",
+      "status": "PASS",
+      "duration_seconds": 0.01025
+    },
+    {
+      "name": "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests.test_failed_directory_verification_restores_previous_tree",
+      "status": "PASS",
+      "duration_seconds": 0.015839
+    },
+    {
+      "name": "bundler.tests.test_sdk_directory_publication.DirectoryPublicationTests.test_verified_directory_promotion_does_not_touch_existing_archive",
+      "status": "PASS",
+      "duration_seconds": 0.007746
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_canonical_inventory_has_every_supported_example",
+      "status": "PASS",
+      "duration_seconds": 0.001173
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_changed_markdown_changes_executed_bytes_and_digest",
+      "status": "PASS",
+      "duration_seconds": 0.001087
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_duplicate_example_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000879
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_empty_and_unterminated_examples_are_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.001203
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_extracts_actual_fence_bytes_location_and_identity",
+      "status": "PASS",
+      "duration_seconds": 0.000929
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_missing_example_does_not_silently_reduce_coverage",
+      "status": "PASS",
+      "duration_seconds": 0.000915
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_non_javascript_or_detached_fence_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.001075
+    },
+    {
+      "name": "sdk.tests.test_doc_snippets.SDKDocumentationSnippetTests.test_unknown_or_misplaced_example_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000812
+    },
+    {
+      "name": "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests.test_probe_failure_is_not_reported_as_success_and_restores_original_bytes",
+      "status": "PASS",
+      "duration_seconds": 0.004007
+    },
+    {
+      "name": "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests.test_runtime_drift_fails_before_browser_proof",
+      "status": "PASS",
+      "duration_seconds": 0.00378
+    },
+    {
+      "name": "sdk.tests.test_rebuild_acceptance.RebuildAcceptanceTests.test_success_requires_fresh_second_build_and_executes_changed_source",
+      "status": "PASS",
+      "duration_seconds": 0.003992
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_child_python_inherits_guard_and_runs_local_code",
+      "status": "PASS",
+      "duration_seconds": 0.071081
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_concurrent_thread_does_not_inherit_socketpair_permission",
+      "status": "PASS",
+      "duration_seconds": 0.040121
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_connections_are_rejected_before_the_operating_system_call",
+      "status": "PASS",
+      "duration_seconds": 0.037315
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_dns_udp_and_saved_socket_calls_are_blocked",
+      "status": "PASS",
+      "duration_seconds": 0.036847
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_native_tool_and_shell_spawns_are_blocked",
+      "status": "PASS",
+      "duration_seconds": 0.037228
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_real_asyncio_self_pipe_runs_and_closes",
+      "status": "PASS",
+      "duration_seconds": 0.06624
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_real_tcp_socketpair_exchanges_bytes_and_restores_scope",
+      "status": "PASS",
+      "duration_seconds": 0.030444
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_socketpair_failure_restores_permission",
+      "status": "PASS",
+      "duration_seconds": 0.030434
+    },
+    {
+      "name": "sdk.tests.test_rebuild_network.SDKOfflineNetworkTests.test_spawned_process_pool_blocks_network_and_preserves_compression",
+      "status": "PASS",
+      "duration_seconds": 0.368183
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_missing_editable_source_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.01647
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_tampered_tool_and_native_binary_are_rejected_before_compute_checks",
+      "status": "PASS",
+      "duration_seconds": 0.015451
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_selected_compression_tool_version_mismatch_fails",
+      "status": "PASS",
+      "duration_seconds": 0.010141
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_descriptor_records_actual_python_and_native_compression_environment",
+      "status": "PASS",
+      "duration_seconds": 0.009697
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_different_python_patch_version_is_rejected_before_native_checks",
+      "status": "PASS",
+      "duration_seconds": 0.009804
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_missing_or_changed_native_compression_environment_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.01842
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_requirements_and_tools_cover_transitive_schema_and_crypto_dependencies",
+      "status": "PASS",
+      "duration_seconds": 0.012656
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_existing_audited_compute_artifacts_rebuild_without_compiler_invocation",
+      "status": "PASS",
+      "duration_seconds": 0.023763
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_changed_kernel_source_rejects_stale_native_artifacts",
+      "status": "PASS",
+      "duration_seconds": 0.023053
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_input_path_escape_and_duplicate_json_keys_are_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000427
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_input_mutation_between_copy_and_descriptor_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000592
+    },
+    {
+      "name": "bundler.tests.test_sdk_rebuild.SDKRebuildTests.test_engine_sdk_rejects_explicit_signed_registry",
+      "status": "PASS",
+      "duration_seconds": 0.007284
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_cli_dry_run_uses_check_only_native_and_never_regenerates_source",
+      "status": "PASS",
+      "duration_seconds": 0.006476
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_cli_rejects_output_conflict_before_compute_or_maintenance",
+      "status": "PASS",
+      "duration_seconds": 0.001269
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_cli_stale_native_failure_creates_no_files",
+      "status": "PASS",
+      "duration_seconds": 0.004618
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_conflicting_flags_rejected_before_trust_or_output_actions",
+      "status": "PASS",
+      "duration_seconds": 0.000506
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_existing_destination_rejected_even_when_empty",
+      "status": "PASS",
+      "duration_seconds": 0.000444
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_explicit_production_sdk_only_are_required",
+      "status": "PASS",
+      "duration_seconds": 0.00027
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_fresh_external_destination_is_resolved_without_writes",
+      "status": "PASS",
+      "duration_seconds": 0.000387
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_parent_traversal_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000267
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_resolved_source_alias_is_considered_source_overlap",
+      "status": "PASS",
+      "duration_seconds": 0.000429
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_source_and_live_output_overlap_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.00061
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_symlink_ancestor_cannot_redirect_a_candidate",
+      "status": "PASS",
+      "duration_seconds": 0.000338
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePreflightTests.test_unsupported_target_and_noncanonical_entries_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000235
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_missing_runtime_metadata_rejected_even_when_sdk_is_intact",
+      "status": "PASS",
+      "duration_seconds": 0.008276
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_native_identity_change_rejected_without_candidate_receipt",
+      "status": "PASS",
+      "duration_seconds": 0.005756
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_receipt_binds_actual_sdk_runtime_cache_and_recipe",
+      "status": "PASS",
+      "duration_seconds": 0.015554
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_required_archive_is_actually_verified",
+      "status": "PASS",
+      "duration_seconds": 0.007499
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_source_mutation_rejected_without_candidate_receipt",
+      "status": "PASS",
+      "duration_seconds": 0.005801
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_source_runtime_receipt_disagreement_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.007389
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_tampered_runtime_copy_rejected_even_when_sdk_is_intact",
+      "status": "PASS",
+      "duration_seconds": 0.008377
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageReceiptTests.test_tampered_sdk_rejected_by_shared_verifier",
+      "status": "PASS",
+      "duration_seconds": 0.007126
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageComputeTests.test_corrupt_native_kernel_rejected_without_compiling",
+      "status": "PASS",
+      "duration_seconds": 0.003743
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StageComputeTests.test_stale_kernel_sources_are_rejected_without_compiling",
+      "status": "PASS",
+      "duration_seconds": 0.006
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_stage_binds_verified_delivered_profile_identity",
+      "status": "PASS",
+      "duration_seconds": 0.013311
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_changed_public_fixture_fails_before_native_validation",
+      "status": "PASS",
+      "duration_seconds": 0.019366
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_delivered_sdk_descriptor_is_admitted_by_shared_rebuild_verifier",
+      "status": "PASS",
+      "duration_seconds": 0.036724
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_missing_descriptor_is_rejected_before_native_checks",
+      "status": "PASS",
+      "duration_seconds": 0.009782
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_coordinated_fixture_and_profile_drift_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.045281
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_descriptor_missing_fixture_coverage_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.042678
+    },
+    {
+      "name": "bundler.tests.test_sdk_staging.StagePublicProfileTests.test_extracted_sdk_native_corruption_is_rejected_before_compute_checks",
+      "status": "PASS",
+      "duration_seconds": 0.031198
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_exact_completed_case_inventory_passes",
+      "status": "PASS",
+      "duration_seconds": 2.9e-05
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_missing_and_duplicated_identities_are_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000136
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_native_import_alias_uses_valid_destructuring_without_changing_export_identity",
+      "status": "PASS",
+      "duration_seconds": 6.8e-05
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_skip_missing_assertions_and_failed_assertions_do_not_pass",
+      "status": "PASS",
+      "duration_seconds": 8.5e-05
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_unfinished_cleanup_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 4e-05
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCaseReceiptTests.test_zero_case_success_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 4.2e-05
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_adapted_body_drift_fails_even_after_self_receipt_is_updated",
+      "status": "PASS",
+      "duration_seconds": 0.005024
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_approved_original_identities_are_verified",
+      "status": "PASS",
+      "duration_seconds": 0.003691
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_changed_assertion_body_with_same_case_identity_fails_before_export_writes",
+      "status": "PASS",
+      "duration_seconds": 0.003108
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_missing_origin_pin_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.002863
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicCatalogOriginTests.test_stale_profile_catalog_identity_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.003765
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicPersistenceGraphTests.test_bootstrap_side_effect_import_exposes_existing_spell_persistence_module",
+      "status": "PASS",
+      "duration_seconds": 0.055388
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_case_identity_drift_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.014031
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_ineligible_suite_cannot_remain_required",
+      "status": "PASS",
+      "duration_seconds": 0.01299
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_missing_compiled_module_is_rejected_without_source_fallback",
+      "status": "PASS",
+      "duration_seconds": 0.014308
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_missing_source_module_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.014037
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_receipt_does_not_accept_changed_required_source",
+      "status": "PASS",
+      "duration_seconds": 0.014597
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_reduced_suite_count_cannot_be_certified_by_changed_metadata",
+      "status": "PASS",
+      "duration_seconds": 0.012836
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_reviewed_suites_have_exact_64_case_inventory",
+      "status": "PASS",
+      "duration_seconds": 0.017917
+    },
+    {
+      "name": "sdk.tests.test_public_tests.PublicProfileClosureTests.test_tampered_assertion_fixture_is_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.017637
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_candidate_only_reports_agree_without_relabeling_published_fixture",
+      "status": "PASS",
+      "duration_seconds": 0.000327
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_different_jobs_of_one_actual_input_run_aggregate",
+      "status": "PASS",
+      "duration_seconds": 0.000176
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_dirty_work_is_honest_local_evidence_but_not_hosted_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.000118
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_gpu_scope_exemption_is_only_for_explicit_off_mode",
+      "status": "PASS",
+      "duration_seconds": 0.000101
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_historical_pass_is_readable_but_not_current_required_evidence",
+      "status": "PASS",
+      "duration_seconds": 2.8e-05
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_junit_keeps_original_status_and_failed_required_gate",
+      "status": "PASS",
+      "duration_seconds": 0.000663
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_missing_failed_zero_skipped_and_false_checks_are_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000258
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_missing_subject_incomplete_rows_and_fake_directory_archive_fail",
+      "status": "PASS",
+      "duration_seconds": 0.000263
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_mixed_commit_run_recipe_sdk_and_finish_drift_fail",
+      "status": "PASS",
+      "duration_seconds": 0.000504
+    },
+    {
+      "name": "test_aggregate.AggregateTests.test_standard_name_type_substitution_candidate_identity_and_gpu_modes_fail",
+      "status": "PASS",
+      "duration_seconds": 0.000188
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_consistent_prior_attempt_run_and_requested_commit_fail",
+      "status": "PASS",
+      "duration_seconds": 0.247481
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_consistent_stale_sdk_recipe_and_template_fail_current_checkout_binding",
+      "status": "PASS",
+      "duration_seconds": 0.345171
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_current_hosted_checkout_and_complete_standard_reports_pass",
+      "status": "PASS",
+      "duration_seconds": 0.118029
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_hosted_and_expected_commit_gates_require_each_standard_report",
+      "status": "PASS",
+      "duration_seconds": 1.304293
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_hosted_gate_without_expected_commit_cannot_admit_custom_subset",
+      "status": "PASS",
+      "duration_seconds": 0.10403
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_local_cli_keeps_standalone_aggregation_usable",
+      "status": "PASS",
+      "duration_seconds": 0.088472
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_real_dirty_checkout_cannot_qualify_hosted_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.113867
+    },
+    {
+      "name": "test_aggregate.HostedAggregateCliTests.test_standard_report_substitution_fails_complete_hosted_cli",
+      "status": "PASS",
+      "duration_seconds": 0.253012
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_cpu_duplicate_case_and_assertions_fail",
+      "status": "PASS",
+      "duration_seconds": 0.00088
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_cpu_invalid_mount_suite_and_count_fields_fail_without_crashing",
+      "status": "PASS",
+      "duration_seconds": 0.001169
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_cpu_missing_case_even_with_adjusted_counts_fails_selected_inventory",
+      "status": "PASS",
+      "duration_seconds": 0.000287
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_cpu_missing_or_duplicated_mount_and_suite_groups_fail",
+      "status": "PASS",
+      "duration_seconds": 0.001087
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_cpu_repeated_ids_in_distinct_suite_mode_mount_groups_pass",
+      "status": "PASS",
+      "duration_seconds": 0.000275
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_cpu_zero_assertions_missing_cleanup_and_missing_inventory_fail",
+      "status": "PASS",
+      "duration_seconds": 0.000714
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_generic_duplicate_checks_tests_rows_and_cases_are_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.00025
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_missing_duplicate_or_invalid_selected_parser_inventory_fails",
+      "status": "PASS",
+      "duration_seconds": 0.000359
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_missing_or_unhashable_generic_case_identity_fails_without_crashing",
+      "status": "PASS",
+      "duration_seconds": 0.00018
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_parser_exact_inventory_and_each_oracle_runtime_mode_pass",
+      "status": "PASS",
+      "duration_seconds": 0.000121
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_parser_missing_or_failed_original_and_canonical_grammar_fails",
+      "status": "PASS",
+      "duration_seconds": 0.000549
+    },
+    {
+      "name": "test_aggregate.IndividualCaseAdmissionTests.test_parser_missing_or_substituted_cases_and_changed_counts_are_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.000879
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_application_http_and_socket_attempts_override_background_classification",
+      "status": "PASS",
+      "duration_seconds": 0.000584
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_archive_extracts_only_recorded_template_members",
+      "status": "PASS",
+      "duration_seconds": 0.001676
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_archive_traversal_links_duplicates_and_extra_members_are_refused",
+      "status": "PASS",
+      "duration_seconds": 0.003167
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_context_boundary_blocks_known_hosts_for_pages_workers_and_websockets",
+      "status": "PASS",
+      "duration_seconds": 0.000713
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_external_symlink_targets_are_refused",
+      "status": "PASS",
+      "duration_seconds": 0.000586
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_modified_payload_and_unexecuted_browser_cases_are_refused",
+      "status": "PASS",
+      "duration_seconds": 0.001097
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_mounted_requests_are_contained_and_decode_once",
+      "status": "PASS",
+      "duration_seconds": 0.000379
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_only_exact_browser_maintenance_destinations_are_classified",
+      "status": "PASS",
+      "duration_seconds": 0.000101
+    },
+    {
+      "name": "test_browser_smoke.BrowserBoundaryTests.test_proxy_denies_known_and_unknown_services_without_forwarding",
+      "status": "PASS",
+      "duration_seconds": 0.509978
+    },
+    {
+      "name": "test_candidate_build.CandidateInventoryCopyTests.test_existing_destination_is_preserved",
+      "status": "PASS",
+      "duration_seconds": 0.002513
+    },
+    {
+      "name": "test_candidate_build.CandidateInventoryCopyTests.test_inventory_path_escape_fails_before_destination_creation",
+      "status": "PASS",
+      "duration_seconds": 0.001877
+    },
+    {
+      "name": "test_candidate_build.CandidateInventoryCopyTests.test_missing_inventoried_input_fails_before_destination_creation",
+      "status": "PASS",
+      "duration_seconds": 0.002024
+    },
+    {
+      "name": "test_candidate_build.CandidateInventoryCopyTests.test_real_copy_preserves_inventoried_build_paths_and_excludes_unlisted_caches",
+      "status": "PASS",
+      "duration_seconds": 0.008125
+    },
+    {
+      "name": "test_candidate_build.CandidateInventoryCopyTests.test_source_overlap_is_rejected_before_writing",
+      "status": "PASS",
+      "duration_seconds": 0.001601
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_actual_unlisted_file_cannot_hide_behind_a_valid_output_digest",
+      "status": "PASS",
+      "duration_seconds": 0.004399
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_corrupt_runtime_is_rejected_by_shared_decoding_verifier",
+      "status": "PASS",
+      "duration_seconds": 0.00297
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_missing_empty_failed_and_incomplete_validation_do_not_pass",
+      "status": "PASS",
+      "duration_seconds": 0.003503
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_output_inventory_and_its_digest_are_both_required",
+      "status": "PASS",
+      "duration_seconds": 0.005531
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_real_staged_receipt_matches_all_supplied_and_runtime_identities",
+      "status": "PASS",
+      "duration_seconds": 0.004049
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_rebuilt_descriptor_option_drift_fails_before_output_admission",
+      "status": "PASS",
+      "duration_seconds": 0.002808
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_rehashed_wrong_recipe_still_fails",
+      "status": "PASS",
+      "duration_seconds": 0.002683
+    },
+    {
+      "name": "test_candidate_build.CandidateReceiptTests.test_sdk_input_tool_descriptor_and_runtime_receipt_drift_fail",
+      "status": "PASS",
+      "duration_seconds": 0.004259
+    },
+    {
+      "name": "test_candidate_build.CandidateRecipeTests.test_replayed_recipe_options_preserve_recorded_flags",
+      "status": "PASS",
+      "duration_seconds": 2.8e-05
+    },
+    {
+      "name": "test_candidate_build.CandidateRecipeTests.test_unreplayed_defaults_and_invalid_flags_fail_explicitly",
+      "status": "PASS",
+      "duration_seconds": 0.000136
+    },
+    {
+      "name": "test_change_report.ChangeReportTests.test_added_export_and_measured_size_changes_are_visible",
+      "status": "PASS",
+      "duration_seconds": 4.4e-05
+    },
+    {
+      "name": "test_change_report.ChangeReportTests.test_inventory_size_includes_actual_manifest_bytes_and_rejects_bad_parser_input",
+      "status": "PASS",
+      "duration_seconds": 0.008892
+    },
+    {
+      "name": "test_change_report.ChangeReportTests.test_protected_guard_requires_digest_bound_acceptance_for_exact_file_bytes",
+      "status": "PASS",
+      "duration_seconds": 0.00127
+    },
+    {
+      "name": "test_change_report.ChangeReportTests.test_real_parser_aliases_stars_defaults_and_cycles_have_exact_names",
+      "status": "PASS",
+      "duration_seconds": 0.008411
+    },
+    {
+      "name": "test_change_report.ChangeReportTests.test_removed_shipped_tool_requires_exact_review_reason",
+      "status": "PASS",
+      "duration_seconds": 4.2e-05
+    },
+    {
+      "name": "test_change_report.ChangeReportTests.test_unexplained_removed_exports_and_protected_bytes_fail",
+      "status": "PASS",
+      "duration_seconds": 0.000171
+    },
+    {
+      "name": "test_ci_validation_guards.ActualPytestCollectionTests.test_absent_call_phase_does_not_certify_pass",
+      "status": "PASS",
+      "duration_seconds": 3.6e-05
+    },
+    {
+      "name": "test_ci_validation_guards.ActualPytestCollectionTests.test_actual_empty_file_returns_no_tests_status",
+      "status": "PASS",
+      "duration_seconds": 0.114312
+    },
+    {
+      "name": "test_ci_validation_guards.ActualPytestCollectionTests.test_actual_invalid_python_collection_is_not_a_passing_zero_case_suite",
+      "status": "PASS",
+      "duration_seconds": 0.131202
+    },
+    {
+      "name": "test_ci_validation_guards.ActualPytestCollectionTests.test_actual_setup_call_teardown_failures_and_skip_are_retained",
+      "status": "PASS",
+      "duration_seconds": 0.042056
+    },
+    {
+      "name": "test_ci_validation_guards.ActualPytestCollectionTests.test_teardown_skip_cannot_overwrite_an_earlier_failure",
+      "status": "PASS",
+      "duration_seconds": 3.1e-05
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_conflicting_child_context_is_not_rebound_to_current_inputs",
+      "status": "PASS",
+      "duration_seconds": 0.023041
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_existing_report_is_rejected_before_launch",
+      "status": "PASS",
+      "duration_seconds": 0.001117
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_failed_command_launch_still_produces_failed_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.002502
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_fresh_pass_binds_actual_context_and_exit_code",
+      "status": "PASS",
+      "duration_seconds": 0.020808
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_input_drift_invalidates_otherwise_passing_new_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.021724
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_invalid_report_shape_is_explicitly_rejected",
+      "status": "PASS",
+      "duration_seconds": 0.021669
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_malformed_child_identity_verification_is_reported_as_failed_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.021547
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_nonzero_child_cannot_promote_its_pass_report",
+      "status": "PASS",
+      "duration_seconds": 0.021374
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_report_outside_allowed_directory_is_rejected_before_launch",
+      "status": "PASS",
+      "duration_seconds": 0.001111
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_report_that_becomes_unsafe_is_never_read_or_rewritten",
+      "status": "PASS",
+      "duration_seconds": 0.020693
+    },
+    {
+      "name": "test_ci_validation_guards.FreshEvidenceWrapperTests.test_success_exit_without_new_evidence_is_blocked",
+      "status": "PASS",
+      "duration_seconds": 0.021574
+    },
+    {
+      "name": "test_ci_validation_guards.JunitInfrastructureTests.test_blocked_or_changed_inputs_are_errors_even_when_individual_cases_pass",
+      "status": "PASS",
+      "duration_seconds": 0.002494
+    },
+    {
+      "name": "test_ci_validation_guards.ParserOutputBoundaryTests.test_baseline_and_candidate_outputs_are_rejected_before_reading_inputs",
+      "status": "PASS",
+      "duration_seconds": 0.001245
+    },
+    {
+      "name": "test_dashboard.DashboardTests.test_aggregate_dashboard_includes_actual_children_and_downloadable_junit",
+      "status": "PASS",
+      "duration_seconds": 0.001447
+    },
+    {
+      "name": "test_dashboard.DashboardTests.test_malicious_report_names_and_text_are_inert_and_status_is_preserved",
+      "status": "PASS",
+      "duration_seconds": 0.000738
+    },
+    {
+      "name": "test_dashboard.DashboardTests.test_missing_and_invalid_reports_are_actual_failure_rows",
+      "status": "PASS",
+      "duration_seconds": 0.000467
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_completed_trace_does_not_wait_for_an_application_page",
+      "status": "PASS",
+      "duration_seconds": 0.000261
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_failed_start_and_failed_finish_cannot_be_reused",
+      "status": "PASS",
+      "duration_seconds": 0.00055
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_finished_report_retains_urls_and_counts_without_raw_sensitive_events",
+      "status": "PASS",
+      "duration_seconds": 0.000226
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_finishing_pumps_browser_cdp_until_all_trace_events_arrive",
+      "status": "PASS",
+      "duration_seconds": 0.000214
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_handlers_are_registered_before_the_proved_category_starts",
+      "status": "PASS",
+      "duration_seconds": 0.000184
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_parser_accepts_only_actual_netlog_socket_request_urls",
+      "status": "PASS",
+      "duration_seconds": 0.00015
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_start_and_finish_lifecycle_rejects_misuse_and_reuses_completed_result",
+      "status": "PASS",
+      "duration_seconds": 0.00027
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_timeout_configuration_is_bounded",
+      "status": "PASS",
+      "duration_seconds": 9.1e-05
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_trace_loss_and_missing_loss_status_fail_after_detaching",
+      "status": "PASS",
+      "duration_seconds": 0.000424
+    },
+    {
+      "name": "test_network_trace.BrowserSocketTraceTests.test_trace_timeout_fails_and_detaches",
+      "status": "PASS",
+      "duration_seconds": 0.00041
+    },
+    {
+      "name": "test_python_reporting.PythonReportingTests.test_actual_callbacks_preserve_distinct_outcomes_in_json_and_junit",
+      "status": "PASS",
+      "duration_seconds": 0.001925
+    },
+    {
+      "name": "test_python_reporting.PythonReportingTests.test_missing_suite_is_an_actual_error_and_report_paths_preserve_sdk",
+      "status": "PASS",
+      "duration_seconds": 0.000502
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_committed_version_must_match_the_explicit_future_tag",
+      "status": "PASS",
+      "duration_seconds": 0.166489
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_draft_preflight_rechecks_notes_and_assets_before_authentication",
+      "status": "PASS",
+      "duration_seconds": 0.145238
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_draft_rejects_published_release_and_conflicting_tag_without_mutation",
+      "status": "PASS",
+      "duration_seconds": 0.247585
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_explicit_future_sdk_version_with_fresh_matching_evidence_is_permitted",
+      "status": "PASS",
+      "duration_seconds": 0.240193
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_future_version_cannot_reuse_older_commit_or_package_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.151738
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_local_default_revalidates_real_archive_and_children_without_network",
+      "status": "PASS",
+      "duration_seconds": 0.131685
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_old_tags_inexact_or_untested_commits_and_dirty_checkout_fail",
+      "status": "PASS",
+      "duration_seconds": 0.117159
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_one_passing_report_or_missing_required_report_cannot_qualify_release",
+      "status": "PASS",
+      "duration_seconds": 0.213008
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_recomputed_hash_cannot_hide_skipped_or_mixed_child_evidence",
+      "status": "PASS",
+      "duration_seconds": 0.200108
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_rewritten_template_receipt_cannot_bypass_full_platform_donor",
+      "status": "PASS",
+      "duration_seconds": 0.18462
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_tampered_original_children_and_artifact_escape_fail",
+      "status": "PASS",
+      "duration_seconds": 0.167221
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_template_replacement_requires_full_platform_donor",
+      "status": "PASS",
+      "duration_seconds": 0.13176
+    },
+    {
+      "name": "test_release_tooling.ReleaseToolingTests.test_wrong_typed_receipt_cannot_replace_cpu_even_with_recomputed_hashes",
+      "status": "PASS",
+      "duration_seconds": 0.133225
+    },
+    {
+      "name": "test_report_context.RealGitContextTests.test_real_git_clean_dirty_and_ignored_output_status_is_bound",
+      "status": "PASS",
+      "duration_seconds": 0.068297
+    },
+    {
+      "name": "test_report_context.ReportContextTests.test_actual_sdk_drift_without_manifest_edit_fails_finish",
+      "status": "PASS",
+      "duration_seconds": 0.002495
+    },
+    {
+      "name": "test_report_context.ReportContextTests.test_candidate_cannot_replace_baseline_input_identity",
+      "status": "PASS",
+      "duration_seconds": 0.00239
+    },
+    {
+      "name": "test_report_context.ReportContextTests.test_directory_identity_is_not_an_invented_zip_identity",
+      "status": "PASS",
+      "duration_seconds": 0.001228
+    },
+    {
+      "name": "test_report_context.ReportContextTests.test_job_outputs_do_not_change_recipe_but_recipe_edits_do",
+      "status": "PASS",
+      "duration_seconds": 0.002936
+    },
+    {
+      "name": "test_report_context.ReportContextTests.test_published_build_named_directories_remain_part_of_package_identity",
+      "status": "PASS",
+      "duration_seconds": 0.001971
+    },
+    {
+      "name": "test_sdk_tests.PublicBrowserReportingTests.test_expected_inventory_selects_case_ids_per_mode_before_execution",
+      "status": "PASS",
+      "duration_seconds": 5.1e-05
+    },
+    {
+      "name": "test_sdk_tests.PublicBrowserReportingTests.test_unavailable_module_records_every_required_case_as_unexecuted",
+      "status": "PASS",
+      "duration_seconds": 2.7e-05
+    },
+    {
+      "name": "test_sdk_tests.PublicBrowserReportingTests.test_zero_case_initialization_failure_is_a_junit_error",
+      "status": "PASS",
+      "duration_seconds": 0.000618
+    },
+    {
+      "name": "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_walk_reorder_and_emit_share_successful_parse",
+      "status": "PASS",
+      "duration_seconds": 0.0030794990000231337,
+      "phases": {
+        "setup": "passed",
+        "call": "passed",
+        "teardown": "passed"
+      }
+    },
+    {
+      "name": "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_changed_source_and_new_graph_do_not_reuse_old_parse",
+      "status": "PASS",
+      "duration_seconds": 0.0009301670000354534,
+      "phases": {
+        "setup": "passed",
+        "call": "passed",
+        "teardown": "passed"
+      }
+    },
+    {
+      "name": "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_cached_statements_resolve_against_each_module_location",
+      "status": "PASS",
+      "duration_seconds": 0.0015267080000285205,
+      "phases": {
+        "setup": "passed",
+        "call": "passed",
+        "teardown": "passed"
+      }
+    },
+    {
+      "name": "engine-sdk/bundler/tests/test_graph_parse_reuse.py::test_failed_discovery_parse_still_blocks_canonical_emission",
+      "status": "PASS",
+      "duration_seconds": 0.000545541999940724,
+      "phases": {
+        "setup": "passed",
+        "call": "passed",
+        "teardown": "passed"
+      }
+    }
+  ],
+  "counts": {
+    "expected": 305,
+    "run": 305,
+    "passed": 305,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "expectedFailures": 0
+  },
+  "context": {
+    "schema": "particle-sdk-report-context/v1",
+    "repository": "BTSpaniel/particlerealms.engine",
+    "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workingTreeClean": true,
+    "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+    "workflow": "SDK CI",
+    "runId": "37162104342",
+    "runAttempt": "1",
+    "job": "python",
+    "recipe": {
+      "kind": "directory",
+      "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+      "files": 32,
+      "bytes": 341856
+    },
+    "sdk": {
+      "kind": "directory",
+      "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+      "files": 7184,
+      "bytes": 310750274,
+      "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+    },
+    "candidate": null,
+    "template": {
+      "kind": "file",
+      "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+      "bytes": 46204894
+    }
+  },
+  "identityVerification": {
+    "status": "PASS",
+    "changes": [],
+    "context": {
+      "schema": "particle-sdk-report-context/v1",
+      "repository": "BTSpaniel/particlerealms.engine",
+      "commit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+      "workingTreeClean": true,
+      "workflowCommit": "35b2b9b39f7877162352e6a46d3c32c03c025a28",
+      "workflow": "SDK CI",
+      "runId": "37162104342",
+      "runAttempt": "1",
+      "job": "python",
+      "recipe": {
+        "kind": "directory",
+        "inventorySha256": "ff870edd9e39b90aea6f8a6bf87d7d0969d91e91f573635fcf6c3118c932d985",
+        "files": 32,
+        "bytes": 341856
+      },
+      "sdk": {
+        "kind": "directory",
+        "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+        "files": 7184,
+        "bytes": 310750274,
+        "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+      },
+      "candidate": null,
+      "template": {
+        "kind": "file",
+        "sha256": "e93afaae70292accf6f9b64763fba175373f365bbc702afa71c9e5ddc77d33b6",
+        "bytes": 46204894
+      }
+    }
+  },
+  "testedPackage": {
+    "kind": "directory",
+    "inventorySha256": "ce1d6f27361aaa79231705d968b713acd7f7d409b01f821ade6f9e3136251716",
+    "files": 7184,
+    "bytes": 310750274,
+    "manifestSha256": "7d1f5a29430d05d56a2f38bb25e31a0a793ea06c0fed4f667a87ea24634c3f43"
+  },
+  "junit": "test-results/python.xml"
+}
